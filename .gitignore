@@ -1,1 +1,6 @@
 /.settings
+/.buildpath
+/.project
+/create_phar.bat
+/install.bat
+/composer.lock

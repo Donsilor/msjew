@@ -1,0 +1,1 @@
+D:\phpstudy_pro\Extensions\php\php7.2.9nts\php.exe composer.phar install

@@ -94,6 +94,19 @@ return [
                 Yii::$app->services->log->record($event->sender);
             },
         ],
+            /** ------ i18n 国际化 ------ **/
+            'i18n' => [
+            		'translations' => [
+            				'*' => [
+            						'class' => 'yii\i18n\PhpMessageSource',
+            						'basePath' => '@app/languages',
+            						'fileMap' => [
+            							 'goods_attribute' => 'goods_attribute.php',
+            							 'goods_category' => 'goods_category.php',
+            						],
+            				],
+            		],
+            ],
     ],
     'container' => [
         'definitions' => [
@@ -115,6 +128,6 @@ return [
         'select-map' => 'common\widgets\selectmap\MapController', // 经纬度选择
         'cropper' => 'common\widgets\cropper\CropperController', // 图片裁剪
         'notify' => 'backend\widgets\notify\NotifyController', // 消息
-    ],
+    ],    
     'params' => $params,
 ];

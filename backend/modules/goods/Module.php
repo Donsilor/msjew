@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\goods;
+namespace backend\modules\goods;
 
 /**
  * Modules module definition class
@@ -10,7 +10,7 @@ class Module extends \yii\base\Module
     /**
      * {@inheritdoc}
      */
-    public $controllerNamespace = 'app\modules\goods\controllers';
+    public $controllerNamespace = 'backend\modules\goods\controllers';
 
     /**
      * {@inheritdoc}

@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('goods_attribute', 'goods_attribute_title');
+$this->title = Yii::t('goods_attribute', 'Attributes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -17,7 +17,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-header">
                 <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
                 <div class="box-tools">
-                    <?= Html::create(['edit']) ?>
+                    <?= Html::create(['ajax-edit', 'cate_id' => 0], '创建', [
+                        'data-toggle' => 'modal',
+                        'data-target' => '#ajaxModalLg',
+                    ]); ?>
                 </div>
             </div>
             <div class="box-body table-responsive">
@@ -29,13 +32,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\SerialColumn',
                 'visible' => false,
             ],
-
             'id',
-            'language',
-            'attr_name',
-            'attr_desc',
             'attr_type',
-            'category_id',
+            'cat_id',
             'input_type',
             'is_require',
             'is_system',

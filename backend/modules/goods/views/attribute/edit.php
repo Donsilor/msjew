@@ -17,6 +17,14 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-header with-border">
                 <h3 class="box-title">基本信息</h3>
             </div>
+            <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li><a href=""> 已安装的插件</a></li>
+                <li><a href=""> 安装插件</a></li>
+                <li class="active"> 设计新插件</a></li>
+            </ul>
+
+                    
             <div class="box-body">
                 <?php $form = ActiveForm::begin([
                     'fieldConfig' => [
@@ -24,11 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ]); ?>
                 <div class="col-sm-12">
-                    <?= $form->field($model, 'language')->textInput(['maxlength' => true]) ?>
-                    <?= $form->field($model, 'attr_name')->textInput(['maxlength' => true]) ?>
-                    <?= $form->field($model, 'attr_desc')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'attr_type')->textInput() ?>
-                    <?= $form->field($model, 'category_id')->dropDownList([]) ?>
+                    <?= $form->field($model, 'cat_id')->dropDownList([]) ?>
                     <?= $form->field($model, 'input_type')->textInput() ?>
                     <?= $form->field($model, 'is_require')->radioList(\common\enums\ConfirmEnum::getMap()) ?>
                     <?= $form->field($model, 'status')->radioList(\common\enums\StatusEnum::getMap())?>
@@ -41,6 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
                 <?php ActiveForm::end(); ?>
+            </div>
             </div>
         </div>
     </div>

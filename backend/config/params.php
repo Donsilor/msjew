@@ -38,4 +38,10 @@ return [
         '/main/index',// 系统主页
         '/main/system',// 系统首页
     ],
+	'languages'=>[
+		'en-US'=>'English',
+		'zh-CN'=>'中文简体',
+		'zh-Hk'=>'中文繁體'
+	],
+	
 ];

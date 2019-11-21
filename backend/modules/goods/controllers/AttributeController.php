@@ -51,4 +51,45 @@ class AttributeController extends BaseController
             'searchModel' => $searchModel,
         ]);
     }
+    
+    /**
+     * 编辑/创建
+     *
+     * @return mixed|string|\yii\web\Response
+     * @throws \yii\base\ExitException
+     */
+    public function actionAjaxEdit()
+    {
+    	$id = Yii::$app->request->get('id', '');
+    	$model = $this->findModel($id);
+    	    	
+    	// ajax 校验
+    	$this->activeFormValidate($model);
+    	if ($model->load(Yii::$app->request->post())) {
+    		print_r($model->toArray());exit;
+    		return $model->save()
+    		? $this->redirect(['index', 'id' => $model->id])
+    		: $this->message($this->getError($model), $this->redirect(['index', 'id' => $model->id]), 'error');
+    	}
+    	return $this->renderAjax('ajax-edit', [
+    			'model' => $model,
+    	]);
+    }
+    
+    /**
+     * 删除
+     *
+     * @param $id
+     * @return mixed
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionDelete($id)
+    {
+    	if (($model = $this->findModel($id))->delete()) {
+    		return $this->message("删除成功", $this->redirect(['index', 'id' => $model->id]));
+    	}
+    	
+    	return $this->message("删除失败", $this->redirect(['index', 'id' => $model->id]), 'error');
+    }
 }

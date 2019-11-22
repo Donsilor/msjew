@@ -50,30 +50,7 @@ class AttributeController extends BaseController
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
         ]);
-    }
-    
-    /**
-     * 编辑/创建
-     *
-     * @return mixed|string|\yii\web\Response
-     * @throws \yii\base\ExitException
-     */
-    public function actionAjaxEdit()
-    {
-    	$id = Yii::$app->request->get('id', '');
-    	$model = $this->findModel($id);
-    	    	
-    	// ajax 校验
-    	$this->activeFormValidate($model);
-    	if ($model->load(Yii::$app->request->post())) {
-    		return $model->save()
-    		? $this->redirect(['index', 'id' => $model->id])
-    		: $this->message($this->getError($model), $this->redirect(['index', 'id' => $model->id]), 'error');
-    	}
-    	return $this->renderAjax('ajax-edit', [
-    			'model' => $model,
-    	]);
-    }
+    }    
     
     /**
      * 删除

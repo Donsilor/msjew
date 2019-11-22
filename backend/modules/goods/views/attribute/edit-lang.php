@@ -33,21 +33,29 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php }?>           
                 </ul>            
                 <div class="tab-content">  
-                   	<?php $langModel = $model->langModel();?>
-                    	<?php if(empty($model->langs)){?>
-                      		<?php foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){?>
-                      			<div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                                   <?= $form->field($langModel, 'attr_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_name")]) ?>
-                            	</div>
-                      		<?php }?>
-                      <?php }else{?>
-                            <?php foreach ($model->langs as $key=>$langModel) {?>
-                            	<div class="tab-pane<?php echo Yii::$app->language==$langModel->language?" active":"" ?>" id="tab_<?= $langModel->language?>">
-                                   <?= $form->field($langModel, 'attr_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_name")]) ?>
-                            	</div>
-                            	<!-- /.tab-pane -->        
+           			<?php $newLangModel = $model->langModel();?>
+              		<?php 
+              		  foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){
+              		     $is_new = true;    
+              		  ?>                        		
+              		    <?php foreach ($model->langs as $langModel) {?>
+                            <?php if($lang_key == $langModel->language){?>
+                            	<!-- 编辑-->
+                                <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
+                                     <?= $form->field($langModel, 'attr_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_name")]) ?>
+                              	</div>
+                              	<!-- /.tab-pane -->
+                            	<?php $is_new = false; break;?>
                             <?php }?>
-                      <?php }?>
+                        <?php }?>
+                        <?php if($is_new == true){?>
+                        <!-- 新增 -->
+                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
+                               <?= $form->field($newLangModel, 'attr_name')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"attr_name")]) ?>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <?php }?>                         
+                    <?php }?>
                   </div>
                    <br/>   
                     <?= $form->field($model, 'attr_type')->textInput() ?>

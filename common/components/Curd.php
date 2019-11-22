@@ -179,33 +179,24 @@ trait Curd
         if(empty($langPosts)){
             return false;
         }
-        if(empty($model->langs)){
-            foreach ($langPosts as $key=>$post){
-                $langModel = $model->langModel();
-                $langModel->load([$langClassName =>$post]);
-                $langModel->master_id = $model->id;
-                $langModel->language = $key;
-                $langModel->save();
-            }
-        }else{
-            foreach ($model->langs as $key=> $langModel){
-                $langModel->load([$langClassName =>$langPosts[$langModel->language]]);
-                $model->link('langs', $langModel);
-            }
-            $exists_langs = array_unique(array_column($model->langs,'language'));
-            if(count($langPosts) > count($exists_langs)){
-                foreach ($langPosts as $key=>$post){
-                    if(in_array($key,$exists_langs)){
-                      continue;
-                    }
-                    $langModel = $model->langModel();
-                    $langModel->load([$langClassName =>$post]);
-                    $langModel->master_id = $model->id;
-                    $langModel->language = $key;
-                    $langModel->save();
+        foreach ($langPosts as $lang_key=>$lang_post){
+            $is_new = true;
+            foreach ($model->langs as $langModel){
+                if($lang_key == $langModel->language){
+                    $langModel->load([$langClassName =>$langPosts[$langModel->language]]);
+                    $model->link('langs', $langModel);
+                    $is_new = false;
+                    break;
                 }
             }
-        }
+            if($is_new == true){
+                $langModel = $model->langModel();
+                $langModel->load([$langClassName =>$lang_post]);
+                $langModel->master_id = $model->id;
+                $langModel->language = $lang_key;
+                $langModel->save();
+            }
+        }        
     }
     
     /**

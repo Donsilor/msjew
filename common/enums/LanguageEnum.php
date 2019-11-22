@@ -13,7 +13,7 @@ class LanguageEnum extends BaseEnum
 {
 	const EN_US = 'en-US';
 	const ZH_CN = 'zh-CN';
-	const ZH_HK = 'zh-HK';
+	const ZH_HK = 'zh-TW';
 	
 	/**
 	 * @return array

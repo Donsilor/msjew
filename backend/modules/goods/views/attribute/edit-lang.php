@@ -2,6 +2,10 @@
 
 use common\helpers\Html;
 use yii\widgets\ActiveForm;
+use common\enums\ConfirmEnum;
+use common\enums\InputTypeEnum;
+use common\enums\AttrTypeEnum;
+use common\enums\StatusEnum;
 /* @var $this yii\web\View */
 /* @var $model common\models\goods\Attribute */
 /* @var $form yii\widgets\ActiveForm */
@@ -58,11 +62,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php }?>
                   </div>
                    <br/>   
-                    <?= $form->field($model, 'attr_type')->textInput() ?>
+                    <?= $form->field($model, 'attr_type')->dropDownList(AttrTypeEnum::getMap()) ?>
                     <?= $form->field($model, 'cat_id')->dropDownList(['1'=>'分类1']) ?>
-                    <?= $form->field($model, 'input_type')->textInput() ?>
-                    <?= $form->field($model, 'is_require')->radioList(\common\enums\ConfirmEnum::getMap()) ?>
-                    <?= $form->field($model, 'status')->radioList(\common\enums\StatusEnum::getMap())?>
+                    <?= $form->field($model, 'input_type')->dropDownList(InputTypeEnum::getMap()) ?>
+                    <?= $form->field($model, 'is_require')->radioList(ConfirmEnum::getMap()) ?>
+                    <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
                     <?= $form->field($model, 'sort')->textInput() ?>
                 <div class="form-group">
                     <div class="col-sm-12 text-center">

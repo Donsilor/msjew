@@ -24,6 +24,7 @@ class BaseController extends Controller
      */
     public function behaviors()
     {
+        Yii::$app->language = 'zh-CN';
         return [
             'access' => [
                 'class' => AccessControl::class,

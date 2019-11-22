@@ -5,6 +5,7 @@ use common\helpers\Url;
 use common\enums\StatusEnum;
 use common\enums\WhetherEnum;
 use unclead\multipleinput\MultipleInput;
+use common\helpers\Html;
 
 $form = ActiveForm::begin([
     'id' => $model->formName(),
@@ -33,14 +34,14 @@ $form = ActiveForm::begin([
              	<?php $langModel = $model->langModel();?>
               	<?php if(empty($model->langs)){?>
                 		<?php foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){?>
-                		<div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                             <?= $form->field($langModel, 'attr_name')->textInput() ?> 
+                			<div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
+                             <?= $form->field($langModel, 'attr_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_name")]) ?>
                       	</div>
                 		<?php }?>
                 <?php }else{?>
                       <?php foreach ($model->langs as $key=>$langModel) {?>
-                      	<div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang?>">
-                             <?= $form->field($langModel, 'attr_name')->textInput() ?> 
+                      	<div class="tab-pane<?php echo Yii::$app->language==$langModel->language?" active":"" ?>" id="tab_<?= $langModel->language?>">
+                             <?= $form->field($langModel, 'attr_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_name")]) ?>
                       	</div>
                       	<!-- /.tab-pane -->        
                       <?php }?>

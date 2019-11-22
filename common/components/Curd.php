@@ -172,38 +172,39 @@ trait Curd
      * @param string $is_ajax
      */
     public function editLang(& $model,$is_ajax = false){
-        $langPosts = Yii::$app->request->post('Langs');
+      
+        $langModel = $model->langModel();
+        $langClassName  = basename($langModel->className());
+        $langPosts = Yii::$app->request->post($langClassName);
         if(empty($langPosts)){
             return false;
         }
-        $langModel = $model->langModel();
-        $langClassName  = basename($langModel->className());
         if(empty($model->langs)){
-          foreach ($langPosts as $key=>$post){
-            $langModel = $model->langModel();
-            $langModel->load([$langClassName =>$post]);
-            $langModel->master_id = $model->id;
-            $langModel->language = $key;
-            $langModel->save();
-          }
-        }else{
-          foreach ($model->langs as $key=> $langModel){
-            $langModel->load([$langClassName =>$langPosts[$langModel->language]]);
-            $model->link('langs', $langModel);
-          }
-          $exists_langs = array_unique(array_column($model->langs,'language'));
-          if(count($langPosts) > count($exists_langs)){
             foreach ($langPosts as $key=>$post){
-              if(in_array($key,$exists_langs)){
-                continue;
-              }
-              $langModel = $model->langModel();
-              $langModel->load([$langClassName =>$post]);
-              $langModel->master_id = $model->id;
-              $langModel->language = $key;
-              $langModel->save();
+                $langModel = $model->langModel();
+                $langModel->load([$langClassName =>$post]);
+                $langModel->master_id = $model->id;
+                $langModel->language = $key;
+                $langModel->save();
             }
-          }
+        }else{
+            foreach ($model->langs as $key=> $langModel){
+                $langModel->load([$langClassName =>$langPosts[$langModel->language]]);
+                $model->link('langs', $langModel);
+            }
+            $exists_langs = array_unique(array_column($model->langs,'language'));
+            if(count($langPosts) > count($exists_langs)){
+                foreach ($langPosts as $key=>$post){
+                    if(in_array($key,$exists_langs)){
+                      continue;
+                    }
+                    $langModel = $model->langModel();
+                    $langModel->load([$langClassName =>$post]);
+                    $langModel->master_id = $model->id;
+                    $langModel->language = $key;
+                    $langModel->save();
+                }
+            }
         }
     }
     

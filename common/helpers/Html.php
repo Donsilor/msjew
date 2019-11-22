@@ -261,4 +261,14 @@ Css
 
         return Auth::verify($route);
     }
+    /**
+     * 多语言表单input的name值生成
+     * @param unknown $lang
+     * @param unknown $field
+     * @return string
+     */
+    public static function langInputName($model,$language,$field){
+      $className = basename($model->className());
+      return "{$className}[{$language}][{$field}]";
+    }
 }

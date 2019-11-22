@@ -45,7 +45,11 @@ class AttributeController extends BaseController
 
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
-
+        
+        $dataProvider->query->with(['lang'=>function($query){
+            $query->where(['language'=>Yii::$app->language]);
+        }]);
+        
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,

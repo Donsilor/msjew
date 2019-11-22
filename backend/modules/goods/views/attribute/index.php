@@ -33,6 +33,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'visible' => false,
             ],
             'id',
+            [
+                'attribute'=>'attr_name',
+                'value'=> function($model){
+                    return $model->lang->attr_name;
+                },
+            ],
             'attr_type',
             'cat_id',
             'input_type',

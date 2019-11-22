@@ -67,10 +67,23 @@ class Attribute extends \yii\db\ActiveRecord
     {
       return new AttributeLang();
     }
-    
+    /**
+     * 关联语言一对多
+     * @return \yii\db\ActiveQuery
+     */
     public function getLangs()
     {
       return $this->hasMany(AttributeLang::class,['master_id'=>'id']);
       
+    }
+    /**
+     * 关联语言一对一
+     * @param string $languge
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLang()
+    {
+        $query = $this->hasOne(AttributeLang::class, ['master_id'=>'id']);
+        return $query;
     }
 }

@@ -25,25 +25,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]); ?>
       
           <ul class="nav nav-tabs">
-              <li class=""><a href="#tab_1" data-toggle="tab" aria-expanded="false">zh-TW</a></li>
-              <li class="active"><a href="#tab_2" data-toggle="tab" aria-expanded="true">zh-CN</a></li>
-              <li><a href="#tab_3" data-toggle="tab">en-US</a></li>              
+              <?php foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){?>
+              <li class="<?php echo Yii::$app->language==$lang_key?"active":"" ?>">
+              		<a href="#tab_<?php echo $lang_key?>" data-toggle="tab" aria-expanded="false"><?php echo $lang_name?></a>
+              </li>
+              <?php }?>           
           </ul>            
           <div class="tab-content">  
-              
-              <div class="tab-pane" id="tab_1">
-                  <input type="text" name="Langs[zh-TW][attr_name]" value="1111TW"/>  
-              </div>
-              <!-- /.tab-pane -->
-              <div class="tab-pane active" id="tab_2">
-                  <input type="text" name="Langs[zh-CN][attr_name]" value="2222CN"/>  
-              </div>
-              <!-- /.tab-pane -->
-              <div class="tab-pane" id="tab_3">
-                  <input type="text" name="Langs[en-US][attr_name]" value="US42435"/>
-                  <input type="text" name="Langs[en-DE][attr_name]" value="DE42435"/>
-              </div>
-              <!-- /.tab-pane -->
+             	<?php $langModel = $model->langModel();?>
+              	<?php if(empty($model->langs)){?>
+                		<?php foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){?>
+                		<div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
+                             <?= $form->field($langModel, 'attr_name')->textInput() ?> 
+                      	</div>
+                		<?php }?>
+                <?php }else{?>
+                      <?php foreach ($model->langs as $key=>$langModel) {?>
+                      	<div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang?>">
+                             <?= $form->field($langModel, 'attr_name')->textInput() ?> 
+                      	</div>
+                      	<!-- /.tab-pane -->        
+                      <?php }?>
+                <?php }?>
             </div>
              <br/>   
                     <?= $form->field($model, 'attr_type')->textInput() ?>

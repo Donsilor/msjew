@@ -66,7 +66,6 @@ class AttributeController extends BaseController
     	// ajax 校验
     	$this->activeFormValidate($model);
     	if ($model->load(Yii::$app->request->post())) {
-    		print_r($model->toArray());exit;
     		return $model->save()
     		? $this->redirect(['index', 'id' => $model->id])
     		: $this->message($this->getError($model), $this->redirect(['index', 'id' => $model->id]), 'error');

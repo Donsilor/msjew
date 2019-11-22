@@ -27,13 +27,14 @@ class Attribute extends \yii\db\ActiveRecord
     {
         return '{{%goods_attribute}}';
     }
-
+    
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
+        	[['cat_id', 'attr_type', 'input_type'], 'required'],
             [['cat_id', 'attr_type', 'input_type', 'is_require', 'is_system', 'status', 'sort'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
         ];
@@ -56,5 +57,20 @@ class Attribute extends \yii\db\ActiveRecord
             'created_at' => Yii::t('goods_attribute', 'Created At'),
             'updated_at' => Yii::t('goods_attribute', 'Updated At'),
         ];
+    }
+    
+    /**
+     * 语言扩展表
+     * @return \common\models\goods\AttributeLang
+     */
+    public function langModel()
+    {
+      return new AttributeLang();
+    }
+    
+    public function getLangs()
+    {
+      return $this->hasMany(AttributeLang::class,['master_id'=>'id']);
+      
     }
 }

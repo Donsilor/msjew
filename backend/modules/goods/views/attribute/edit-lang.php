@@ -29,28 +29,29 @@ $this->params['breadcrumbs'][] = $this->title;
               <li class="active"><a href="#tab_2" data-toggle="tab" aria-expanded="true">zh-CN</a></li>
               <li><a href="#tab_3" data-toggle="tab">en-US</a></li>              
           </ul>            
-          <div class="tab-content">      
+          <div class="tab-content">  
+              
               <div class="tab-pane" id="tab_1">
-                    
+                  <input type="text" name="Langs[zh-TW][attr_name]" value="1111TW"/>  
               </div>
               <!-- /.tab-pane -->
               <div class="tab-pane active" id="tab_2">
-                   
+                  <input type="text" name="Langs[zh-CN][attr_name]" value="2222CN"/>  
               </div>
               <!-- /.tab-pane -->
               <div class="tab-pane" id="tab_3">
-               	   
+                  <input type="text" name="Langs[en-US][attr_name]" value="US42435"/>
+                  <input type="text" name="Langs[en-DE][attr_name]" value="DE42435"/>
               </div>
               <!-- /.tab-pane -->
             </div>
              <br/>   
                     <?= $form->field($model, 'attr_type')->textInput() ?>
-                    <?= $form->field($model, 'cat_id')->dropDownList([]) ?>
+                    <?= $form->field($model, 'cat_id')->dropDownList(['1'=>'分类1']) ?>
                     <?= $form->field($model, 'input_type')->textInput() ?>
                     <?= $form->field($model, 'is_require')->radioList(\common\enums\ConfirmEnum::getMap()) ?>
                     <?= $form->field($model, 'status')->radioList(\common\enums\StatusEnum::getMap())?>
                     <?= $form->field($model, 'sort')->textInput() ?>
-
                 <div class="form-group">
                     <div class="col-sm-12 text-center">
                         <button class="btn btn-primary" type="submit">保存</button>

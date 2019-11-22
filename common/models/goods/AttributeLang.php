@@ -30,7 +30,7 @@ class AttributeLang extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['attr_id'], 'integer'],
+            [['master_id'], 'integer'],
             [['language'], 'string', 'max' => 5],
             [['attr_name'], 'string', 'max' => 100],
             [['default_value'], 'string', 'max' => 20],
@@ -46,7 +46,7 @@ class AttributeLang extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('goods_attribute', 'ID'),
             'language' => Yii::t('goods_attribute', 'Language'),
-            'attr_id' => Yii::t('goods_attribute', 'Attr ID'),
+            'master_id' => Yii::t('goods_attribute', 'Attr ID'),
             'attr_name' => Yii::t('goods_attribute', 'Attr Name'),
             'default_value' => Yii::t('goods_attribute', 'Default Value'),
             'remark' => Yii::t('goods_attribute', 'Remark'),

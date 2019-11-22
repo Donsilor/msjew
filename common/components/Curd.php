@@ -66,6 +66,55 @@ trait Curd
             'model' => $model,
         ]);
     }
+    
+    /**
+     * 编辑/创建 多语言
+     * 
+     * @return mixed
+     */
+    public function actionEditLang()
+    {
+      $id = Yii::$app->request->get('id', null);
+      $model = $this->findModel($id);
+      if ($model->load(Yii::$app->request->post()) && $model->save()) {
+          $langPosts = Yii::$app->request->post('Langs');
+          $langModel = $model->langModel();
+          $langClassName  = basename($langModel->className());
+          if(empty($model->langs)){
+            foreach ($langPosts as $key=>$post){
+                $langModel = $model->langModel();
+                $langModel->load([$langClassName =>$post]);
+                $langModel->master_id = $model->id;
+                $langModel->language = $key;
+                $langModel->save();
+            }
+          }else{
+            foreach ($model->langs as $key=> $langModel){
+                $langModel->load([$langClassName =>$langPosts[$langModel->language]]);
+                $model->link('langs', $langModel);
+            } 
+            $exists_langs = array_unique(array_column($model->langs,'language'));
+            if(count($langPosts) > count($exists_langs)){
+              foreach ($langPosts as $key=>$post){
+                  if(in_array($key,$exists_langs)){
+                    continue;
+                  }
+                  //print_r($post);exit;
+                  $langModel = $model->langModel();
+                  $langModel->load([$langClassName =>$post]);
+                  $langModel->master_id = $model->id;
+                  $langModel->language = $key;
+                  $langModel->save();
+              }
+            }
+          }
+        return $this->redirect(['index']);
+      }
+      
+      return $this->render($this->action->id, [
+          'model' => $model,
+      ]);
+    }
 
     /**
      * 伪删除

@@ -34,10 +34,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'id',
             [
-                'attribute'=>'attr_name',
-                'value'=> function($model){
+                'attribute'=>'lang.attr_name',
+                /* 'value'=> function($model){
                     return $model->lang->attr_name;
-                },
+                }, */
             ],
             'attr_type',
             'cat_id',

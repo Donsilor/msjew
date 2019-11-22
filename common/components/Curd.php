@@ -218,8 +218,8 @@ trait Curd
       //$trans = Yii::$app->db->beginTransaction();
       $model = $this->findModel($id);
       if ($model->load(Yii::$app->request->post()) && $model->save()) {
-        $this->editLang($model,false);
-        return $this->redirect(['index']);
+          $this->editLang($model,false);
+          return $this->redirect(['index']);
       }
       
       return $this->render($this->action->id, [
@@ -241,12 +241,13 @@ trait Curd
       // ajax 校验
       $this->activeFormValidate($model);
       if ($model->load(Yii::$app->request->post())) {
-        //多语言编辑
-        $this->editLang($model,true);
-        
-        return $model->save()
-        ? $this->redirect(['index'])
-        : $this->message($this->getError($model), $this->redirect(['index']), 'error');
+        if($model->save()){
+            //多语言编辑
+            $this->editLang($model,true);
+            return $this->redirect(['index']);
+        }else{
+            return $this->message($this->getError($model), $this->redirect(['index']), 'error');
+        }        
       }
       
       return $this->renderAjax($this->action->id, [

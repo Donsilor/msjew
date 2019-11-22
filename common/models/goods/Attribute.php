@@ -3,6 +3,7 @@
 namespace common\models\goods;
 
 use Yii;
+use common\models\base\BaseModel;
 
 /**
  * This is the model class for table "{{%goods_attribute}}".
@@ -18,7 +19,7 @@ use Yii;
  * @property string $created_at 创建时间
  * @property string $updated_at 更新时间
  */
-class Attribute extends \yii\db\ActiveRecord
+class Attribute extends BaseModel
 {
     /**
      * {@inheritdoc}
@@ -35,8 +36,8 @@ class Attribute extends \yii\db\ActiveRecord
     {
         return [
         	[['cat_id', 'attr_type', 'input_type'], 'required'],
-            [['cat_id', 'attr_type', 'input_type', 'is_require', 'is_system', 'status', 'sort'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['cat_id', 'attr_type', 'input_type', 'is_require', 'is_system', 'status', 'sort','created_at', 'updated_at'], 'integer'],
+            //[['created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -78,12 +79,10 @@ class Attribute extends \yii\db\ActiveRecord
     }
     /**
      * 关联语言一对一
-     * @param string $languge
      * @return \yii\db\ActiveQuery
      */
     public function getLang()
     {
-        $query = $this->hasOne(AttributeLang::class, ['master_id'=>'id']);
-        return $query;
+        return $this->hasOne(AttributeLang::class, ['master_id'=>'id']);
     }
 }

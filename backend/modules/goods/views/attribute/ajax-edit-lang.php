@@ -3,9 +3,10 @@
 use yii\widgets\ActiveForm;
 use common\helpers\Url;
 use common\enums\StatusEnum;
-use common\enums\WhetherEnum;
-use unclead\multipleinput\MultipleInput;
 use common\helpers\Html;
+use common\enums\AttrTypeEnum;
+use common\enums\InputTypeEnum;
+use common\enums\ConfirmEnum;
 
 $form = ActiveForm::begin([
     'id' => $model->formName(),
@@ -56,11 +57,11 @@ $form = ActiveForm::begin([
                     <?php }?>
             </div>
             <!-- /.tab-content -->
-            <?= $form->field($model, 'attr_type')->textInput() ?>
+            <?= $form->field($model, 'attr_type')->dropDownList(AttrTypeEnum::getMap()) ?>
             <?= $form->field($model, 'cat_id')->dropDownList(['1'=>'分类1']) ?>
-            <?= $form->field($model, 'input_type')->textInput() ?>
-            <?= $form->field($model, 'is_require')->radioList(\common\enums\ConfirmEnum::getMap()) ?>
-            <?= $form->field($model, 'status')->radioList(\common\enums\StatusEnum::getMap())?>
+            <?= $form->field($model, 'input_type')->dropDownList(InputTypeEnum::getMap()) ?>
+            <?= $form->field($model, 'is_require')->radioList(ConfirmEnum::getMap()) ?>
+            <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
             <?= $form->field($model, 'sort')->textInput() ?>              
           </div>
            

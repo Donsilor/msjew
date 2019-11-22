@@ -1,5 +1,6 @@
 <?php
 return [
+    'Attributes'=>'属性列表',
     'Attr Name'=>'属性名称',
     'Cat ID'=>'商品分类',
     'Attr Type'=>'属性类型',

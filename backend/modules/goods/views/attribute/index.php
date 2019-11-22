@@ -35,19 +35,63 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             [
                 'attribute'=>'lang.attr_name',
-                /* 'value'=> function($model){
-                    return $model->lang->attr_name;
-                }, */
             ],
-            'attr_type',
+            [
+                'attribute' => 'attr_type',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\AttrTypeEnum::getValue($model->attr_type);
+                }
+            ],
             'cat_id',
-            'input_type',
-            'is_require',
-            'is_system',
-            'status',
+            [
+                'attribute' => 'input_type',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\InputTypeEnum::getValue($model->input_type);
+                }
+            ],
+            [
+                'attribute' => 'is_require',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\ConfirmEnum::getValue($model->is_require);
+                }
+            ],
+            [
+                'attribute' => 'is_system',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\ConfirmEnum::getValue($model->is_system);
+                }
+            ],
+            [
+                'attribute' => 'status',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\StatusEnum::getValue($model->status);
+                }
+            ],
             'sort',
-            'created_at',
-            'updated_at',
+            [
+                'attribute'=>'created_at',
+                'value' => function ($model) {
+                    return Yii::$app->formatter->asDatetime($model->created_at);
+                },
+                'format' => 'raw',
+            ],
+            [
+                'attribute'=>'updated_at',
+                'value' => function ($model) {
+                    return Yii::$app->formatter->asDatetime($model->updated_at);
+                },
+                'format' => 'raw',
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',

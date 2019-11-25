@@ -141,6 +141,7 @@ $this->registerJs($script);
     // 启用状态 status 1:启用;0禁用;
     function rfStatus(obj) {
         let id = $(obj).attr('data-id');
+        let url = $(obj).attr('data-url');
         let status = 0;
         self = $(obj);
         if (self.hasClass("btn-success")) {
@@ -154,10 +155,12 @@ $this->registerJs($script);
         if (!id) {
             id = $(obj).parent().parent().attr('data-key');
         }
-
+        if(!url){
+             url = "<?= Url::to(['ajax-update'])?>";
+        } 
         $.ajax({
             type: "get",
-            url: "<?= Url::to(['ajax-update'])?>",
+            url: url,
             dataType: "json",
             data: {
                 id: id,
@@ -172,6 +175,7 @@ $this->registerJs($script);
                         self.removeClass("btn-default").addClass("btn-success");
                         self.text('启用');
                     }
+                    window.location.reload();
                 } else {
                     rfAffirm(data.message);
                 }

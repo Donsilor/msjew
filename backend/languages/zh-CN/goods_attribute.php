@@ -11,4 +11,5 @@ return [
     'Sort'=>'排序',
     'Created At'=>'创建时间',
     'Updated At'=>'更新时间',
+    'Remark'=>'属性描述',
 ];

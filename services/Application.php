@@ -47,7 +47,8 @@ use common\components\Service;
  * @property \services\oauth2\RefreshTokenService $oauth2RefreshToken oauth2刷新token
  * @property \services\oauth2\AuthorizationCodeService $oauth2AuthorizationCode oauth临时code
  * 
- * @property \services\goods\GoodsService $category 商品分类
+ * @property \services\goods\CategoryService $category 商品分类
+ * @property \services\goods\AttributeService $attribute 商品属性
  * @author jianyan74 <751393839@qq.com>
  */
 class Application extends Service
@@ -115,6 +116,8 @@ class Application extends Service
         'oauth2AccessToken' => 'services\oauth2\AccessTokenService',
         'oauth2RefreshToken' => 'services\oauth2\RefreshTokenService',
         'oauth2AuthorizationCode' => 'services\oauth2\AuthorizationCodeService',
+        /*********商品相关*********/
         'category' => 'services\goods\CategoryService',
+        'attribute' => 'services\goods\AttributeService',
     ];
 }

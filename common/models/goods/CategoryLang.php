@@ -47,7 +47,7 @@ class CategoryLang extends \yii\db\ActiveRecord
     {
         return [
             'id' => '主键',
-            'master_id' => Yii::t('goods_category_lang', 'Attr ID'),
+            'master_id' => Yii::t('goods_category', 'Attr ID'),
             'language' => '语言类型',
             'cat_name' => '分类名称',
             'remark' => '备注',

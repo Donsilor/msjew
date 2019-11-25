@@ -37,6 +37,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'lang.attr_name',
             ],
             [
+                 'attribute'=>'lang.attr_values',
+            ],
+            [
                 'attribute' => 'attr_type',
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
@@ -44,7 +47,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     return \common\enums\AttrTypeEnum::getValue($model->attr_type);
                 }
             ],
-            'cat_id',
+            [
+                    'attribute'=>'category.cat_name',
+            ],
             [
                 'attribute' => 'input_type',
                 'format' => 'raw',
@@ -53,22 +58,22 @@ $this->params['breadcrumbs'][] = $this->title;
                     return \common\enums\InputTypeEnum::getValue($model->input_type);
                 }
             ],
-            [
+            /* [
                 'attribute' => 'is_require',
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
                     return \common\enums\ConfirmEnum::getValue($model->is_require);
                 }
-            ],
-            [
+            ], */
+            /* [
                 'attribute' => 'is_system',
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
                     return \common\enums\ConfirmEnum::getValue($model->is_system);
                 }
-            ],
+            ], */
             [
                 'attribute' => 'status',
                 'format' => 'raw',
@@ -78,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             'sort',
-            [
+            /* [
                 'attribute'=>'created_at',
                 'value' => function ($model) {
                     return Yii::$app->formatter->asDatetime($model->created_at);
@@ -91,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Yii::$app->formatter->asDatetime($model->updated_at);
                 },
                 'format' => 'raw',
-            ],
+            ], */
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',

@@ -33,7 +33,7 @@ class AttributeController extends BaseController
     */
     public function actionIndex()
     {
-    	//Yii::$app->language = 'en-US';
+    	//Yii::$app->language = 'zh-TW';
         $searchModel = new SearchModel([
             'model' => $this->modelClass,
             'scenario' => 'default',
@@ -51,9 +51,13 @@ class AttributeController extends BaseController
             $query->where(['language'=>Yii::$app->language]);
         }]);
         
+        $dataProvider->query->with(['category'=>function($query){
+            $query->where(['language'=>Yii::$app->language]);
+        }]);
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
+            'cate_list'=>Yii::$app->services->category->getDropDown()
         ]);
     }    
     /**
@@ -68,6 +72,9 @@ class AttributeController extends BaseController
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
               $this->editLang($model,false);
+              
+              //更新属性值到attribute_lang.attr_values;
+              Yii::$app->services->attribute->updateAttrValues($model->id);              
               return $this->redirect(['index']);
         }
         

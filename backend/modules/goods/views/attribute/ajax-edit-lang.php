@@ -42,6 +42,8 @@ $form = ActiveForm::begin([
                             	<!-- 编辑-->
                                 <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
                                      <?= $form->field($langModel, 'attr_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_name")]) ?>
+                              	      <?= $form->field($langModel, 'remark')->textarea(['name'=>Html::langInputName($langModel,$lang_key,"remark")]) ?>
+                              	
                               	</div>
                               	<!-- /.tab-pane -->
                             	<?php $is_new = false; break;?>
@@ -51,6 +53,8 @@ $form = ActiveForm::begin([
                         <!-- 新增 -->
                         <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
                                <?= $form->field($newLangModel, 'attr_name')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"attr_name")]) ?>
+                               <?= $form->field($newLangModel, 'remark')->textarea(['name'=>Html::langInputName($newLangModel,$lang_key,"remark")]) ?>
+                        
                         </div>
                         <!-- /.tab-pane -->
                         <?php }?>                         
@@ -58,7 +62,7 @@ $form = ActiveForm::begin([
             </div>
             <!-- /.tab-content -->
             <?= $form->field($model, 'attr_type')->dropDownList(AttrTypeEnum::getMap()) ?>
-            <?= $form->field($model, 'cat_id')->dropDownList(['1'=>'分类1']) ?>
+            <?= $form->field($model, 'cat_id')->dropDownList(Yii::$app->services->category->getDropDown()) ?>
             <?= $form->field($model, 'input_type')->dropDownList(InputTypeEnum::getMap()) ?>
             <?= $form->field($model, 'is_require')->radioList(ConfirmEnum::getMap()) ?>
             <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>

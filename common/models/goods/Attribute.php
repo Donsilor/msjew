@@ -85,4 +85,12 @@ class Attribute extends BaseModel
     {
         return $this->hasOne(AttributeLang::class, ['master_id'=>'id']);
     }
+    /**
+     * 关联分类一对一
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
+    {
+        return $this->hasOne(CategoryLang::class, ['master_id'=>'cat_id']);
+    }
 }

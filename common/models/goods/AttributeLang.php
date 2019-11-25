@@ -34,7 +34,7 @@ class AttributeLang extends \yii\db\ActiveRecord
             [['language'], 'string', 'max' => 5],
             [['attr_name'], 'string', 'max' => 100],
             [['default_value'], 'string', 'max' => 20],
-            [['remark'], 'string', 'max' => 500],
+            [['attr_values','remark'], 'string', 'max' => 500],
         ];
     }
 
@@ -45,11 +45,12 @@ class AttributeLang extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('goods_attribute', 'ID'),
-            'language' => Yii::t('goods_attribute', 'Language'),
+            'language' => Yii::t('goods_attribute', '语言类别'),
             'master_id' => Yii::t('goods_attribute', 'Attr ID'),
-            'attr_name' => Yii::t('goods_attribute', 'Attr Name'),
-            'default_value' => Yii::t('goods_attribute', 'Default Value'),
-            'remark' => Yii::t('goods_attribute', 'Remark'),
+            'attr_name' => Yii::t('goods_attribute', '属性名称'),
+            'attr_values' => Yii::t('goods_attribute', '属性值'),
+            'default_value' => Yii::t('goods_attribute', '默认值'),
+            'remark' => Yii::t('goods_attribute', '属性描述'),
         ];
     }
 }

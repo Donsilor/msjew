@@ -33,7 +33,7 @@ class AttributeValueController extends BaseController
   public function actionIndex()
   {
 
-      $searchModel = new SearchModel([
+        $searchModel = new SearchModel([
           'model' => $this->modelClass,
           'scenario' => 'default',
           'partialMatchAttributes' => [], // 模糊查询
@@ -41,14 +41,14 @@ class AttributeValueController extends BaseController
               'id' => SORT_DESC
           ],
           'pageSize' => $this->pageSize
-      ]);
-      
-      $dataProvider = $searchModel
-      ->search(Yii::$app->request->queryParams);
-      
-      $dataProvider->query->with(['lang'=>function($query){
-        $query->where(['language'=>Yii::$app->language]);
-      }]);
+        ]);
+        
+        $dataProvider = $searchModel
+            ->search(Yii::$app->request->queryParams);
+        
+        $dataProvider->query->with(['lang'=>function($query){
+            $query->where(['language'=>Yii::$app->language]);
+        }]);
         
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -76,6 +76,10 @@ class AttributeValueController extends BaseController
         if($model->save()){
             //多语言编辑
             $this->editLang($model,true);
+            
+            //更新属性值到attribute_lang.attr_values;
+            Yii::$app->services->attribute->updateAttrValues($model->attr_id);
+            
             return $this->redirect(['attribute/edit-lang?id='.$model->attr_id]);
         }else{
             return $this->message($this->getError($model), $this->redirect(['index']), 'error');
@@ -97,7 +101,11 @@ class AttributeValueController extends BaseController
   public function actionDelete($id)
   {
     if (($model = $this->findModel($id))->delete()) {
-      return $this->message("删除成功", $this->redirect(['index', 'id' => $model->id]));
+      
+        //更新属性值到attribute_lang.attr_values;
+        Yii::$app->services->attribute->updateAttrValues($model->attr_id);
+        
+        return $this->message("删除成功", $this->redirect(['index', 'id' => $model->id]));
     }
     
     return $this->message("删除失败", $this->redirect(['index', 'id' => $model->id]), 'error');

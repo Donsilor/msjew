@@ -7,6 +7,7 @@ use common\enums\InputTypeEnum;
 use common\enums\AttrTypeEnum;
 use common\enums\StatusEnum;
 use yii\grid\GridView;
+use common\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $model common\models\goods\Attribute */
 /* @var $form yii\widgets\ActiveForm */
@@ -73,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="form-group">
                     <div class="col-sm-12 text-center">
                         <button class="btn btn-primary" type="submit">保存</button>
-                        <span class="btn btn-white" onclick="history.go(-1)">返回</span>
+                        <span class="btn btn-white"><?= Html::a('返回',['attribute/index']); ?></span>
                     </div>
                 </div>
                 <?php ActiveForm::end(); ?>
@@ -136,7 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]);
                 },
                'status' => function($url, $model, $key){
-                        return Html::status($model->status);
+                        return Html::status($model->status,['data-url'=>Url::to(['attribute-value/ajax-update'])]);
                   },
                 'delete' => function($url, $model, $key){
                         return Html::delete(['attribute-value/delete', 'id' => $model->id]);

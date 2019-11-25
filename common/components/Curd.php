@@ -206,17 +206,17 @@ trait Curd
      */
     public function actionEditLang()
     {
-      $id = Yii::$app->request->get('id', null);
-      //$trans = Yii::$app->db->beginTransaction();
-      $model = $this->findModel($id);
-      if ($model->load(Yii::$app->request->post()) && $model->save()) {
-          $this->editLang($model,false);
-          return $this->redirect(['index']);
-      }
-      
-      return $this->render($this->action->id, [
-          'model' => $model,
-      ]);
+          $id = Yii::$app->request->get('id', null);
+          //$trans = Yii::$app->db->beginTransaction();
+          $model = $this->findModel($id);
+          if ($model->load(Yii::$app->request->post()) && $model->save()) {
+              $this->editLang($model,false);
+              return $this->redirect(['index']);
+          }
+          
+          return $this->render($this->action->id, [
+              'model' => $model,
+          ]);
     }
     
     /**
@@ -227,23 +227,24 @@ trait Curd
      */
     public function actionAjaxEditLang()
     {
-      $id = Yii::$app->request->get('id');
-      //$trans = Yii::$app->db->beginTransaction();
-      $model = $this->findModel($id);
-      // ajax 校验
-      $this->activeFormValidate($model);
-      if ($model->load(Yii::$app->request->post())) {
-        if($model->save()){
-            //多语言编辑
-            $this->editLang($model,true);
-            return $this->redirect(['index']);
-        }else{
-            return $this->message($this->getError($model), $this->redirect(['index']), 'error');
-        }        
-      }
-      
-      return $this->renderAjax($this->action->id, [
-          'model' => $model,
-      ]);
+          $id = Yii::$app->request->get('id');
+          //$trans = Yii::$app->db->beginTransaction();
+          $model = $this->findModel($id);
+          // ajax 校验
+          $this->activeFormValidate($model);
+          if ($model->load(Yii::$app->request->post())) {
+            if($model->save()){
+                //多语言编辑
+                $this->editLang($model,true);
+                return $this->redirect(['index']);
+            }else{
+                return $this->message($this->getError($model), $this->redirect(['index']), 'error');
+            }        
+          }
+          
+          return $this->renderAjax($this->action->id, [
+              'model' => $model,
+          ]);
     }
+   
 }

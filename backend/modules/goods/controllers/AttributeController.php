@@ -47,6 +47,7 @@ class AttributeController extends BaseController
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
         
+        $dataProvider->query->andWhere(['<>','status',-1]);
         $dataProvider->query->with(['lang'=>function($query){
             $query->where(['language'=>Yii::$app->language]);
         }]);
@@ -93,8 +94,9 @@ class AttributeController extends BaseController
             $dataProvider = $searchModel
               ->search(Yii::$app->request->queryParams);
               
-            $dataProvider->query->where(['attr_id'=>$id]);
-              
+            $dataProvider->query->andWhere(['attr_id'=>$id]);
+            $dataProvider->query->andWhere(['<>','status',-1]);
+            
             $dataProvider->query->with(['lang'=>function($query){
                $query->where(['language'=>Yii::$app->language]);
             }]);
@@ -106,18 +108,17 @@ class AttributeController extends BaseController
     }
     /**
      * 删除
-     *
-     * @param $id
-     * @return mixed
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @param unknown $id
+     * @return mixed|string
      */
     public function actionDelete($id)
     {
-    	if (($model = $this->findModel($id))->delete()) {
-    		return $this->message("删除成功", $this->redirect(['index', 'id' => $model->id]));
-    	}
-    	
-    	return $this->message("删除失败", $this->redirect(['index', 'id' => $model->id]), 'error');
+        if ($model = $this->findModel($id)) {
+            $model->status = -1;
+            $model->save();
+            return $this->message("删除成功", $this->redirect(['index', 'id' => $model->id]));
+        }
+        
+        return $this->message("删除失败", $this->redirect(['index', 'id' => $model->id]), 'error');
     }
 }

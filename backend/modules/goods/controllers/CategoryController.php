@@ -87,4 +87,23 @@ class CategoryController extends BaseController
             'cateDropDownList' => Category::getDropDownForEdit($id),
         ]);
     }
+    
+    /**
+     * 删除
+     *
+     * @param $id
+     * @return mixed
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionDelete($id)
+    {
+        if ($model = $this->findModel($id)) {
+            $model->status = -1;
+            $model->save();
+            return $this->message("删除成功", $this->redirect(['index', 'id' => $model->id]));
+        }
+        
+        return $this->message("删除失败", $this->redirect(['index', 'id' => $model->id]), 'error');
+    }
 }

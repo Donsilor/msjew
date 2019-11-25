@@ -39,7 +39,7 @@ $form = ActiveForm::begin([
                             	<!-- 编辑-->
                                 <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_value_<?= $lang_key?>">
                                      <?= $form->field($langModel, 'attr_value_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_value_name")]) ?>
-                              	     <?= $form->field($langModel, 'remark')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"remark")]) ?>
+                              	     <?= $form->field($langModel, 'remark')->textArea(['name'=>Html::langInputName($langModel,$lang_key,"remark")]) ?>
                               	     
                               	</div>
                               	<!-- /.tab-pane -->
@@ -50,7 +50,7 @@ $form = ActiveForm::begin([
                         <!-- 新增 -->
                         <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_value_<?= $lang_key?>">
                                <?= $form->field($newLangModel, 'attr_value_name')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"attr_value_name")]) ?>
-                               <?= $form->field($newLangModel, 'remark')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"remark")]) ?>
+                               <?= $form->field($newLangModel, 'remark')->textArea(['name'=>Html::langInputName($newLangModel,$lang_key,"remark")]) ?>
                                
                         </div>
                         <!-- /.tab-pane -->
@@ -59,7 +59,7 @@ $form = ActiveForm::begin([
                     <?php }?>                   
             </div>
             <!-- /.tab-content -->
-             <?= $form->field($model, 'attr_id')->textInput();//->hiddenInput(['value'=>$model->attr_id])->label(false) ?>
+             <?= $form->field($model, 'attr_id')->textInput()->hiddenInput(['value'=>$model->attr_id])->label(false) ?>
              <?= $form->field($model, 'sort')->textInput() ?>
              <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
             

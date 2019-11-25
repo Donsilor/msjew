@@ -100,14 +100,15 @@ class AttributeValueController extends BaseController
    */
   public function actionDelete($id)
   {
-    if (($model = $this->findModel($id))->delete()) {
+      if ($model = $this->findModel($id)) {
+          $model->status = -1;
+          $model->save();
+          
+          //更新属性值到attribute_lang.attr_values;
+          Yii::$app->services->attribute->updateAttrValues($model->attr_id);
+          return $this->message("删除成功", $this->redirect(['attribute/edit-lang?id='.$model->attr_id]));
+      }
       
-        //更新属性值到attribute_lang.attr_values;
-        Yii::$app->services->attribute->updateAttrValues($model->attr_id);
-        
-        return $this->message("删除成功", $this->redirect(['index', 'id' => $model->id]));
-    }
-    
-    return $this->message("删除失败", $this->redirect(['index', 'id' => $model->id]), 'error');
+      return $this->message("删除失败", $this->redirect(['attribute/edit-lang?id='.$model->attr_id]), 'error');
   }
 }

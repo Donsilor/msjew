@@ -45,8 +45,8 @@ class AttributeValueLang extends \yii\db\ActiveRecord
             'id' => Yii::t('goods_attribute', 'ID'),
             'master_id' => Yii::t('goods_attribute', 'Master ID'),
             'language' => Yii::t('goods_attribute', 'Language'),
-            'attr_value_name' => Yii::t('goods_attribute', 'Name'),
-            'remark' => Yii::t('goods_attribute', 'Remark'),
+            'attr_value_name' => Yii::t('goods_attribute', '属性值'),
+            'remark' => Yii::t('goods_attribute', '描述'),
         ];
     }
 }

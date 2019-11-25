@@ -46,6 +46,7 @@ class CategoryController extends BaseController
             $query->where(['language'=>Yii::$app->language]);
         }]);
 
+
         return $this->render('index', [
             'dataProvider' => $dataProvider
         ]);

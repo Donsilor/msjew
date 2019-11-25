@@ -4,6 +4,7 @@ use jianyan\treegrid\TreeGrid;
 
 $this->title = '分类管理';
 $this->params['breadcrumbs'][] = ['label' => $this->title];
+
 ?>
 
 <div class="row">
@@ -29,7 +30,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                         'initialState' => 'collapsed',
                     ],
                     'options' => ['class' => 'table table-hover'],
+
                     'columns' => [
+
+
                         [
                             'attribute' => 'cat_name',
                             'format' => 'raw',
@@ -73,7 +77,9 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                         ],
                     ]
                 ]); ?>
+
             </div>
+
         </div>
     </div>
 </div>

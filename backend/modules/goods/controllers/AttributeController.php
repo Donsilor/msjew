@@ -7,6 +7,7 @@ use common\models\goods\Attribute;
 use common\components\Curd;
 use common\models\base\SearchModel;
 use backend\controllers\BaseController;
+use common\models\goods\AttributeValue;
 
 /**
 * Attribute
@@ -55,7 +56,47 @@ class AttributeController extends BaseController
             'searchModel' => $searchModel,
         ]);
     }    
-    
+    /**
+     * 编辑/创建 多语言
+     *
+     * @return mixed
+     */
+    public function actionEditLang()
+    {
+        $id = Yii::$app->request->get('id', null);
+        //$trans = Yii::$app->db->beginTransaction();
+        $model = $this->findModel($id);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+              $this->editLang($model,false);
+              return $this->redirect(['index']);
+        }
+        
+        $dataProvider = null;
+        if(isset($id)){
+            $searchModel = new SearchModel([
+                'model' => AttributeValue::class,
+                'scenario' => 'default',
+                'partialMatchAttributes' => [], // 模糊查询
+                'defaultOrder' => [
+                    'id' => SORT_DESC
+                ],
+                'pageSize' => $this->pageSize
+            ]);
+            
+            $dataProvider = $searchModel
+              ->search(Yii::$app->request->queryParams);
+              
+            $dataProvider->query->where(['attr_id'=>$id]);
+              
+            $dataProvider->query->with(['lang'=>function($query){
+               $query->where(['language'=>Yii::$app->language]);
+            }]);
+        }
+        return $this->render($this->action->id, [
+            'model' => $model,
+            'dataProvider'=>$dataProvider,
+        ]);
+    }
     /**
      * 删除
      *

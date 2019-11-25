@@ -6,6 +6,7 @@ use common\enums\ConfirmEnum;
 use common\enums\InputTypeEnum;
 use common\enums\AttrTypeEnum;
 use common\enums\StatusEnum;
+use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $model common\models\goods\Attribute */
 /* @var $form yii\widgets\ActiveForm */
@@ -60,14 +61,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         <!-- /.tab-pane -->
                         <?php }?>                         
                     <?php }?>
-                  </div>
-                   <br/>   
                     <?= $form->field($model, 'attr_type')->dropDownList(AttrTypeEnum::getMap()) ?>
-                    <?= $form->field($model, 'cat_id')->dropDownList(['1'=>'分类1']) ?>
+                    <?= $form->field($model, 'cat_id')->dropDownList(Yii::$app->services->category->getDropDown()) ?>
                     <?= $form->field($model, 'input_type')->dropDownList(InputTypeEnum::getMap()) ?>
                     <?= $form->field($model, 'is_require')->radioList(ConfirmEnum::getMap()) ?>
                     <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
-                    <?= $form->field($model, 'sort')->textInput() ?>
+                    <?= $form->field($model, 'sort')->textInput() ?>                    
+                </div>  
                 <div class="form-group">
                     <div class="col-sm-12 text-center">
                         <button class="btn btn-primary" type="submit">保存</button>
@@ -76,7 +76,78 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <?php ActiveForm::end(); ?>
             </div>
-            </div>
         </div>
     </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">属性值列表</h3>
+                <div class="box-tools">
+                    <?= Html::create(['attribute-value/ajax-edit-lang', 'attr_id' => $model->id], '添加属性值', [
+                            'data-toggle' => 'modal',
+                            'data-target' => '#ajaxModalLg',
+                    ]); ?>
+                </div>
+            </div>                
+            <div class="box-body">
+    			<div class="box-body table-responsive">
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'tableOptions' => ['class' => 'table table-hover'],
+        'columns' => [
+            [
+                'class' => 'yii\grid\SerialColumn',
+                'visible' => false,
+            ],
+            'id',
+            [
+                'attribute'=>'lang.attr_value_name',
+            ], 
+            'sort',
+            [
+                'attribute' => 'status',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\StatusEnum::getValue($model->status);
+                }
+            ],            
+            [
+                'attribute'=>'updated_at',
+                'value' => function ($model) {
+                    return Yii::$app->formatter->asDatetime($model->updated_at);
+                },
+                'format' => 'raw',
+            ],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'header' => '操作',
+                'template' => '{edit} {status} {delete}',
+                'buttons' => [
+                'edit' => function($url, $model, $key){                
+                    return Html::edit(['attribute-value/ajax-edit-lang','id' => $model->id], '编辑', [
+                        'data-toggle' => 'modal',
+                        'data-target' => '#ajaxModal',
+                    ]);
+                },
+               'status' => function($url, $model, $key){
+                        return Html::status($model->status);
+                  },
+                'delete' => function($url, $model, $key){
+                        return Html::delete(['attribute-value/delete', 'id' => $model->id]);
+                },
+                ]
+            ]
+    ]
+    ]); ?>		
+
+
+            </div> 
+               
+        </div>
+    </div>
+</div>
 </div>

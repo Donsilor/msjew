@@ -2,11 +2,8 @@
 
 use yii\widgets\ActiveForm;
 use common\helpers\Url;
-use common\enums\StatusEnum;
 use common\helpers\Html;
-use common\enums\AttrTypeEnum;
-use common\enums\InputTypeEnum;
-use common\enums\ConfirmEnum;
+use common\enums\StatusEnum;
 
 $form = ActiveForm::begin([
     'id' => $model->formName(),
@@ -27,7 +24,7 @@ $form = ActiveForm::begin([
           <ul class="nav nav-tabs">
               <?php foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){?>
               <li class="<?php echo Yii::$app->language==$lang_key?"active":"" ?>">
-              		<a href="#tab_<?php echo $lang_key?>" data-toggle="tab" aria-expanded="false"><?php echo $lang_name?></a>
+              		<a href="#tab_value_<?php echo $lang_key?>" data-toggle="tab" aria-expanded="false"><?php echo $lang_name?></a>
               </li>
               <?php }?>           
           </ul>            
@@ -40,8 +37,10 @@ $form = ActiveForm::begin([
               		    <?php foreach ($model->langs as $langModel) {?>
                             <?php if($lang_key == $langModel->language){?>
                             	<!-- 编辑-->
-                                <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                                     <?= $form->field($langModel, 'attr_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_name")]) ?>
+                                <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_value_<?= $lang_key?>">
+                                     <?= $form->field($langModel, 'attr_value_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_value_name")]) ?>
+                              	     <?= $form->field($langModel, 'remark')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"remark")]) ?>
+                              	     
                               	</div>
                               	<!-- /.tab-pane -->
                             	<?php $is_new = false; break;?>
@@ -49,21 +48,21 @@ $form = ActiveForm::begin([
                         <?php }?>
                         <?php if($is_new == true){?>
                         <!-- 新增 -->
-                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                               <?= $form->field($newLangModel, 'attr_name')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"attr_name")]) ?>
+                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_value_<?= $lang_key?>">
+                               <?= $form->field($newLangModel, 'attr_value_name')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"attr_value_name")]) ?>
+                               <?= $form->field($newLangModel, 'remark')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"remark")]) ?>
+                               
                         </div>
                         <!-- /.tab-pane -->
+                        
                         <?php }?>                         
-                    <?php }?>
+                    <?php }?>                   
             </div>
             <!-- /.tab-content -->
-            <?= $form->field($model, 'attr_type')->dropDownList(AttrTypeEnum::getMap()) ?>
-            <?= $form->field($model, 'cat_id')->dropDownList(['1'=>'分类1']) ?>
-            <?= $form->field($model, 'input_type')->dropDownList(InputTypeEnum::getMap()) ?>
-            <?= $form->field($model, 'is_require')->radioList(ConfirmEnum::getMap()) ?>
-            <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
-            <?= $form->field($model, 'sort')->textInput() ?> 
-                   
+             <?= $form->field($model, 'attr_id')->textInput();//->hiddenInput(['value'=>$model->attr_id])->label(false) ?>
+             <?= $form->field($model, 'sort')->textInput() ?>
+             <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
+            
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>

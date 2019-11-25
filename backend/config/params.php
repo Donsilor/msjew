@@ -39,9 +39,9 @@ return [
         '/main/system',// 系统首页
     ],
 	'languages'=>[		
-		'zh-CN'=>'中文简体',
-		'zh-TW'=>'中文繁体',
-	    'en-US'=>'English',
+		'zh-CN'=>'简体中文',
+		'zh-TW'=>'繁体中文',
+	    //'en-US'=>'English',
 	],
 	
 ];

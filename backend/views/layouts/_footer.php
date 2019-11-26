@@ -194,7 +194,7 @@ $this->registerJs($script);
    		 	url = "<?= Url::to(['ajax-batch-update'])?>";
         }
         if(ids=="" || !ids){
-        	rfInfo('请选择要操作的记录!','');
+        	rfInfo('未选中数据！','');
             return false;
         }
         

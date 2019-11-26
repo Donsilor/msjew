@@ -44,7 +44,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                <span class="btn btn-default btn-sm jsBatchStatus" data-grid="grid" data-url="" data-value="0">批量禁用</span> 
                                <span class="btn btn-primary jsPExport" data-grid="grid" data-url="" data-value="0">数据导出</span> 
                                <span class="btn btn-danger jsBatchStatus" data-grid="grid" data-url="" data-value="-1">批量删除</span>',
-                    //'footer' => Html::multiDelete(['attribute/ajax-multi-update']).' '.Html::multiDelete(['attribute/ajax-multi-update']),
                     'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示                        
             ],
             //'id',

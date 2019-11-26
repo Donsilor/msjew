@@ -85,14 +85,14 @@ class Attribute extends BaseModel
      */
     public function getLang()
     {
-        return $this->hasOne(AttributeLang::class, ['master_id'=>'id']);
+        return $this->hasOne(AttributeLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language'=>Yii::$app->language]);
     }
     /**
      * 关联分类一对一
      * @return \yii\db\ActiveQuery
      */
-    public function getCategory()
+    public function getCate()
     {
-        return $this->hasOne(CategoryLang::class, ['master_id'=>'cat_id']);
+        return $this->hasOne(CategoryLang::class, ['master_id'=>'cat_id'])->alias('cate')->where(['cate.language'=>Yii::$app->language]);
     }
 }

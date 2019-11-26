@@ -47,14 +47,9 @@ class AttributeController extends BaseController
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams,['attr_name']);
         
-        $dataProvider->query->joinWith(['lang'=>function($query){
-              $query->alias("lang")->where(['lang.language'=>Yii::$app->language]);              
-        }]); 
-
-        $dataProvider->query->andWhere(['>','status',-1]);        
-        $dataProvider->query->with(['category'=>function($query){
-            $query->where(['language'=>Yii::$app->language]);
-        }]);
+        $dataProvider->query->andWhere(['>','status',-1]); 
+        $dataProvider->query->joinWith(['lang']);
+        $dataProvider->query->with(['cate']);
 
         $dataProvider->query->andFilterWhere(['like', 'lang.attr_name',$searchModel->attr_name]) ;
        

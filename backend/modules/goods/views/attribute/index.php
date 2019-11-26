@@ -4,6 +4,7 @@ use common\helpers\Html;
 use common\helpers\Url;
 use yii\grid\GridView;
 
+
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
@@ -28,12 +29,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'table table-hover'],
+            'showFooter' => true,//显示footer行
         'columns' => [
             [
                 'class' => 'yii\grid\SerialColumn',
                 'visible' => false,
             ],
-            'id',
+           [
+                   'class'=>'yii\grid\CheckboxColumn',
+                    'name'=>'id',  //设置每行数据的复选框属性
+                    'headerOptions' => ['width'=>'30'],
+                    'footer' => '<button class="btn btn-default btn-xs btn-delete" data-url="'. Url::to('attribute/ajax-multi-update') .'">删除</button>',
+                    'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示                        
+            ],
+            //'id',
             [
                 'attribute'=>'attr_name',
                 'value' =>'lang.attr_name',
@@ -58,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'label' => '产品分类',
-                'attribute' => 'category.cat_name',
+                'attribute' => 'cate.cat_name',
                 'filter' => Html::activeDropDownList($searchModel, 'cat_id', $cateDropDownList, [
                         'prompt' => '全部',
                         'class' => 'form-control'
@@ -136,11 +145,36 @@ $this->params['breadcrumbs'][] = $this->title;
                 'delete' => function($url, $model, $key){
                         return Html::delete(['delete', 'id' => $model->id]);
                 },
-                ]
-            ]
+            ],            
+  
+       ]
     ]
     ]); ?>
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+<!--
+
+//-->
+
+$('#all-check').click(function(){
+    var divElement = $(".i-checks").parent('div');
+    $(divElement).each(function(){
+        $(this).addClass("checked")
+    });
+});
+
+//反选
+$('#reverse-check').click(function(){
+    var divElement = $(".i-checks").parent('div');
+    $(divElement).each(function(){
+        if($(this).hasClass('checked')){
+            $(this).removeClass('checked');
+        }else{
+            $(this).addClass("checked")
+        }
+    });
+});
+</script>

@@ -283,5 +283,29 @@ trait Curd
         }
         return true;
     }
+    
+    /**
+     * ajax批量更新排序/状态
+     *
+     * @param $id
+     * @return array
+     */
+    public function actionAjaxBatchUpdate($ids = [])
+    {
+        $ids = Yii::$app->request->post('ids');
+        if(!empty($ids) && is_array($ids)){
+            foreach ($ids as $id){
+                if (!($model = $this->modelClass::findOne($id))) {
+                    return ResultHelper::json(404, '找不到数据');
+                }
+                
+                $model->attributes = ArrayHelper::filter(Yii::$app->request->post(), ['sort', 'status']);
+                if (!$model->save()) {
+                    return ResultHelper::json(422, $this->getError($model));
+                }
+            }  
+        }
+        return ResultHelper::json(200, '修改成功');
+    }
 
 }

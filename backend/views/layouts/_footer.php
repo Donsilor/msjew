@@ -182,7 +182,49 @@ $this->registerJs($script);
             }
         });
     }
+    //批量启用1/禁用0/软删除-1
+    $(".jsBatchStatus").click(function(){
 
+    	let grid = $(this).attr('data-grid');
+    	let url = $(this).attr('data-url');
+    	let status = $(this).attr('data-value');
+    	let text = $(this).text();
+    	let ids = $("#"+grid).yiiGridView("getSelectedRows");
+    	if(!url){
+   		 	url = "<?= Url::to(['ajax-batch-update'])?>";
+        }
+        if(ids=="" || !ids){
+        	rfInfo('请选择要操作的记录!','');
+            return false;
+        }
+        
+    	appConfirm("确定要"+text+"吗?", '', function (code) {
+    		switch (code) {
+                case "defeat":
+                	$.ajax({
+                        type: "post",
+                        url: url,
+                        dataType: "json",
+                        data: {
+                            ids: ids,
+                            status:status
+                        },
+                        success: function (data) {
+                            if (parseInt(data.code) !== 200) {
+                                rfAffirm(data.message);
+                            }else {
+                            	//rfAffirm(data.message);
+                            	window.location.reload(); 
+                            }
+                        }
+                    });
+                    break;
+            	default:
+        	}
+    		
+        })
+
+    });    
     // 排序
     function rfSort(obj) {
         let id = $(obj).attr('data-id');

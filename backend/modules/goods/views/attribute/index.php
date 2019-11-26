@@ -29,17 +29,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'table table-hover'],
-            'showFooter' => true,//显示footer行
+        'showFooter' => true,//显示footer行
+        'id'=>'grid',
         'columns' => [
             [
                 'class' => 'yii\grid\SerialColumn',
                 'visible' => false,
             ],
-           [
+            [
                    'class'=>'yii\grid\CheckboxColumn',
                     'name'=>'id',  //设置每行数据的复选框属性
                     'headerOptions' => ['width'=>'30'],
-                    'footer' => '<button class="btn btn-default btn-xs btn-delete" data-url="'. Url::to('attribute/ajax-multi-update') .'">删除</button>',
+                    'footer'=>'<span class="btn btn-success btn-sm jsBatchStatus" data-grid="grid" data-url="'.Url::to(['attribute/ajax-batch-update']).'" data-value="1">批量启用</span>  
+                               <span class="btn btn-default btn-sm jsBatchStatus" data-grid="grid" data-url="" data-value="0">批量禁用</span> 
+                               <span class="btn btn-primary jsPExport" data-grid="grid" data-url="" data-value="0">数据导出</span> 
+                               <span class="btn btn-danger jsBatchStatus" data-grid="grid" data-url="" data-value="-1">批量删除</span>',
+                    //'footer' => Html::multiDelete(['attribute/ajax-multi-update']).' '.Html::multiDelete(['attribute/ajax-multi-update']),
                     'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示                        
             ],
             //'id',
@@ -47,7 +52,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'attr_name',
                 'value' =>'lang.attr_name',
                 'filter' => Html::activeTextInput($searchModel, 'attr_name', [
-                        'class' => 'form-control'
+                        'class' => 'form-control',
+                        'style' =>'width:100px'
                 ]),
             ],
             [
@@ -66,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]),
             ],
             [
-                'label' => '产品分类',
+                'label' => '分类',
                 'attribute' => 'cate.cat_name',
                 'filter' => Html::activeDropDownList($searchModel, 'cat_id', $cateDropDownList, [
                         'prompt' => '全部',
@@ -110,11 +116,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\StatusEnum::getMap(), [
                         'prompt' => '全部',
-                        'class' => 'form-control'
+                        'class' => 'form-control',
+                        
                 ]),
             ],
             [
                 'attribute' => 'sort',
+                'headerOptions' => ['style'=>'width:80px'],
                 //'filter' => false,
             ],
             /* [
@@ -158,23 +166,11 @@ $this->params['breadcrumbs'][] = $this->title;
 <!--
 
 //-->
+/* $(".js_qiyong").click(function(){
 
-$('#all-check').click(function(){
-    var divElement = $(".i-checks").parent('div');
-    $(divElement).each(function(){
-        $(this).addClass("checked")
-    });
-});
-
-//反选
-$('#reverse-check').click(function(){
-    var divElement = $(".i-checks").parent('div');
-    $(divElement).each(function(){
-        if($(this).hasClass('checked')){
-            $(this).removeClass('checked');
-        }else{
-            $(this).addClass("checked")
-        }
-    });
-});
+   alert(1);
+   var ids = $("#grid").yiiGridView("getSelectedRows");
+   alert(ids);
+	
+}); */
 </script>

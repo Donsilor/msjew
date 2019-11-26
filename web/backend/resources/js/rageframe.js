@@ -353,5 +353,5 @@ function rfText(text) {
         return text;
     }
 
-    return '小手一抖就打开了一个框';
+    return '';
 }

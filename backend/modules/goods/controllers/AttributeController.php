@@ -43,22 +43,25 @@ class AttributeController extends BaseController
             ],
             'pageSize' => $this->pageSize
         ]);
-
+   
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams);
+            ->search(Yii::$app->request->queryParams,['attr_name']);
         
-        $dataProvider->query->andWhere(['<>','status',-1]);
-        $dataProvider->query->with(['lang'=>function($query){
-            $query->where(['language'=>Yii::$app->language]);
-        }]);
-        
+        $dataProvider->query->joinWith(['lang'=>function($query){
+              $query->alias("lang")->where(['lang.language'=>Yii::$app->language]);              
+        }]); 
+
+        $dataProvider->query->andWhere(['>','status',-1]);        
         $dataProvider->query->with(['category'=>function($query){
             $query->where(['language'=>Yii::$app->language]);
         }]);
+
+        $dataProvider->query->andFilterWhere(['like', 'lang.attr_name',$searchModel->attr_name]) ;
+       
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
-            'cate_list'=>Yii::$app->services->category->getDropDown()
+            'cateDropDownList'=>Yii::$app->services->category->getDropDown()
         ]);
     }    
     /**
@@ -88,7 +91,7 @@ class AttributeController extends BaseController
                 'defaultOrder' => [
                     'id' => SORT_DESC
                 ],
-                'pageSize' => $this->pageSize
+                'pageSize' => $this->pageSize,
             ]);
             
             $dataProvider = $searchModel
@@ -100,6 +103,8 @@ class AttributeController extends BaseController
             $dataProvider->query->with(['lang'=>function($query){
                $query->where(['language'=>Yii::$app->language]);
             }]);
+            
+            $dataProvider->setSort(false);
         }
         return $this->render($this->action->id, [
             'model' => $model,

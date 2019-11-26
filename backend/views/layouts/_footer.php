@@ -186,6 +186,7 @@ $this->registerJs($script);
     // 排序
     function rfSort(obj) {
         let id = $(obj).attr('data-id');
+        let url = $(obj).attr('data-url');
 
         if (!id) {
             id = $(obj).parent().parent().attr('id');
@@ -194,7 +195,9 @@ $this->registerJs($script);
         if (!id) {
             id = $(obj).parent().parent().attr('data-key');
         }
-
+        if(!url){
+            url = "<?= Url::to(['ajax-update'])?>";
+        } 
         var sort = $(obj).val();
         if (isNaN(sort)) {
             rfAffirm('排序只能为数字');
@@ -202,7 +205,7 @@ $this->registerJs($script);
         } else {
             $.ajax({
                 type: "get",
-                url: "<?= Url::to(['ajax-update'])?>",
+                url: url,
                 dataType: "json",
                 data: {
                     id: id,

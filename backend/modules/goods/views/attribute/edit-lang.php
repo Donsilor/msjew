@@ -109,7 +109,14 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'=>'lang.attr_value_name',
             ], 
-            'sort',
+            [
+                'attribute' => 'sort',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model, $key, $index, $column){
+                    return  Html::sort($model->sort,['data-url'=>Url::to(['attribute-value/ajax-update'])]);
+                }
+            ],
             [
                 'attribute' => 'status',
                 'format' => 'raw',

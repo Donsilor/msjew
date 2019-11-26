@@ -28,7 +28,7 @@ class AdvertImagesLang extends \yii\db\ActiveRecord
     {
         return [
             [['master_id'], 'integer'],
-            [['seo_title'], 'string', 'max' => 200],
+            [['title'], 'string', 'max' => 200],
         ];
     }
 
@@ -40,7 +40,7 @@ class AdvertImagesLang extends \yii\db\ActiveRecord
         return [
             'id' => '主键',
             'master_id' => '广告图片',
-            'seo_title' => '广告关联表',
+            'title' => '图片描述',
         ];
     }
 }

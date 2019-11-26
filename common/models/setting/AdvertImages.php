@@ -14,7 +14,7 @@ use Yii;
  * @property string $start_time 开始时间
  * @property string $end_time 结束时间
  */
-class AdvertImages extends \yii\db\ActiveRecord
+class AdvertImages extends \common\models\base\BaseModel
 {
     /**
      * {@inheritdoc}
@@ -49,7 +49,35 @@ class AdvertImages extends \yii\db\ActiveRecord
             'adv_url' => '链接地址',
             'start_time' => '开始时间',
             'end_time' => '结束时间',
-            'create_time' => '更新时间',
+            'updated_at'=> '更新时间',
         ];
+    }
+
+
+
+    /**
+     * 语言扩展表
+     * @return \common\models\goods\AttributeLang
+     */
+    public function langModel()
+    {
+        return new AdvertImagesLang();
+    }
+
+    public function getLangs()
+    {
+        return $this->hasMany(AdvertImagesLang::class,['master_id'=>'id']);
+
+    }
+
+    /**
+     * 关联语言一对一
+     * @param string $languge
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLang()
+    {
+        $query = $this->hasOne(AdvertImagesLang::class, ['master_id'=>'id']);
+        return $query;
     }
 }

@@ -72,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{edit} {status} {delete}',
+                'template' => '{edit} {detail} {status} {delete}',
                 'buttons' => [
                     'edit' => function ($url, $model, $key) {
                         return Html::edit(['ajax-edit-lang','id' => $model->id], '编辑', [
@@ -81,6 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]);
                     },
                     'detail'=>function($url, $model, $key){
+                        return Html::linkButton(['advert-images/index', 'adv_id' => $model->id], '图片');
 
                     },
 

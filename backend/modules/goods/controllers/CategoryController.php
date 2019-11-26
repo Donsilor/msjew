@@ -42,10 +42,6 @@ class CategoryController extends BaseController
             'pagination' => false
         ]);
 
-        $dataProvider->query->with(['lang'=>function($query){
-            $query->where(['language'=>Yii::$app->language]);
-        }]);
-
 
         return $this->render('index', [
             'dataProvider' => $dataProvider

@@ -43,14 +43,32 @@ class AdvertController extends BaseController
         ]);
 
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams);
+            ->search(Yii::$app->request->queryParams, ['adv_name']);
+        $dataProvider->query->joinWith(['lang']);
+        $dataProvider->query->andWhere(['>','status',-1]);
 
-        $dataProvider->query->with(['lang'=>function($query){
-            $query->where(['language'=>Yii::$app->language]);
-        }]);
+
+        $dataProvider->query->andFilterWhere(['like', 'lang.adv_name',$searchModel->adv_name]) ;
+
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
         ]);
+    }
+
+    /**
+     * 删除
+     * @param unknown $id
+     * @return mixed|string
+     */
+    public function actionDelete($id)
+    {
+        if ($model = $this->findModel($id)) {
+            $model->status = -1;
+            $model->save();
+            return $this->message("删除成功", $this->redirect(['index', 'id' => $model->id]));
+        }
+
+        return $this->message("删除失败", $this->redirect(['index', 'id' => $model->id]), 'error');
     }
 }

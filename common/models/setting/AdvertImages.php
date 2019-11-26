@@ -77,7 +77,7 @@ class AdvertImages extends \common\models\base\BaseModel
      */
     public function getLang()
     {
-        $query = $this->hasOne(AdvertImagesLang::class, ['master_id'=>'id']);
+        $query = $this->hasOne(AdvertImagesLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->language]);
         return $query;
     }
 }

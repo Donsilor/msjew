@@ -56,16 +56,11 @@ class AdvertImagesController extends BaseController
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
 
-
-
-        $dataProvider->query->with(['lang'=>function($query){
-            $query->where(['language'=>Yii::$app->language]);
-        }]);
-
-//        $dataProvider->pagination = false;// 去掉分页
-
+        $dataProvider->query->andWhere(['>','status',-1]);
 
         $SettingService = new SettingService();
+
+        //获取广告位
         $advert = $SettingService->findAdvertOne($this->adv_id, Yii::$app->language);
 
 
@@ -75,6 +70,34 @@ class AdvertImagesController extends BaseController
             'advert' =>$advert,
             'searchModel' => $searchModel,
         ]);
+    }
+
+    /**
+     * 删除
+     * @param unknown $id
+     * @return mixed|string
+     */
+    public function actionDelete($id)
+    {
+        if ($model = $this->findModel($id)) {
+            $model->status = -1;
+            $model->save();
+            return $this->message("删除成功", $this->redirect(['index', 'id' => $model->id]));
+        }
+
+        return $this->message("删除失败", $this->redirect(['index', 'id' => $model->id]), 'error');
+    }
+
+
+    //重写批量删除方式
+    public function batchDelete($ids = [],$status = -1){
+        foreach ($ids as $k=>$v){
+            $model = $this->findModel($v);
+            $model->status = $status;
+            if(!$model->save(false))
+                return new BadRequestHttpException('操作失败！');
+        }
+        return true;
     }
 
 
@@ -96,4 +119,9 @@ class AdvertImagesController extends BaseController
 
         return $model;
     }
+
+
+
+
+
 }

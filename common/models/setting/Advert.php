@@ -38,6 +38,7 @@ class Advert extends \common\models\base\BaseModel
             [['adv_type', 'adv_height', 'adv_width', 'show_type', 'open_type', 'status', 'created_at', 'updated_at'], 'integer'],
             [['adv_name'], 'string', 'max' => 100],
             [['remark'], 'string', 'max' => 500],
+            [['adv_name'], 'safe'],
         ];
     }
 
@@ -83,7 +84,7 @@ class Advert extends \common\models\base\BaseModel
      */
     public function getLang()
     {
-        $query = $this->hasOne(AdvertLang::class, ['master_id'=>'id']);
+        $query = $this->hasOne(AdvertLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->language]);
         return $query;
     }
 

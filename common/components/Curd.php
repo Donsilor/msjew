@@ -246,5 +246,42 @@ trait Curd
               'model' => $model,
           ]);
     }
-   
+
+
+    // 批量删除
+    public function actionBatchdelete(){
+        $this->enableCsrfValidation = false;//去掉yii2的post验证
+        $ids = Yii::$app->request->post();
+        if($this->batchDelete($ids['ids']))
+            return \yii\helpers\Json::encode(['status'=>1,'info'=>'删除成功！']);
+        else
+            return false;
+    }
+
+    //批量物理删除
+    public function batchDelete($ids = []){
+        foreach ($ids as $k=>$v){
+            $trans = Yii::$app->db->beginTransaction();
+            $model = $this->findModel($v);
+            $res = $this->findModel($v)->delete();
+
+            //没有langModel方法说明不是多语言
+            if(method_exists($model,'langModel')){
+                $langModel = $model->langModel();
+                $res_lang = $langModel->deleteAll(['master_id'=>$v]);
+            }else{
+                $res_lang = true;
+            }
+
+            if($res && $res_lang){
+                $trans->commit();
+            }else{
+                $trans->rollBack();
+                return new BadRequestHttpException('操作失败！');
+            }
+
+        }
+        return true;
+    }
+
 }

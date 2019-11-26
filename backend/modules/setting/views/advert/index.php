@@ -27,6 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'table table-hover'],
         'columns' => [
             [
@@ -36,7 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             [
-                'attribute'=>'lang.adv_name'
+                'attribute'=>'lang.adv_name',
+                'value' =>'lang.adv_name',
+                'filter' => Html::activeTextInput($searchModel, 'adv_name', [
+                    'class' => 'form-control'
+                ]),
             ],
             [
                 'attribute'=>'adv_type',
@@ -44,7 +49,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
                     return \common\enums\SettingEnum::$advTypeAction[$model->adv_type];
-                }
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'adv_type',\common\enums\SettingEnum::$advTypeAction, [
+                    'prompt' => '全部',
+                    'class' => 'form-control'
+                ]),
             ],
             [
                 'attribute'=>'尺寸',
@@ -62,7 +71,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
                     return \common\enums\SettingEnum::$showTypeActionSimple[$model->show_type];
-                }
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'show_type',\common\enums\SettingEnum::$showTypeActionSimple, [
+                    'prompt' => '全部',
+                    'class' => 'form-control'
+                ]),
             ],
             //'open_type',
             //'remark',

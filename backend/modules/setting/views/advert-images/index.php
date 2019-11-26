@@ -4,11 +4,36 @@ use common\helpers\Html;
 use common\helpers\Url;
 use yii\grid\GridView;
 
+
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = $advert['name'];
 $this->params['breadcrumbs'][] = $this->title;
+
+$script = <<<SCRIPT
+$(".gridviewdelete").on("click", function () {
+if(confirm('您确定要删除吗？')){
+    var keys = $("#grid").yiiGridView("getSelectedRows");
+     $.ajax({
+            url: 'batchdelete',
+            data: {ids:keys},
+            type: 'post',
+            success: function (t) {
+                t = JSON.parse(t);
+                if (t.status == 1) {
+                    window.location.href= window.location.href;
+                }
+            },
+            error: function () {
+                alert("删除失败！")
+            }
+     
+        })
+    }
+});
+SCRIPT;
+$this->registerJs($script);
 ?>
 
 <div class="row">
@@ -28,8 +53,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'tableOptions' => ['class' => 'table table-hover'],
         'layout'=> '{items}',
-
+        'options' =>['id'=>'grid'],
         'columns' => [
+            [
+                'class' => 'yii\grid\CheckboxColumn',
+                'name'=>'id',
+            ],//复选框列
             [
                 'class' => 'yii\grid\SerialColumn',
                 'visible' => false,
@@ -68,7 +97,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ]
     ]
     ]); ?>
-
+    <?= Html::a('批量删除', "javascript:void(0);", ['class' => 'btn btn-default btn-xs btn-delete gridviewdelete']) ?>
             </div>
         </div>
     </div>

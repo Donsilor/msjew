@@ -151,7 +151,7 @@ class Category extends \common\models\base\BaseModel
      */
     public function getLang()
     {
-        $query = $this->hasOne(CategoryLang::class, ['master_id'=>'id']);
+        $query = $this->hasOne(CategoryLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->language]);
         return $query;
     }
 

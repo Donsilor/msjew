@@ -26,6 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-body table-responsive">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'table table-hover'],
         'columns' => [
             [
@@ -34,7 +35,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'id',
             [
-                'attribute'=>'lang.attr_name',
+                'attribute'=>'attr_name',
+                'value' =>'lang.attr_name',
+                'filter' => Html::activeTextInput($searchModel, 'attr_name', [
+                        'class' => 'form-control'
+                ]),
             ],
             [
                  'attribute'=>'lang.attr_values',
@@ -45,18 +50,31 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
                     return \common\enums\AttrTypeEnum::getValue($model->attr_type);
-                }
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'attr_type',\common\enums\AttrTypeEnum::getMap(), [
+                        'prompt' => '全部',
+                        'class' => 'form-control'
+                ]),
             ],
             [
-                    'attribute'=>'category.cat_name',
+                'label' => '产品分类',
+                'attribute' => 'category.cat_name',
+                'filter' => Html::activeDropDownList($searchModel, 'cat_id', $cateDropDownList, [
+                        'prompt' => '全部',
+                        'class' => 'form-control'
+                ]),
             ],
             [
                 'attribute' => 'input_type',
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
-                'value' => function ($model){
+                    'value' => function ($model){
                     return \common\enums\InputTypeEnum::getValue($model->input_type);
-                }
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'input_type',\common\enums\InputTypeEnum::getMap(), [
+                        'prompt' => '全部',
+                        'class' => 'form-control'
+                ]),
             ],
             /* [
                 'attribute' => 'is_require',
@@ -80,9 +98,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
                     return \common\enums\StatusEnum::getValue($model->status);
-                }
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\StatusEnum::getMap(), [
+                        'prompt' => '全部',
+                        'class' => 'form-control'
+                ]),
             ],
-            'sort',
+            [
+                'attribute' => 'sort',
+                //'filter' => false,
+            ],
             /* [
                 'attribute'=>'created_at',
                 'value' => function ($model) {

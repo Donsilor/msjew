@@ -21,6 +21,7 @@ use common\models\base\BaseModel;
  */
 class Attribute extends BaseModel
 {
+    public $attr_name;
     /**
      * {@inheritdoc}
      */
@@ -37,7 +38,7 @@ class Attribute extends BaseModel
         return [
         	[['cat_id', 'attr_type', 'input_type'], 'required'],
             [['cat_id', 'attr_type', 'input_type', 'is_require', 'is_system', 'status', 'sort','created_at', 'updated_at'], 'integer'],
-            //[['created_at', 'updated_at'], 'safe'],
+            [['attr_name'], 'safe'],
         ];
     }
 
@@ -57,6 +58,7 @@ class Attribute extends BaseModel
             'sort' => Yii::t('goods_attribute', 'Sort'),
             'created_at' => Yii::t('goods_attribute', 'Created At'),
             'updated_at' => Yii::t('goods_attribute', 'Updated At'),
+            'attr_name'=>Yii::t('goods_attribute', '属性名称'),
         ];
     }
     

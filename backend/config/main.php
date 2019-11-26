@@ -33,6 +33,11 @@ return [
     	'goods' => [
     		'class' => 'backend\modules\goods\Module',
     	],
+
+        /** ------商城設置 ------ **/
+        'setting' => [
+            'class' => 'backend\modules\setting\Module',
+        ],
     ],
     'components' => [
         'request' => [

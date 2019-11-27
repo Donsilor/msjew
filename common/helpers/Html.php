@@ -267,8 +267,58 @@ Css
      * @param unknown $field
      * @return string
      */
-    public static function langInputName($model,$language,$field){
-      $className = basename($model->className());
-      return "{$className}[{$language}][{$field}]";
+    public static function langInputName($model,$language,$field)
+    {
+        $className = basename($model->className());
+        return "{$className}[{$language}][{$field}]";
+    }
+    /**
+     * 批量操作按钮
+     * @param array $options
+     * @return string
+     */
+    public static function batchButtons($options = [])
+    {
+        $listBut = [
+                'status_enabled' => self::tag('span', '批量启用',
+                        [
+                                'class' => "btn btn-success btn-sm jsBatchStatus",
+                                "data-grid"=>"grid",
+                                "data-value"=>"1",
+                        ]),
+                'status_disabled' => self::tag('span', '批量禁用', 
+                        [
+                                'class' => "btn btn-default btn-sm jsBatchStatus",
+                                "data-grid"=>"grid",
+                                "data-value"=>"0",
+                        ]),
+                'search_export' => self::tag('span', '批量导出',
+                        [
+                                'class' => "btn btn-primary btn-sm jsBatchExport",
+                                "data-grid"=>"grid",
+                        ]),
+                'status_delete' => self::tag('span', '批量删除',
+                        [
+                                'class' => "btn btn-danger jsBatchStatus",
+                                "data-grid"=>"grid",
+                                "data-value"=>"-1",
+                        ]),
+                ];
+        
+        $buttonHtml = "";
+        if(!empty($options)){
+            foreach ($options as $key=>$val){
+                if(isset($listBut[$val]) && (is_numeric($key) || empty($val))){
+                    $buttonHtml .= $listBut[$val].'  ';
+                }else{
+                    $buttonHtml .= $val.'  ';
+                }
+            }            
+        }else{
+            foreach ($listBut as $key=>$val){
+                $buttonHtml .= $val.'  ';
+            }     
+        }
+        return $buttonHtml;
     }
 }

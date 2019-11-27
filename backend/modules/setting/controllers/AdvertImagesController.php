@@ -2,6 +2,7 @@
 
 namespace backend\modules\setting\controllers;
 
+
 use common\models\setting\Advert;
 use common\models\setting\AdvertLang;
 use function Complex\negative;
@@ -53,6 +54,8 @@ class AdvertImagesController extends BaseController
             'pageSize' => $this->pageSize
         ]);
 
+
+
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
 
@@ -69,8 +72,40 @@ class AdvertImagesController extends BaseController
             'adv_id' => $this->adv_id,
             'advert' =>$advert,
             'searchModel' => $searchModel,
+
         ]);
     }
+
+
+
+    /**
+     * ajax编辑/创建
+     *
+     * @return mixed|string|\yii\web\Response
+     * @throws \yii\base\ExitException
+     */
+    public function actionAjaxEditLang()
+    {
+        $id = Yii::$app->request->get('id');
+        //$trans = Yii::$app->db->beginTransaction();
+        $model = $this->findModel($id);
+        // ajax 校验
+        $this->activeFormValidate($model);
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->save()){
+                //多语言编辑
+                $this->editLang($model,true);
+                return $this->redirect(['advert/edit-lang?id='.$model->adv_id]);
+            }else{
+                return $this->message($this->getError($model), $this->redirect(['advert/edit-lang?id='.$model->adv_id]), 'error');
+            }
+        }
+
+        return $this->renderAjax($this->action->id, [
+            'model' => $model,
+        ]);
+    }
+
 
     /**
      * 删除

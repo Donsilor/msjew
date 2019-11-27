@@ -28,6 +28,8 @@ class WebSeo extends \common\models\base\BaseModel
     public function rules()
     {
         return [
+            [['page_name'], 'required'],
+            [['page_name'], 'requiredPageName'],
             [['created_at', 'updated_at'], 'safe'],
             [['page_name'], 'string', 'max' => 100],
         ];
@@ -44,6 +46,15 @@ class WebSeo extends \common\models\base\BaseModel
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
         ];
+    }
+
+
+   //认证page_name
+    public function requiredPageName($attribute, $params){
+        if(!ctype_alnum($this->page_name)){
+            $this->addError($attribute, '名称必须是字母与数字组成');
+        }
+
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace backend\modules\setting\controllers;
 
+use common\models\setting\AdvertImages;
 use Yii;
 use common\models\setting\Advert;
 use common\components\Curd;
@@ -37,7 +38,7 @@ class AdvertController extends BaseController
             'scenario' => 'default',
             'partialMatchAttributes' => [], // 模糊查询
             'defaultOrder' => [
-                'id' => SORT_DESC
+                'id' => SORT_ASC
             ],
             'pageSize' => $this->pageSize
         ]);
@@ -53,6 +54,47 @@ class AdvertController extends BaseController
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
+        ]);
+    }
+
+
+    /**
+     * 编辑/创建 多语言
+     *
+     * @return mixed
+     */
+    public function actionEditLang()
+    {
+        $id = Yii::$app->request->get('id', null);
+        //$trans = Yii::$app->db->beginTransaction();
+        $model = $this->findModel($id);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $this->editLang($model,false);
+            return $this->redirect(['index']);
+        }
+
+        $dataProvider = null;
+        if(isset($id)){
+            $searchModel = new SearchModel([
+                'model' => AdvertImages::class,
+                'scenario' => 'default',
+                'partialMatchAttributes' => [], // 模糊查询
+                'defaultOrder' => [
+                    'id' => SORT_ASC
+                ],
+                'pageSize' => $this->pageSize,
+            ]);
+
+            $dataProvider = $searchModel
+                ->search(Yii::$app->request->queryParams);
+
+            $dataProvider->query->andWhere(['adv_id'=>$id]);
+            $dataProvider->query->andWhere(['<>','status',-1]);
+
+        }
+        return $this->render($this->action->id, [
+            'model' => $model,
+            'dataProvider'=>$dataProvider,
         ]);
     }
 

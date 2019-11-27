@@ -28,6 +28,7 @@ class AdvertLang extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['adv_name'], 'required'],
             [['master_id'], 'integer'],
             [['adv_name'], 'string', 'max' => 100],
             [['remark'], 'string', 'max' => 500],

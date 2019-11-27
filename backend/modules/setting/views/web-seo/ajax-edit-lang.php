@@ -28,7 +28,11 @@ $form = ActiveForm::begin([
         </ul>
 
         <div class="tab-content">
-            <?= $form->field($model, 'page_name')->textInput(['maxlength' => true]) ?>
+            <?php if($model->isNewRecord){ ?>
+                <?= $form->field($model, 'page_name')->textInput(['maxlength' => true]) ?>
+            <?php }else{ ?>
+                <?= $form->field($model, 'page_name')->textInput(['maxlength' => true, 'readonly' => 'true']) ?>
+            <?php } ?>
             <?php $newLangModel = $model->langModel();?>
             <?php
             foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){

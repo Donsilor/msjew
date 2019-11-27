@@ -22,7 +22,7 @@ $form = ActiveForm::begin([
         <ul class="nav nav-tabs">
             <?php foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){?>
                 <li class="<?php echo Yii::$app->language==$lang_key?"active":"" ?>">
-                    <a href="#tab_<?php echo $lang_key?>" data-toggle="tab" aria-expanded="false"><?php echo $lang_name?></a>
+                    <a href="#tab_value_<?php echo $lang_key?>" data-toggle="tab" aria-expanded="false"><?php echo $lang_name?></a>
                 </li>
             <?php }?>
         </ul>
@@ -37,7 +37,7 @@ $form = ActiveForm::begin([
                 <?php foreach ($model->langs as $langModel) {?>
                     <?php if($lang_key == $langModel->language){?>
                         <!-- 编辑-->
-                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
+                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_value_<?= $lang_key?>">
                             <?= $form->field($langModel, 'title')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"title"),'style'=>'width:200px;']) ?>
                         </div>
                         <!-- /.tab-pane -->
@@ -46,7 +46,7 @@ $form = ActiveForm::begin([
                 <?php }?>
                 <?php if($is_new == true){?>
                     <!-- 新增 -->
-                    <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
+                    <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_value_<?= $lang_key?>">
                         <?= $form->field($newLangModel, 'title')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"title"),'style'=>'width:200px;']) ?>
                     </div>
                     <!-- /.tab-pane -->

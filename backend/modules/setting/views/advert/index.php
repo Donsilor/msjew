@@ -85,13 +85,10 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{edit} {detail} {status} {delete}',
+                'template' => '{edit}  {status} {delete}',
                 'buttons' => [
                     'edit' => function ($url, $model, $key) {
-                        return Html::edit(['ajax-edit-lang','id' => $model->id], '编辑', [
-                            'data-toggle' => 'modal',
-                            'data-target' => '#ajaxModalLg',
-                        ]);
+                        return Html::edit(['edit-lang','id' => $model->id], '编辑');
                     },
                     'detail'=>function($url, $model, $key){
                         return Html::linkButton(['advert-images/index', 'adv_id' => $model->id], '图片');

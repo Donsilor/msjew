@@ -30,7 +30,8 @@ class AdvertImages extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['adv_id'], 'integer'],
+            [['adv_image'], 'required'],
+            [['adv_id','status'], 'integer'],
             [['start_time', 'end_time'], 'safe'],
             [['adv_image'], 'string', 'max' => 200],
             [['adv_url'], 'string', 'max' => 500],
@@ -50,6 +51,7 @@ class AdvertImages extends \common\models\base\BaseModel
             'start_time' => '开始时间',
             'end_time' => '结束时间',
             'updated_at'=> '更新时间',
+            'status' => '是否启用',
         ];
     }
 

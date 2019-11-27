@@ -299,7 +299,7 @@ Css
                         ]),
                 'status_delete' => self::tag('span', '批量删除',
                         [
-                                'class' => "btn btn-danger jsBatchStatus",
+                                'class' => "btn btn-danger btn-sm jsBatchStatus",
                                 "data-grid"=>"grid",
                                 "data-value"=>"-1",
                         ]),

@@ -73,12 +73,10 @@ class AttributeService extends Service
         
         $models = $query->asArray()->all();        
         
-        $models = ArrayHelper::itemsMerge($models);
-        
-        return ArrayHelper::map(ArrayHelper::itemsMergeDropDown($models,'id','attr_name'), 'id', 'attr_name');
+        return ArrayHelper::map($models, 'id', 'attr_name');
     }
     /**
-     * 
+     * 根据属性ID查询属性值列表
      * @param unknown $attr_id
      * @param unknown $language
      */
@@ -104,7 +102,7 @@ class AttributeService extends Service
      * @param unknown $language
      * @return array
      */
-    public function getAttrValuesByValueIds($ids,$language = null)
+    public function getValuesByValueIds($ids,$language = null)
     {
         if(empty($language)){
             $language = Yii::$app->language;

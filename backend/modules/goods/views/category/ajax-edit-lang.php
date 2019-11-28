@@ -30,7 +30,14 @@ $form = ActiveForm::begin([
         </ul>
 
         <div class="tab-content">
-            <?= $form->field($model, 'pid')->dropDownList($cateDropDownList) ?>
+            <?= $form->field($model, 'pid')->dropDownList($cateDropDownList,['class'=>'dept_select']) ?>
+<!--            --><?//= $form->field($model, 'pid')->widget(kartik\select2\Select2::class, [
+//                'data' => $cateDropDownList,
+//                'options' => ['placeholder' => '请选择'],
+//                'pluginOptions' => [
+//                    'allowClear' => true
+//                ],
+//            ]);?>
             <?php $newLangModel = $model->langModel();?>
             <?php
             foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){

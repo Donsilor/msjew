@@ -49,7 +49,6 @@ class AttributeController extends BaseController
         
         $dataProvider->query->andWhere(['>','status',-1]); 
         $dataProvider->query->joinWith(['lang']);
-        $dataProvider->query->with(['cate']);
 
         $dataProvider->query->andFilterWhere(['like', 'lang.attr_name',$searchModel->attr_name]) ;
        

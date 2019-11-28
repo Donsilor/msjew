@@ -36,8 +36,8 @@ class Attribute extends BaseModel
     public function rules()
     {
         return [
-        	[['cat_id', 'attr_type', 'input_type'], 'required'],
-            [['cat_id', 'attr_type', 'input_type', 'is_require', 'is_system', 'status', 'sort','created_at', 'updated_at'], 'integer'],
+        	[['status'], 'required'],
+            [['status', 'sort','created_at', 'updated_at'], 'integer'],
             [['attr_name'], 'safe'],
         ];
     }
@@ -48,12 +48,7 @@ class Attribute extends BaseModel
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('goods_attribute', 'ID'),
-            'cat_id' => Yii::t('goods_attribute', 'Cat ID'),
-            'attr_type' => Yii::t('goods_attribute', 'Attr Type'),
-            'input_type' => Yii::t('goods_attribute', 'Input Type'),
-            'is_require' => Yii::t('goods_attribute', 'Is Require'),
-            'is_system' => Yii::t('goods_attribute', 'Is System'),
+            'id' => Yii::t('goods_attribute', 'ID'),            
             'status' => Yii::t('goods_attribute', 'Status'),
             'sort' => Yii::t('goods_attribute', 'Sort'),
             'created_at' => Yii::t('goods_attribute', 'Created At'),
@@ -68,7 +63,7 @@ class Attribute extends BaseModel
      */
     public function langModel()
     {
-      return new AttributeLang();
+        return new AttributeLang();
     }
     /**
      * 关联语言一对多
@@ -76,7 +71,7 @@ class Attribute extends BaseModel
      */
     public function getLangs()
     {
-      return $this->hasMany(AttributeLang::class,['master_id'=>'id']);
+        return $this->hasMany(AttributeLang::class,['master_id'=>'id']);
       
     }
     /**

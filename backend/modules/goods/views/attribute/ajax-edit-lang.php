@@ -61,10 +61,6 @@ $form = ActiveForm::begin([
                     <?php }?>
             </div>
             <!-- /.tab-content -->
-            <?= $form->field($model, 'attr_type')->dropDownList(AttrTypeEnum::getMap()) ?>
-            <?= $form->field($model, 'cat_id')->dropDownList(Yii::$app->services->category->getDropDown()) ?>
-            <?= $form->field($model, 'input_type')->radioList(InputTypeEnum::getMap()) ?>
-            <?= $form->field($model, 'is_require')->radioList(ConfirmEnum::getMap()) ?>
             <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
             <?= $form->field($model, 'sort')->textInput() ?> 
                    

@@ -54,55 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                  'attribute'=>'lang.attr_values',
-            ],
-            [
-                'attribute' => 'attr_type',
-                'format' => 'raw',
-                'headerOptions' => ['class' => 'col-md-1'],
-                'value' => function ($model){
-                    return \common\enums\AttrTypeEnum::getValue($model->attr_type);
-                },
-                'filter' => Html::activeDropDownList($searchModel, 'attr_type',\common\enums\AttrTypeEnum::getMap(), [
-                        'prompt' => '全部',
-                        'class' => 'form-control'
-                ]),
-            ],
-            [
-                'label' => '分类',
-                'attribute' => 'cate.cat_name',
-                'filter' => Html::activeDropDownList($searchModel, 'cat_id', $cateDropDownList, [
-                        'prompt' => '全部',
-                        'class' => 'form-control'
-                ]),
-            ],
-            [
-                'attribute' => 'input_type',
-                'format' => 'raw',
-                'headerOptions' => ['class' => 'col-md-1'],
-                    'value' => function ($model){
-                    return \common\enums\InputTypeEnum::getValue($model->input_type);
-                },
-                'filter' => Html::activeDropDownList($searchModel, 'input_type',\common\enums\InputTypeEnum::getMap(), [
-                        'prompt' => '全部',
-                        'class' => 'form-control'
-                ]),
-            ],
-            /* [
-                'attribute' => 'is_require',
-                'format' => 'raw',
-                'headerOptions' => ['class' => 'col-md-1'],
-                'value' => function ($model){
-                    return \common\enums\ConfirmEnum::getValue($model->is_require);
-                }
-            ], */
-            /* [
-                'attribute' => 'is_system',
-                'format' => 'raw',
-                'headerOptions' => ['class' => 'col-md-1'],
-                'value' => function ($model){
-                    return \common\enums\ConfirmEnum::getValue($model->is_system);
-                }
-            ], */
+            ],            
             [
                 'attribute' => 'status',
                 'format' => 'raw',

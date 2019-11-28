@@ -291,6 +291,7 @@ class SearchModel extends Model
         $this->load($params);
 
         foreach ($this->attributes as $name => $value) {
+            $this->$name = trim($this->$name);
             if(in_array($name,$ignores)){
                 continue;
             }

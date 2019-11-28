@@ -28,4 +28,17 @@ class BaseModel extends ActiveRecord
             ],
         ];
     }
+    
+    /**
+     *
+     * @param unknown $attribute
+     * @param unknown $params
+     */
+    public function implodeArray($attribute, $params)
+    {
+        $split = isset($params['split'])?$params['split']:',';
+        if(is_array($this->$attribute) && !empty($this->$attribute)){
+            $this->$attribute = implode($split, $this->$attribute);
+        }
+    }
 }

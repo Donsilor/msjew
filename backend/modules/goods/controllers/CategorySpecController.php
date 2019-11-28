@@ -81,7 +81,7 @@ class CategorySpecController extends BaseController
         }
         
         $attrValues = [];
-        if($model->attr_id){
+        if ($model->attr_id){
             $attrValues = $values = Yii::$app->services->attribute->getValuesByAttrId($model->attr_id);
         }
         return $this->renderAjax($this->action->id, [
@@ -101,12 +101,12 @@ class CategorySpecController extends BaseController
         $attr_id = Yii::$app->request->post("attr_id");
                
         $checked_values = false;
-        if($id && $model = $this->findModel($id)){
+        if ($id && $model = $this->findModel($id)) {
             $checked_values = explode(",",trim($model->attr_values,','));
         }        
         
         $values = Yii::$app->services->attribute->getValuesByAttrId($attr_id);
-        foreach ($values as $key=>$val){
+        foreach ($values as $key=>$val) {
             $checked = $checked_values === false || in_array($key,$checked_values)?" checked":'';
             $str .= '<label style="color:#636f7a"><input type="checkbox" name="CategorySpec[attr_values][]" value="'.$key.'"'.$checked.'>'.$val.'</label>&nbsp;';  
         }           

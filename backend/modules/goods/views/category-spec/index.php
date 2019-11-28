@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'=>'attr_values',
                 'value' => function($model){
-                    $attrValues = Yii::$app->services->attribute->getAttrValuesByValueIds($model->attr_values);
+                    $attrValues = Yii::$app->services->attribute->getValuesByValueIds($model->attr_values);
                     return implode(",",$attrValues);
                 },                  
                 'filter' => false,

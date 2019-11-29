@@ -50,6 +50,7 @@ class TypeController extends BaseController
             'query' => $query,
             'pagination' => false
         ]);
+        $dataProvider->query->andWhere(['>','status',-1]);
 
 
         return $this->render('index', [

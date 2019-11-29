@@ -48,9 +48,9 @@ $form = ActiveForm::begin([
                         <!-- 编辑-->
                         <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
                             <?= $form->field($langModel, 'type_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"type_name")]) ?>
-                            <?= $form->field($langModel, 'meta_title')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"meta_title")]) ?>
-                            <?= $form->field($langModel, 'meta_word')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"meta_word")]) ?>
-                            <?= $form->field($langModel, 'meta_desc')->textArea(['name'=>Html::langInputName($langModel,$lang_key,"meta_desc"),'rows'=>'3']) ?>
+<!--                            --><?//= $form->field($langModel, 'meta_title')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"meta_title")]) ?>
+<!--                            --><?//= $form->field($langModel, 'meta_word')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"meta_word")]) ?>
+<!--                            --><?//= $form->field($langModel, 'meta_desc')->textArea(['name'=>Html::langInputName($langModel,$lang_key,"meta_desc"),'rows'=>'3']) ?>
                         </div>
                         <!-- /.tab-pane -->
                         <?php $is_new = false; break;?>
@@ -60,9 +60,9 @@ $form = ActiveForm::begin([
                     <!-- 新增 -->
                     <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
                         <?= $form->field($newLangModel, 'type_name')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"type_name")]) ?>
-                        <?= $form->field($newLangModel, 'meta_title')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"meta_title")]) ?>
-                        <?= $form->field($newLangModel, 'meta_word')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"meta_word")]) ?>
-                        <?= $form->field($newLangModel, 'meta_desc')->textArea(['name'=>Html::langInputName($newLangModel,$lang_key,"meta_desc"),'rows'=>'3']) ?>
+<!--                        --><?//= $form->field($newLangModel, 'meta_title')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"meta_title")]) ?>
+<!--                        --><?//= $form->field($newLangModel, 'meta_word')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"meta_word")]) ?>
+<!--                        --><?//= $form->field($newLangModel, 'meta_desc')->textArea(['name'=>Html::langInputName($newLangModel,$lang_key,"meta_desc"),'rows'=>'3']) ?>
                     </div>
                     <!-- /.tab-pane -->
                 <?php }?>

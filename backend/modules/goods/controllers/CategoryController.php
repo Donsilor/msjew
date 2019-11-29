@@ -41,7 +41,7 @@ class CategoryController extends BaseController
             'query' => $query,
             'pagination' => false
         ]);
-
+        $dataProvider->query->andWhere(['>','status',-1]);
 
         return $this->render('index', [
             'dataProvider' => $dataProvider

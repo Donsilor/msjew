@@ -18,21 +18,21 @@ class SkuTable extends Widget
      *
      * @var
      */
-    public $provincesName = 'provinces';
+    public $skuType = 'skuType';
 
     /**
      * 市字段名
      *
      * @var
      */
-    public $cityName = 'city';
+    public $skuInputVal = 'skuInputVal';
 
     /**
      * 区字段名
      *
      * @var
      */
-    public $areaName = 'area';
+    public $skuValue = 'skuValue';
 
     /**
      * 显示类型
@@ -87,12 +87,52 @@ class SkuTable extends Widget
      */
     public function run()
     {
+        $this->skuType =  [
+            [
+                'id'=>1,
+                'name'=>'存储11',
+                'sku_value'=>[
+                    [
+                        'id'=>1,
+                        'name'=>'16G'
+                    ],
+                    [
+                        'id'=>2,
+                        'name'=>'32G'
+                    ],
+                    [
+                        'id'=>3,
+                        'name'=>'64G'
+                    ],
+                    [
+                        'id'=>4,
+                        'name'=>'128G'
+                    ],
+                ]
+            ],
+            [
+                'id'=>2,
+                'name'=>'版本',
+                'sku_value'=>[
+                    [
+                        'id'=>11,
+                        'name'=>'中国大陆版'
+                    ],
+                    [
+                        'id'=>12,
+                        'name'=>'港版'
+                    ],
+                ]
+            ]
+
+        ];
+        $this->skuValue = [1,3,4,11,12];
         return $this->render($this->template, [
             'form' => $this->form,
             'model' => $this->model,
-            'provincesName' => $this->provincesName,
-            'cityName' => $this->cityName,
-            'areaName' => $this->areaName,
+            'skuType' => $this->skuType,
+            'skuInputVal' => $this->skuInputVal,
+            'skuValue' => $this->skuValue,
             'url' => $this->url,
             'level' => $this->level,
         ]);

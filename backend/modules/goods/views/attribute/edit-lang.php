@@ -64,13 +64,29 @@ $this->params['breadcrumbs'][] = $this->title;
                         <!-- /.tab-pane -->
                         <?php }?>                         
                     <?php }?>
+                    <?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
+                            'data' => Yii::$app->services->goodsType->getDropDown(),
+                            'options' => ['placeholder' => '请选择'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                    ]);?>
+                    <?= $form->field($model, 'attr_type')->widget(kartik\select2\Select2::class, [
+        			        'data' => common\enums\AttrTypeEnum::getMap(),
+                            'options' => [],
+                            'pluginOptions' => [
+                                'allowClear' => false
+                            ],
+                    ]);?>      
+                    <?= $form->field($model, 'input_type')->radioList(common\enums\InputTypeEnum::getMap()) ?>
+            	    <?= $form->field($model, 'is_require')->radioList(common\enums\ConfirmEnum::getMap())?>       
                     <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
                     <?= $form->field($model, 'sort')->textInput() ?>                    
                 </div>  
                 <div class="form-group">
                     <div class="col-sm-12 text-center">
                         <button class="btn btn-primary" type="submit">保存</button>
-                        <span class="btn btn-white"><?= Html::a('返回',['attribute/index']); ?></span>
+                        <span class="btn btn-white" onclick="location.href='<?= Url::to(['attribute/index'])?>'">返回</span>
                     </div>
                 </div>
                 <?php ActiveForm::end(); ?>

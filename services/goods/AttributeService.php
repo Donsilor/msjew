@@ -38,7 +38,7 @@ class AttributeService extends Service
             		goods_attribute_value_lang val_lang
             	INNER JOIN goods_attribute_value val ON val_lang.master_id = val.id
             	WHERE
-            		val.attr_id = '.$attr_id.' and val.`status`=1
+            		val.attr_id = '.$attr_id.' and val.`status`=1 
             	GROUP BY
             		val.attr_id,
             		val_lang.`language`

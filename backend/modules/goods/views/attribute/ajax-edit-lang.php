@@ -61,6 +61,22 @@ $form = ActiveForm::begin([
                     <?php }?>
             </div>
             <!-- /.tab-content -->
+            <?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
+                    'data' => Yii::$app->services->goodsType->getDropDown(),
+                    'options' => ['placeholder' => '请选择'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+            ]);?>
+            <?= $form->field($model, 'attr_type')->widget(kartik\select2\Select2::class, [
+			        'data' => common\enums\AttrTypeEnum::getMap(),
+                    'options' => [],
+                    'pluginOptions' => [
+                        'allowClear' => false
+                    ],
+            ]);?>             
+            <?= $form->field($model, 'input_type')->radioList(common\enums\InputTypeEnum::getMap()) ?>
+            <?= $form->field($model, 'is_require')->radioList(common\enums\ConfirmEnum::getMap())?>
             <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
             <?= $form->field($model, 'sort')->textInput() ?> 
                    

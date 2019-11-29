@@ -54,7 +54,15 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                  'attribute'=>'lang.attr_values',
-            ],            
+            ], 
+            [
+                    //'label' => 'cat_name',
+                    'attribute' => 'type.type_name',
+                    'filter' => Html::activeDropDownList($searchModel, 'type_id', Yii::$app->services->goodsType->getDropDown(), [
+                            'prompt' => '全部',
+                            'class' => 'form-control'
+                    ]),
+            ],
             [
                 'attribute' => 'status',
                 'format' => 'raw',
@@ -90,12 +98,19 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{edit} {status} {delete}',
+                'template' => '{edit} {add} {status} {delete}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
                         return Html::edit(['edit-lang', 'id' => $model->id]);
                 },
-               'status' => function($url, $model, $key){
+                'add'=>function($url, $model, $key){
+                    return Html::edit(['attribute-value/ajax-edit-lang','attr_id' => $model->id], '添加属性值', [
+                            'data-toggle' => 'modal',
+                            'data-target' => '#ajaxModal',
+                            'class'=>'btn btn-success btn-sm'
+                    ]);
+                },
+                'status' => function($url, $model, $key){
                         return Html::status($model['status']);
                   },
                 'delete' => function($url, $model, $key){

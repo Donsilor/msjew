@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'=>'attr_values',
                 'value' => function($model){
-                    $attrValues = Yii::$app->services->attribute->getValuesByValueIds($model->attr_values);
+                    $attrValues = Yii::$app->services->goodsAttribute->getValuesByValueIds($model->attr_values);
                     return implode(",",$attrValues);
                 },                  
                 'filter' => false,
@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 //'label' => 'cat_name',
                 'attribute' => 'cate.cat_name',
-                'filter' => Html::activeDropDownList($searchModel, 'cat_id', $cateDropDownList, [
+                'filter' => Html::activeDropDownList($searchModel, 'cat_id', Yii::$app->services->category->getDropDown(), [
                         'prompt' => '全部',
                         'class' => 'form-control'
                 ]),

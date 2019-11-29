@@ -2,11 +2,12 @@
 
 use yii\widgets\ActiveForm;
 use common\helpers\Url;
+use yii\base\Widget;
 
 $form = ActiveForm::begin([
     'id' => $model->formName(),
     'enableAjaxValidation' => true,
-    //'validationUrl' => Url::to(['ajax-edit', 'id' => $model['id']]),
+    'validationUrl' => Url::to(['ajax-edit', 'id' => $model['id']]),
     'fieldConfig' => [
         'template' => "<div class='col-sm-2 text-right'>{label}</div><div class='col-sm-10'>{input}\n{hint}\n{error}</div>",
     ]
@@ -19,7 +20,7 @@ $form = ActiveForm::begin([
 </div>
     <div class="modal-body">
  			<?= $form->field($model, 'cat_id')->widget(kartik\select2\Select2::class, [
- 			        'data' => Yii::$app->services->category->getDropDown(0),
+ 			        'data' => Yii::$app->services->category->getDropDown(),
                     'options' => ['placeholder' => '请选择'],
                     'pluginOptions' => [
                         'allowClear' => true
@@ -42,7 +43,7 @@ $form = ActiveForm::begin([
                     'pluginOptions' => [
                         'allowClear' => false
                     ],
-            ]);?>           
+            ]);?>             
             <?= $form->field($model, 'input_type')->radioList(common\enums\InputTypeEnum::getMap()) ?>
             <?= $form->field($model, 'is_require')->radioList(common\enums\ConfirmEnum::getMap())?>
             <?= $form->field($model, 'status')->radioList(common\enums\StatusEnum::getMap())?>

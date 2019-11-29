@@ -49,13 +49,12 @@ class AttributeController extends BaseController
         
         $dataProvider->query->andWhere(['>','status',-1]); 
         $dataProvider->query->joinWith(['lang']);
-
+        $dataProvider->query->with(['type']);
         $dataProvider->query->andFilterWhere(['like', 'lang.attr_name',$searchModel->attr_name]) ;
        
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
-            'cateDropDownList'=>Yii::$app->services->category->getDropDown()
         ]);
     }    
     /**

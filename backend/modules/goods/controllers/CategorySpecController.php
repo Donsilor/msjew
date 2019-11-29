@@ -56,7 +56,6 @@ class CategorySpecController extends BaseController
         return $this->render('index', [
                 'dataProvider' => $dataProvider,
                 'searchModel' => $searchModel,
-                'cateDropDownList'=>Yii::$app->services->category->getDropDown(0)
         ]);
     }
     

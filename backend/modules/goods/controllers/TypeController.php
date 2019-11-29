@@ -2,13 +2,13 @@
 
 namespace backend\modules\goods\controllers;
 
-use common\models\goods\CategoryLang;
+use common\models\goods\TypeLang;
+use common\models\goods\Type;
 use Yii;
 use common\components\Curd;
-use common\models\goods\Category;
 use yii\data\ActiveDataProvider;
 use backend\controllers\BaseController;
-
+use common\models\base\SearchModel;
 /**
  * 商品分类
  *
@@ -16,14 +16,14 @@ use backend\controllers\BaseController;
  * @package addons\RfArticle\backend\controllers
  * @author jianyan74 <751393839@qq.com>
  */
-class GoodsTypeController extends BaseController
+class TypeController extends BaseController
 {
     use Curd;
 
     /**
-     * @var GoodsTypeController
+     * @var TypeController
      */
-    public $modelClass = Category::class;
+    public $modelClass = Type::class;
 
     /**
      * Lists all Tree models.
@@ -31,11 +31,20 @@ class GoodsTypeController extends BaseController
      */
     public function actionIndex()
     {
-        $query = Category::find()->alias('a')
+        $searchModel = new SearchModel([
+            'model' => $this->modelClass,
+            'scenario' => 'default',
+            'partialMatchAttributes' => [], // 模糊查询
+            'defaultOrder' => [
+                'id' => SORT_ASC
+            ],
+            'pageSize' => $this->pageSize
+        ]);
+        $query = Type::find()->alias('a')
             ->orderBy('sort asc, created_at asc')
             ->andFilterWhere(['merchant_id' => $this->getMerchantId()])
-            ->leftJoin('{{%goods_category_lang}} b', 'b.master_id = a.id and b.language = "'.Yii::$app->language.'"')
-            ->select(['a.*', 'b.cat_name']);
+            ->leftJoin('{{%goods_type_lang}} b', 'b.master_id = a.id and b.language = "'.Yii::$app->language.'"')
+            ->select(['a.*', 'b.type_name']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -44,7 +53,8 @@ class GoodsTypeController extends BaseController
 
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
         ]);
     }
 
@@ -81,7 +91,7 @@ class GoodsTypeController extends BaseController
 
         return $this->renderAjax($this->action->id, [
             'model' => $model,
-            'cateDropDownList' => Category::getDropDownForEdit($id),
+            'cateDropDownList' => Type::getDropDownForEdit($id),
         ]);
     }
     

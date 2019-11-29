@@ -34,7 +34,7 @@ class TypeLang extends \yii\db\ActiveRecord
         return [
             [['master_id'], 'integer'],
             [['language'], 'string', 'max' => 5],
-            [['cat_name'], 'string', 'max' => 30],
+            [['type_name'], 'string', 'max' => 30],
             [['meta_title', 'meta_desc', 'meta_word'], 'string', 'max' => 200],
         ];
     }
@@ -48,7 +48,7 @@ class TypeLang extends \yii\db\ActiveRecord
             'id' => '主键',
             'master_id' => Yii::t('goods_type', 'Attr ID'),
             'language' => '语言类型',
-            'cat_name' => '分类名称',
+            'type_name' => '分类名称',
             'meta_title' => 'seo标题',
             'meta_desc' => 'seo描述',
             'meta_word' => '关键词',

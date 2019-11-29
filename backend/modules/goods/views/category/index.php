@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     'data-target' => '#ajaxModal',
                                 ]);
                                 return $str;
-                            }
+                            },
                         ],
                         [
                             'attribute' => 'sort',

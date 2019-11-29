@@ -45,18 +45,13 @@ class TypeLang extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '主键',
+            'id' => 'ID',
             'master_id' => Yii::t('goods_type', 'Attr ID'),
-            'language' => '语言类型',
-            'type_name' => '分类名称',
-            'meta_title' => 'seo标题',
-            'meta_desc' => 'seo描述',
-            'meta_word' => '关键词',
+            'language' => Yii::t('common', '语言类型'),
+            'type_name' => Yii::t('goods_type', '产品线'),
+            'meta_title' => Yii::t('common', 'SEO标题'),
+            'meta_desc' => Yii::t('common', 'SEO描述'),
+            'meta_word' => Yii::t('common', 'SEO关键词'),
         ];
-    }
-
-    public function findModel($pid)
-    {
-
     }
 }

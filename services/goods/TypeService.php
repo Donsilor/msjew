@@ -33,8 +33,8 @@ class TypeService extends Service
             $query->andWhere(['a.pid'=>$pid]);
         }
         
-        $models =$query->leftJoin('{{%goods_category_lang}} b', 'b.master_id = a.id and b.language = "'.$language.'"')
-            ->select(['a.*', 'b.cat_name'])
+        $models =$query->leftJoin('{{%goods_type_lang}} b', 'b.master_id = a.id and b.language = "'.$language.'"')
+            ->select(['a.*', 'b.type_name'])
             ->orderBy('sort asc,created_at asc')
             ->asArray()
             ->all();

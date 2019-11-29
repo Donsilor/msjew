@@ -39,6 +39,7 @@ class Type extends \common\models\base\BaseModel
     public function rules()
     {
         return [
+            [['pid','status'], 'required'],
             [['merchant_id','sort', 'level', 'pid', 'status', 'created_at', 'updated_at'], 'integer'],
             [['image'], 'string', 'max' => 500],
             [['tree'], 'string', 'max' => 500],

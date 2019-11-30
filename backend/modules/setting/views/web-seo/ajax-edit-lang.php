@@ -19,13 +19,7 @@ $form = ActiveForm::begin([
 
     <div class="modal-body">
 
-        <ul class="nav nav-tabs">
-            <?php foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){?>
-                <li class="<?php echo Yii::$app->language==$lang_key?"active":"" ?>">
-                    <a href="#tab_<?php echo $lang_key?>" data-toggle="tab" aria-expanded="false"><?php echo $lang_name?></a>
-                </li>
-            <?php }?>
-        </ul>
+        <?php echo Html::langTab('tab')?>
 
         <div class="tab-content">
             <?php if($model->isNewRecord){ ?>

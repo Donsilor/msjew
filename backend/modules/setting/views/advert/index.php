@@ -12,19 +12,20 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="row">
-    <div class="col-xs-12">
-        <div class="box">
-            <div class="box-header">
-                <h3 class="box-title"><?= $this->title; ?></h3>
-                <div class="box-tools">
+    <div class="col-sm-12">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li><a href="<?= Url::to(['advert-images/index']) ?>"> 广告位图片</a></li>
+                <li class="active"><a href="<?= Url::to(['advert/index']) ?>"> 广告位位置</a></li>
+                <li class="pull-right">
                     <?= Html::create(['ajax-edit-lang'], '创建', [
                         'data-toggle' => 'modal',
                         'data-target' => '#ajaxModal',
-                    ])?>
-                </div>
-            </div>
-            <div class="box-body table-responsive">
-
+                    ]) ?>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="active tab-pane">
         <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -88,7 +89,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{edit}  {status} {delete}',
                 'buttons' => [
                     'edit' => function ($url, $model, $key) {
-                        return Html::edit(['edit-lang','id' => $model->id], '编辑');
+//                        return Html::edit(['edit-lang','id' => $model->id], '编辑');
+                        return Html::edit(['ajax-edit-lang','id' => $model->id], '编辑',
+                            [
+                                'data-toggle' => 'modal',
+                                'data-target' => '#ajaxModal',
+                            ]);
                     },
                     'detail'=>function($url, $model, $key){
                         return Html::linkButton(['advert-images/index', 'adv_id' => $model->id], '图片');
@@ -105,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ]
     ]
     ]); ?>
-
+                </div>
             </div>
         </div>
     </div>

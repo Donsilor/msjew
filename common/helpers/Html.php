@@ -267,10 +267,41 @@ Css
      * @param unknown $field
      * @return string
      */
-    public static function langInputName($model,$language,$field)
+    public static function langInputName ($model,$language,$field)
     {
         $className = basename($model->className());
         return "{$className}[{$language}][{$field}]";
+    }
+    /**
+     * 多语言input参数
+     * @param unknown $model
+     * @param unknown $language
+     * @param unknown $field
+     * @param array $attrKeys
+     * @param array $options
+     * @return array
+     */
+    public static function langInputOptions($model, $language, $field, $options = [])
+    { 
+        $options['name'] = self::langInputName($model, $language, $field);
+        $options['id'] = $field."_".$language;
+        return $options;
+    }
+    
+    /**
+     * tab 标签初始化
+     * @param array $options
+     * @param string $tab
+     */
+    public static function langTab($tab = 'tab')
+    {
+        $str = '<ul class="nav nav-tabs">';
+        foreach (Yii::$app->params['languages'] as $lang_key=>$lang_name){
+           $active = Yii::$app->language==$lang_key?"active":"";
+           $str.='<li class="'.$active.'"><a href="#'.$tab.'_'.$lang_key.'" data-toggle="tab" aria-expanded="false">'.$lang_name.'</a></li>';
+        }          
+        $str .='</ul>';
+        return $str;
     }
     /**
      * 批量操作按钮

@@ -31,7 +31,9 @@ class AttributeValue extends BaseModel
     public function rules()
     {
         return [
+            [['attr_value_code','status'], 'required'],
             [['attr_id', 'sort', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['attr_value_code'], 'string','max'=>15],
         ];
     }
 
@@ -43,10 +45,11 @@ class AttributeValue extends BaseModel
         return [
             'id' => Yii::t('goods_attribute', 'ID'),
             'attr_id' => Yii::t('goods_attribute', 'Attr ID'),
-            'sort' => Yii::t('goods_attribute', 'Sort'),
-            'status' => Yii::t('goods_attribute', 'Status'),
-            'created_at' => Yii::t('goods_attribute', 'Created At'),
-            'updated_at' => Yii::t('goods_attribute', 'Updated At'),
+            'attr_value_code'=>Yii::t('goods_attribute', '编码'),
+            'sort' => Yii::t('common', '排序'),
+            'status' => Yii::t('common', '状态'),
+            'created_at' => Yii::t('common', '创建时间'),
+            'updated_at' => Yii::t('common', '更新时间'),
         ];
     }
     

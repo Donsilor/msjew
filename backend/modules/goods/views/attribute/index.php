@@ -125,15 +125,3 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
-<script type="text/javascript">
-<!--
-
-//-->
-/* $(".js_qiyong").click(function(){
-
-   alert(1);
-   var ids = $("#grid").yiiGridView("getSelectedRows");
-   alert(ids);
-	
-}); */
-</script>

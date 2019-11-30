@@ -30,14 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'template' => "<div class='col-sm-2 text-right'>{label}</div><div class='col-sm-10'>{input}\n{hint}\n{error}</div>",
                     ],
                 ]); ?>
-      
-                <ul class="nav nav-tabs">
-                    <?php foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){?>
-                    <li class="<?php echo Yii::$app->language==$lang_key?"active":"" ?>">
-                    		<a href="#tab_<?php echo $lang_key?>" data-toggle="tab" aria-expanded="false"><?php echo $lang_name?></a>
-                    </li>
-                    <?php }?>           
-                </ul>            
+                <?php echo Html::langTab('tab')?>      
                 <div class="tab-content">  
            			<?php $newLangModel = $model->langModel();?>
               		<?php 
@@ -48,8 +41,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php if($lang_key == $langModel->language){?>
                             	<!-- 编辑-->
                                 <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                                     <?= $form->field($langModel, 'attr_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_name")]) ?>
-                                     <?= $form->field($langModel, 'remark')->textarea(['name'=>Html::langInputName($langModel,$lang_key,"remark")]) ?>
+                                     <?= $form->field($langModel, 'attr_name')->textInput(Html::langInputOptions($langModel,$lang_key,'attr_name')) ?>
+                                     <?= $form->field($langModel, 'remark')->textarea(Html::langInputOptions($langModel,$lang_key,'remark')) ?>
                               	</div>
                               	<!-- /.tab-pane -->
                             	<?php $is_new = false; break;?>
@@ -58,8 +51,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php if($is_new == true){?>
                         <!-- 新增 -->
                         <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                               <?= $form->field($newLangModel, 'attr_name')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"attr_name")]) ?>
-                               <?= $form->field($newLangModel, 'remark')->textarea(['name'=>Html::langInputName($newLangModel,$lang_key,"remark")]) ?>
+                               <?= $form->field($newLangModel, 'attr_name')->textInput(Html::langInputOptions($newLangModel,$lang_key,'attr_name')) ?>
+                               <?= $form->field($newLangModel, 'remark')->textarea(Html::langInputOptions($newLangModel,$lang_key,'remark')) ?>
                         </div>
                         <!-- /.tab-pane -->
                         <?php }?>                         
@@ -118,6 +111,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'visible' => false,
             ],
             'id',
+            [
+                    'attribute'=>'attr_value_code',
+            ],
             [
                 'attribute'=>'lang.attr_value_name',
             ], 

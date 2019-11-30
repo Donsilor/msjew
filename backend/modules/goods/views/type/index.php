@@ -2,7 +2,7 @@
 use common\helpers\Html;
 use jianyan\treegrid\TreeGrid;
 
-$this->title = '分类管理';
+$this->title = '产品线管理';
 $this->params['breadcrumbs'][] = ['label' => $this->title];
 
 ?>

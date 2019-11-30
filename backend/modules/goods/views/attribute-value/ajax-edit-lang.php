@@ -21,13 +21,7 @@ $form = ActiveForm::begin([
 </div>
     <div class="modal-body">
                  
-          <ul class="nav nav-tabs">
-              <?php foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){?>
-              <li class="<?php echo Yii::$app->language==$lang_key?"active":"" ?>">
-              		<a href="#tab_value_<?php echo $lang_key?>" data-toggle="tab" aria-expanded="false"><?php echo $lang_name?></a>
-              </li>
-              <?php }?>           
-          </ul>            
+          <?php echo Html::langTab('tab')?>             
           <div class="tab-content">  
              	<?php $newLangModel = $model->langModel();?>
               		<?php 
@@ -37,9 +31,9 @@ $form = ActiveForm::begin([
               		    <?php foreach ($model->langs as $langModel) {?>
                             <?php if($lang_key == $langModel->language){?>
                             	<!-- 编辑-->
-                                <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_value_<?= $lang_key?>">
-                                     <?= $form->field($langModel, 'attr_value_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_value_name")]) ?>
-                              	     <?= $form->field($langModel, 'remark')->textArea(['name'=>Html::langInputName($langModel,$lang_key,"remark")]) ?>
+                                <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
+                                     <?= $form->field($langModel, 'attr_value_name')->textInput(Html::langInputOptions($langModel,$lang_key,"attr_value_name")) ?>
+                              	     <?= $form->field($langModel, 'remark')->textArea(Html::langInputOptions($langModel,$lang_key,"remark")) ?>
                               	     
                               	</div>
                               	<!-- /.tab-pane -->
@@ -48,11 +42,10 @@ $form = ActiveForm::begin([
                         <?php }?>
                         <?php if($is_new == true){?>
                         <!-- 新增 -->
-                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_value_<?= $lang_key?>">
-                               <?= $form->field($newLangModel, 'attr_value_name')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"attr_value_name")]) ?>
-                               <?= $form->field($newLangModel, 'remark')->textArea(['name'=>Html::langInputName($newLangModel,$lang_key,"remark")]) ?>
-                               
-                        </div>
+                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
+                               <?= $form->field($newLangModel, 'attr_value_name')->textInput(Html::langInputOptions($newLangModel,$lang_key,"attr_value_name")) ?>
+                               <?= $form->field($newLangModel, 'remark')->textArea(Html::langInputOptions($newLangModel,$lang_key,"remark")) ?>
+                         </div>
                         <!-- /.tab-pane -->
                         
                         <?php }?>                         
@@ -60,6 +53,7 @@ $form = ActiveForm::begin([
             </div>
             <!-- /.tab-content -->
              <?= $form->field($model, 'attr_id')->textInput()->hiddenInput(['value'=>$model->attr_id])->label(false) ?>
+             <?= $form->field($model, 'attr_value_code')->textInput() ?>
              <?= $form->field($model, 'sort')->textInput() ?>
              <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
             

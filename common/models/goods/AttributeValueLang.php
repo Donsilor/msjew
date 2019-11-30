@@ -29,6 +29,7 @@ class AttributeValueLang extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['attr_value_name'], 'required'],
             [['master_id'], 'integer'],
             [['language'], 'string', 'max' => 5],
             [['attr_value_name'], 'string', 'max' => 200],

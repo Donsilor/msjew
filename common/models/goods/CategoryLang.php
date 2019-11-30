@@ -32,6 +32,7 @@ class CategoryLang extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['cat_name'], 'required'],
             [['master_id'], 'integer'],
             [['language'], 'string', 'max' => 5],
             [['cat_name'], 'string', 'max' => 30],

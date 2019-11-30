@@ -52,7 +52,7 @@ class Attribute extends BaseModel
             'status' => Yii::t('goods_attribute', '状态'),
             'sort' => Yii::t('goods_attribute', '排序'),
             'attr_type' => Yii::t('goods_attribute', '属性类型'),
-            'type_id' => Yii::t('goods_attribute', '商品类型'),
+            'type_id' => Yii::t('goods_attribute', '产品线'),
             'input_type' => Yii::t('goods_attribute', '显示类型'),
             'is_require' => Yii::t('goods_attribute', '是否必填'),
             'created_at' => Yii::t('goods_attribute', '创建时间'),

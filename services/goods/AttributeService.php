@@ -50,31 +50,7 @@ class AttributeService extends Service
             AND attr_lang.master_id = '.$attr_id.';';
         
         return \Yii::$app->db->createCommand($sql)->execute();
-    }
-    
-    /**
-     * 属性列表
-     * @return array|\yii\db\ActiveRecord[]
-     */
-    public function getDropDown($status = null,$language = null)
-    {
-        if(empty($language)){
-            $language = Yii::$app->language;
-        }
-        
-        $query = Attribute::find()->alias('a')
-                ->leftJoin('{{%goods_attribute_lang}} b', 'b.master_id = a.id and b.language = "'.$language.'"')
-                ->select(['a.*', 'b.attr_name'])
-                ->orderBy('sort asc,created_at asc');
-        
-        if($status){
-            $query->andWhere(['=','a.status',$status]);
-        }
-        
-        $models = $query->asArray()->all();        
-        
-        return ArrayHelper::map($models, 'id', 'attr_name');
-    }
+    }    
     /**
      * 根据属性ID查询属性值列表
      * @param unknown $attr_id

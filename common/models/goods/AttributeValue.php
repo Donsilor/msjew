@@ -31,7 +31,7 @@ class AttributeValue extends BaseModel
     public function rules()
     {
         return [
-            [['attr_value_code','status'], 'required'],
+            [['status'], 'required'],
             [['attr_id', 'sort', 'status', 'created_at', 'updated_at'], 'integer'],
             [['attr_value_code'], 'string','max'=>15],
         ];
@@ -59,7 +59,7 @@ class AttributeValue extends BaseModel
      */
     public function langModel()
     {
-      return new AttributeValueLang();
+        return new AttributeValueLang();
     }
     /**
      * 关联语言一对多
@@ -67,8 +67,7 @@ class AttributeValue extends BaseModel
      */
     public function getLangs()
     {
-      return $this->hasMany(AttributeValueLang::class,['master_id'=>'id']);
-      
+         return $this->hasMany(AttributeValueLang::class,['master_id'=>'id']);      
     }
     /**
      * 关联语言一对一
@@ -76,6 +75,6 @@ class AttributeValue extends BaseModel
      */
     public function getLang()
     {
-      return $this->hasOne(AttributeValueLang::class, ['master_id'=>'id']);
+        return $this->hasOne(AttributeValueLang::class, ['master_id'=>'id']);
     }
 }

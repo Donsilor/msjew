@@ -31,8 +31,8 @@ class AdvertImages extends \common\models\base\BaseModel
     {
         return [
             [['adv_image'], 'required'],
-            [['adv_id','status'], 'integer'],
-            [['start_time', 'end_time'], 'safe'],
+            [['adv_id','status','sort'], 'integer'],
+            [['start_time', 'end_time','start_end','adv_name'], 'safe'],
             [['adv_image'], 'string', 'max' => 200],
             [['adv_url'], 'string', 'max' => 500],
         ];
@@ -45,13 +45,14 @@ class AdvertImages extends \common\models\base\BaseModel
     {
         return [
             'id' => '主键',
-            'adv_id' => '广告关联表',
+            'adv_id' => '广告位置',
             'adv_image' => '图片地址',
             'adv_url' => '链接地址',
             'start_time' => '开始时间',
             'end_time' => '结束时间',
             'updated_at'=> '更新时间',
             'status' => '是否启用',
+            'sort' => '排序',
         ];
     }
 
@@ -81,5 +82,15 @@ class AdvertImages extends \common\models\base\BaseModel
     {
         $query = $this->hasOne(AdvertImagesLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->language]);
         return $query;
+    }
+
+    /**
+     * 关联分类
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCate()
+    {
+        return $this->hasOne(Advert::class, ['id' => 'adv_id']);
     }
 }

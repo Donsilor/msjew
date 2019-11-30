@@ -3,6 +3,7 @@ use common\widgets\webuploader\Files;
 use yii\widgets\ActiveForm;
 use common\helpers\Url;
 use common\helpers\Html;
+use kartik\select2\Select2;
 
 
 
@@ -19,16 +20,16 @@ $form = ActiveForm::begin([
 
     <div class="modal-body">
 
-        <ul class="nav nav-tabs">
-            <?php foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){?>
-                <li class="<?php echo Yii::$app->language==$lang_key?"active":"" ?>">
-                    <a href="#tab_value_<?php echo $lang_key?>" data-toggle="tab" aria-expanded="false"><?php echo $lang_name?></a>
-                </li>
-            <?php }?>
-        </ul>
+        <?php echo Html::langTab('tab')?>
 
         <div class="tab-content">
-
+            <?= $form->field($model, 'adv_id')->widget(Select2::class, [
+                'data' => $advert,
+                'options' => ['placeholder' => '请选择'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);?>
             <?php $newLangModel = $model->langModel();?>
             <?php
             foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){
@@ -91,6 +92,8 @@ $form = ActiveForm::begin([
                 'class' => 'form-control no_bor',
             ]
         ]) ?>
+
+        <?= $form->field($model, 'sort')->textInput() ?>
         <!-- /.tab-pane -->
     </div>
     <!-- /.tab-content -->

@@ -6,7 +6,7 @@ namespace backend\modules\setting\controllers;
 use common\models\setting\Advert;
 use common\models\setting\AdvertLang;
 use function Complex\negative;
-use services\backend\SettingService;
+use services\common\AdvertService;
 use Yii;
 use common\models\setting\AdvertImages;
 use common\components\Curd;
@@ -59,12 +59,21 @@ class AdvertImagesController extends BaseController
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
 
+        if(!empty($this->start_end)) {
+            $dataProvider->query->andWhere('>=','start_time', explode('/',$this->start_end)[0]);//起始时间
+            $dataProvider->query->andWhere('<','end_time', (explode('/',$this->start_end)[1]));//结束时间
+            }
+
+
+
+
         $dataProvider->query->andWhere(['>','status',-1]);
 
-        $SettingService = new SettingService();
-
+        $AdvertService = new AdvertService();
         //获取广告位
-        $advert = $SettingService->findAdvertOne($this->adv_id, Yii::$app->language);
+        $advert = $AdvertService->getDropDown(Yii::$app->language);
+
+
 
 
         return $this->render('index', [
@@ -95,14 +104,17 @@ class AdvertImagesController extends BaseController
             if($model->save()){
                 //多语言编辑
                 $this->editLang($model,true);
-                return $this->redirect(['advert/edit-lang?id='.$model->adv_id]);
+                return $this->redirect(['advert-images/index']);
             }else{
-                return $this->message($this->getError($model), $this->redirect(['advert/edit-lang?id='.$model->adv_id]), 'error');
+                return $this->message($this->getError($model), $this->redirect(['advert-images/index']), 'error');
             }
         }
 
+        $AdvertService = new AdvertService();
+        $advert = $AdvertService->getDropDown(Yii::$app->language);
         return $this->renderAjax($this->action->id, [
             'model' => $model,
+            'advert' =>$advert,
         ]);
     }
 

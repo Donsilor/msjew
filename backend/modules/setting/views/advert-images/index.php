@@ -14,20 +14,23 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 <div class="row">
-    <div class="col-xs-12">
-        <div class="box">
-            <div class="box-header">
-                <h3 class="box-title"><?= $this->title; ?></h3>
-                <div class="box-tools">
-                    <?= Html::create(['ajax-edit-lang','adv_id' => $adv_id], '创建', [
+    <div class="col-sm-12">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="<?= Url::to(['advert-images/index']) ?>"> 广告位图片</a></li>
+                <li><a href="<?= Url::to(['advert/index']) ?>"> 广告位位置</a></li>
+                <li class="pull-right">
+                    <?= Html::create(['ajax-edit-lang'], '创建', [
                         'data-toggle' => 'modal',
                         'data-target' => '#ajaxModal',
-                    ])?>
-                </div>
-            </div>
-            <div class="box-body table-responsive">
+                    ]) ?>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="active tab-pane">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'table table-hover'],
         'layout'=> '{items}',
         'showFooter' => true,//显示footer行
@@ -48,23 +51,82 @@ $this->params['breadcrumbs'][] = $this->title;
                  },
              ],
 
-           // 'adv_url:url',
-            'start_time:date',
-            'end_time:date',
-            'updated_at:date',
+
             [
-                'attribute' => 'status',
+                'label' => '有效期',
+                'attribute' => 'start_end',
+                'format'=>'html',
+                'value' => function ($model) {
+                     $str = "开始时间：".date('Y-m-d', strtotime($model->start_time));
+                     $str .= "<br/>";
+                     $str .= "结束时间：".date('Y-m-d', strtotime($model->end_time));
+                    return $str;
+                },
+
+                 'filter' => \kartik\daterange\DateRangePicker::widget([// 日期组件
+                 'model' => $searchModel,
+                 'attribute' => 'start_end',
+                 'value' => $searchModel->start_time,
+                 'convertFormat' => true,
+                 'pluginOptions' => [
+                 'language' => 'zn-ch',
+                 'locale' => [
+                 'format' => 'Y-m-d H:i:s',
+                 'applyLabel' => '确定', // 确定文字的显示
+                 'cancelLabel' => '取消',// 取消文字的显示
+                'fromLabel' => '开始',// 开始文字的显示
+                'toLabel' => '结束',// 结束文字的显示
+                'monthNames' => [ // 月份的中文显示
+                '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月',
+                ],
+                 'daysOfWeek' => ['日', '一', '二', '三', '四', '五', '六' ],
+                    'separator' => '/'// 时间间隔符 设置为 /  例: 2016-12-11 12:00:00/2016-12-12 12:00:00
+                 ]
+                ]
+                 ])
+            ],
+
+            [
+                'label'=>'当前状态',
+                'format'=>'html',
+                'value'=>function($model){
+                    return Html::timeStatus(strtotime($model->start_time), strtotime($model->end_time));
+                }
+            ],
+           // 'adv_url:url',
+//            'start_time:date',
+//            'end_time:date',
+//            'updated_at:date',
+            [
+                'attribute' => 'adv_id',
+                'value' => 'cate.lang.adv_name',
+                'filter' => Html::activeDropDownList($searchModel, 'adv_id', $advert, [
+                        'prompt' => '全部',
+                        'class' => 'form-control'
+                    ]
+                )
+            ],
+            [
+                'attribute' => 'sort',
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
-                'value' => function ($model){
-                    return \common\enums\StatusEnum::getValue($model->status);
-                },
-                'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\StatusEnum::getMap(), [
-                    'prompt' => '全部',
-                    'class' => 'form-control',
-
-                ]),
+                'value' => function ($model, $key, $index, $column){
+                    return  Html::sort($model->sort);
+                }
             ],
+//            [
+//                'attribute' => 'status',
+//                'format' => 'raw',
+//                'headerOptions' => ['class' => 'col-md-1'],
+//                'value' => function ($model){
+//                    return \common\enums\StatusEnum::getValue($model->status);
+//                },
+//                'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\StatusEnum::getMap(), [
+//                    'prompt' => '全部',
+//                    'class' => 'form-control',
+//
+//                ]),
+//            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
@@ -82,7 +144,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 'delete' => function($url, $model, $key){
                         return Html::delete(['delete', 'id' => $model->id]);
-                },
+                }
                 ]
             ]
     ]

@@ -293,9 +293,12 @@ Css
      * @param array $options
      * @param string $tab
      */
-    public static function langTab($tab = 'tab')
+    public static function langTab($tab = 'tab',$title = null)
     {
         $str = '<ul class="nav nav-tabs">';
+        if($title){
+            $str .= '<li><a href="javascript:void(0)">'.$title.'</a></li>';
+        }
         foreach (Yii::$app->params['languages'] as $lang_key=>$lang_name){
            $active = Yii::$app->language==$lang_key?"active":"";
            $str.='<li class="'.$active.'"><a href="#'.$tab.'_'.$lang_key.'" data-toggle="tab" aria-expanded="false">'.$lang_name.'</a></li>';

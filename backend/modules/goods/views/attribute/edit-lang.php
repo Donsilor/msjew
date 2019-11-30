@@ -30,33 +30,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'template' => "<div class='col-sm-2 text-right'>{label}</div><div class='col-sm-10'>{input}\n{hint}\n{error}</div>",
                     ],
                 ]); ?>
-                <?php echo Html::langTab('tab')?>      
-                <div class="tab-content">  
-           			<?php $newLangModel = $model->langModel();?>
-              		<?php 
-              		  foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){
-              		     $is_new = true;    
-              		  ?>                        		
-              		    <?php foreach ($model->langs as $langModel) {?>
-                            <?php if($lang_key == $langModel->language){?>
-                            	<!-- 编辑-->
-                                <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                                     <?= $form->field($langModel, 'attr_name')->textInput(Html::langInputOptions($langModel,$lang_key,'attr_name')) ?>
-                                     <?= $form->field($langModel, 'remark')->textarea(Html::langInputOptions($langModel,$lang_key,'remark')) ?>
-                              	</div>
-                              	<!-- /.tab-pane -->
-                            	<?php $is_new = false; break;?>
-                            <?php }?>
-                        <?php }?>
-                        <?php if($is_new == true){?>
-                        <!-- 新增 -->
-                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                               <?= $form->field($newLangModel, 'attr_name')->textInput(Html::langInputOptions($newLangModel,$lang_key,'attr_name')) ?>
-                               <?= $form->field($newLangModel, 'remark')->textarea(Html::langInputOptions($newLangModel,$lang_key,'remark')) ?>
-                        </div>
-                        <!-- /.tab-pane -->
-                        <?php }?>                         
-                    <?php }?>
+                   <?= common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
+                            'fields'=>
+                            [
+                                'attr_name'=>['type'=>'textInput'],
+                                'remark'=>['type'=>'textArea','options'=>[]]                            
+                            ]]);
+            	    ?>
                     <?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
                             'data' => Yii::$app->services->goodsType->getDropDown(),
                             'options' => ['placeholder' => '请选择'],

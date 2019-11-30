@@ -38,8 +38,8 @@ $form = ActiveForm::begin([
                 <?php foreach ($model->langs as $langModel) {?>
                     <?php if($lang_key == $langModel->language){?>
                         <!-- 编辑-->
-                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_value_<?= $lang_key?>">
-                            <?= $form->field($langModel, 'title')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"title"),'style'=>'width:200px;']) ?>
+                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
+                            <?= $form->field($langModel, 'title')->textInput(Html::langInputOptions($langModel,$lang_key,"title",['style'=>'width:200px;'])) ?>
                         </div>
                         <!-- /.tab-pane -->
                         <?php $is_new = false; break;?>
@@ -47,8 +47,8 @@ $form = ActiveForm::begin([
                 <?php }?>
                 <?php if($is_new == true){?>
                     <!-- 新增 -->
-                    <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_value_<?= $lang_key?>">
-                        <?= $form->field($newLangModel, 'title')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"title"),'style'=>'width:200px;']) ?>
+                    <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
+                        <?= $form->field($newLangModel, 'title')->textInput(Html::langInputOptions($newLangModel,$lang_key,"title",['style'=>'width:200px;'])) ?>
                     </div>
                     <!-- /.tab-pane -->
                 <?php }?>

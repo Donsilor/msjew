@@ -2,7 +2,7 @@
 
 namespace services\common;
 
-use common\models\setting\Advert;
+use common\models\common\Advert;
 use Yii;
 use common\enums\StatusEnum;
 use common\helpers\ArrayHelper;
@@ -21,7 +21,7 @@ class AdvertService extends Service
     {
         return Advert::find()->alias('m')
             ->where(['m.id'=>$id])
-            ->leftJoin('{{%advert_lang}} lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
+            ->leftJoin('{{%common_advert_lang}} lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
             ->select(['lang.adv_name as name','m.*'])
             ->asArray()
             ->one();
@@ -33,7 +33,7 @@ class AdvertService extends Service
     {
         return Advert::find()->alias('m')
             ->where(['status' => StatusEnum::ENABLED])
-            ->leftJoin('{{%advert_lang}} lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
+            ->leftJoin('{{%common_advert_lang}} lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
             ->select(['lang.adv_name as name','m.*'])
             ->asArray()
             ->all();

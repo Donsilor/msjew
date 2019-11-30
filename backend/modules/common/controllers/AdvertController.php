@@ -1,10 +1,10 @@
 <?php
 
-namespace backend\modules\setting\controllers;
+namespace backend\modules\common\controllers;
 
-use common\models\setting\AdvertImages;
+use common\models\common\AdvertImages;
 use Yii;
-use common\models\setting\Advert;
+use common\models\common\Advert;
 use common\components\Curd;
 use common\models\base\SearchModel;
 use backend\controllers\BaseController;

@@ -1,6 +1,6 @@
 <?php
 
-namespace common\models\setting;
+namespace common\models\common;
 
 use Yii;
 
@@ -19,7 +19,7 @@ class WebSeo extends \common\models\base\BaseModel
      */
     public static function tableName()
     {
-        return '{{%web_seo}}';
+        return '{{%common_web_seo}}';
     }
 
     /**

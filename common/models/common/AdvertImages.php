@@ -1,6 +1,6 @@
 <?php
 
-namespace common\models\setting;
+namespace common\models\common;
 
 use Yii;
 
@@ -21,7 +21,7 @@ class AdvertImages extends \common\models\base\BaseModel
      */
     public static function tableName()
     {
-        return '{{%advert_images}}';
+        return '{{%common_advert_images}}';
     }
 
     /**
@@ -32,7 +32,7 @@ class AdvertImages extends \common\models\base\BaseModel
         return [
             [['adv_image'], 'required'],
             [['adv_id','status','sort'], 'integer'],
-            [['start_time', 'end_time','start_end','adv_name'], 'safe'],
+            [['start_time', 'end_time','start_end','adv_name','title'], 'safe'],
             [['adv_image'], 'string', 'max' => 200],
             [['adv_url'], 'string', 'max' => 500],
         ];
@@ -53,6 +53,7 @@ class AdvertImages extends \common\models\base\BaseModel
             'updated_at'=> '更新时间',
             'status' => '是否启用',
             'sort' => '排序',
+            'title' => '描述',
         ];
     }
 

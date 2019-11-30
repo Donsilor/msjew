@@ -1,14 +1,14 @@
 <?php
 
-namespace backend\modules\setting\controllers;
+namespace backend\modules\common\controllers;
 
 
-use common\models\setting\Advert;
-use common\models\setting\AdvertLang;
+use common\models\common\Advert;
+use common\models\common\AdvertLang;
 use function Complex\negative;
 use services\common\AdvertService;
 use Yii;
-use common\models\setting\AdvertImages;
+use common\models\common\AdvertImages;
 use common\components\Curd;
 use common\models\base\SearchModel;
 use backend\controllers\BaseController;
@@ -57,12 +57,15 @@ class AdvertImagesController extends BaseController
 
 
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams);
+            ->search(Yii::$app->request->queryParams,['title','start_end']);
 
-        if(!empty($this->start_end)) {
-            $dataProvider->query->andWhere('>=','start_time', explode('/',$this->start_end)[0]);//起始时间
-            $dataProvider->query->andWhere('<','end_time', (explode('/',$this->start_end)[1]));//结束时间
-            }
+        $dataProvider->query->joinWith(['lang']);
+        $dataProvider->query->andFilterWhere(['like', 'lang.title',$searchModel->title]) ;
+
+//        if(!empty($this->start_end)) {
+//            $dataProvider->query->andWhere('>=','start_time', explode('/',$this->start_end)[0]);//起始时间
+//            $dataProvider->query->andWhere('<','end_time', (explode('/',$this->start_end)[1]));//结束时间
+//            }
 
 
 

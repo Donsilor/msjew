@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <li class="pull-right">
                     <?= Html::create(['ajax-edit-lang'], '创建', [
                         'data-toggle' => 'modal',
-                        'data-target' => '#ajaxModal',
+                        'data-target' => '#ajaxModalLg',
                     ]) ?>
                 </li>
             </ul>
@@ -89,11 +89,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{edit}  {status} {delete}',
                 'buttons' => [
                     'edit' => function ($url, $model, $key) {
-//                        return Html::edit(['edit-lang','id' => $model->id], '编辑');
                         return Html::edit(['ajax-edit-lang','id' => $model->id], '编辑',
                             [
                                 'data-toggle' => 'modal',
-                                'data-target' => '#ajaxModal',
+                                'data-target' => '#ajaxModalLg',
                             ]);
                     },
                     'detail'=>function($url, $model, $key){

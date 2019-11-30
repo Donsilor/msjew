@@ -1,9 +1,9 @@
 <?php
 
-namespace backend\modules\setting\controllers;
+namespace backend\modules\common\controllers;
 
 use Yii;
-use common\models\setting\WebSeo;
+use common\models\common\WebSeo;
 use common\components\Curd;
 use common\models\base\SearchModel;
 use backend\controllers\BaseController;

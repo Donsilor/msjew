@@ -1,6 +1,6 @@
 <?php
 
-namespace common\models\setting;
+namespace common\models\common;
 
 use Yii;
 
@@ -19,7 +19,7 @@ class AdvertLang extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%advert_lang}}';
+        return '{{%common_advert_lang}}';
     }
 
     /**

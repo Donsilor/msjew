@@ -1,6 +1,6 @@
 <?php
 
-namespace common\models\setting;
+namespace common\models\common;
 
 use Yii;
 
@@ -21,7 +21,7 @@ class WebSeoLang extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%web_seo_lang}}';
+        return '{{%common_web_seo_lang}}';
     }
 
     /**

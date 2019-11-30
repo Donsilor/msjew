@@ -1,6 +1,6 @@
 <?php
 
-namespace common\models\setting;
+namespace common\models\common;
 
 use Yii;
 
@@ -26,7 +26,7 @@ class Advert extends \common\models\base\BaseModel
      */
     public static function tableName()
     {
-        return '{{%advert}}';
+        return '{{%common_advert}}';
     }
 
     /**

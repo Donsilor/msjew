@@ -41,7 +41,7 @@ $form = ActiveForm::begin([
                             <?php if($lang_key == $langModel->language){?>
                             	<!-- 编辑-->
                                 <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                                     <?= $form->field($langModel, 'attr_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_name")]) ?>
+                                     <?= $form->field($langModel, 'attr_name')->textInput(['name'=>Html::langInputName($langModel,$lang_key,"attr_name"),'id'=>'attr_name_'.$lang_key]) ?>
                               	      <?= $form->field($langModel, 'remark')->textarea(['name'=>Html::langInputName($langModel,$lang_key,"remark")]) ?>
                               	
                               	</div>
@@ -52,7 +52,7 @@ $form = ActiveForm::begin([
                         <?php if($is_new == true){?>
                         <!-- 新增 -->
                         <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                               <?= $form->field($newLangModel, 'attr_name')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"attr_name")]) ?>
+                               <?= $form->field($newLangModel, 'attr_name')->textInput(['name'=>Html::langInputName($newLangModel,$lang_key,"attr_name"),'id'=>'attr_name_'.$lang_key]) ?>
                                <?= $form->field($newLangModel, 'remark')->textarea(['name'=>Html::langInputName($newLangModel,$lang_key,"remark")]) ?>
                         
                         </div>

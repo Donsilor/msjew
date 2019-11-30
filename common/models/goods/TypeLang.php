@@ -32,6 +32,7 @@ class TypeLang extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['type_name'], 'required'],
             [['master_id'], 'integer'],
             [['language'], 'string', 'max' => 5],
             [['type_name'], 'string', 'max' => 30],

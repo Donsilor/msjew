@@ -54,15 +54,15 @@ class Type extends \common\models\base\BaseModel
     {
         return [
             'id' => 'ID',
-            'type_name' => '分类名称',
-            'image' => '图片',
-            'sort' => '排序',
-            'tree' => '树',
-            'level' => '级别',
-            'pid' => '父级',
-            'status' => '状态',
-            'created_at' => '创建时间',
-            'updated_at' => '更新时间',
+            'type_name' => Yii::t('goods_type', '产品线'),
+            'image' =>  Yii::t('goods_type', '图片'),
+            'sort' => Yii::t('goods_type', '排序'),
+            'tree' => Yii::t('goods_type', '树'),
+            'level' => Yii::t('goods_type', '级别'),
+            'pid' => Yii::t('goods_type', '父级'),
+            'status' => Yii::t('goods_type', '状态'),
+            'created_at' => Yii::t('goods_type', '创建时间'),
+            'updated_at' => Yii::t('goods_type', '更新时间'),
         ];
     }
 

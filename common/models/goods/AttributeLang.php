@@ -31,6 +31,7 @@ class AttributeLang extends \yii\db\ActiveRecord
     {
         return [
             [['master_id'], 'integer'],
+            [['attr_name'], 'required'],
             [['language'], 'string', 'max' => 5],
             [['attr_name'], 'string', 'max' => 100],
             [['default_value'], 'string', 'max' => 20],

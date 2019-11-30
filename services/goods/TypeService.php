@@ -38,7 +38,8 @@ class TypeService extends Service
             ->orderBy('sort asc,created_at asc')
             ->asArray()
             ->all();
-        
+
+        $models = ArrayHelper::itemsMerge($models);
         return ArrayHelper::map(ArrayHelper::itemsMergeDropDown($models,'id','type_name'), 'id', 'type_name');
     }
 }

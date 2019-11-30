@@ -267,10 +267,25 @@ Css
      * @param unknown $field
      * @return string
      */
-    public static function langInputName($model,$language,$field)
+    public static function langInputName ($model,$language,$field)
     {
         $className = basename($model->className());
         return "{$className}[{$language}][{$field}]";
+    }
+    /**
+     * 多语言input参数
+     * @param unknown $model
+     * @param unknown $language
+     * @param unknown $field
+     * @param array $attrKeys
+     * @param array $options
+     * @return array
+     */
+    public static function langInputOptions($model, $language, $field, $attrKeys=['id','name'], $options = [])
+    { 
+        $options['name'] = self::langInputName($model, $language, $field);
+        $options['id'] = $field."_".$language;
+        return $options;
     }
     /**
      * 批量操作按钮

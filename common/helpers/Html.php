@@ -281,7 +281,7 @@ Css
      * @param array $options
      * @return array
      */
-    public static function langInputOptions($model, $language, $field, $attrKeys=['id','name'], $options = [])
+    public static function langInputOptions($model, $language, $field, $options = [])
     { 
         $options['name'] = self::langInputName($model, $language, $field);
         $options['id'] = $field."_".$language;

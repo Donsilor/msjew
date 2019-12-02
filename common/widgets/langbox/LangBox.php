@@ -35,18 +35,10 @@ class LangBox extends Widget
     {
         parent::init();
         //初始化默认参数
-        foreach ($this->fields as &$field){
-            
-            if(!isset($field['type'])){
-                $field['type'] = 'textInput';
-            }
-            if(!isset($field['options'])){
-                $field['options'] = [];
-            }
-            if(!isset($field['label'])){
-                $field['label'] = null;
-            }
-            
+        foreach ($this->fields as &$field){            
+            $field['type'] = $field['type']??'textInput';
+            $field['options'] = $field['options']??[];
+            $field['label'] = $field['label']??null; 
         }
     }
 

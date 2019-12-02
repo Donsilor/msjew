@@ -5,12 +5,22 @@
 	color: red;
 }
 /*sku选择样式*/
-li{list-style: none;margin-right:10px;}
-li label{cursor: pointer;}
-li{float: left;line-height: 30px;}
+.sku_type,.sku_value {
+	padding-inline-start: 0px;
+}
+.sku_value li,.sku_type li{list-style: none;margin-right:10px;}
+.sku_value li label{cursor: pointer;}
+.sku_value li{float: left;line-height:25px;}
+.sku_type li em{
+	color: #f00;
+
+	width: 8px;
+	font-style: normal;
+    vertical-align: sub;
+}
 .clear{
 	clear: both;
-}
+} 
 .delCusSkuVal,
 .delCusSkuType {
 	font-size: 14px;
@@ -23,7 +33,7 @@ table.skuTable {
     color:#333333;
     border-width: 1px;
     border-color: #ddd;
-    margin:30px;
+    margin:20px 0px 20px 0px;
     border-collapse: collapse;
 }
 table.skuTable th {
@@ -45,6 +55,8 @@ table.skuTable td {
     text-align: center;
     font-size: 12px;
 }
+/*输入框样式*/
+/*
 table.skuTable td input{
 	width:100%;
 	border:none;
@@ -54,7 +66,8 @@ table.skuTable td input{
 	color:#666;
 	text-align: center;
 }
-/*输入框样式*/
+
+
 input[type="text"]{
 	height: 24px;
 	display: inline-block;
@@ -77,7 +90,7 @@ input[type="text"]:focus {
 	outline: 0;
 	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
 	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6)
- }
+ }*/
 
 /*按钮样式*/
 .button{
@@ -108,12 +121,4 @@ input[type="text"]:focus {
 }
 button:focus {
 	outline: none;
-}
-/*其他样式*/
-li em{
-	color: #f00;
-	margin-left: -8px;
-	width: 8px;
-	font-style: normal;
-    vertical-align: sub;
 }

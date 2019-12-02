@@ -26,7 +26,7 @@ $(function(){
         var skuTypeArr =  [];//存放SKU类型的数组
         var totalRow = 1;//总行数
         //获取元素类型
-        $(".SKU_TYPE").each(function(){
+        $(".sku_type").each(function(){
             var that = $(this);
             //SKU类型节点
             var skuTypeNode = $(this).children("li");
@@ -138,7 +138,7 @@ $(function(){
 
                 SKUTableDom += '<tr propvalids=\''+propvalids+'\' propids=\''+propIdArr.toString()+'\' propvalnames=\''+propvalnameArr.join(";")+'\'  propnames=\''+propNameArr.join(";")+'\' class="sku_table_tr">'+currRowDoms;
                 for(var t = 0 ; t < defaultSkuTitleArr.length ; t ++){
-                    SKUTableDom += '<td><input type="text" class="setting_sku_' +defaultSkuNameArr[t]+ '" name="' +defaultSkuNameArr[t]+ '" value="'+alreadySetSkuStock+'"/></td>'
+                    SKUTableDom += '<td><input type="text" class="form-control setting_sku_' +defaultSkuNameArr[t]+ '" name="' +defaultSkuNameArr[t]+ '" value="'+alreadySetSkuStock+'"/></td>'
                 }
                 SKUTableDom += '</tr>';
 

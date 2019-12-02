@@ -56,17 +56,17 @@ class StyleLang extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('goods', 'ID'),
             'master_id' => Yii::t('goods', 'Master ID'),
-            'language' => Yii::t('goods', 'Language'),
-            'style_name' => Yii::t('goods', 'Style Name'),
-            'style_desc' => Yii::t('goods', 'Style Desc'),
+            'language' => Yii::t('common', '语言类型'),
+            'style_name' => Yii::t('goods', '商品名称'),
+            'style_desc' => Yii::t('goods', '商品描述'),
             'style_image' => Yii::t('goods', 'Style Image'),
             'style_attr' => Yii::t('goods', 'Style Attr'),
             'style_custom' => Yii::t('goods', 'Style Custom'),
             'goods_body' => Yii::t('goods', 'Goods Body'),
             'mobile_body' => Yii::t('goods', 'Mobile Body'),
-            'meta_title' => Yii::t('goods', 'Meta Title'),
-            'meta_word' => Yii::t('goods', 'Meta Word'),
-            'meta_desc' => Yii::t('goods', 'Meta Desc'),
+            'meta_title' => Yii::t('goods', 'SEO标题'),
+            'meta_word' => Yii::t('goods', 'SEO关键词'),
+            'meta_desc' => Yii::t('goods', 'SEO描述'),
         ];
     }
 }

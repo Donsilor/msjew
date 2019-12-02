@@ -47,7 +47,7 @@ use common\components\Service;
  * @property \services\oauth2\RefreshTokenService $oauth2RefreshToken oauth2刷新token
  * @property \services\oauth2\AuthorizationCodeService $oauth2AuthorizationCode oauth临时code
  * 
- * @property \services\goods\CategoryService $goodsCategory 商品分类
+ * @property \services\goods\CategoryService $goodsCate 商品分类
  * @property \services\goods\AttributeService $goodsAttribute 商品属性
  * @property \services\goods\TypeService $goodsType 商品类型（产品线）
  * @author jianyan74 <751393839@qq.com>

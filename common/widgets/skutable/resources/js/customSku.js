@@ -45,7 +45,7 @@ $(function(){
 		var isHaveThisSkuType = false;
 		var customSkuTypeName = $(this).val();
 		if(customSkuTypeName){
-			$("ul[class*='SKU_TYPE']").find("li").each(function(){
+			$("ul[class*='sku_type']").find("li").each(function(){
 				var currSkuTypeName = $(this).attr("sku-type-name");//当前SKU类型名称
 				if(currSkuTypeName == customSkuTypeName){//该SKU类型已经存在
 					isHaveThisSkuType = true;

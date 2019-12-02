@@ -48,7 +48,7 @@ class Style extends \yii\db\ActiveRecord
     {
         return [
             [['cat_id', 'type_id', 'merchant_id', 'storage_alarm', 'is_invoice', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
-            [['cat_id', 'type_id','style_sn', 'style_image', 'style_attr', 'style_custom', 'goods_body', 'mobile_body', 'sale_price', 'market_price', 'supplier_id', 'status', 'verify_status'], 'required'],
+            [['cat_id', 'type_id','style_sn', 'style_image', 'style_attr', 'style_custom','sale_price', 'market_price', 'supplier_id', 'status', 'verify_status'], 'required'],
             [['style_attr', 'style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['sale_price', 'market_price', 'cost_price'], 'number'],
             [['style_sn'], 'string', 'max' => 50],
@@ -64,9 +64,9 @@ class Style extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('goods', 'ID'),
-            'style_sn' => Yii::t('goods', 'Style Sn'),
-            'cat_id' => Yii::t('goods', 'Cat ID'),
-            'type_id' => Yii::t('goods', 'Type ID'),
+            'style_sn' => Yii::t('goods', '款式编号'),
+            'cat_id' => Yii::t('goods', '款式分类'),
+            'type_id' => Yii::t('goods', '产品线'),
             'merchant_id' => Yii::t('goods', 'Merchant ID'),
             'style_image' => Yii::t('goods', 'Style Image'),
             'style_attr' => Yii::t('goods', 'Style Attr'),
@@ -76,6 +76,7 @@ class Style extends \yii\db\ActiveRecord
             'sale_price' => Yii::t('goods', 'Sale Price'),
             'market_price' => Yii::t('goods', 'Market Price'),
             'cost_price' => Yii::t('goods', 'Cost Price'),
+            'goods_storage'=>  Yii::t('goods', '商品库存'),
             'storage_alarm' => Yii::t('goods', 'Storage Alarm'),
             'is_invoice' => Yii::t('goods', 'Is Invoice'),
             'is_recommend' => Yii::t('goods', 'Is Recommend'),

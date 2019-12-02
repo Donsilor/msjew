@@ -12,7 +12,7 @@ use common\helpers\Html;
             	<!-- 编辑-->
                 <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="<?= $tab.'_'.$lang_key?>">
 				<?php foreach ($fields as $attribute =>$val){?>
-					<?= $form->field($langModel,$attribute)->{$val['type']}(Html::langInputOptions($langModel,$lang_key,$attribute,$val['options']))->label($val['label'][0],$val['label'][1]) ?>
+					<?= $form->field($langModel,$attribute)->{$val['type']}(Html::langInputOptions($langModel,$lang_key,$attribute,$val['options']))->label($val['label']) ?>
               	<?php }?>
               	</div>
               	<!-- /.tab-pane -->
@@ -23,7 +23,7 @@ use common\helpers\Html;
         <!-- 新增 -->
         <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="<?= $tab.'_'.$lang_key?>">
 			<?php foreach ($fields as $attribute =>$val){?>
-				<?= $form->field($newLangModel,$attribute)->{$val['type']}(Html::langInputOptions($newLangModel,$lang_key,$attribute,$val['options']))->label($val['label'][0],$val['label'][1]) ?>
+				<?= $form->field($newLangModel,$attribute)->{$val['type']}(Html::langInputOptions($newLangModel,$lang_key,$attribute,$val['options']))->label($val['label']) ?>
             <?php }?>
         </div>
         <!-- /.tab-pane -->

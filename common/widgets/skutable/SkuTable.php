@@ -14,48 +14,43 @@ use common\widgets\skutable\assets\AppAsset;
 class SkuTable extends Widget
 {
     /**
-     * 省字段名
-     *
+     * SKU数据
+     *'data' =>[
+            [
+                    'id'=>1,
+                    'name'=>'颜色',
+                    'value'=>[
+                             1=>'16G',
+                             2=>'32G',                                                 
+                             3=>'64G',                                              
+                             4=>'128G',
+                    ],
+                    'current'=>[1,3,4]
+            ],
+            [
+                    'id'=>2,
+                    'name'=>'净度',
+                    'value'=>[
+                            11=>'SI',
+                            12=>'V'
+                     ],
+                    'current'=>[11]
+            ]
+            
+    ],
      * @var
      */
-    public $skuType = 'skuType';
+    public $data;
+
 
     /**
-     * 市字段名
-     *
-     * @var
-     */
-    public $skuInputVal = 'skuInputVal';
-
-    /**
-     * 区字段名
-     *
-     * @var
-     */
-    public $skuValue = 'skuValue';
-
-    /**
-     * 显示类型
+     * 模板
      *
      * long/short
      *
      * @var string
      */
     public $template = 'default';
-
-    /**
-     * 关联的ajax url
-     *
-     * @var
-     */
-    public $url;
-
-    /**
-     * 级别
-     *
-     * @var int
-     */
-    public $level = 3;
 
     /**
      * 模型
@@ -78,8 +73,7 @@ class SkuTable extends Widget
         parent::init();
         
         $asset = AppAsset::register($this->getView());
-        
-        empty($this->url) && $this->url = Yii::$app->urlManager->createUrl(['/provinces/index']);
+
     }
 
     /**
@@ -87,54 +81,10 @@ class SkuTable extends Widget
      */
     public function run()
     {
-        $this->skuType =  [
-            [
-                'id'=>1,
-                'name'=>'存储11',
-                'sku_value'=>[
-                    [
-                        'id'=>1,
-                        'name'=>'16G'
-                    ],
-                    [
-                        'id'=>2,
-                        'name'=>'32G'
-                    ],
-                    [
-                        'id'=>3,
-                        'name'=>'64G'
-                    ],
-                    [
-                        'id'=>4,
-                        'name'=>'128G'
-                    ],
-                ]
-            ],
-            [
-                'id'=>2,
-                'name'=>'版本',
-                'sku_value'=>[
-                    [
-                        'id'=>11,
-                        'name'=>'中国大陆版'
-                    ],
-                    [
-                        'id'=>12,
-                        'name'=>'港版'
-                    ],
-                ]
-            ]
-
-        ];
-        $this->skuValue = [1,3,4,11,12];
         return $this->render($this->template, [
             'form' => $this->form,
             'model' => $this->model,
-            'skuType' => $this->skuType,
-            'skuInputVal' => $this->skuInputVal,
-            'skuValue' => $this->skuValue,
-            'url' => $this->url,
-            'level' => $this->level,
+            'data' => $this->data,
         ]);
     }
 }

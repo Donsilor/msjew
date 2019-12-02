@@ -13,7 +13,7 @@ class AppAsset extends AssetBundle {
 
     // css会自动载入
     public $css = [
-            'css/sku_style.css',
+            'css/skutable.css',
     ];
 
     public $js = [

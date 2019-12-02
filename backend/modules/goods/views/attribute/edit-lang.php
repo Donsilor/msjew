@@ -30,6 +30,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'template' => "<div class='col-sm-2 text-right'>{label}</div><div class='col-sm-10'>{input}\n{hint}\n{error}</div>",
                     ],
                 ]); ?>
+                 <?php echo Html::langTab("tab")?>           
+		 		 <div class="tab-content">
                    <?= common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
                             'fields'=>
                             [
@@ -37,6 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'remark'=>['type'=>'textArea','options'=>[]]                            
                             ]]);
             	    ?>
+            	  </div>  
                     <?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
                             'data' => Yii::$app->services->goodsType->getDropDown(),
                             'options' => ['placeholder' => '请选择'],

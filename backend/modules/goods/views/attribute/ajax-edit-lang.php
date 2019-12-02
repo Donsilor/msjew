@@ -23,7 +23,9 @@ $form = ActiveForm::begin([
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
         <h4 class="modal-title">基本信息</h4>
 </div>
-    <div class="modal-body">
+    <div class="modal-body"> 
+   		  <?php echo Html::langTab("tab")?>           
+		  <div class="tab-content">            
             <?php 
             echo common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
                     'fields'=>
@@ -32,6 +34,7 @@ $form = ActiveForm::begin([
                         'remark'=>['type'=>'textArea','options'=>[]]                            
                     ]]);
     	    ?>
+    	  </div>  
             <!-- /.tab-content -->
             <?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
                     'data' => Yii::$app->services->goodsType->getDropDown(),
@@ -46,11 +49,13 @@ $form = ActiveForm::begin([
                     'pluginOptions' => [
                         'allowClear' => false
                     ],
-            ]);?>             
+            ]);?>  
+                       
             <?= $form->field($model, 'input_type')->radioList(common\enums\InputTypeEnum::getMap()) ?>
             <?= $form->field($model, 'is_require')->radioList(common\enums\ConfirmEnum::getMap())?>
             <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
             <?= $form->field($model, 'sort')->textInput() ?> 
+            
                    
     </div>
     <div class="modal-footer">

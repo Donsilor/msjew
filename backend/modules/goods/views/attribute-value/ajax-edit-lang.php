@@ -20,13 +20,15 @@ $form = ActiveForm::begin([
         <h4 class="modal-title">基本信息</h4>
 </div>
     <div class="modal-body">
-                 
+            <?php echo Html::langTab("tab")?>           
+		 	<div class="tab-content">     
             <?= common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
                             'fields'=>[
                                 'attr_value_name'=>['type'=>'textInput'],
                                 'remark'=>['type'=>'textArea','options'=>[]]                            
                             ]]);
             ?>
+            </div>
             <!-- /.tab-content -->
              <?= $form->field($model, 'attr_id')->textInput()->hiddenInput(['value'=>$model->attr_id])->label(false) ?>
              <?= $form->field($model, 'attr_value_code')->textInput() ?>

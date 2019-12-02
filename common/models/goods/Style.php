@@ -48,7 +48,7 @@ class Style extends \yii\db\ActiveRecord
     {
         return [
             [['cat_id', 'type_id', 'merchant_id', 'storage_alarm', 'is_invoice', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
-            [['merchant_id','style_sn', 'style_image', 'style_attr', 'style_custom', 'goods_body', 'mobile_body', 'sale_price', 'market_price', 'supplier_id', 'status', 'verify_status'], 'required'],
+            [['cat_id', 'type_id','style_sn', 'style_image', 'style_attr', 'style_custom', 'goods_body', 'mobile_body', 'sale_price', 'market_price', 'supplier_id', 'status', 'verify_status'], 'required'],
             [['style_attr', 'style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['sale_price', 'market_price', 'cost_price'], 'number'],
             [['style_sn'], 'string', 'max' => 50],

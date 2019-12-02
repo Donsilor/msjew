@@ -44,7 +44,7 @@ class LangBox extends Widget
                 $field['options'] = [];
             }
             if(!isset($field['label'])){
-                $field['label'] = [null,[]];
+                $field['label'] = null;
             }
             
         }

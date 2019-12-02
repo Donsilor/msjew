@@ -11,7 +11,11 @@ $this->title = Yii::t('goods', 'Style');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('goods', 'Styles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-
+<style>
+.nav-tabs-custom{
+	
+}
+</style>
 <div class="row">
     <div class="col-lg-12">
         <div class="box">
@@ -24,6 +28,22 @@ $this->params['breadcrumbs'][] = $this->title;
                         'template' => "<div class='col-sm-2 text-right'>{label}</div><div class='col-sm-10'>{input}\n{hint}\n{error}</div>",
                     ],
                 ]); ?>
+                <div class="row">
+        		<div class="col-lg-4"><?= $form->field($model, 'style_sn')->textInput(['maxlength' => true])->label("商品名称") ?></div>
+    			<div class="col-lg-4">
+    				<div class="nav-tabs-custom">
+    			        <?php echo Html::langTab("tab","款式名称")?>    			      
+            			<div class="tab-content"> 
+            				<?php 
+                    			echo LangBox::widget(['form'=>$form,'model'=>$model,'fields'=>[
+                    			    'style_name'=>['type'=>'textInput','options'=>['maxlength' => true],'label'=>false]
+                    			]]);
+                			?>
+            			</div>
+    			    </div>
+    			</div>
+    			<div class="col-lg-4"><?= $form->field($model, 'style_sn')->textInput(['maxlength' => true])->label("商品名称") ?></div>
+			</div>
                  <ul class="nav nav-tabs">
                     <?php foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){?>
                     <li class="<?php echo Yii::$app->language==$lang_key?"active":"" ?>">

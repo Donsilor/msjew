@@ -4,6 +4,7 @@ use common\helpers\Html;
 use yii\widgets\ActiveForm;
 use common\widgets\langbox\LangBox;
 use yii\base\Widget;
+use common\widgets\skutable\SkuTable;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\goods\Style */
@@ -21,75 +22,26 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-header with-border">
                 <h3 class="box-title">基础信息</h3>
             </div>
-            <div class="box-body">
-            <div class="row">
-        		<div class="col-lg-4"><?= $form->field($model, 'style_sn')->textInput(['maxlength' => true])->label("商品名称") ?></div>
-    			<div class="col-lg-4">
-    			<?php 
-    			echo LangBox::widget(['form'=>$form,'model'=>$model,'fields'=>[
-    			    'style_name'=>['type'=>'textInput','options'=>['maxlength' => true],'label'=>[false,[]]]
-    			]]);
-    			?>
-    			</div>
-    			<div class="col-lg-4"><?= $form->field($model, 'style_sn')->textInput(['maxlength' => true])->label("商品名称") ?></div>
-			</div>		
-			<?= $form->field($model, 'style_sn')->textInput(['maxlength' => true])->label("商品描述") ?>
+            <div class="box-body">            
+			<?= $form->field($model, 'type_id')->dropDownList([])->label("产品线") ?>
+            <?= $form->field($model, 'cat_id')->dropDownList([])->label("款式分类") ?>   	
             
-
-          
-          <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                  <li><a href="javascript:void(0)">商品描述</a></li>
-                  <li class="active"><a href="#tab_1-1" data-toggle="tab" aria-expanded="false">Tab 1</a></li>
-                  <li class=""><a href="#tab_2-2" data-toggle="tab" aria-expanded="false">Tab 2</a></li>
-                  <li ><a href="#tab_3-2" data-toggle="tab" aria-expanded="true">Tab 3</a></li>              
-                </ul>
-                <div class="tab-content">
-                  <div class="tab-pane" id="tab_1-1">
-                    <?= $form->field($model, 'style_sn')->textInput(['maxlength' => true])->label(false) ?>
-                  </div>
-                  <!-- /.tab-pane -->
-                  <div class="tab-pane" id="tab_2-2">
-                    <?= $form->field($model, 'style_sn')->textInput(['maxlength' => true])->label(false) ?>
-                  </div>
-                  <!-- /.tab-pane -->
-                  <div class="tab-pane active" id="tab_3-2">
-                    <?= $form->field($model, 'style_sn')->textInput(['maxlength' => true])->label(false) ?>
-                  </div>
-                  <!-- /.tab-pane -->
-                </div>
-                <!-- /.tab-content -->
-              </div>
-
-          
-          <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                  <li><a href="javascript:void(0)">款式名称</a></li>
-                  <li class="active"><a href="#tab_1-1" data-toggle="tab" aria-expanded="false">Tab 1</a></li>
-                  <li class=""><a href="#tab_2-2" data-toggle="tab" aria-expanded="false">Tab 2</a></li>
-                  <li ><a href="#tab_3-2" data-toggle="tab" aria-expanded="true">Tab 3</a></li>              
-                </ul>
-                <div class="tab-content">
-                  <div class="tab-pane" id="tab_1-1">
-                    <?= $form->field($model, 'style_sn')->textInput(['maxlength' => true])->label(false) ?>
-                  </div>
-                  <!-- /.tab-pane -->
-                  <div class="tab-pane" id="tab_2-2">
-                    <?= $form->field($model, 'style_sn')->textInput(['maxlength' => true])->label(false) ?>
-                  </div>
-                  <!-- /.tab-pane -->
-                  <div class="tab-pane active" id="tab_3-2">
-                    <?= $form->field($model, 'style_sn')->textInput(['maxlength' => true])->label(false) ?>
-                  </div>
-                  <!-- /.tab-pane -->
-                </div>
-                <!-- /.tab-content -->
-              </div>
-          </div>
+			<div class="nav-tabs-custom">
+		        <?php echo Html::langTab("tab1")?>    			      
+    			<div class="tab-content"> 
+    				<?php 
+            			echo LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab1','fields'=>[
+            			    'style_name'=>['type'=>'textInput','options'=>['maxlength' => true],'label'=>"商品名称"],
+            			    'style_desc'=>['type'=>'textArea','options'=>['maxlength' => true],'label'=>"商品描述"]
+            			]]);
+        			?>
+    			</div>
+		    </div>
       
       
         </div>
     </div>
+</div>
 </div>
 
 <div class="row">
@@ -100,9 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="box-body">
                 <?php 
-    			echo LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'','fields'=>[
-    			    'style_name'=>['type'=>'textInput','options'=>['maxlength' => true],'label'=>[false,[]]]
-    			]]);
+    			echo SkuTable::widget(['form'=>$form,'model'=>$model]);
     			?>
             </div>
         </div>

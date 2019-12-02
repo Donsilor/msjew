@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'skuType' =>'',
                         'skuInputVal' =>'',//
                         'skuValue' => [1,3,4,11,12],// 区字段名
-                        'template' => 'short'])
+                        ])
                     ?>
                     <div class="form-group">
                     <div class="col-sm-12 text-center">

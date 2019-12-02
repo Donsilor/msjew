@@ -41,7 +41,7 @@ class SkuTable extends Widget
      *
      * @var string
      */
-    public $template = 'long';
+    public $template = 'default';
 
     /**
      * 关联的ajax url

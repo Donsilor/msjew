@@ -41,29 +41,14 @@ $form = ActiveForm::begin([
 
         <div class="tab-content">
 
-            <?php $newLangModel = $model->langModel();?>
             <?php
-            foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){
-                $is_new = true;
-                ?>
-                <?php foreach ($model->langs as $langModel) {?>
-                    <?php if($lang_key == $langModel->language){?>
-                        <!-- 编辑-->
-                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                            <?= $form->field($langModel, 'adv_name')->textInput(Html::langInputOptions($langModel,$lang_key,"adv_name",['style'=>'width:200px;'])) ?>
-                        </div>
-                        <!-- /.tab-pane -->
-                        <?php $is_new = false; break;?>
-                    <?php }?>
-                <?php }?>
-                <?php if($is_new == true){?>
-                    <!-- 新增 -->
-                    <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                        <?= $form->field($newLangModel, 'adv_name')->textInput(Html::langInputOptions($newLangModel,$lang_key,"adv_name",['style'=>'width:200px;'])) ?>
-                    </div>
-                    <!-- /.tab-pane -->
-                <?php }?>
-            <?php }?>
+            echo common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
+                'fields'=>
+                    [
+                        'adv_name'=>['type'=>'textInput'],
+
+                    ]]);
+            ?>
         </div>
 
         <?= $form->field($model, 'adv_type')->radioList(SettingEnum::$advTypeAction) ?>

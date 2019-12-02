@@ -30,29 +30,15 @@ $form = ActiveForm::begin([
                     'allowClear' => true
                 ],
             ]);?>
-            <?php $newLangModel = $model->langModel();?>
+
             <?php
-            foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){
-                $is_new = true;
-                ?>
-                <?php foreach ($model->langs as $langModel) {?>
-                    <?php if($lang_key == $langModel->language){?>
-                        <!-- 编辑-->
-                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                            <?= $form->field($langModel, 'title')->textInput(Html::langInputOptions($langModel,$lang_key,"title",['style'=>'width:200px;'])) ?>
-                        </div>
-                        <!-- /.tab-pane -->
-                        <?php $is_new = false; break;?>
-                    <?php }?>
-                <?php }?>
-                <?php if($is_new == true){?>
-                    <!-- 新增 -->
-                    <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                        <?= $form->field($newLangModel, 'title')->textInput(Html::langInputOptions($newLangModel,$lang_key,"title",['style'=>'width:200px;'])) ?>
-                    </div>
-                    <!-- /.tab-pane -->
-                <?php }?>
-            <?php }?>
+            echo common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
+                'fields'=>
+                    [
+                        'title'=>['type'=>'textInput'],
+
+                    ]]);
+            ?>
         </div>
 
         <?= $form->field($model, 'adv_image')->widget(Files::class, [

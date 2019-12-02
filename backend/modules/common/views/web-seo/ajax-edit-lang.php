@@ -27,33 +27,18 @@ $form = ActiveForm::begin([
             <?php }else{ ?>
                 <?= $form->field($model, 'page_name')->textInput(['maxlength' => true, 'readonly' => 'true']) ?>
             <?php } ?>
-            <?php $newLangModel = $model->langModel();?>
+
+
             <?php
-            foreach (\Yii::$app->params['languages'] as $lang_key=>$lang_name){
-                $is_new = true;
-                ?>
-                <?php foreach ($model->langs as $langModel) {?>
-                    <?php if($lang_key == $langModel->language){?>
-                        <!-- 编辑-->
-                        <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                            <?= $form->field($langModel, 'meta_title')->textInput(Html::langInputOptions($langModel,$lang_key,"meta_title")) ?>
-                            <?= $form->field($langModel, 'meta_word')->textArea(Html::langInputOptions($langModel,$lang_key,"meta_word",['rows'=>'2'])) ?>
-                            <?= $form->field($langModel, 'meta_desc')->textArea(Html::langInputOptions($langModel,$lang_key,"meta_desc",['rows'=>'3'])) ?>
-                        </div>
-                        <!-- /.tab-pane -->
-                        <?php $is_new = false; break;?>
-                    <?php }?>
-                <?php }?>
-                <?php if($is_new == true){?>
-                    <!-- 新增 -->
-                    <div class="tab-pane<?php echo Yii::$app->language==$lang_key?" active":"" ?>" id="tab_<?= $lang_key?>">
-                        <?= $form->field($newLangModel, 'meta_title')->textInput(Html::langInputOptions($newLangModel,$lang_key,"meta_title")) ?>
-                        <?= $form->field($newLangModel, 'meta_word')->textArea(Html::langInputOptions($newLangModel,$lang_key,"meta_word",['rows'=>'2'])) ?>
-                        <?= $form->field($newLangModel, 'meta_desc')->textArea(Html::langInputOptions($newLangModel,$lang_key,"meta_desc",['rows'=>'3'])) ?>
-                    </div>
-                    <!-- /.tab-pane -->
-                <?php }?>
-            <?php }?>
+            echo common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
+                'fields'=>
+                    [
+                        'meta_title'=>['type'=>'textInput'],
+                        'meta_word'=>['type'=>'textArea','options'=>['rows'=>'2']],
+                        'meta_desc'=>['type'=>'textArea','options'=>['rows'=>'3']],
+
+                    ]]);
+            ?>
         </div>
 
 

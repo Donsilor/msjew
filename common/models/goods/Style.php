@@ -3,6 +3,7 @@
 namespace common\models\goods;
 
 use Yii;
+use common\models\base\BaseModel;
 
 /**
  * This is the model class for table "goods_style".
@@ -31,7 +32,7 @@ use Yii;
  * @property int $created_at 商品添加时间
  * @property int $updated_at
  */
-class Style extends \yii\db\ActiveRecord
+class Style extends BaseModel
 {
     /**
      * {@inheritdoc}
@@ -48,12 +49,14 @@ class Style extends \yii\db\ActiveRecord
     {
         return [
             [['cat_id', 'type_id', 'merchant_id', 'storage_alarm', 'is_invoice', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
-            [['cat_id', 'type_id','style_sn', 'style_image', 'style_attr', 'style_custom','sale_price', 'market_price', 'supplier_id', 'status', 'verify_status'], 'required'],
+            [['cat_id', 'type_id','style_sn','style_image','goods_images', 'sale_price', 'market_price', 'supplier_id', 'status', 'verify_status'], 'required'],
             [['style_attr', 'style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['sale_price', 'market_price', 'cost_price'], 'number'],
             [['style_sn'], 'string', 'max' => 50],
             [['style_image'], 'string', 'max' => 100],
             [['verify_remark'], 'string', 'max' => 255],
+            [['goods_images'], 'safe'],
+            [['goods_images'],'implodeArray','params'=>['split'=>',']],
         ];
     }
 
@@ -69,6 +72,7 @@ class Style extends \yii\db\ActiveRecord
             'type_id' => Yii::t('goods', '产品线'),
             'merchant_id' => Yii::t('goods', 'Merchant ID'),
             'style_image' => Yii::t('goods', 'Style Image'),
+            'goods_images' => Yii::t('goods', '商品图片'),
             'style_attr' => Yii::t('goods', 'Style Attr'),
             'style_custom' => Yii::t('goods', 'Style Custom'),
             'goods_body' => Yii::t('goods', 'Goods Body'),
@@ -130,5 +134,10 @@ class Style extends \yii\db\ActiveRecord
     public function getCate()
     {
         return $this->hasOne(CategoryLang::class, ['master_id'=>'cat_id'])->alias('cate')->where(['cate.language'=>Yii::$app->language]);
+    }
+    
+    public function imageModel()
+    {
+        return new Images();
     }
 }

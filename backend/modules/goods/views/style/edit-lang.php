@@ -108,7 +108,16 @@ $this->params['breadcrumbs'][] = $this->title;
               <li class="pull-left header"><i class="fa fa-th"></i> 图片信息</li>
             </ul>
             <div class="box-body">
-                图片信息
+      <?= $form->field($model, 'goods_images')->widget(common\widgets\webuploader\Files::class, [
+            'config' => [
+                'pick' => [
+                    'multiple' => true,
+                ],
+                'formData' => [
+                    'drive' => 'local',// 默认本地 支持 qiniu/oss 上传
+                ],
+            ]
+        ]); ?>
             </div>  
             <!-- ./box-body -->          
       </div>

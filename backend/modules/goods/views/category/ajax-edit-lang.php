@@ -49,7 +49,6 @@ $form = ActiveForm::begin([
 
         </div>
 
-
             <?= $form->field($model, 'image')->widget(Files::class, [
                 'config' => [
                     // 可设置自己的上传地址, 不设置则默认地址

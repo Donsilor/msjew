@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-lg-12">
         <div class="box">
             <div class="box-header with-border">
+                
                 <h3 class="box-title">基本信息</h3>
             </div>
             <div class="box-body">

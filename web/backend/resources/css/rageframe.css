@@ -1573,3 +1573,5 @@ nav.page-tabs .page-tabs-content {
 .jstree-default .jstree-icon.none {
     width: 0;
 }
+
+.nav-tabs-custom {box-shadow:none;margin-bottom:0px}

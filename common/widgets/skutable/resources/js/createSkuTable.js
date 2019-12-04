@@ -5,7 +5,7 @@
  * email:uf_zhangxiaowu@163.com
  */
 
-var alreadySetSkuVals = {};//已经设置的SKU值数据
+//var alreadySetSkuVals = {};//已经设置的SKU值数据
 
 $(function(){
 
@@ -19,6 +19,7 @@ $(function(){
         getAlreadySetSkuVals();//获取已经设置的SKU值
         // console.log(alreadySetSkuVals);
         var defaultSku = $("#defaultSku");
+        var defaultSkuRequireArr = defaultSku.attr('attr-require').split(',');
         var defaultSkuTitleArr = defaultSku.attr('attr-title').split(',');
         // console.log(defaultSkuTitleArr);
         var defaultSkuNameArr = defaultSku.attr('attr-name').split(',');
@@ -83,9 +84,14 @@ $(function(){
                 SKUTableDom += '<th>'+skuTypeArr[t].skuTypeTitle+'</th>';
             }
             for(var t = 0 ; t < defaultSkuTitleArr.length ; t ++){
-                SKUTableDom += '<th>'+defaultSkuTitleArr[t]+'</th>';
+            	if(defaultSkuRequireArr[t] == 1){
+            		SKUTableDom += '<th class="required"><em>*</em>'+defaultSkuTitleArr[t]+'</th>';
+            	}else{
+            		SKUTableDom += '<th>'+defaultSkuTitleArr[t]+'</th>';
+            	} 
+            	
             }
-
+            //SKUTableDom += '<th>Status</th>';
 
             SKUTableDom += "</tr>";
             //循环处理表体
@@ -115,57 +121,98 @@ $(function(){
                         propvalnameArr.push(skuValues[parseInt(point)].skuValueTitle);
                     }
                 }
-//
-//				//进行排序(主键小的在前,大的在后),注意:适用于数值类型的主键
-//				propvalidArr.sort(function(provids1,propvids2){
-//					return (provids1 - propvids2)
-//				});
 
-                var propvalids = propvalidArr.toString()
-                var alreadySetSkuPrice = "";//已经设置的SKU价格
-                var alreadySetSkuStock = "";//已经设置的SKU库存
-                //赋值
-                if(alreadySetSkuVals){
-                    var currGroupSkuVal = alreadySetSkuVals[propvalids];//当前这组SKU值
-                    if(currGroupSkuVal){
-                        alreadySetSkuPrice = currGroupSkuVal.skuPrice;
-                        alreadySetSkuStock = currGroupSkuVal.skuStock
-                    }
-                }
-                console.log(propvalids);
-
-
-
+                var propvalids = propvalidArr.toString();
+                var _propvalids = sortSkuIds(propvalids);
+                
                 SKUTableDom += '<tr propvalids=\''+propvalids+'\' propids=\''+propIdArr.toString()+'\' propvalnames=\''+propvalnameArr.join(";")+'\'  propnames=\''+propNameArr.join(";")+'\' class="sku_table_tr">'+currRowDoms;
                 for(var t = 0 ; t < defaultSkuTitleArr.length ; t ++){
-                    SKUTableDom += '<td><input type="text" class="form-control setting_sku_' +defaultSkuNameArr[t]+ '" name="' +defaultSkuNameArr[t]+ '" value="'+alreadySetSkuStock+'"/></td>'
-                }
+                	var skuVal= "";
+                	var skuName = defaultSkuNameArr[t];
+                	var skuValDefined = false;
+                	if(alreadySetSkuVals[_propvalids] && typeof alreadySetSkuVals[_propvalids][defaultSkuNameArr[t]] != 'undefined'){
+                		skuVal = alreadySetSkuVals[_propvalids][defaultSkuNameArr[t]];
+                		skuValDefined = true;
+                	}
+                	if(skuName == "status"){
+                		var _checked = skuValDefined == false || skuVal== 1?'checked':'';
+                		SKUTableDom += '<td><input type="checkbox" class="setting_sku_' +skuName+'" name="Spec['+_propvalids+'][' +skuName+']" value="1" '+_checked+'/></td>';
+                	}else{
+                    	SKUTableDom += '<td><input type="text" class="form-control setting_sku_' +skuName+'" name="Spec['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/></td>'
+                	}
+               	}
                 SKUTableDom += '</tr>';
 
             }
             SKUTableDom += "</table>";
         }
         $("#skuTable").html(SKUTableDom);
+        $("tr[class*='sku_table_tr']").each(function(){
+        	if($(this).find("input[class*='setting_sku_status']").is(':checked')){
+        		$(this).find("input[type*='text']").attr("disabled",false);
+        	}else{
+        		$(this).find("input[type*='text']").attr("disabled",true);
+        	}
+        });
+        $("tr[class*='sku_table_tr']").find("input[class*='setting_sku_status']").change(function(){
+        	if($(this).is(':checked')){
+        		$(this).parent().parent().find("input[type*='text']").attr("disabled",false);
+        	}else{
+        		$(this).parent().parent().find("input[type*='text']").attr("disabled",true);
+        	}
+        });
 	}
 
 
 });
-
 /**
  * 获取已经设置的SKU值 
  */
 function getAlreadySetSkuVals(){
-	alreadySetSkuVals = {};
+	var defaultSkuNameArr = $("#defaultSku").attr('attr-name').split(',');
 	//获取设置的SKU属性值
-	$("tr[class*='sku_table_tr']").each(function(){
-		var skuPrice = $(this).find("input[type='text'][class*='setting_sku_price']").val();//SKU价格
-		var skuStock = $(this).find("input[type='text'][class*='setting_sku_stock']").val();//SKU库存
-		if(skuPrice || skuStock){//已经设置了全部或部分值
-			var propvalids = $(this).attr("propvalids");//SKU值主键集合
-			alreadySetSkuVals[propvalids] = {
-				"skuPrice" : skuPrice,
-				"skuStock" : skuStock
+	$("tr[class*='sku_table_tr']").each(function(){	
+		var _propvalids = sortSkuIds($(this).attr("propvalids"));//SKU值主键集合
+		var _skuVals = {};
+		for(i = 0 ; i< defaultSkuNameArr.length;i++){	
+			_skuVals[defaultSkuNameArr[i]] = $(this).find("input[type='text'][class*='setting_sku_"+defaultSkuNameArr[i]+"']").val();			
+		}
+		alreadySetSkuVals[_propvalids] = _skuVals;
+	});
+}
+/**
+ * 数据校验
+ * @returns
+ */
+function checkSkuInputData(){
+	var defaultSku = $("#defaultSku");
+	var defaultSkuNameArr = defaultSku.attr('attr-name').split(',');
+	var defaultSkuRequireArr = defaultSku.attr('attr-require').split(',');
+	var defaultSkuTitleArr = defaultSku.attr('attr-title').split(',');
+	$("tr[class*='sku_table_tr']").each(function(index){
+		if($(this).find("input[class*='setting_sku_status']").is(':checked')){
+			for(i = 0 ; i< defaultSkuNameArr.length;i++){
+				if(defaultSkuNameArr[i] == 'status') continue;
+				var val = $(this).find("input[class*='setting_sku_"+defaultSkuNameArr[i]+"']").val();
+				if(defaultSkuRequireArr[i]==1 && val==''){
+					alert("【价格配置】第"+(index+1)+"行, "+defaultSkuTitleArr[i]+"不能为空");
+					return false;
+				}
 			}
 		}
 	});
 }
+/**
+ * 排序
+ * @param str
+ * @returns
+ */
+function sortSkuIds(str){
+   var array = str.split(",");   
+   array.sort(function(v1,v2){return v1-v2;});
+   return array.toString();
+}
+//获取已经设置的SKU
+$(".getSetSkuVal").on("click",function(){
+	checkSkuInputData();
+});

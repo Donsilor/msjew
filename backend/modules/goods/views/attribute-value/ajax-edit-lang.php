@@ -20,9 +20,9 @@ $form = ActiveForm::begin([
         <h4 class="modal-title">基本信息</h4>
 </div>
     <div class="modal-body">
-            <?php echo Html::langTab("tab")?>           
+            <?php echo Html::langTab("tab_value")?>           
 		 	<div class="tab-content">     
-            <?= common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
+            <?= common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab_value',
                             'fields'=>[
                                 'attr_value_name'=>['type'=>'textInput'],
                                 'remark'=>['type'=>'textArea','options'=>[]]                            

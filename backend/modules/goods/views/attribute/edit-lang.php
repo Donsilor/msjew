@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'remark'=>['type'=>'textArea','options'=>[]]                            
                             ]]);
             	    ?>
-            	  </div>  
+
                     <?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
                             'data' => Yii::$app->services->goodsType->getDropDown(),
                             'options' => ['placeholder' => '请选择'],

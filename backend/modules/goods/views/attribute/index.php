@@ -56,6 +56,18 @@ $this->params['breadcrumbs'][] = $this->title;
                  'attribute'=>'lang.attr_values',
             ], 
             [
+                'attribute' => 'attr_type',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\AttrTypeEnum::getValue($model->attr_type);
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'attr_type',\common\enums\AttrTypeEnum::getMap(), [
+                        'prompt' => '全部',
+                        'class' => 'form-control'
+                ]),
+            ],
+            [
                     //'label' => 'cat_name',
                     'attribute' => 'type.type_name',
                     'filter' => Html::activeDropDownList($searchModel, 'type_id', Yii::$app->services->goodsType->getDropDown(), [

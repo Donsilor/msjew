@@ -1,3 +1,6 @@
+<script>
+var alreadySetSkuVals = {'2,7,9':{'goods_sn':'goods_sn12132','status':0}};
+</script>
 <div id="skuTableBox">
 <?php
 foreach ($data as $key => $val){
@@ -23,5 +26,6 @@ foreach ($data as $key => $val){
 </li>
 <div class="clear"></div>
 <div id="skuTable"></div>
-<input type="hidden" id="defaultSku" attr-name="price,stock" attr-title="价格,库存,数量"  ></input>
+<input type="hidden" id="defaultSku" attr-require="<?= $inputAttrRequire?>" attr-name="<?= $inputAttrName?>" attr-title="<?= $inputAttrTitle?>"/>
+<input type="button" class="getSetSkuVal" value="校验数据" />
 </div>

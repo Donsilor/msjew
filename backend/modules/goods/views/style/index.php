@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-header">
                 <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
                 <div class="box-tools">
-                    <?= Html::create(['edit-lang']) ?>
+                    <?= Html::create(['edit-lang','type_id'=>Yii::$app->request->get('type_id',0)]) ?>
                 </div>
             </div>
             <div class="box-body table-responsive">

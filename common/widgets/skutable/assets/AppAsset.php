@@ -18,8 +18,8 @@ class AppAsset extends AssetBundle {
 
     public $js = [
         'js/createSkuTable.js',
-        'js/customSku.js',
-        'plugins/layer/layer.js'
+        //'js/customSku.js',
+        //'plugins/layer/layer.js'
     ];
 
     public $publishOptions = [

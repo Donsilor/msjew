@@ -51,4 +51,29 @@ class StyleController extends BaseController
             'searchModel' => $searchModel,
         ]);
     }
+    
+    /**
+     * 编辑/创建 多语言
+     *
+     * @return mixed
+     */
+    public function actionEditLang()
+    {
+        $id = Yii::$app->request->get('id', null);
+        if($post = Yii::$app->request->post()){
+            print_r($post);
+            exit;
+        }
+        
+        //$trans = Yii::$app->db->beginTransaction();
+        $model = $this->findModel($id);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $this->editLang($model,false);
+            return $this->redirect(['index']);
+        }
+        
+        return $this->render($this->action->id, [
+                'model' => $model,
+        ]);
+    }
 }

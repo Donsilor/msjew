@@ -36,8 +36,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         'pluginOptions' => [
                             'allowClear' => true
                         ],
-                ]);?>                    
-    			<div class="nav-tabs-custom">
+                ]);?> 
+                <?= $form->field($model, 'style_sn')->textInput(['maxlength'=>true]) ?>
+                <?= $form->field($model, 'market_price')->textInput(['maxlength'=>true]) ?>
+                <?= $form->field($model, 'sale_price')->textInput(['maxlength'=>true]) ?>                                 
+    			<div class="nav-tabs-custom ">
     		        <?php echo Html::langTab("tab1")?>    			      
         			<div class="tab-content" style="padding-left:10px"> 
         				<?php 
@@ -57,50 +60,47 @@ $this->params['breadcrumbs'][] = $this->title;
               <li class="pull-left header"><i class="fa fa-th"></i> 商品属性</li>
             </ul>
             <div class="box-body">
-                <div class="box-header with-border">
-                    <h3 class="box-title">基本属性</h3>
-                </div>
-                <div class="box-body" style="margin-left:10px">
-        
-                </div>
-                <!-- ./box-body -->
-                <div class="box-header with-border">
-                    <h3 class="box-title">销售属性</h3>
-                </div>
-                <div class="box-body" style="margin-left:10px">
-                <?= common\widgets\skutable\SkuTable::widget(['form' => $form,
-                        'model' => $model,
-                        'data' =>[
-                                [
-                                        'id'=>1,
-                                        'name'=>'颜色',
-                                        'value'=>[
-                                                 1=>'16G',
-                                                 2=>'32G',                                                 
-                                                 3=>'64G',                                              
-                                                 4=>'128G',
-                                        ],
-                                        'current'=>[1,3,4]
-                                ],
-                                [
-                                        'id'=>2,
-                                        'name'=>'净度',
-                                        'value'=>[
-                                                11=>'SI',
-                                                12=>'V'
-                                         ],
-                                        'current'=>[11]
-                                ]
-                                
-                        ],
-                        ])
+               <?php 
+                $attr_list = \Yii::$app->services->goodsAttribute->getAttrListByTypeId($model->type_id);
+                foreach ($attr_list as $attr_type=>$attrList){
+                    ?>
+                    <div class="box-header with-border">
+                    	<h3 class="box-title"><?= common\enums\AttrTypeEnum::getValue($attr_type)?></h3>
+                	</div>
+                    <div class="box-body" style="margin-left:10px">
+                          <?php 
+                          //如果是销售属性
+                          if($attr_type == common\enums\AttrTypeEnum::TYPE_SALE){
+                              $data = [];
+                              foreach ($attrList as $k=>$attr){   
+                                  $values = Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']);
+                                  $data[] = [
+                                      'id'=>$attr['id'],
+                                      'name'=>$attr['attr_name'],
+                                      'value'=>Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']),
+                                      'current'=>[9,2,1,7]
+                                  ];   
+                              }
+                             
+                              if(!empty($data)){
+                                 echo common\widgets\skutable\SkuTable::widget(['form' => $form,'model' => $model,'data' =>$data]);
+                              }
+                            ?>                            
+                          <?php }else{?>
+                          
+                          
+                          <?php }?>                         
+               			  
+                    </div>
+                    <?php 
+                }
                 ?>
-                <?= $form->field($model, 'style_sn')->textInput(['maxlength'=>true]) ?>
+                <div class="box-body" style="margin-left:10px">
                 <?= $form->field($model, 'goods_storage')->textInput(['maxlength'=>true]) ?>
-            </div>
-            <!-- ./box-body -->  
-       </div>  
-       <!-- ./box-body -->          
+                </div>
+                  
+           </div>  
+      	 <!-- ./box-body -->          
       </div>    
     
       <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_3">
@@ -125,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> SEO信息</li>
             </ul>
-            <div class="box-body nav-tabs-custom" style="margin-left:10px">
+            <div class="box-body nav-tabs-custom none-shadow" style="margin-left:10px">
                  <?php echo Html::langTab("tab4")?>           
         		  <div class="tab-content">            
                     <?php 
@@ -145,6 +145,14 @@ $this->params['breadcrumbs'][] = $this->title;
       <!-- ./row -->
     
     </div>
+    <div class="modal-footer">
+        <div class="col-sm-12 text-center">
+            <button class="btn btn-primary" type="submit">保存</button>
+            <span class="btn btn-white" onclick="history.go(-1)">返回</span>
+        </div>
+	</div>
 </div>
+
 <?php ActiveForm::end(); ?>
+
 

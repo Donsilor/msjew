@@ -65,6 +65,10 @@ class SkuTable extends Widget
      */
     public $form;
 
+    public $inputAttrs;
+    private $inputAttrName = '';
+    private $inputAttrTitle = '';
+    private $inputAttrRequire = '';
     /**
      * @inheritdoc
      */
@@ -73,7 +77,24 @@ class SkuTable extends Widget
         parent::init();
         
         $asset = AppAsset::register($this->getView());
-
+        if(!isset($this->inputAttrs)){
+            $this->inputAttrs =  [
+                    ['name'=>'goods_sn','title'=>'商品编码','require'=>1],                    
+                    ['name'=>'market_price','title'=>'市场价','require'=>0],
+                    ['name'=>'sale_price','title'=>'销售价','require'=>1],
+                    ['name'=>'goods_storage','title'=>'库存','require'=>1],
+                    ['name'=>'status','title'=>'状态','require'=>0],
+            ];
+        }
+        $inputAttrCode = '';
+        foreach ($this->inputAttrs as $attr){
+            $this->inputAttrName .= $attr['name'].',';
+            $this->inputAttrTitle .= $attr['title'].',';
+            $this->inputAttrRequire .= $attr['require'].',';
+        }
+        $this->inputAttrName = rtrim($this->inputAttrName,',');
+        $this->inputAttrTitle = rtrim($this->inputAttrTitle,',');
+        $this->inputAttrRequire = rtrim($this->inputAttrRequire,',');
     }
 
     /**
@@ -81,10 +102,14 @@ class SkuTable extends Widget
      */
     public function run()
     {
+        
         return $this->render($this->template, [
             'form' => $this->form,
             'model' => $this->model,
             'data' => $this->data,
+            'inputAttrName'=>$this->inputAttrName,
+            'inputAttrTitle'=>$this->inputAttrTitle, 
+            'inputAttrRequire'=>$this->inputAttrRequire,
         ]);
     }
 }

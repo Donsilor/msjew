@@ -312,11 +312,11 @@ Css
             $active = $curValue == $key?"active":"";
             $id = $tab.'_'.$key;
             $str.='<li class="'.$active.'"><a href="#'.$id.'" id="a_'.$id.'" data-toggle="tab" aria-expanded="false">'.$name.'</a></li>';
-            if($key==0){
+            if($key === 0){
                 $str .='<script type="text/javascript">';
                 $str .= '$("#a_'.$id.'").click(function(){';
                 foreach ($options as $k=>$v){
-                    if($k>0){
+                    if($k > 0){
                         $str .='$("#'.$tab.'_'.$k.'").removeClass("active").addClass("active");';
                     }
                 }

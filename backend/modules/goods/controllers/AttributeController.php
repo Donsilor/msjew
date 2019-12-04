@@ -82,6 +82,7 @@ class AttributeController extends BaseController
                 'scenario' => 'default',
                 'partialMatchAttributes' => [], // 模糊查询
                 'defaultOrder' => [
+                    'sort'=>SORT_ASC,
                     'id' => SORT_DESC
                 ],
                 'pageSize' => $this->pageSize,

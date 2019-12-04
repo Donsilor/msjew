@@ -21,7 +21,7 @@ class AttrTypeEnum extends BaseEnum
   {
     return [
         self::TYPE_BASE => '基础属性',
-        self::TYPE_SALE => '销售属性',
+        self::TYPE_SALE => '规格属性',
         self::TYPE_MADE => '定制属性',        
     ];
   }

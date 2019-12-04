@@ -4,6 +4,7 @@ namespace common\models\goods;
 
 use Yii;
 use common\models\base\BaseModel;
+use common\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "goods_style".
@@ -14,8 +15,10 @@ use common\models\base\BaseModel;
  * @property int $type_id 产品线
  * @property int $merchant_id 商户ID
  * @property string $style_image 商品主图
+ * @property string $goods_images 商品图库
  * @property string $style_attr 款式属性
  * @property string $style_custom 款式自定义属性
+ * @property string $style_spec 款式规格属性
  * @property string $goods_body 商品内容
  * @property string $mobile_body 手机端商品描述
  * @property string $sale_price 销售价
@@ -34,6 +37,9 @@ use common\models\base\BaseModel;
  */
 class Style extends BaseModel
 {
+    
+    public $attr_require;//必填属性
+    public $attr_custom;//选填属性
     /**
      * {@inheritdoc}
      */
@@ -49,17 +55,59 @@ class Style extends BaseModel
     {
         return [
             [['cat_id', 'type_id', 'merchant_id', 'storage_alarm', 'is_invoice', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
-            [['cat_id', 'type_id','style_sn','style_image','goods_images', 'sale_price', 'market_price', 'supplier_id', 'status', 'verify_status'], 'required'],
-            [['style_attr', 'style_custom', 'goods_body', 'mobile_body'], 'string'],
+            [['cat_id', 'type_id','style_sn','attr_require','goods_images', 'sale_price', 'market_price',], 'required'],
+            [['style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['sale_price', 'market_price', 'cost_price'], 'number'],
             [['style_sn'], 'string', 'max' => 50],
             [['style_image'], 'string', 'max' => 100],
             [['verify_remark'], 'string', 'max' => 255],
-            [['goods_images'], 'safe'],
-            [['goods_images'],'implodeArray','params'=>['split'=>',']],
+            [['style_image'], 'safe'],
+            //[['goods_images'],'implodeArray','params'=>['split'=>',']],
+            [['attr_require','attr_custom'],'parseStyleAttr'],
+            [['style_custom'],'parseStyleCustom'],
+            [['style_spec'],'parseStyleSpec'],
+            [['goods_images'],'parseGoodsImages'],
         ];
     }
-
+    /**
+     * 款式基础属性
+     */
+    public function parseStyleAttr()
+    {   
+        $this->style_attr = $this->style_attr??[];
+        if(!empty($this->attr_require)){
+            $this->style_attr = $this->style_attr + $this->attr_require;//数组合并    
+        }
+        if(!empty($this->attr_custom)){
+            $this->style_attr = $this->style_attr + $this->attr_custom;//数组合并
+        }
+        $this->style_attr = json_encode($this->style_attr);
+    }
+    /**
+     * 款式定制属性
+     */
+    public function parseStyleCustom()
+    {
+        $this->style_custom = json_encode($this->style_custom);
+    }
+    /**
+     * 款式规格属性
+     */
+    public function parseStyleSpec()
+    {
+        $this->style_spec = json_encode($this->style_spec);
+    }
+    /**
+     * 款式图库
+     */
+    public function parseGoodsImages()
+    {
+        if(!$this->style_image && !empty($this->goods_images[0])){
+            $this->style_image = $this->goods_images[0];
+        }
+        $this->goods_images = implode(',',$this->goods_images);
+        return $this->goods_images;
+    }
     /**
      * {@inheritdoc}
      */
@@ -73,7 +121,7 @@ class Style extends BaseModel
             'merchant_id' => Yii::t('goods', 'Merchant ID'),
             'style_image' => Yii::t('goods', 'Style Image'),
             'goods_images' => Yii::t('goods', '商品图片'),
-            'style_attr' => Yii::t('goods', 'Style Attr'),
+            'style_attr' => Yii::t('goods', '款式属性'),            
             'style_custom' => Yii::t('goods', 'Style Custom'),
             'goods_body' => Yii::t('goods', 'Goods Body'),
             'mobile_body' => Yii::t('goods', 'Mobile Body'),
@@ -90,7 +138,10 @@ class Style extends BaseModel
             'verify_status' => Yii::t('goods', 'Verify Status'),
             'verify_remark' => Yii::t('goods', 'Verify Remark'),
             'created_at' => Yii::t('goods', 'Created At'),
-            'updated_at' => Yii::t('goods', 'Updated At'),
+            'updated_at' => Yii::t('goods', 'Updated At'), 
+            //自定义属性    
+            'attr_require' => Yii::t('goods', '当前属性'),
+            'attr_custom' => Yii::t('goods', '当前属性'),
         ];
     }
     

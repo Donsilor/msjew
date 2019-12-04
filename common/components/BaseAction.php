@@ -121,4 +121,38 @@ trait BaseAction
         Yii::$app->getSession()->setFlash($msgType, $msgText);
         return $skipUrl;
     }
+    
+    /**
+     * 新增/编辑多语言
+     * @param unknown $model
+     * @param string $is_ajax
+     */
+    public function editLang(& $model,$is_ajax = false){
+        
+        $langModel = $model->langModel();
+        $langClassName  = basename($langModel->className());
+        $langPosts = Yii::$app->request->post($langClassName);
+        if(empty($langPosts)){
+            return false;
+        }
+        foreach ($langPosts as $lang_key=>$lang_post){
+            $is_new = true;
+            foreach ($model->langs as $langModel){
+                if($lang_key == $langModel->language){
+                    $langModel->load([$langClassName =>$langPosts[$langModel->language]]);
+                    $model->link('langs', $langModel);
+                    $is_new = false;
+                    break;
+                }
+            }
+            if($is_new == true){
+                $langModel = $model->langModel();
+                $langModel->load([$langClassName =>$lang_post]);
+                $langModel->master_id = $model->id;
+                $langModel->language = $lang_key;
+                $r = $langModel->save();
+                var_dump($r);
+            }
+        }
+    }
 }

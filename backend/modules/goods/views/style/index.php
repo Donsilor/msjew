@@ -42,15 +42,15 @@ $this->params['breadcrumbs'][] = $this->title;
             //'mobile_body:ntext',
             'sale_price',
             'market_price',
-            'cost_price',
-            'storage_alarm',
-            'is_invoice',
-            'is_recommend',
-            'is_lock',
+            //'cost_price',
+            //'storage_alarm',
+            //'is_invoice',
+            //'is_recommend',
+            //'is_lock',
             //'supplier_id',
             'status',
-            'verify_status',
-            'verify_remark',
+            //'verify_status',
+            //'verify_remark',
             'created_at',
             'updated_at',
             [
@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{edit} {status} {delete}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
-                        return Html::edit(['edit', 'id' => $model->id]);
+                    return Html::edit(['edit-lang','id' => $model->id]);
                 },
                'status' => function($url, $model, $key){
                         return Html::status($model['status']);

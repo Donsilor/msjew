@@ -90,7 +90,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'sort',
-                'headerOptions' => ['style'=>'width:80px'],
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model, $key, $index, $column){
+                    return  Html::sort($model->sort);
+                }
                 //'filter' => false,
             ],
             /* [

@@ -13,6 +13,9 @@ use common\widgets\skutable\SkuTable;
 $this->title = Yii::t('goods', 'Style');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('goods', 'Styles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+//
+$model->goods_images = explode(',', $model->goods_images);
+
 ?>
 <?php $form = ActiveForm::begin(); ?>
 <div class="box-body nav-tabs-custom">
@@ -23,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> 基础信息</li>
             </ul>
-            <div class="box-body" style="margin-left:10px">
+            <div class="box-body col-lg-9" style="margin-left:9px">
                 <?php 
                 $model->type_id = \Yii::$app->request->get("type_id")??$model->type_id;                    
                 ?>            
@@ -59,41 +62,66 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> 商品属性</li>
             </ul>
-            <div class="box-body">
+            <div class="box-body col-lg-9">
                <?php 
-                $attr_list = \Yii::$app->services->goodsAttribute->getAttrListByTypeId($model->type_id);
-                foreach ($attr_list as $attr_type=>$attrList){
+                $attr_list_all = \Yii::$app->services->goodsAttribute->getAttrListByTypeId($model->type_id);
+                foreach ($attr_list_all as $attr_type=>$attr_list){
                     ?>
                     <div class="box-header with-border">
                     	<h3 class="box-title"><?= common\enums\AttrTypeEnum::getValue($attr_type)?></h3>
                 	</div>
                     <div class="box-body" style="margin-left:10px">
-                          <?php 
-                          //如果是销售属性
-                          if($attr_type == common\enums\AttrTypeEnum::TYPE_SALE){
-                              $data = [];
-                              foreach ($attrList as $k=>$attr){   
-                                  $values = Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']);
-                                  $data[] = [
-                                      'id'=>$attr['id'],
-                                      'name'=>$attr['attr_name'],
-                                      'value'=>Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']),
-                                      'current'=>[9,2,1,7]
-                                  ];   
-                              }
-                             
-                              if(!empty($data)){
-                                 echo common\widgets\skutable\SkuTable::widget(['form' => $form,'model' => $model,'data' =>$data]);
-                              }
-                            ?>                            
-                          <?php }else{?>
+                      <?php 
+                      //如果是销售属性
+                      if($attr_type == common\enums\AttrTypeEnum::TYPE_SALE){
+                          $data = [];
+                          foreach ($attr_list as $k=>$attr){   
+                              $values = Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']);
+                              $data[] = [
+                                  'id'=>$attr['id'],
+                                  'name'=>$attr['attr_name'],
+                                  'value'=>Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']),
+                                  'current'=>[9,2,1,7]
+                              ];   
+                          }
+                         
+                          if(!empty($data)){
+                             echo common\widgets\skutable\SkuTable::widget(['form' => $form,'model' => $model,'data' =>$data]);
+                          }
+                       } else if($attr_type == common\enums\AttrTypeEnum::TYPE_BASE) {
+                              $model->style_attr = json_decode($model->style_attr,true);
+                              foreach ($attr_list as $k=>$attr){ 
+                                  $attr_field = $attr['is_require']==1?'attr_require':'attr_custom';                                  
+                                  $attr_field_name = "{$attr_field}[{$attr['id']}]";                                  
+                                  $model->{$attr_field} = $model->style_attr;//$style_attr[$attr['id']]??'';
+                                  //通用属性值列表
+                                  $attr_values = Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']);                                  
+                                  switch ($attr['input_type']){
+                                      case common\enums\InputTypeEnum::INPUT_TEXT :{
+                                          $input = $form->field($model,$attr_field_name)->textInput()->label($attr['attr_name']);
+                                          break;
+                                      }
+                                      case common\enums\InputTypeEnum::INPUT_RADIO :{
+                                          $input = $form->field($model,$attr_field_name)->radioList($attr_values)->label($attr['attr_name']);
+                                          break;
+                                      }
+                                      default:{
+                                          $input = $form->field($model,$attr_field_name)->dropDownList($attr_values,['prompt'=>'请选择'])->label($attr['attr_name']);
+                                          break;
+                                      }
+                                  }//end switch
+                      ?>
+                              <?php if ($k % 3 ==0){ ?><div class="row"><?php }?>
+    							<div class="col-lg-4"><?= $input ?></div>
+                              <?php if(($k+1) % 3 == 0 || ($k+1) == count($attr_list)){?></div><?php }?>
+                      <?php 
+                              }//end foreach $attr_list
                           
-                          
-                          <?php }?>                         
-               			  
+                       }?>
                     </div>
+                    <!-- ./box-body -->
                     <?php 
-                }
+                }//end foreach $attr_list_all
                 ?>
                 <div class="box-body" style="margin-left:10px">
                 <?= $form->field($model, 'goods_storage')->textInput(['maxlength'=>true]) ?>
@@ -107,7 +135,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> 图片信息</li>
             </ul>
-            <div class="box-body">
+            <div class="box-body col-lg-9">
       <?= $form->field($model, 'goods_images')->widget(common\widgets\webuploader\Files::class, [
             'config' => [
                 'pick' => [
@@ -125,7 +153,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> SEO信息</li>
             </ul>
-            <div class="box-body nav-tabs-custom none-shadow" style="margin-left:10px">
+            <div class="box-body nav-tabs-custom none-shadow col-lg-9" style="margin-left:10px">
                  <?php echo Html::langTab("tab4")?>           
         		  <div class="tab-content">            
                     <?php 

@@ -42,7 +42,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'lang.style_name',
-                'filter' => true,
+                'value' => 'lang.style_name',
+                'filter' => Html::activeTextInput($searchModel, 'style_name', [
+                        'class' => 'form-control',
+                        'style' =>'width:100px'
+                ]),
                 'format' => 'raw',
             ],
             [

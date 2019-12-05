@@ -59,25 +59,14 @@ class StyleController extends BaseController
      */
     public function actionEditLang()
     {
-        $id = Yii::$app->request->get('id', null);
-        if($post = \Yii::$app->request->post()){
-            print_r($post);
-
-        } 
-        
+        $id = Yii::$app->request->get('id', null);        
         //$trans = Yii::$app->db->beginTransaction();
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post())) {
-           /* print_r($model->toArray());
-           Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-           Yii::$app->response->data = \yii\widgets\ActiveForm::validate($model);
-           Yii::$app->end();
-           exit; */
-           echo $model->save();
+           $model->save();
            $this->editLang($model,false);
-           echo 'success';
-           exit;
-           // return $this->redirect(['index']);
+           //return $this->redirect(['index']);
+           return $this->message("保存成功", $this->redirect(['index']), 'success');
         }
         return $this->render($this->action->id, [
                 'model' => $model,

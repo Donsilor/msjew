@@ -40,6 +40,7 @@ class Style extends BaseModel
     
     public $attr_require;//必填属性
     public $attr_custom;//选填属性
+        
     /**
      * {@inheritdoc}
      */
@@ -54,15 +55,14 @@ class Style extends BaseModel
     public function rules()
     {
         return [
-            [['cat_id', 'type_id', 'merchant_id', 'storage_alarm', 'is_invoice', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
+            [['cat_id', 'type_id', 'merchant_id','goods_storage','sale_volume', 'storage_alarm', 'is_invoice', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
             [['cat_id', 'type_id','style_sn','attr_require','goods_images', 'sale_price', 'market_price',], 'required'],
             [['style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['sale_price', 'market_price', 'cost_price'], 'number'],
             [['style_sn'], 'string', 'max' => 50],
             [['style_image'], 'string', 'max' => 100],
             [['verify_remark'], 'string', 'max' => 255],
-            [['style_image'], 'safe'],
-            //[['goods_images'],'implodeArray','params'=>['split'=>',']],
+            [['style_image','style_name'], 'safe'],
             [['attr_require','attr_custom'],'parseStyleAttr'],
             [['style_custom'],'parseStyleCustom'],
             [['style_spec'],'parseStyleSpec'],
@@ -73,8 +73,8 @@ class Style extends BaseModel
      * 款式基础属性
      */
     public function parseStyleAttr()
-    {   
-        $this->style_attr = $this->style_attr??[];
+    { 
+        $this->style_attr = [];        
         if(!empty($this->attr_require)){
             $this->style_attr = $this->style_attr + $this->attr_require;//数组合并    
         }
@@ -102,7 +102,7 @@ class Style extends BaseModel
      */
     public function parseGoodsImages()
     {
-        if(!$this->style_image && !empty($this->goods_images[0])){
+        if(!empty($this->goods_images[0])){
             $this->style_image = $this->goods_images[0];
         }
         $this->goods_images = implode(',',$this->goods_images);
@@ -119,13 +119,14 @@ class Style extends BaseModel
             'cat_id' => Yii::t('goods', '款式分类'),
             'type_id' => Yii::t('goods', '产品线'),
             'merchant_id' => Yii::t('goods', 'Merchant ID'),
-            'style_image' => Yii::t('goods', 'Style Image'),
+            'style_image' => Yii::t('goods', '商品图片'),
             'goods_images' => Yii::t('goods', '商品图片'),
             'style_attr' => Yii::t('goods', '款式属性'),            
             'style_custom' => Yii::t('goods', 'Style Custom'),
             'goods_body' => Yii::t('goods', 'Goods Body'),
             'mobile_body' => Yii::t('goods', 'Mobile Body'),
             'sale_price' => Yii::t('goods', '销售价'),
+            'sale_volume' => Yii::t('goods', '销量'),
             'market_price' => Yii::t('goods', '市场价'),
             'cost_price' => Yii::t('goods', '成本价'),
             'goods_storage'=>  Yii::t('goods', '商品库存'),

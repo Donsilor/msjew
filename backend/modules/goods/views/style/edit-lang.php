@@ -15,7 +15,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('goods', 'Styles'), 'url' =>
 $this->params['breadcrumbs'][] = $this->title;
 //
 $model->goods_images = explode(',', $model->goods_images);
-
 ?>
 <?php $form = ActiveForm::begin(); ?>
 <div class="box-body nav-tabs-custom">
@@ -62,7 +61,7 @@ $model->goods_images = explode(',', $model->goods_images);
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> 商品属性</li>
             </ul>
-            <div class="box-body col-lg-9">
+            <div class="box-body col-lg-10">
                <?php 
                 $attr_list_all = \Yii::$app->services->goodsAttribute->getAttrListByTypeId($model->type_id);
                 foreach ($attr_list_all as $attr_type=>$attr_list){
@@ -75,18 +74,19 @@ $model->goods_images = explode(',', $model->goods_images);
                       //如果是销售属性
                       if($attr_type == common\enums\AttrTypeEnum::TYPE_SALE){
                           $data = [];
+                          $model->style_spec = json_decode($model->style_spec,true);
                           foreach ($attr_list as $k=>$attr){   
                               $values = Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']);
                               $data[] = [
                                   'id'=>$attr['id'],
                                   'name'=>$attr['attr_name'],
                                   'value'=>Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']),
-                                  'current'=>[9,2,1,7]
+                                  'current'=>$model->style_spec[0][$attr['id']]??[]
                               ];   
                           }
                          
                           if(!empty($data)){
-                             echo common\widgets\skutable\SkuTable::widget(['form' => $form,'model' => $model,'data' =>$data]);
+                             echo common\widgets\skutable\SkuTable::widget(['form' => $form,'model' => $model,'data' =>$data,'name'=>'Style[style_spec]']);
                           }
                        } else if($attr_type == common\enums\AttrTypeEnum::TYPE_BASE) {
                               $model->style_attr = json_decode($model->style_attr,true);

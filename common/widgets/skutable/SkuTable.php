@@ -2,7 +2,6 @@
 
 namespace common\widgets\skutable;
 
-use Yii;
 use yii\base\Widget;
 use common\widgets\skutable\assets\AppAsset;
 
@@ -64,7 +63,7 @@ class SkuTable extends Widget
      * @var
      */
     public $form;
-
+    public $name = 'Style[style_spec]';
     public $inputAttrs;
     private $inputAttrName = '';
     private $inputAttrTitle = '';
@@ -106,6 +105,7 @@ class SkuTable extends Widget
         return $this->render($this->template, [
             'form' => $this->form,
             'model' => $this->model,
+            'name' => $this->name,   
             'data' => $this->data,
             'inputAttrName'=>$this->inputAttrName,
             'inputAttrTitle'=>$this->inputAttrTitle, 

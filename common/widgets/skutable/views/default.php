@@ -1,5 +1,6 @@
 <script>
-var alreadySetSkuVals = {'2,7,9':{'goods_sn':'goods_sn12132','status':0}};
+var alreadySetSkuVals = <?= isset($model->style_spec[1])?json_encode($model->style_spec[1]):"{}"?>;
+var inputName = '<?= $name?>';
 </script>
 <div id="skuTableBox">
 <?php
@@ -12,7 +13,7 @@ foreach ($data as $key => $val){
     <?php
         foreach ($val['value'] as $k => $v){
     ?>
-    <li><label><input type="checkbox" <?php if(in_array($k,$val['current'])) echo 'checked' ?> class="sku_value" propvalid='<?php echo $k ?>' value="<?php echo $v ?>"/><?php echo $v ?></label></li>
+    <li><label><input type="checkbox" name="<?= $name?>[0][<?=$val['id']?>][]" <?php if(in_array($k,$val['current'])) echo 'checked' ?> class="sku_value" propvalid='<?php echo $k ?>' title="<?php echo $v ?>" value="<?php echo $k ?>"/><?php echo $v ?></label></li>
     <?php } ?>
 </ul>
 <div class="clear"></div>

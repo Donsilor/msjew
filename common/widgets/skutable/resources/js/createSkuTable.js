@@ -48,7 +48,7 @@ $(function(){
             $(skuValCheckBoxs).each(function(){
                 if($(this).is(":checked")){
                     var skuValObj = {};//SKU值对象
-                    skuValObj.skuValueTitle = $(this).val();//SKU值名称
+                    skuValObj.skuValueTitle = $(this).attr("title");//SKU值名称
                     skuValObj.skuValueId = $(this).attr("propvalid");//SKU值主键
                     skuValObj.skuPropId = that.children().attr("propid");//SKU类型主键
                     skuValueArr.push(skuValObj);
@@ -136,9 +136,9 @@ $(function(){
                 	}
                 	if(skuName == "status"){
                 		var _checked = skuValDefined == false || skuVal== 1?'checked':'';
-                		SKUTableDom += '<td><input type="checkbox" class="setting_sku_' +skuName+'" name="Spec['+_propvalids+'][' +skuName+']" value="1" '+_checked+'/></td>';
+                		SKUTableDom += '<td><input type="checkbox" class="setting_sku_' +skuName+'" name="'+inputName+'[1]['+_propvalids+'][' +skuName+']" value="1" '+_checked+'/></td>';
                 	}else{
-                    	SKUTableDom += '<td><input type="text" class="form-control setting_sku_' +skuName+'" name="Spec['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/></td>'
+                    	SKUTableDom += '<td><input type="text" class="form-control setting_sku_' +skuName+'" name="'+inputName+'[1]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/></td>'
                 	}
                	}
                 SKUTableDom += '</tr>';

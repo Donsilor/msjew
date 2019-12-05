@@ -3,6 +3,7 @@
 use common\helpers\Html;
 use common\helpers\Url;
 use yii\grid\GridView;
+use common\helpers\ImageHelper;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -23,36 +24,76 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-body table-responsive">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'table table-hover'],
+        'showFooter' => true,//显示footer行
+        'id'=>'grid',            
         'columns' => [
             [
                 'class' => 'yii\grid\SerialColumn',
                 'visible' => false,
             ],
-
-            //'id',
-            'style_sn',
-            'cat_id',
-            'type_id',
-            //'merchant_id',
-            'style_image',
-            'style_attr:ntext',
-            'style_custom:ntext',
-            //'goods_body:ntext',
-            //'mobile_body:ntext',
-            'sale_price',
-            'market_price',
-            //'cost_price',
-            //'storage_alarm',
-            //'is_invoice',
-            //'is_recommend',
-            //'is_lock',
-            //'supplier_id',
-            'status',
-            //'verify_status',
-            //'verify_remark',
-            'created_at',
-            'updated_at',
+            [
+                'class'=>'yii\grid\CheckboxColumn',
+                'name'=>'id',  //设置每行数据的复选框属性
+                'headerOptions' => ['width'=>'30'],
+                'footer'=> Html::batchButtons(),//['search_export','status_disabled']
+                'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
+            ],
+            [
+                'attribute' => 'lang.style_name',
+                'filter' => true,
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'style_sn',
+                'filter' => true,
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'style_image',
+                'value' => function ($model) {
+                    return ImageHelper::fancyBox($model->style_image);
+                 },
+                'filter' => false,
+                'format' => 'raw',
+            ],
+            [
+                    'attribute' => 'type_id',
+                    'value' => "type.type_name",
+                    'filter' => false,
+                    'format' => 'raw',
+            ],
+            [
+                'attribute' => 'cat_id',
+                'value' => "cate.cat_name",
+                'filter' => false,
+                'format' => 'raw',
+            ],            
+            [
+                'attribute' => 'sale_price',
+                'value' => "sale_price",
+                'filter' => true,
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'sale_volume',
+                'value' => "sale_volume",
+                'filter' => true,
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'status',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\StatusEnum::getValue($model->status);
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\StatusEnum::getMap(), [
+                    'prompt' => '全部',
+                    'class' => 'form-control',                        
+                ]),
+            ],            
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
@@ -63,7 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                'status' => function($url, $model, $key){
                         return Html::status($model['status']);
-                  },
+                },
                 'delete' => function($url, $model, $key){
                         return Html::delete(['delete', 'id' => $model->id]);
                 },

@@ -44,7 +44,9 @@ class StyleController extends BaseController
         ]);
 
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams);
+            ->search(Yii::$app->request->queryParams,['style_name']);
+        $dataProvider->query->joinWith(['lang']);
+        $dataProvider->query->andFilterWhere(['like', 'lang.style_name',$searchModel->style_name]);
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,

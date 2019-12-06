@@ -2,6 +2,7 @@
 
 use yii\grid\GridView;
 use yii\widgets\ActiveForm;
+use common\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -16,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-body table-responsive">
                 <?= GridView::widget([
                     'dataProvider' => $dataProvider,
-                    'filterModel' => $searchModel,
+//                    'filterModel' => $searchModel,
                     'tableOptions' => ['class' => 'table table-hover'],
                     'showFooter' => true,//显示footer行
                     'id'=>'grid',
@@ -33,8 +34,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         [
                             'attribute' => 'lang.style_name',
-                            'filter' => true,
+                            'value' => 'lang.style_name',
+                            'filter' => Html::activeTextInput($searchModel, 'style_name', [
+                                'class' => 'form-control',
+                                'style' =>'width:100px'
+                            ]),
                             'format' => 'raw',
+
                         ],
                         [
                             'attribute' => 'style_sn',
@@ -61,9 +67,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'format' => 'raw',
                         ],
                         [
-                            'attribute' => 'sale_volume',
-                            'value' => "sale_volume",
-                            'filter' => true,
+                            'attribute' => 'goods_storage',
+                            'value' => "goods_storage",
+                            'filter' => false,
                             'format' => 'raw',
                         ],
 
@@ -76,3 +82,8 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+
+<script>
+
+
+</script>

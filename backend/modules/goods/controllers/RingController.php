@@ -89,6 +89,8 @@ class RingController extends BaseController
 
     public function actionSelectStyle()
     {
+
+
         $searchModel = new SearchModel([
             'model' => Style::class,
             'scenario' => 'default',
@@ -96,12 +98,14 @@ class RingController extends BaseController
             'defaultOrder' => [
                 'id' => SORT_DESC
             ],
-            'pageSize' => $this->pageSize=2
+            'pageSize' => $this->pageSize
         ]);
 
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams);
+            ->search(Yii::$app->request->queryParams,['style_name']);
 
+        $dataProvider->query->joinWith(['lang']);
+        $dataProvider->query->andFilterWhere(['like', 'lang.style_name',$searchModel->style_name]);
         return $this->render('select-style', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,

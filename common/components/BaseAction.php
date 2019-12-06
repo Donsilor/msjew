@@ -117,7 +117,7 @@ trait BaseAction
         if (!$msgType || !in_array($msgType, ['success', 'error', 'info', 'warning'])) {
             $msgType = 'success';
         }
-
+        $msgText = Yii::t('message',$msgText);
         Yii::$app->getSession()->setFlash($msgType, $msgText);
         return $skipUrl;
     }
@@ -150,8 +150,7 @@ trait BaseAction
                 $langModel->load([$langClassName =>$lang_post]);
                 $langModel->master_id = $model->id;
                 $langModel->language = $lang_key;
-                $r = $langModel->save();
-                var_dump($r);
+                $langModel->save();
             }
         }
     }

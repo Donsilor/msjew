@@ -24,6 +24,8 @@ use common\helpers\ArrayHelper;
  * @property string $sale_price 销售价
  * @property string $market_price 市场价
  * @property string $cost_price 成本价
+ * @property string $goods_storage 库存量
+ * @property string $goods_clicks 浏览量
  * @property int $storage_alarm 库存报警值
  * @property int $is_invoice 是否开具增值税发票 1是，0否
  * @property int $is_recommend 商品推荐 1是，0否，默认为0
@@ -55,8 +57,8 @@ class Style extends BaseModel
     public function rules()
     {
         return [
-            [['cat_id', 'type_id', 'merchant_id','goods_storage','sale_volume', 'storage_alarm', 'is_invoice', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
-            [['cat_id', 'type_id','style_sn','attr_require','goods_images', 'sale_price', 'market_price',], 'required'],
+            [['cat_id', 'type_id','style_sex', 'merchant_id','sale_volume','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_invoice', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
+            [['cat_id', 'type_id','style_sn','attr_require','goods_images','style_sex', 'sale_price', 'market_price',], 'required'],
             [['style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['sale_price', 'market_price', 'cost_price'], 'number'],
             [['style_sn'], 'string', 'max' => 50],
@@ -81,21 +83,27 @@ class Style extends BaseModel
         if(!empty($this->attr_custom)){
             $this->style_attr = $this->style_attr + $this->attr_custom;//数组合并
         }
-        $this->style_attr = json_encode($this->style_attr);
+        if(is_array($this->style_attr)){
+            $this->style_attr = json_encode($this->style_attr);
+        }        
     }
     /**
      * 款式定制属性
      */
     public function parseStyleCustom()
     {
-        $this->style_custom = json_encode($this->style_custom);
+        if(is_array(json_encode($this->style_custom))){
+            $this->style_custom = json_encode($this->style_custom);
+        }
     }
     /**
      * 款式规格属性
      */
     public function parseStyleSpec()
     {
-        $this->style_spec = json_encode($this->style_spec);
+        if(is_array($this->style_spec)){
+            $this->style_spec = json_encode($this->style_spec);
+        }        
     }
     /**
      * 款式图库
@@ -105,7 +113,9 @@ class Style extends BaseModel
         if(!empty($this->goods_images[0])){
             $this->style_image = $this->goods_images[0];
         }
-        $this->goods_images = implode(',',$this->goods_images);
+        if(is_array($this->goods_images)){
+            $this->goods_images = implode(',',$this->goods_images);
+        }
         return $this->goods_images;
     }
     /**
@@ -118,7 +128,8 @@ class Style extends BaseModel
             'style_sn' => Yii::t('goods', '款式编号'),
             'cat_id' => Yii::t('goods', '款式分类'),
             'type_id' => Yii::t('goods', '产品线'),
-            'merchant_id' => Yii::t('goods', 'Merchant ID'),
+            'merchant_id' => Yii::t('goods', '商户ID'),
+            'style_sex' => Yii::t('goods', '款式性别'),
             'style_image' => Yii::t('goods', '商品图片'),
             'goods_images' => Yii::t('goods', '商品图片'),
             'style_attr' => Yii::t('goods', '款式属性'),            
@@ -130,6 +141,7 @@ class Style extends BaseModel
             'market_price' => Yii::t('goods', '市场价'),
             'cost_price' => Yii::t('goods', '成本价'),
             'goods_storage'=>  Yii::t('goods', '商品库存'),
+            'goods_clicks'=>  Yii::t('goods', '浏览量'),
             'storage_alarm' => Yii::t('goods', 'Storage Alarm'),
             'is_invoice' => Yii::t('goods', 'Is Invoice'),
             'is_recommend' => Yii::t('goods', 'Is Recommend'),

@@ -333,6 +333,8 @@ Css
      */
     public static function batchButtons($options = [])
     {
+        if($options == false) return '';
+        
         $listBut = [
                 'status_enabled' => self::tag('span', '批量启用',
                         [
@@ -346,16 +348,22 @@ Css
                                 "data-grid"=>"grid",
                                 "data-value"=>"0",
                         ]),
-                'search_export' => self::tag('span', '批量导出',
+                /* 'search_export' => self::tag('span', '批量导出',
                         [
                                 'class' => "btn btn-primary btn-sm jsBatchExport",
                                 "data-grid"=>"grid",
-                        ]),
-                'status_delete' => self::tag('span', '批量删除',
+                        ]), */
+                /* 'status_delete' => self::tag('span', '批量删除',
                         [
                                 'class' => "btn btn-danger btn-sm jsBatchStatus",
                                 "data-grid"=>"grid",
                                 "data-value"=>"-1",
+                        ]), */
+                'batch_delete' => self::tag('span', '批量删除',
+                        [
+                                'class' => "btn btn-danger btn-sm jsBatchStatus",
+                                "data-grid"=>"grid",
+                                "data-url"=>Url::to(['ajax-batch-delete']),
                         ]),
                 ];
         

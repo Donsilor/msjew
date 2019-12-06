@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use common\widgets\langbox\LangBox;
 use yii\base\Widget;
 use common\widgets\skutable\SkuTable;
+use common\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\goods\Style */
@@ -14,9 +15,12 @@ $this->title = Yii::t('goods', 'Style');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('goods', 'Styles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 //
-$model->goods_images = explode(',', $model->goods_images);
 ?>
-<?php $form = ActiveForm::begin(); ?>
+<?php $form = ActiveForm::begin([
+         'id' => $model->formName(),
+        'enableAjaxValidation' => true,
+        'validationUrl' => Url::to(['ajax-edit-lang', 'id' => $model['id']]),       
+]); ?>
 <div class="box-body nav-tabs-custom">
      <h2 class="page-header">商品发布</h2>
      <?php echo Html::tab([0=>'全部',1=>'基础信息',2=>'商品属性',3=>'图片信息',4=>'SEO优化'],0,'tab')?>
@@ -28,17 +32,19 @@ $model->goods_images = explode(',', $model->goods_images);
             <div class="box-body col-lg-9" style="margin-left:9px">
                 <?php 
                 $model->type_id = \Yii::$app->request->get("type_id")??$model->type_id;                    
-                ?>            
+                ?>          
     			<?= $form->field($model, 'type_id')->dropDownList(\Yii::$app->services->goodsType->getDropDown(),[
-    			        'onchange'=>"location.href='?type_id='+this.value"        			        
-    			]) ?>
+    			        'onchange'=>"location.href='?type_id='+this.value",
+    			        'disabled'=>$model->isNewRecord?null:'disabled',
+    			]) ?> 
                 <?= $form->field($model, 'cat_id')->widget(kartik\select2\Select2::class, [
      			        'data' => Yii::$app->services->goodsCate->getDropDown(),
-                        'options' => ['placeholder' => '请选择'],
+                        'options' => ['placeholder' => Yii::t("common",'请选择')],
                         'pluginOptions' => [
                             'allowClear' => true
                         ],
-                ]);?> 
+                ]);?>
+                <?= $form->field($model, 'style_sex')->radioList(common\enums\StyleSexEnum::getMap()) ?> 
                 <?= $form->field($model, 'style_sn')->textInput(['maxlength'=>true]) ?>
                 <?= $form->field($model, 'market_price')->textInput(['maxlength'=>true]) ?>
                 <?= $form->field($model, 'sale_price')->textInput(['maxlength'=>true]) ?>                                 
@@ -47,8 +53,8 @@ $model->goods_images = explode(',', $model->goods_images);
         			<div class="tab-content" style="padding-left:10px"> 
         				<?php 
                 			echo LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab1','fields'=>[
-                			    'style_name'=>['type'=>'textInput','options'=>['maxlength' => true],'label'=>"商品名称"],
-                			    'style_desc'=>['type'=>'textArea','options'=>['maxlength' => true],'label'=>"商品描述"]
+                			        'style_name'=>['type'=>'textInput','options'=>['maxlength' => true],'label'=>Yii::t("common","商品名称")],
+                			        'style_desc'=>['type'=>'textArea','options'=>['maxlength' => true],'label'=>Yii::t("common","商品描述")]
                 			]]);
             			?>
         			</div>
@@ -136,6 +142,7 @@ $model->goods_images = explode(',', $model->goods_images);
               <li class="pull-left header"><i class="fa fa-th"></i> 图片信息</li>
             </ul>
             <div class="box-body col-lg-9">
+      <?php $model->goods_images = !empty($model->goods_images)?explode(',', $model->goods_images):null;?>      
       <?= $form->field($model, 'goods_images')->widget(common\widgets\webuploader\Files::class, [
             'config' => [
                 'pick' => [

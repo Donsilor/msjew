@@ -9,6 +9,7 @@ use common\models\base\SearchModel;
 
 use backend\controllers\BaseController;
 
+
 /**
 * Style
 *
@@ -66,14 +67,23 @@ class StyleController extends BaseController
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post())) {
            $model->save();
-           $this->editLang($model,false);
-           //return $this->redirect(['index']);
+           $this->editLang($model);
+           
            return $this->message("保存成功", $this->redirect(['index']), 'success');
         }
         return $this->render($this->action->id, [
                 'model' => $model,
         ]);
     }
+    
+    public function editGoods($model) 
+    {
+        //基础属性
+        $style_attr = json_decode($model->style_attr,true);
+        //销售属性
+        $style_spec = json_decode($model->style_spec,true);
+    }
+    
     /**
      * [Style] => Array
         (

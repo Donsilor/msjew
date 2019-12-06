@@ -8,6 +8,7 @@ use yii\base\InvalidConfigException;
 use common\helpers\ResultHelper;
 use common\enums\StatusEnum;
 use common\helpers\ArrayHelper;
+use yii\base\Exception;
 
 /**
  * Trait Curd
@@ -118,11 +119,11 @@ trait Curd
         }
 
         $model->attributes = ArrayHelper::filter(Yii::$app->request->get(), ['sort', 'status']);
-        if (!$model->save()) {
+        if (!$model->save(false)) {
             return ResultHelper::json(422, $this->getError($model));
         }
 
-        return ResultHelper::json(200, '修改成功');
+        return ResultHelper::json(200, '修改成功',[],true);
     }
 
     /**
@@ -213,41 +214,32 @@ trait Curd
           ]);
     }
 
-
-    // 批量删除
-    public function actionBatchdelete(){
-        $this->enableCsrfValidation = false;//去掉yii2的post验证
-        $ids = Yii::$app->request->post();
-        if($this->batchDelete($ids['ids']))
-            return \yii\helpers\Json::encode(['status'=>1,'info'=>'删除成功！']);
-        else
-            return false;
-    }
-
-    //批量物理删除
-    public function batchDelete($ids = []){
-        foreach ($ids as $k=>$v){
+    /**
+     * ajax 批量删除(物理)
+     * @param array $ids
+     * @return string[]|array[]
+     */
+    public function actionAjaxBatchDelete ($ids = []){
+        
+        try{
+            $ids = Yii::$app->request->post("ids",$ids);
+            
             $trans = Yii::$app->db->beginTransaction();
-            $model = $this->findModel($v);
-            $res = $this->findModel($v)->delete();
-
-            //没有langModel方法说明不是多语言
+            
+            $model = $this->findModel(null);
+            $count = $model->deleteAll(['in','id',$ids]);
             if(method_exists($model,'langModel')){
                 $langModel = $model->langModel();
-                $res_lang = $langModel->deleteAll(['master_id'=>$v]);
-            }else{
-                $res_lang = true;
+                $langModel->deleteAll(['in','master_id',$ids]);
             }
-
-            if($res && $res_lang){
-                $trans->commit();
-            }else{
-                $trans->rollBack();
-                return new BadRequestHttpException('操作失败！');
-            }
-
-        }
-        return true;
+            $trans->commit();
+            
+            return ResultHelper::json(200, '删除成功',[],true);
+        } catch (Exception $e) {
+            
+            $trans->rollBack();
+            return ResultHelper::json(422, '删除失败');
+        }        
     }
     
     /**
@@ -266,12 +258,12 @@ trait Curd
                 }
                 
                 $model->attributes = ArrayHelper::filter(Yii::$app->request->post(), ['sort', 'status']);
-                if (!$model->save()) {
+                if (!$model->save(false)) {
                     return ResultHelper::json(422, $this->getError($model));
                 }
             }  
         }
-        return ResultHelper::json(200, '修改成功');
+        return ResultHelper::json(200, '修改成功',[],true);
     }
 
 }

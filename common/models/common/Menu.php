@@ -190,4 +190,32 @@ class Menu extends \common\models\base\BaseModel
 
         return parent::beforeDelete();
     }
+
+
+
+    /**
+     * 语言扩展表
+     * @return \common\models\goods\AttributeLang
+     */
+    public function langModel()
+    {
+        return new MenuLang();
+    }
+
+    public function getLangs()
+    {
+        return $this->hasMany(MenuLang::class,['master_id'=>'id']);
+
+    }
+
+    /**
+     * 关联语言一对一
+     * @param string $languge
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLang()
+    {
+        $query = $this->hasOne(MenuLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->language]);
+        return $query;
+    }
 }

@@ -81,6 +81,41 @@ class MenuController extends BaseController
         ]);
     }
 
+
+    /**
+     * 编辑/创建
+     *
+     * @return mixed|string|\yii\web\Response
+     * @throws \yii\base\ExitException
+     */
+    public function actionAjaxEditLang()
+    {
+        $id = Yii::$app->request->get('id', '');
+        $model = $this->findModel($id);
+        $model->pid = Yii::$app->request->get('pid', null) ?? $model->pid; // 父id
+        $model->cate_id = Yii::$app->request->get('cate_id', null) ?? $model->cate_id; // 分类id
+
+        // ajax 校验
+        $this->activeFormValidate($model);
+        if ($model->load(Yii::$app->request->post())) {
+            return $model->save()
+                ? $this->redirect(['index', 'cate_id' => $model->cate_id])
+                : $this->message($this->getError($model), $this->redirect(['index', 'cate_id' => $model->cate_id]), 'error');
+        }
+
+        if ($model->isNewRecord && $model->parent) {
+            $model->cate_id = $model->parent->cate_id;
+        }
+
+        $menuCate = Yii::$app->services->menuCate->findById($model->cate_id);
+
+        return $this->renderAjax('ajax-edit-lang', [
+            'model' => $model,
+            'cates' => Yii::$app->services->menuCate->getDefaultMap(AppEnum::BACKEND),
+            'menuDropDownList' => Yii::$app->services->menu->getDropDown($menuCate, AppEnum::BACKEND, $id),
+        ]);
+    }
+
     /**
      * 删除
      *

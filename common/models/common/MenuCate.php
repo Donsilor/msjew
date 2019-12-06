@@ -42,7 +42,7 @@ class MenuCate extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['title'], 'required'],
+            [['title'], 'safe'],
             [['level', 'pid', 'is_default_show', 'is_addon', 'sort', 'status', 'created_at', 'updated_at'], 'integer'],
             [['title'], 'string', 'max' => 50],
             [['app_id', 'type', 'icon'], 'string', 'max' => 20],
@@ -95,4 +95,32 @@ class MenuCate extends \common\models\base\BaseModel
 
         return parent::beforeSave($insert);
     }
+
+    /**
+     * 语言扩展表
+     * @return \common\models\goods\AttributeLang
+     */
+    public function langModel()
+    {
+        return new MenuCateLang();
+    }
+
+    public function getLangs()
+    {
+        return $this->hasMany(MenuCateLang::class,['master_id'=>'id']);
+
+    }
+
+    /**
+     * 关联语言一对一
+     * @param string $languge
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLang()
+    {
+        $query = $this->hasOne(MenuCateLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->language]);
+        return $query;
+    }
+
+
 }

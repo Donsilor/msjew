@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 <?php } ?>
                 <li><a href="<?= Url::to(['menu-cate/index']) ?>"> 菜单分类</a></li>
                 <li class="pull-right">
-                    <?= Html::create(['ajax-edit', 'cate_id' => $cate_id], '创建', [
+                    <?= Html::create(['ajax-edit-lang', 'cate_id' => $cate_id], '创建', [
                         'data-toggle' => 'modal',
                         'data-target' => '#ajaxModalLg',
                     ]); ?>
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         'options' => ['class' => 'table table-hover'],
                         'columns' => [
                             [
-                                'attribute' => 'title',
+                                'attribute' => 'lang.title',
                                 'format' => 'raw',
                                 'value' => function ($model, $key, $index, $column){
                                     $str = Html::tag('span', $model->title, [
@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                 'template'=> '{edit} {status} {delete}',
                                 'buttons' => [
                                     'edit' => function ($url, $model, $key) {
-                                        return Html::edit(['ajax-edit','id' => $model->id], '编辑', [
+                                        return Html::edit(['ajax-edit-lang','id' => $model->id], '编辑', [
                                             'data-toggle' => 'modal',
                                             'data-target' => '#ajaxModalLg',
                                         ]);

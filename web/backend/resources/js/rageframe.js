@@ -222,6 +222,7 @@ function openIframe(title, width, height, content, offset) {
                     if (parseInt(data.code) !== 200) {
                         rfMsg(data.message);
                     } else {
+
                         layer.close(index);
                         location.reload();
                     }

@@ -23,23 +23,71 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-body table-responsive">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'table table-hover'],
+        'showFooter' => true,//显示footer行
+        'id'=>'grid',
         'columns' => [
             [
                 'class' => 'yii\grid\SerialColumn',
                 'visible' => false,
             ],
-
+            [
+                'class'=>'yii\grid\CheckboxColumn',
+                'name'=>'id',  //设置每行数据的复选框属性
+                'headerOptions' => ['width'=>'30'],
+                'footer'=> Html::batchButtons(),//['search_export','status_disabled']
+                'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
+            ],
             //'id',
-            'ring_name',
-            'ring_sn',
+
+
+            [
+                'attribute' => 'ring_sn',
+                'filter' => Html::activeTextInput($searchModel, 'ring_sn', [
+                    'class' => 'form-control',
+                    'style' =>'width:100px'
+                ]),
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'lang.ring_name',
+                'value' => 'lang.ring_name',
+                'filter' => Html::activeTextInput($searchModel, 'ring_name', [
+                    'class' => 'form-control',
+                    'style' =>'width:200px'
+                ]),
+                'format' => 'raw',
+            ],
+
+
             //'ring_image',
             //'qr_code',
             //'ring_salenum',
             //'ring_style',
             //'sale_price',
-            //'status',
-            'created_at',
+            [
+                'attribute' => 'status',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\FrameEnum::getValue($model->status);
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\FrameEnum::getMap(), [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+
+                ]),
+            ],
+
+            [
+                'attribute' => 'created_at',
+                'filter' => false,
+                'value' => function($model){
+                    return date('Y-m-d',$model->created_at);
+                },
+            ],
+
             //'updated_at',
             [
                 'class' => 'yii\grid\ActionColumn',

@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-body table-responsive">
                 <?= GridView::widget([
                     'dataProvider' => $dataProvider,
-//                    'filterModel' => $searchModel,
+                    'filterModel' => $searchModel,
                     'tableOptions' => ['class' => 'table table-hover'],
                     'showFooter' => true,//显示footer行
                     'id'=>'grid',
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         [
                             'class'=>'yii\grid\RadioButtonColumn',
-                            'name'=>'style_id',  //设置每行数据的复选框属性
+                            'name'=>'id',  //设置每行数据的复选框属性
                             'headerOptions' => ['width'=>'30'],
 
                         ],
@@ -78,12 +78,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]); ?>
             </div>
             <?php $form = ActiveForm::begin([]); ?>
+            <input type="hidden" id="style_id" name="style_id" value=""/>
             <?php ActiveForm::end(); ?>
         </div>
     </div>
 </div>
 
+
 <script>
-
-
+$("#grid").find('input[name="id"]').change(function(){
+    $("#style_id").val($(this).val());
+});
 </script>

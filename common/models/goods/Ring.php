@@ -2,6 +2,7 @@
 
 namespace common\models\goods;
 
+use common\models\base\BaseModel;
 use Yii;
 
 /**
@@ -19,7 +20,7 @@ use Yii;
  * @property int $created_at 创建时间
  * @property int $updated_at 修改时间
  */
-class Ring extends \yii\db\ActiveRecord
+class Ring extends BaseModel
 {
     /**
      * {@inheritdoc}
@@ -37,10 +38,10 @@ class Ring extends \yii\db\ActiveRecord
         return [
             [['ring_salenum', 'ring_style', 'status', 'created_at', 'updated_at'], 'integer'],
             [['sale_price'], 'number'],
-            [['ring_name', 'ring_sn'], 'string', 'max' => 100],
-            [['ring_image'], 'string', 'max' => 500],
-
+            [['ring_sn'],'string', 'max' => 100],
             [['qr_code'], 'string', 'max' => 200],
+            [['ring_images'],'parseRingImages'],
+            [['ring_name'], 'safe'],
         ];
     }
 
@@ -53,7 +54,7 @@ class Ring extends \yii\db\ActiveRecord
             'id' => '主键ID',
             'ring_name' => '对戒名称',
             'ring_sn' => '对戒编码',
-            'ring_image' => '对戒封面图片',
+            'ring_images' => '对戒封面图片',
             'qr_code' => '对戒二维码',
             'ring_salenum' => '对戒销量',
             'ring_style' => '对戒款式',
@@ -64,7 +65,16 @@ class Ring extends \yii\db\ActiveRecord
         ];
     }
 
-
+    /**
+     * 款式图库
+     */
+    public function parseRingImages()
+    {
+        if(is_array($this->ring_images)){
+            $this->ring_images = implode(',',$this->ring_images);
+        }
+        return $this->ring_images;
+    }
 
 
     /**
@@ -92,4 +102,12 @@ class Ring extends \yii\db\ActiveRecord
         $query = $this->hasOne(RingLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->language]);
         return $query;
     }
+
+    public function getRelations()
+    {
+        return $this->hasMany(RingRelation::class,['ring'=>'id']);
+
+    }
+
+
 }

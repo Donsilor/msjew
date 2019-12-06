@@ -7,7 +7,7 @@ namespace common\enums;
  * @package common\enums
  * @author jianyan74 <751393839@qq.com>
  */
-class StyleEnum extends BaseEnum
+class SeriesEnum extends BaseEnum
 {
     const STYLE_CLASSIC = 1;
     const STYLE_LAYOUT = 2;

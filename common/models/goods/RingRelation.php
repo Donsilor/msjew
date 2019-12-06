@@ -2,6 +2,7 @@
 
 namespace common\models\goods;
 
+use common\models\base\BaseModel;
 use Yii;
 
 /**
@@ -13,7 +14,7 @@ use Yii;
  * @property int $created_at 创建时间
  * @property int $updated_at 修改时间
  */
-class RingRelation extends \yii\db\ActiveRecord
+class RingRelation extends BaseModel
 {
     /**
      * {@inheritdoc}

@@ -31,6 +31,7 @@ class DiamondSource extends BaseModel
     public function rules()
     {
         return [
+            [['name'], 'required'],
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 60],
             [['website'], 'string', 'max' => 255],

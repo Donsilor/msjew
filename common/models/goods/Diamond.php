@@ -50,7 +50,7 @@ class Diamond extends \yii\db\ActiveRecord
     {
         return [
             [['goods_num', 'shape', 'source_id', 'is_stock', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['cert_type', 'cert_id', 'carat', 'clarity', 'cut', 'color', 'symmetry', 'polish', 'fluorescence'], 'required'],
+            [['source_id','goods_num','goods_sn','cert_type', 'cert_id', 'carat', 'clarity', 'cut', 'color', 'symmetry', 'polish', 'fluorescence'], 'required'],
             [['market_price', 'sale_price', 'cost_price', 'carat', 'source_discount'], 'number'],
             [['goods_sn'], 'string', 'max' => 60],
             [['goods_image'], 'string', 'max' => 100],
@@ -59,6 +59,7 @@ class Diamond extends \yii\db\ActiveRecord
             [['clarity'], 'string', 'max' => 40],
             [['depth_lv', 'table_lv'], 'string', 'max' => 20],
             [['cert_id'], 'unique'],
+            [['goods_name','language'],'safe'],
             [['cert_type', 'cert_id'], 'unique', 'targetAttribute' => ['cert_type', 'cert_id']],
         ];
     }
@@ -120,7 +121,7 @@ class Diamond extends \yii\db\ActiveRecord
      */
     public function getLang()
     {
-        $query = $this->hasOne(DiamondLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->language]);
+        $query = $this->hasOne(DiamondLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->params['language']]);
         return $query;
     }
 }

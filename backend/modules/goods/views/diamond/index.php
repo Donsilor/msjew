@@ -17,13 +17,16 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-header">
                 <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
                 <div class="box-tools">
-                    <?= Html::create(['edit']) ?>
+                    <?= Html::create(['edit-lang']) ?>
                 </div>
             </div>
             <div class="box-body table-responsive">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'table table-hover'],
+        'showFooter' => true,//显示footer行
+        'id'=>'grid',
         'columns' => [
             [
                 'class' => 'yii\grid\SerialColumn',
@@ -31,15 +34,54 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             'id',
-            'goods_sn',
+            [
+                'attribute' => 'lang.goods_name',
+                'value' => 'lang.goods_name',
+                'filter' => Html::activeTextInput($searchModel, 'goods_name', [
+                    'class' => 'form-control',
+                    'style' =>'width:100px'
+                ]),
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'goods_sn',
+                'filter' => true,
+                'format' => 'raw',
+            ],
+
             //'goods_image',
             //'goods_num',
-            'cert_type',
-            'cert_id',
-            'market_price',
-            'sale_price',
+            [
+                'attribute' => 'cert_type',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\DiamondEnum::$typeOptions[$model->cert_type];
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'cert_type',\common\enums\DiamondEnum::$typeOptions, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+            ],
+
+            [
+                'attribute' => 'cert_id',
+                'filter' => false,
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'sale_price',
+                'filter' => false,
+                'format' => 'raw',
+            ],
+
             //'cost_price',
-            'carat',
+            [
+                'attribute' => 'carat',
+                'filter' => false,
+                'format' => 'raw',
+            ],
+
             //'clarity',
             //'cut',
             //'color',
@@ -52,7 +94,18 @@ $this->params['breadcrumbs'][] = $this->title;
             //'source_id',
             //'source_discount',
             //'is_stock',
-            'status',
+            [
+                'attribute' => 'status',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\FrameEnum::getValue($model->status);
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\FrameEnum::getMap(), [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+            ],
             //'created_at',
             //'updated_at',
             [
@@ -61,7 +114,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{edit} {status} {delete}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
-                        return Html::edit(['edit', 'id' => $model->id]);
+                        return Html::edit(['edit-lang', 'id' => $model->id]);
                 },
                'status' => function($url, $model, $key){
                         return Html::status($model['status']);

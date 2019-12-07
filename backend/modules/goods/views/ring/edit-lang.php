@@ -87,7 +87,7 @@ $model->ring_images = $model->ring_images?explode(',', $model->ring_images):null
                         <h4 class="box-title">搜索引擎优化</h4>
                     </div>
 
-                    <div class="col-sm-12">
+                    <div class="col-sm-12 nav-tabs-custom">
 
                         <?php echo Html::langTab('tab1')?>
                         <div class="tab-content">

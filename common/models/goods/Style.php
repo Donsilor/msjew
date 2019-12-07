@@ -64,7 +64,7 @@ class Style extends BaseModel
             [['style_sn'], 'string', 'max' => 50],
             [['style_image'], 'string', 'max' => 100],
             [['verify_remark'], 'string', 'max' => 255],
-            [['style_image','style_name'], 'safe'],
+            [['style_image','style_name','language'], 'safe'],
             [['attr_require','attr_custom'],'parseStyleAttr'],
             [['style_custom'],'parseStyleCustom'],
             [['style_spec'],'parseStyleSpec'],
@@ -172,16 +172,16 @@ class Style extends BaseModel
      */
     public function getLangs()
     {
-        return $this->hasMany(StyleLang::class,['master_id'=>'id']);
+        return $this->hasMany(StyleLang::class,['master_id'=>'id'])->alias('langs');
         
     }
     /**
      * 关联语言一对一
      * @return \yii\db\ActiveQuery
      */
-    public function getLang()
+    public function getLang($language = null)
     {
-        return $this->hasOne(StyleLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language'=>Yii::$app->language]);
+        return $this->hasOne(StyleLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language'=>Yii::$app->params['language']]);
     }
     /**
      * 关联产品线分类一对一
@@ -189,7 +189,7 @@ class Style extends BaseModel
      */
     public function getType()
     {
-        return $this->hasOne(TypeLang::class, ['master_id'=>'type_id'])->alias('type')->where(['type.language'=>Yii::$app->language]);
+        return $this->hasOne(TypeLang::class, ['master_id'=>'type_id'])->alias('type')->where(['type.language'=>Yii::$app->params['language']]);
     }
     /**
      * 款式分类一对一
@@ -197,7 +197,7 @@ class Style extends BaseModel
      */
     public function getCate()
     {
-        return $this->hasOne(CategoryLang::class, ['master_id'=>'cat_id'])->alias('cate')->where(['cate.language'=>Yii::$app->language]);
+        return $this->hasOne(CategoryLang::class, ['master_id'=>'cat_id'])->alias('cate')->where(['cate.language'=>Yii::$app->params['language']]);
     }
     
     public function imageModel()

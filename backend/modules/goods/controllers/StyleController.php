@@ -43,9 +43,12 @@ class StyleController extends BaseController
             ],
             'pageSize' => $this->pageSize
         ]);
-
+        
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams,['style_name']);
+            ->search(Yii::$app->request->queryParams,['style_name','language']);
+        //切换默认语言
+        $this->setLocalLanguage($searchModel->language);
+       
         $dataProvider->query->joinWith(['lang']);
         $dataProvider->query->andFilterWhere(['like', 'lang.style_name',$searchModel->style_name]);
 

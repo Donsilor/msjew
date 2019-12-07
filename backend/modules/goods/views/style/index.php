@@ -41,6 +41,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
             ],
             [
+                'attribute' => 'lang.language',
+                'value' => 'lang.language',
+                'filter' => Html::activeDropDownList($searchModel, 'language',Yii::$app->params['languages'], [
+                        'prompt' => '默认',
+                        'class' => 'form-control',
+                ]),
+            ],       
+            [
                 'attribute' => 'lang.style_name',
                 'value' => 'lang.style_name',
                 'filter' => Html::activeTextInput($searchModel, 'style_name', [

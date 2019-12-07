@@ -43,5 +43,6 @@ return [
 		'zh-TW'=>'繁体中文',
 	    //'en-US'=>'English',
 	],
+    'language'=>'zh-CN',//默认语言
 	
 ];

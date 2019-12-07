@@ -70,4 +70,13 @@ class BaseController extends Controller
 
         return true;
     }
+    /**
+     * 局部默认语言
+     * @param string $language
+     */
+    public function setLocalLanguage($language = '')
+    {
+        //切换默认语言
+        Yii::$app->params['language'] = $language ? $language : Yii::$app->language; 
+    }
 }

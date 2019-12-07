@@ -40,14 +40,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 'footer'=> Html::batchButtons(false),//['search_export','status_disabled']
                 'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
             ],
-            [
+            /* [
                 'attribute' => 'lang.language',
-                'value' => 'lang.language',
+                 'value' => function ($model) {
+                    return \common\enums\LanguageEnum::getValue($model->lang->language);
+                 },
                 'filter' => Html::activeDropDownList($searchModel, 'language',Yii::$app->params['languages'], [
                         'prompt' => '默认',
                         'class' => 'form-control',
                 ]),
-            ],       
+            ], */
+            [
+                'attribute' => 'style_image',
+                'value' => function ($model) {
+                    return ImageHelper::fancyBox($model->style_image);
+                },
+                'filter' => false,
+                'format' => 'raw',
+            ],
+                
             [
                 'attribute' => 'lang.style_name',
                 'value' => 'lang.style_name',
@@ -62,14 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => true,
                 'format' => 'raw',
             ],
-            [
-                'attribute' => 'style_image',
-                'value' => function ($model) {
-                    return ImageHelper::fancyBox($model->style_image);
-                 },
-                'filter' => false,
-                'format' => 'raw',
-            ],
+            
             [
                     'attribute' => 'type_id',
                     'value' => "type.type_name",

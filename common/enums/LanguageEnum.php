@@ -21,9 +21,9 @@ class LanguageEnum extends BaseEnum
 	public static function getMap(): array
 	{
 		return [				
-				self::ZH_CN => '中文简体',
-				self::ZH_HK => '中文繁体',
-				self::EN_US => '英文',
+				self::ZH_CN => '简体中文',
+				self::ZH_HK => '繁体中文',
+				self::EN_US => 'English',
 		];
 	}
 }

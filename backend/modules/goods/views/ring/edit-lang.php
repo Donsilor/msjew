@@ -11,7 +11,7 @@ use yii\grid\GridView;
 $this->title = Yii::t('goods_ring', 'Ring');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('goods_ring', 'Rings'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-$model->ring_images = explode(',', $model->ring_images);
+$model->ring_images = $model->ring_images?explode(',', $model->ring_images):null;
 ?>
 
 <div class="row">
@@ -23,13 +23,12 @@ $model->ring_images = explode(',', $model->ring_images);
             <div class="box-body">
                 <?php $form = ActiveForm::begin([
                     'fieldConfig' => [
-                        'template' => "<div class='col-sm-2 text-right'>{label}</div><div class='col-sm-10'>{input}\n{hint}\n{error}</div>",
+                        
                     ],
                 ]); ?>
-                <div class="col-sm-12">
+                <div class="col-sm-12  nav-tabs-custom">
                     <?php echo Html::langTab('tab')?>
                     <div class="tab-content">
-
                         <?php
                         echo common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
                             'fields'=>
@@ -38,76 +37,51 @@ $model->ring_images = explode(',', $model->ring_images);
 
                                 ]]);
                         ?>
-                    </div>
-
-
-
-
-                    <div class="form-group field-ring-ring_sn">
-                        <div class="col-sm-2 text-right">
-                            <label class="control-label" for="ring-goods">商品</label>
-                        </div>
-                        <div class="col-sm-10">
-
-                            <?= Html::create(['select-style'], '添加商品', [
-                                'class' => 'btn btn-primary btn-xs openIframe1',
-                            ])?>
-                            <div class="help-block"></div>
-
-                            <table class="table table-hover"><thead>
-                                <tr>
-
-                                    <th>商品名称</th>
-                                    <th>款式编号</th>
-
-                                    <th>销售价</th>
-                                    <th>商品库存</th>
-
-                                    <th class="action-column">操作</th>
-                                </tr>
-
-                                </thead>
-                                <tbody id="style_table">
-
-
-
-                                </tbody></table>
-                        </div>
-                    </div>
-
-
-                    <?= $form->field($model, 'ring_sn')->textInput(['maxlength' => true]) ?>
-
-                    <?= $form->field($model, 'ring_images')->widget(common\widgets\webuploader\Files::class, [
-                        'type' => 'images',
-                        'theme' => 'default',
-                        'themeConfig' => [],
-                        'config' => [
-                            'pick' => [
-                                'multiple' => true,
+                        <div class="form-group field-ring-ring_sn">
+                                <?= Html::create(['select-style'], '添加商品', [
+                                    'class' => 'btn btn-primary btn-xs openIframe1',
+                                ])?>
+                                <div class="help-block"></div>
+    
+                                <table class="table table-hover"><thead>
+                                    <tr>    
+                                        <th>商品名称</th>
+                                        <th>款式编号</th>
+    
+                                        <th>销售价</th>
+                                        <th>商品库存</th>
+    
+                                        <th class="action-column">操作</th>
+                                    </tr>
+    
+                                    </thead>
+                                    <tbody id="style_table">
+                                    </tbody></table>                           
+                        </div>    
+                        <?= $form->field($model, 'ring_sn')->textInput(['maxlength' => true]) ?>
+    
+                        <?= $form->field($model, 'ring_images')->widget(common\widgets\webuploader\Files::class, [
+                            'type' => 'images',
+                            'theme' => 'default',
+                            'themeConfig' => [],
+                            'config' => [
+                                'pick' => [
+                                    'multiple' => true,
+                                ],
+    
+                            ]
+                        ]); ?>
+    
+                        <?= $form->field($model, 'ring_style')->widget(kartik\select2\Select2::class, [
+                            'data' => common\enums\SeriesEnum::getMap(),
+                            'options' => ['placeholder' => '请选择'],
+                            'pluginOptions' => [
+                                'allowClear' => true
                             ],
-
-                        ]
-                    ]); ?>
-
-
-                    <?= $form->field($model, 'ring_style')->widget(kartik\select2\Select2::class, [
-                        'data' => common\enums\SeriesEnum::getMap(),
-                        'options' => ['placeholder' => '请选择'],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                    ]);?>
-                    <?= $form->field($model, 'sale_price')->textInput(['maxlength' => true]) ?>
-
-
-                    <?= $form->field($model, 'status')->radioList(\common\enums\FrameEnum::getMap()) ?>
-
-
-
-
-
-
+                        ]);?>
+                        <?= $form->field($model, 'sale_price')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'status')->radioList(\common\enums\FrameEnum::getMap()) ?>
+					</div><!-- ./tab-content -->
                 </div>
 
                 <div class="box-body table-responsive">
@@ -115,11 +89,6 @@ $model->ring_images = explode(',', $model->ring_images);
 
                     </div>
                 </div>
-
-
-
-
-
                 <div class="form-group">
                     <div class="col-sm-12 text-center">
                         <button class="btn btn-primary" type="submit">保存</button>

@@ -9,7 +9,7 @@ use common\models\base\BaseModel;
  * This is the model class for table "{{%goods_category_spec}}".
  *
  * @property int $id 主键
- * @property int $cat_id 分类ID
+ * @property int $type_id 产品线ID
  * @property int $attr_id 属性ID
  * @property int $attr_type 分类类型(1-基础属性,2-销售属性,3-定制属性)
  * @property string $attr_values 属性值ID
@@ -20,7 +20,7 @@ use common\models\base\BaseModel;
  * @property int $created_at 创建时间
  * @property int $updated_at 更新时间
  */
-class CategorySpec extends BaseModel
+class AttributeSpec extends BaseModel
 {
     public $attr_name;
     /**
@@ -28,7 +28,7 @@ class CategorySpec extends BaseModel
      */
     public static function tableName()
     {
-        return '{{%goods_category_spec}}';
+        return '{{%goods_attribute_spec}}';
     }
 
     /**
@@ -37,15 +37,15 @@ class CategorySpec extends BaseModel
     public function rules()
     {
         return [
-            [['cat_id', 'attr_id', 'attr_type', 'input_type', 'is_require', 'status'], 'required'],
-            [['cat_id', 'attr_id', 'attr_type', 'input_type', 'is_require', 'status', 'sort', 'created_at', 'updated_at'], 'integer'],
+            [['type_id', 'attr_id', 'attr_type', 'input_type', 'is_require', 'status'], 'required'],
+            [['type_id', 'attr_id', 'attr_type', 'input_type', 'is_require', 'status', 'sort', 'created_at', 'updated_at'], 'integer'],
             //[['attr_values'], 'string', 'max' => 500],
-            [['attr_id'],'unique', 'targetAttribute'=>['cat_id','attr_id'],
+            [['attr_id'],'unique', 'targetAttribute'=>['type_id','attr_id'],
               //'targetClass' => '\models\Dishes', // 模型，缺省时默认当前模型。
-              'comboNotUnique' => '当前分类已添加过该属性' //错误信息
+              'comboNotUnique' => '当前产品线已添加过该属性' //错误信息
             ],
             [['attr_values'],'implodeArray','params'=>['split'=>',']],
-            [['attr_name'], 'safe'],
+            [['attr_name','language'], 'safe'],
         ];
     }    
 
@@ -56,7 +56,7 @@ class CategorySpec extends BaseModel
     {
         return [
             'id' => Yii::t('goods_attribute', 'ID'),
-            'cat_id' => Yii::t('goods_attribute', '分类'),
+            'type_id' => Yii::t('goods_attribute', '产品线'),
             'attr_id' => Yii::t('goods_attribute', '属性'),
             'attr_type' => Yii::t('goods_attribute', '属性类型'),
             'attr_values' => Yii::t('goods_attribute', '属性值'),
@@ -76,14 +76,14 @@ class CategorySpec extends BaseModel
      */
     public function getAttr()
     {
-        return $this->hasOne(AttributeLang::class, ['master_id'=>'attr_id'])->alias('attr')->where(['attr.language'=>Yii::$app->language]);
+        return $this->hasOne(AttributeLang::class, ['master_id'=>'attr_id'])->alias('attr')->where(['attr.language'=>Yii::$app->params['language']]);
     }
     /**
-     * 关联分类一对一
+     * 关联产品线一对一
      * @return \yii\db\ActiveQuery
      */
-    public function getCate()
+    public function getType()
     {
-        return $this->hasOne(CategoryLang::class, ['master_id'=>'cat_id'])->alias('cate')->where(['cate.language'=>Yii::$app->language]);
+        return $this->hasOne(TypeLang::class, ['master_id'=>'type_id'])->alias('type')->where(['type.language'=>Yii::$app->params['language']]);
     }
 }

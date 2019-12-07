@@ -68,15 +68,19 @@ $this->params['breadcrumbs'][] = $this->title;
               <li class="pull-left header"><i class="fa fa-th"></i> 商品属性</li>
             </ul>
             <div class="box-body col-lg-10">
-               <?php 
+               <?php               
                 $attr_list_all = \Yii::$app->services->goodsAttribute->getAttrListByTypeId($model->type_id);
+                $type_sale = common\enums\AttrTypeEnum::TYPE_SALE;
+                if(!isset($attr_list_all[$type_sale])){
+                    $attr_list_all[$type_sale] = [];
+                }
                 foreach ($attr_list_all as $attr_type=>$attr_list){
                     ?>
                     <div class="box-header with-border">
                     	<h3 class="box-title"><?= common\enums\AttrTypeEnum::getValue($attr_type)?></h3>
                 	</div>
                     <div class="box-body" style="margin-left:10px">
-                      <?php 
+                      <?php
                       //如果是销售属性
                       if($attr_type == common\enums\AttrTypeEnum::TYPE_SALE){
                           $data = [];
@@ -94,7 +98,8 @@ $this->params['breadcrumbs'][] = $this->title;
                           if(!empty($data)){
                              echo common\widgets\skutable\SkuTable::widget(['form' => $form,'model' => $model,'data' =>$data,'name'=>'Style[style_spec]']);
                           }
-                       } else if($attr_type == common\enums\AttrTypeEnum::TYPE_BASE) {
+                          echo $form->field($model, 'goods_storage')->textInput(['maxlength'=>true]) ;
+                      }else{
                               $model->style_attr = json_decode($model->style_attr,true);
                               foreach ($attr_list as $k=>$attr){ 
                                   $attr_field = $attr['is_require']==1?'attr_require':'attr_custom';                                  
@@ -111,28 +116,33 @@ $this->params['breadcrumbs'][] = $this->title;
                                           $input = $form->field($model,$attr_field_name)->radioList($attr_values)->label($attr['attr_name']);
                                           break;
                                       }
+                                      case common\enums\InputTypeEnum::INPUT_MUlTI :{
+                                          $input = $form->field($model,$attr_field_name)->checkboxList($attr_values)->label($attr['attr_name']);
+                                          break;
+                                      }
                                       default:{
                                           $input = $form->field($model,$attr_field_name)->dropDownList($attr_values,['prompt'=>'请选择'])->label($attr['attr_name']);
                                           break;
                                       }
                                   }//end switch
                       ?>
+                           <?php 
+                           $collLg = 4;
+                           if($attr_type == common\enums\AttrTypeEnum::TYPE_SERVER){
+                                $collLg = 12;
+                           }?>
                               <?php if ($k % 3 ==0){ ?><div class="row"><?php }?>
-    							<div class="col-lg-4"><?= $input ?></div>
+    							<div class="col-lg-<?=$collLg?>"><?= $input ?></div>
                               <?php if(($k+1) % 3 == 0 || ($k+1) == count($attr_list)){?></div><?php }?>
                       <?php 
                               }//end foreach $attr_list
-                          
+                              $show_storage = empty($attr_list)?true:false; 
                        }?>
                     </div>
                     <!-- ./box-body -->
                     <?php 
                 }//end foreach $attr_list_all
-                ?>
-                <div class="box-body" style="margin-left:10px">
-                <?= $form->field($model, 'goods_storage')->textInput(['maxlength'=>true]) ?>
-                </div>
-                  
+                ?>  
            </div>  
       	 <!-- ./box-body -->          
       </div>    

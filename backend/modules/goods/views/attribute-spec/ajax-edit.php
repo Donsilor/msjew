@@ -12,6 +12,7 @@ $form = ActiveForm::begin([
         'template' => "<div class='col-sm-2 text-right'>{label}</div><div class='col-sm-10'>{input}\n{hint}\n{error}</div>",
     ]
 ]);
+$model->attr_values = $model->attr_values?explode(",",$model->attr_values):[];
 ?>
 
 <div class="modal-header">
@@ -19,22 +20,22 @@ $form = ActiveForm::begin([
         <h4 class="modal-title">基本信息</h4>
 </div>
     <div class="modal-body">
- 			<?= $form->field($model, 'cat_id')->widget(kartik\select2\Select2::class, [
- 			        'data' => Yii::$app->services->category->getDropDown(),
+ 			<?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
+ 			        'data' => Yii::$app->services->goodsType->getDropDown(),
                     'options' => ['placeholder' => '请选择'],
                     'pluginOptions' => [
                         'allowClear' => true
                     ],
             ]);?>
             <?= $form->field($model, 'attr_id')->widget(kartik\select2\Select2::class, [
-                    'data' => Yii::$app->services->attribute->getDropDown(1),
+                    'data' => Yii::$app->services->goodsAttribute->getDropDown(1),
                     'options' => ['placeholder' => '请选择'],
                     'pluginOptions' => [
                         'allowClear' => true
                     ],
             ]);?>
-			<div id="box-categoryspec-attr_values" style="<?php echo empty($attrValues)?'display:none':''?>">
-				<?= $form->field($model, 'attr_values')->checkboxList($attrValues,['prompt'=>'请选择','value'=>explode(",",$model->attr_values)]);?>
+			<div id="box-attributespec-attr_values" style="<?php echo empty($attrValues)?'display:none':''?>">
+				<?= $form->field($model, 'attr_values')->checkboxList($attrValues,['prompt'=>'请选择']);?>
 			</div>
 			
 			<?= $form->field($model, 'attr_type')->widget(kartik\select2\Select2::class, [
@@ -57,15 +58,17 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end(); ?>
 
 <script>
-$("#categoryspec-attr_id").change(function(){
+$("#attributespec-attr_id").change(function(){
 
-	$("#box-categoryspec-attr_values").hide();
+	$("#box-attributespec-attr_values").hide();
 
 	var attr_id = $(this).val();	
 	if(attr_id){
-        $.post("<?php echo Url::to(['ajax-attr-values'])?>",{'id':'<?= $model->id ?>','attr_id':attr_id},function(data){        
-             $("#categoryspec-attr_values").html(data); 
-             $("#box-categoryspec-attr_values").show();
+        $.post("<?php echo Url::to(['ajax-attr-values'])?>",{'id':'<?= $model->id ?>','attr_id':attr_id},function(data){
+            if(data) {        
+                 $("#attributespec-attr_values").html(data); 
+                 $("#box-attributespec-attr_values").show();
+            }
         });
 	}
 });

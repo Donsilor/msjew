@@ -13,6 +13,8 @@ class AttrTypeEnum extends BaseEnum
   const TYPE_BASE = 1;
   const TYPE_SALE = 2;
   const TYPE_MADE = 3;
+  const TYPE_CATE = 4;
+  const TYPE_SERVER = 5;
     
   /**
    * @return array
@@ -21,8 +23,10 @@ class AttrTypeEnum extends BaseEnum
   {
     return [
         self::TYPE_BASE => '基础属性',
-        self::TYPE_SALE => '规格属性',
-        self::TYPE_MADE => '定制属性',        
+        self::TYPE_SALE => '销售属性',
+        self::TYPE_MADE => '定制属性',
+        self::TYPE_CATE => '款式分类',
+        self::TYPE_SERVER => '物流及售后',
     ];
   }
 }

@@ -68,11 +68,17 @@ class AttributeController extends BaseController
         //$trans = Yii::$app->db->beginTransaction();
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-              $this->editLang($model,false);
+              $this->editLang($model);
               
               //更新属性值到attribute_lang.attr_values;
-              Yii::$app->services->goodsAttribute->updateAttrValues($model->id);              
-              return $this->redirect(['index']);
+              Yii::$app->services->goodsAttribute->updateAttrValues($model->id);   
+              
+              if($model->isNewRecord){
+                    return $this->message("添加成功",$this->redirect(['edit-lang','id'=>$model->id]));
+              }
+              
+              return $this->message("保存成功",$this->redirect(['index']));
+              
         }
         
         $dataProvider = null;
@@ -105,12 +111,45 @@ class AttributeController extends BaseController
             'dataProvider'=>$dataProvider,
         ]);
     }
+    
+    /**
+     * ajax编辑/创建
+     *
+     * @return mixed|string|\yii\web\Response
+     * @throws \yii\base\ExitException
+     */
+    public function actionAjaxEditLang()
+    {
+        $id = Yii::$app->request->get('id');
+        //$trans = Yii::$app->db->beginTransaction();
+        $model = $this->findModel($id);
+        // ajax 校验
+        $this->activeFormValidate($model);
+        if ($model->load(Yii::$app->request->post())) {
+            $is_new = $model->isNewRecord;
+            if($flag1 = $model->save()){
+                //多语言编辑
+                $flag2 = $this->editLang($model,true);
+            }
+            if($flag1 !== false && $flag2 !== false){   
+                return $is_new ? 
+                $this->message("添加成功", $this->redirect(['edit-lang','id'=>$model->id]), 'success'):
+                $this->message("保存成功", $this->redirect(['index']), 'success');
+            }
+            return $this->message($this->getError($model), $this->redirect(['index']), 'error');
+        }
+        
+        return $this->renderAjax($this->action->id, [
+                'model' => $model,
+        ]);
+    }
+    
     /**
      * 删除
      * @param unknown $id
      * @return mixed|string
      */
-    public function actionDelete($id)
+    /* public function actionDelete($id)
     {
         if ($model = $this->findModel($id)) {
             $model->status = -1;
@@ -119,5 +158,5 @@ class AttributeController extends BaseController
         }
         
         return $this->message("删除失败", $this->redirect(['index', 'id' => $model->id]), 'error');
-    }
+    } */
 }

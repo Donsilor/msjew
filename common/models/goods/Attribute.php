@@ -36,9 +36,9 @@ class Attribute extends BaseModel
     public function rules()
     {
         return [
-            [['attr_type','type_id', 'input_type', 'is_require','status'], 'required'],
-            [['status', 'sort','attr_type','type_id', 'input_type', 'is_require','created_at', 'updated_at'], 'integer'],
-            [['attr_name'], 'safe'],
+            [['status'], 'required'],
+            [['id','status', 'sort','created_at', 'updated_at'], 'integer'],
+            [['attr_name','language'], 'safe'],
         ];
     }
 

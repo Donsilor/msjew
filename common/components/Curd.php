@@ -99,7 +99,12 @@ trait Curd
      */
     public function actionDelete($id)
     {
-        if ($this->findModel($id)->delete()) {
+        $model = $this->findModel($id);
+        if ($model->delete()) {
+            if(method_exists($model,'langModel')){
+                $langModel = $model->langModel();
+                $langModel->deleteAll(['in','master_id',[$id]]);
+            }
             return $this->message("删除成功", $this->redirect(['index']));
         }
 
@@ -121,9 +126,8 @@ trait Curd
         $model->attributes = ArrayHelper::filter(Yii::$app->request->get(), ['sort', 'status']);
         if (!$model->save(false)) {
             return ResultHelper::json(422, $this->getError($model));
-        }
-
-        return ResultHelper::json(200, '修改成功',[],true);
+        } 
+        return ResultHelper::json(200, '修改成功');
     }
 
     /**

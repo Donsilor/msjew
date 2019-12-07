@@ -11,6 +11,7 @@ use common\models\goods\AttributeValueLang;
 use common\models\goods\Attribute;
 use common\models\goods\AttributeLang;
 use common\models\goods\AttributeValue;
+use common\models\goods\AttributeSpec;
 
 
 /**
@@ -52,6 +53,32 @@ class AttributeService extends Service
         return \Yii::$app->db->createCommand($sql)->execute();
     }
     /**
+     * 属性列表
+     * @return array|\yii\db\ActiveRecord[]
+     */
+    public function getDropDown($status = null,$language = null)
+    {
+        if(empty($language)){
+            $language = Yii::$app->params['language'];
+        }
+        
+        $query = Attribute::find()->alias('a')
+                ->leftJoin('{{%goods_attribute_lang}} b', 'b.master_id = a.id and b.language = "'.$language.'"')
+                ->select(['a.*', 'b.attr_name'])
+                ->orderBy('sort asc,created_at asc');
+        
+        if($status){
+            $query->andWhere(['=','a.status',$status]);
+        }
+        
+        $models = $query->asArray()->all();        
+        
+        $models = ArrayHelper::itemsMerge($models);
+        
+        return ArrayHelper::map(ArrayHelper::itemsMergeDropDown($models,'id','attr_name'), 'id', 'attr_name');
+    }
+    
+    /**
      * 根据产品线查询属性列表（数据行）
      * @param unknown $type_id
      * @param number $status
@@ -61,17 +88,18 @@ class AttributeService extends Service
     public function getAttrListByTypeId($type_id,$status = 1,$language = null)
     {
         if(empty($language)){
-            $language = Yii::$app->language;
+            $language = Yii::$app->params['language'];
         }
-        $query = Attribute::find()->alias("attr")
-                    ->select(["attr.id","lang.attr_name",'attr.attr_type','attr.input_type','attr.is_require'])
+        $query = AttributeSpec::find()->alias("spec")
+                    ->select(["attr.id","lang.attr_name",'spec.attr_type','spec.input_type','spec.is_require'])
+                    ->innerJoin(Attribute::tableName()." attr",'spec.attr_id=attr.id')
                     ->innerJoin(AttributeLang::tableName().' lang',"attr.id=lang.master_id and lang.language='".$language."'")
-                    ->where(['attr.type_id'=>$type_id]);
+                    ->where(['spec.type_id'=>$type_id]);
         if(is_numeric($status)){
-            $query->andWhere(['=','attr.status',$status]);
+            $query->andWhere(['=','spec.status',$status]);
         }
         
-        $models = $query->orderBy("attr.sort asc")->asArray()->all();
+        $models = $query->orderBy("spec.sort asc")->asArray()->all();
         $attr_list = [];
         foreach ($models as $model){
             $attr_list[$model['attr_type']][] = $model;

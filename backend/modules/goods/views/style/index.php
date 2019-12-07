@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'footer'=> Html::batchButtons(false),//['search_export','status_disabled']
                 'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
             ],
-            /* [
+             [
                 'attribute' => 'lang.language',
                  'value' => function ($model) {
                     return \common\enums\LanguageEnum::getValue($model->lang->language);
@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'prompt' => '默认',
                         'class' => 'form-control',
                 ]),
-            ], */
+            ], 
             [
                 'attribute' => 'style_image',
                 'value' => function ($model) {

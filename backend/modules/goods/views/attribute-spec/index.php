@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-header">
                 <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
                 <div class="box-tools">
-                    <?= Html::create(['ajax-edit', 'cate_id' => 0], '创建', [
+                    <?= Html::create(['ajax-edit', 'type_id' => 0], '创建', [
                         'data-toggle' => 'modal',
                         'data-target' => '#ajaxModalLg',
                     ]); ?>
@@ -61,11 +61,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => false,
             ],
             [
-                //'label' => 'cat_name',
-                'attribute' => 'cate.cat_name',
-                'filter' => Html::activeDropDownList($searchModel, 'cat_id', Yii::$app->services->category->getDropDown(), [
+                //'label' => 'type_name',
+                'attribute' => 'type.type_name',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'filter' => Html::activeDropDownList($searchModel, 'type_id', Yii::$app->services->goodsType->getDropDown(), [
                         'prompt' => '全部',
-                        'class' => 'form-control'
+                        'class' => 'form-control',
                 ]),
             ],
             [
@@ -98,7 +99,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
                     return \common\enums\ConfirmEnum::getValue($model->is_require);
-                }
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'is_require',\common\enums\ConfirmEnum::getMap(), [
+                        'prompt' => '全部',
+                        'class' => 'form-control'
+                ]),
             ],            
             [
                 'attribute' => 'status',
@@ -115,8 +120,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'sort',
-                'headerOptions' => ['style'=>'width:80px'],
-                //'filter' => false,
+                'format' => 'raw',
+                'headerOptions' =>  ['class' => 'col-md-1'],
+                'value' => function ($model, $key, $index, $column){
+                    return  Html::sort($model->sort,['data-url'=>Url::to(['ajax-update'])]);
+                },
             ],            
             [
                 'class' => 'yii\grid\ActionColumn',

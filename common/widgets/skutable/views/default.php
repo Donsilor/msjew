@@ -28,5 +28,5 @@ foreach ($data as $key => $val){
 <div class="clear"></div>
 <div id="skuTable"></div>
 <input type="hidden" id="defaultSku" attr-require="<?= $inputAttrRequire?>" attr-name="<?= $inputAttrName?>" attr-title="<?= $inputAttrTitle?>"/>
-<input type="button" class="getSetSkuVal" value="校验数据" />
+<!--<input type="button" class="getSetSkuVal" value="校验数据" />  -->
 </div>

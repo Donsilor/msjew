@@ -43,7 +43,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     'footer'=> Html::batchButtons(),//['search_export','status_disabled']
                     'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示                        
             ],
-            //'id',
+            [
+                    'attribute'=>'id',
+                    'value' =>'id',
+                    'filter' => Html::activeTextInput($searchModel, 'id', [
+                            'class' => 'form-control',
+                            'style' =>'width:80px'
+                    ]),
+            ],
             [
                 'attribute'=>'attr_name',
                 'value' =>'lang.attr_name',
@@ -54,26 +61,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                  'attribute'=>'lang.attr_values',
-            ], 
-            [
-                'attribute' => 'attr_type',
-                'format' => 'raw',
-                'headerOptions' => ['class' => 'col-md-1'],
-                'value' => function ($model){
-                    return \common\enums\AttrTypeEnum::getValue($model->attr_type);
-                },
-                'filter' => Html::activeDropDownList($searchModel, 'attr_type',\common\enums\AttrTypeEnum::getMap(), [
-                        'prompt' => '全部',
-                        'class' => 'form-control'
-                ]),
-            ],
-            [
-                    //'label' => 'cat_name',
-                    'attribute' => 'type.type_name',
-                    'filter' => Html::activeDropDownList($searchModel, 'type_id', Yii::$app->services->goodsType->getDropDown(), [
-                            'prompt' => '全部',
-                            'class' => 'form-control'
-                    ]),
             ],
             [
                 'attribute' => 'status',

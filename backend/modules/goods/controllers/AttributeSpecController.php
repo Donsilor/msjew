@@ -7,7 +7,8 @@ use common\models\goods\Attribute;
 use common\components\Curd;
 use common\models\base\SearchModel;
 use backend\controllers\BaseController;
-use common\models\goods\CategorySpec;
+use common\models\goods\AttributeSpec;
+use common\helpers\ResultHelper;
 
 /**
  * Attribute
@@ -15,14 +16,14 @@ use common\models\goods\CategorySpec;
  * Class AttributeController
  * @package backend\modules\goods\controllers
  */
-class CategorySpecController extends BaseController
+class AttributeSpecController extends BaseController
 {
     use Curd;
     
     /**
      * @var Attribute
      */
-    public $modelClass = CategorySpec::class;
+    public $modelClass = AttributeSpec::class;
     
     
     /**
@@ -45,11 +46,13 @@ class CategorySpecController extends BaseController
         ]);
         
         $dataProvider = $searchModel
-        ->search(Yii::$app->request->queryParams,['attr_name']);
+            ->search(Yii::$app->request->queryParams,['attr_name','language']);
+        
+        $this->setLocalLanguage($searchModel->language);
         
         $dataProvider->query->andWhere(['>','status',-1]);
         $dataProvider->query->joinWith(['attr']);
-        $dataProvider->query->with(['cate']);
+        $dataProvider->query->with(['type']);
         
         $dataProvider->query->andFilterWhere(['like', 'attr.attr_name',$searchModel->attr_name]) ;
         
@@ -81,7 +84,7 @@ class CategorySpecController extends BaseController
         
         $attrValues = [];
         if ($model->attr_id){
-            $attrValues = $values = Yii::$app->services->attribute->getValuesByAttrId($model->attr_id);
+            $attrValues = $values = Yii::$app->services->goodsAttribute->getValuesByAttrId($model->attr_id);
         }
         return $this->renderAjax($this->action->id, [
                 'model' => $model,
@@ -103,13 +106,13 @@ class CategorySpecController extends BaseController
         if ($id && $model = $this->findModel($id)) {
             $checked_values = explode(",",trim($model->attr_values,','));
         }        
-        
-        $values = Yii::$app->services->attribute->getValuesByAttrId($attr_id);
+        $html = '';
+        $values = Yii::$app->services->goodsAttribute->getValuesByAttrId($attr_id);
         foreach ($values as $key=>$val) {
             $checked = $checked_values === false || in_array($key,$checked_values)?" checked":'';
-            $str .= '<label style="color:#636f7a"><input type="checkbox" name="CategorySpec[attr_values][]" value="'.$key.'"'.$checked.'>'.$val.'</label>&nbsp;';  
-        }           
-        return $str;
+            $html .= '<label style="color:#636f7a"><input type="checkbox" name="AttributeSpec[attr_values][]" value="'.$key.'"'.$checked.'>'.$val.'</label>&nbsp;';  
+        } 
+        return $html;
     }
 
     /**

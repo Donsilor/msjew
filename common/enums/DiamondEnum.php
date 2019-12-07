@@ -9,6 +9,12 @@ namespace common\enums;
 
 class DiamondEnum extends  BaseEnum
 {
+
+    //证书类型
+    //const COLOR = 'color';
+    public static $typeOptions = [
+        1 => '颜色',
+    ];
     //钻石颜色   
     //const COLOR = 'color';
     public static $colorOptions = [

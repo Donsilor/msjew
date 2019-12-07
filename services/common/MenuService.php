@@ -76,15 +76,21 @@ class MenuService extends Service
      * @param string $id
      * @return array
      */
-    public function getDropDown(MenuCate $menuCate, $app_id, $id = '')
+    public function getDropDown(MenuCate $menuCate, $app_id, $id = '', $language=null)
     {
-        $list = Menu::find()
+        if(empty($language)){
+            $language = Yii::$app->language;
+        }
+        $list = Menu::find()->alias('a')
             ->where(['>=', 'status', StatusEnum::DISABLED])
             ->andWhere(['app_id' => $app_id])
             ->andWhere(['type' => $menuCate->type])
-            ->andFilterWhere(['addons_name' => $menuCate->addons_name])
-            ->andFilterWhere(['<>', 'id', $id])
-            ->select(['id', 'title', 'pid', 'level'])
+            ->andWhere(['cate_id' => $menuCate->id])
+            ->leftJoin('{{%common_menu_lang%}} as b','b.master_id = a.id and b.language = "'.$language.'"')
+            ->andFilterWhere(['b.addons_name' => $menuCate->addons_name])
+            ->andFilterWhere(['<>', 'a.id', $id])
+
+            ->select(['a.id', 'ifnull(b.title,a.title) as title', 'pid', 'level'])
             ->orderBy('cate_id asc, sort asc')
             ->asArray()
             ->all();
@@ -148,20 +154,25 @@ class MenuService extends Service
     /**
      * @return array|\yii\db\ActiveRecord[]
      */
-    public function findAll()
+    public function findAll($language=null)
     {
-        $data = Menu::find()->where(['status' => StatusEnum::ENABLED]);
+        if(empty($language)){
+            $language = Yii::$app->language;
+        }
+        $data = Menu::find()->alias('a')->where(['status' => StatusEnum::ENABLED]);
         // 关闭开发模式
         if (empty(Yii::$app->debris->config('sys_dev', false, 1))) {
             $data = $data->andWhere(['dev' => StatusEnum::DISABLED]);
         }
 
-        $models = $data->orderBy('cate_id asc, sort asc')
+        $models = $data->leftJoin('{{%common_menu_lang%}} as b','b.master_id = a.id and b.language = "'.$language.'"')
+            ->orderBy('cate_id asc, sort asc')
             ->andWhere(['app_id' => Yii::$app->id])
             ->with(['cate' => function (\yii\db\ActiveQuery $query) {
                 return $query->andWhere(['app_id' => Yii::$app->id]);
             }])
-            ->orderBy('sort asc, id asc')
+            ->orderBy('sort asc, a.id asc')
+            ->select(['a.*','ifnull(b.title,a.title) as title'])
             ->asArray()
             ->all();
 

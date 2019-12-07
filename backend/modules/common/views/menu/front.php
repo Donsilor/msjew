@@ -4,25 +4,22 @@ use common\helpers\Url;
 use common\helpers\Html;
 use jianyan\treegrid\TreeGrid;
 
-$this->title = '菜单管理';
+$this->title = '前台菜单';
 $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 ?>
 
 <div class="row">
     <div class="col-sm-12">
         <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-                <?php foreach ($cates as $cate){ ?>
-                    <li class="<?php if ($cate['id'] == $cate_id ){ echo 'active' ;}?>"><a href="<?= Url::to(['index', 'cate_id' => $cate['id']]) ?>"> <?= $cate['title'] ?></a></li>
-                <?php } ?>
-                <li><a href="<?= Url::to(['menu-cate/index']) ?>"> 菜单分类</a></li>
-                <li class="pull-right">
-                    <?= Html::create(['ajax-edit-lang', 'cate_id' => $cate_id], '创建', [
+            <div class="box-header">
+                <h3 class="box-title"><?= $this->title; ?></h3>
+                <div class="box-tools">
+                    <?= Html::create(['front-edit-lang', 'cate_id' => $cate_id], '创建', [
                         'data-toggle' => 'modal',
                         'data-target' => '#ajaxModalLg',
-                    ]); ?>
-                </li>
-            </ul>
+                    ])?>
+                </div>
+            </div>
             <div class="tab-content">
                 <div class="active tab-pane">
                     <?= TreeGrid::widget([
@@ -42,7 +39,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                     $str = Html::tag('span', empty($model->lang->title)?$model->title:$model->lang->title, [
                                         'class' => 'm-l-sm'
                                     ]);
-                                    $str .= Html::a(' <i class="icon ion-android-add-circle"></i>', ['ajax-edit-lang', 'pid' => $model['id']], [
+                                    $str .= Html::a(' <i class="icon ion-android-add-circle"></i>', ['front-edit-lang', 'pid' => $model['id']], [
                                         'data-toggle' => 'modal',
                                         'data-target' => '#ajaxModalLg',
                                     ]);
@@ -82,7 +79,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                 'template'=> '{edit} {status} {delete}',
                                 'buttons' => [
                                     'edit' => function ($url, $model, $key) {
-                                        return Html::edit(['ajax-edit-lang','id' => $model->id], '编辑', [
+                                        return Html::edit(['front-edit-lang','id' => $model->id], '编辑', [
                                             'data-toggle' => 'modal',
                                             'data-target' => '#ajaxModalLg',
                                         ]);

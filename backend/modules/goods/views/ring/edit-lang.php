@@ -29,7 +29,6 @@ $model->ring_images = explode(',', $model->ring_images);
                 <div class="col-sm-12">
                     <?php echo Html::langTab('tab')?>
                     <div class="tab-content">
-
                         <?php
                         echo common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
                             'fields'=>
@@ -102,19 +101,29 @@ $model->ring_images = explode(',', $model->ring_images);
 
 
                     <?= $form->field($model, 'status')->radioList(\common\enums\FrameEnum::getMap()) ?>
-
-
-
-
-
-
                 </div>
 
-                <div class="box-body table-responsive">
-                    <div id="grid" class="grid-view">
 
+                <div class="box-header with-border">
+                    <h4 class="box-title">搜索引擎优化</h4>
+                </div>
+
+                <div class="col-sm-12">
+
+                    <?php echo Html::langTab('tab1')?>
+                    <div class="tab-content">
+                        <?php
+                        echo common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab1',
+                            'fields'=>
+                                [
+                                    'meta_title'=>['type'=>'textInput'],
+                                    'meta_word'=>['type'=>'textInput'],
+                                    'meta_desc'=>['type'=>'textArea','options'=>['rows'=>'3']]
+                                ]]);
+                        ?>
                     </div>
                 </div>
+
 
 
 

@@ -43,9 +43,9 @@ class Menu extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['title', 'pid', 'cate_id'], 'required'],
+            [[ 'pid', 'cate_id'], 'required'],
             [['cate_id', 'pid', 'level', 'dev', 'sort', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['params'], 'safe'],
+            [['params','title'], 'safe'],
             [['title', 'url', 'icon'], 'string', 'max' => 50],
             [['app_id', 'type'], 'string', 'max' => 20],
             [['addons_name'], 'string', 'max' => 100],

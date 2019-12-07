@@ -8,6 +8,7 @@ use common\components\Curd;
 use yii\data\ActiveDataProvider;
 use backend\controllers\BaseController;
 use common\models\base\SearchModel;
+use common\models\goods\Type;
 /**
  * 商品
  *

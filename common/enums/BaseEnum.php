@@ -20,25 +20,30 @@ abstract class BaseEnum
      * @param $key
      * @return string
      */
-    public static function getValue($key): string
-    {
-        return static::getMap()[$key] ?? '';
+    public static function getValue($key , $map = null): string
+    {   
+        $map = $map ?? static::getMap();
+        return $map[$key] ?? '';
     }
-
     /**
      * @param array $keys
      * @return array
      */
-    public static function getValues(array $keys) : array
+    public static function getValues(array $keys, $map = null) : array
     {
-        return ArrayHelper::filter(static::getMap(), $keys);
+        return ArrayHelper::filter($map ??static::getMap(), $keys);
     }
-
     /**
      * @return array
      */
-    public static function getKeys(): array
+    public static function getKeys($map = null): array
     {
-        return array_keys(static::getMap());
+        return array_keys($map ??static::getMap());
     }
+    
+    public static function getSubMap($subname)
+    {
+        return self::$$subname;
+    }
+    
 }

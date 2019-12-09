@@ -80,12 +80,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     'filter' => false,
                     'format' => 'raw',
             ],
-            [
+            /* [
                 'attribute' => 'cat_id',
                 'value' => "cate.cat_name",
                 'filter' => false,
                 'format' => 'raw',
-            ],            
+            ],    */         
             [
                 'attribute' => 'sale_price',
                 'value' => "sale_price",

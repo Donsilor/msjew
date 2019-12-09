@@ -36,10 +36,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class'=>'yii\grid\CheckboxColumn',
                 'name'=>'id',  //设置每行数据的复选框属性
                 'headerOptions' => ['width'=>'30'],
-                'footer'=> Html::batchButtons(),//['search_export','status_disabled']
+                'footer'=> Html::batchButtons(['status_enabled','status_disabled','batch_delete']),//['search_export','status_disabled']
                 'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
             ],
-            //'id',
+            [
+                'attribute' => 'id',
+                'value' => 'id',
+                'filter' => Html::activeTextInput($searchModel, 'id', [
+                    'class' => 'form-control',
+                    'style' =>'width:50px'
+                ]),
+                'format' => 'raw',
+            ],
 
 
             [

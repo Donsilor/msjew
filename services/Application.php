@@ -50,7 +50,7 @@ use common\components\Service;
  * @property \services\goods\CategoryService $goodsCate 商品分类
  * @property \services\goods\AttributeService $goodsAttribute 商品属性
  * @property \services\goods\TypeService $goodsType 商品类型（产品线）
- * @property \services\goods\DiamondSourceService $diamondSource 裸钻来源
+ * @property \services\goods\DiamondSourceService $getDropDown 裸钻来源
  * @author jianyan74 <751393839@qq.com>
  */
 class Application extends Service

@@ -24,6 +24,7 @@ $form = ActiveForm::begin([
         <div class="col-sm-12 ">
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'website')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'sort')->textInput() ?>
             <?= $form->field($model, 'status')->radioList(\common\enums\StatusEnum::getMap()) ?>
 
         </div>

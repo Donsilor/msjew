@@ -30,11 +30,15 @@ class MenuController extends BaseController
     public function actionIndex()
     {
         $cate_id = Yii::$app->request->get('cate_id', Yii::$app->services->menuCate->findFirstId(AppEnum::BACKEND));
-
-        $query = $this->modelClass::find()
-            ->orderBy('sort asc, id asc')
+        $title = Yii::$app->request->get('title',null);
+        $query = $this->modelClass::find()->alias('a')
+            ->leftJoin('{{%common_menu_lang%}} as lang','lang.master_id = a.id and lang.language = "'.Yii::$app->language.'"')
+            ->orderBy('sort asc, a.id asc')
             ->filterWhere(['cate_id' => $cate_id])
             ->andWhere(['app_id' => AppEnum::BACKEND]);
+        if(!empty($title)){
+            $query->andWhere(['or',['=','a.id',$title],['like','lang.title',$title],['like','a.title',$title]]);
+        }
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => false

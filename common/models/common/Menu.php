@@ -44,8 +44,8 @@ class Menu extends \common\models\base\BaseModel
     {
         return [
             [[ 'pid', 'cate_id'], 'required'],
-            [['cate_id', 'pid', 'level', 'dev', 'sort', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['params','title'], 'safe'],
+            [['id','cate_id', 'pid', 'level', 'dev', 'sort', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['params','title','language'], 'safe'],
             [['title', 'url', 'icon'], 'string', 'max' => 50],
             [['app_id', 'type'], 'string', 'max' => 20],
             [['addons_name'], 'string', 'max' => 100],
@@ -215,7 +215,7 @@ class Menu extends \common\models\base\BaseModel
      */
     public function getLang()
     {
-        $query = $this->hasOne(MenuLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->language]);
+        $query = $this->hasOne(MenuLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->params['language']]);
         return $query;
     }
 }

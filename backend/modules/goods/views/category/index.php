@@ -21,6 +21,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
             </div>
 
             <div class="box-body table-responsive">
+
                 <?= TreeGrid::widget([
                     'dataProvider' => $dataProvider,
                     'keyColumnName' => 'id',
@@ -34,6 +35,11 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     'columns' => [
 
 
+                        [
+                            'attribute'=>'id',
+                            'value'=> 'id',
+                            'style'=>'width:50px;'
+                        ],
                         [
                             'attribute' => 'cat_name',
                             'format' => 'raw',

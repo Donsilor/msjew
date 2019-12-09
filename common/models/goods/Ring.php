@@ -36,12 +36,12 @@ class Ring extends BaseModel
     public function rules()
     {
         return [
-            [['ring_salenum', 'ring_style', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['id','ring_salenum', 'ring_style', 'status', 'created_at', 'updated_at'], 'integer'],
             [['sale_price'], 'number'],
             [['ring_sn'],'string', 'max' => 100],
             [['qr_code'], 'string', 'max' => 200],
             [['ring_images'],'parseRingImages'],
-            [['ring_name'], 'safe'],
+            [['ring_name','language'], 'safe'],
         ];
     }
 
@@ -99,7 +99,7 @@ class Ring extends BaseModel
      */
     public function getLang()
     {
-        $query = $this->hasOne(RingLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->language]);
+        $query = $this->hasOne(RingLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->params['language']]);
         return $query;
     }
 

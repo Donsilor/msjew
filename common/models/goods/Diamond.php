@@ -49,7 +49,7 @@ class Diamond extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['goods_num', 'shape', 'source_id', 'is_stock', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['id','goods_num', 'shape', 'source_id', 'is_stock', 'status', 'created_at', 'updated_at'], 'integer'],
             [['source_id','goods_num','goods_sn','cert_type', 'cert_id', 'carat', 'clarity', 'cut', 'color', 'symmetry', 'polish', 'fluorescence'], 'required'],
             [['market_price', 'sale_price', 'cost_price', 'carat', 'source_discount'], 'number'],
             [['goods_sn'], 'string', 'max' => 60],

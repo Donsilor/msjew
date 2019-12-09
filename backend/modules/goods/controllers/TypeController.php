@@ -31,6 +31,7 @@ class TypeController extends BaseController
      */
     public function actionIndex()
     {
+        $title = Yii::$app->request->get('title',null);
         $searchModel = new SearchModel([
             'model' => $this->modelClass,
             'scenario' => 'default',
@@ -45,7 +46,9 @@ class TypeController extends BaseController
             ->andFilterWhere(['merchant_id' => $this->getMerchantId()])
             ->leftJoin('{{%goods_type_lang}} b', 'b.master_id = a.id and b.language = "'.Yii::$app->language.'"')
             ->select(['a.*', 'b.type_name']);
-
+        if(!empty($title)){
+            $query->andWhere(['or',['=','a.id',$title],['like','b.type_name',$title]]);
+        }
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => false

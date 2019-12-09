@@ -15,7 +15,7 @@ use common\models\goods\DiamondSource;
 
 class DiamondSourceService
 {
-    public function getDiamondSource(){
+    public function getDropDown(){
         $model = DiamondSource::find()
             ->where(['status' => StatusEnum::ENABLED])
             ->select(['id','name'])

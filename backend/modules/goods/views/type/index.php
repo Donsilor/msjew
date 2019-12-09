@@ -1,6 +1,8 @@
 <?php
 use common\helpers\Html;
 use jianyan\treegrid\TreeGrid;
+use yii\widgets\ActiveForm;
+use common\helpers\Url;
 
 $this->title = '产品线管理';
 $this->params['breadcrumbs'][] = ['label' => $this->title];
@@ -21,6 +23,22 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
             </div>
 
             <div class="box-body table-responsive">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <?php $form = ActiveForm::begin([
+                            'action' => Url::to(['index', 'cate_id' => $cate_id]),
+                            'method' => 'get',
+                        ]); ?>
+
+                        <div class="col-sm-4">
+                            <div class="input-group m-b">
+                                <input type="text" class="form-control" name="title" placeholder="标题或者ID" value="<?= $title ?>"/>
+                                <span class="input-group-btn"><button class="btn btn-white"><i class="fa fa-search"></i> 搜索</button></span>
+                            </div>
+                        </div>
+                        <?php ActiveForm::end(); ?>
+                    </div>
+                </div>
                 <?= TreeGrid::widget([
                     'dataProvider' => $dataProvider,
                     'keyColumnName' => 'id',
@@ -32,8 +50,12 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     'options' => ['class' => 'table table-hover'],
 
                     'columns' => [
+                        [
+                            'attribute'=>'id',
+                            'value'=> 'id',
+                            'headerOptions'=>['style'=>'width:50px;'],
 
-
+                        ],
                         [
                             'attribute' => 'type_name',
                             'format' => 'raw',

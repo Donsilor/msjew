@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'visible' => false,
             ],
 
-//            'id',
+            'id',
             'name',
             //'website',
             [
@@ -48,6 +48,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'form-control',
 
                 ]),
+            ],
+            [
+                'attribute' => 'sort',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model, $key, $index, $column){
+                    return  Html::sort($model->sort);
+                }
+                //'filter' => false,
             ],
             'created_at:date',
             //'updated_at',

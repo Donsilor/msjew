@@ -40,7 +40,7 @@ class Type extends \common\models\base\BaseModel
     {
         return [
             [['pid','status'], 'required'],
-            [['merchant_id','sort', 'level', 'pid', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['id','merchant_id','sort', 'level', 'pid', 'status', 'created_at', 'updated_at'], 'integer'],
             [['image'], 'string', 'max' => 500],
             [['tree'], 'string', 'max' => 500],
             [['type_name'], 'safe'],
@@ -153,7 +153,7 @@ class Type extends \common\models\base\BaseModel
      */
     public function getLang()
     {
-        $query = $this->hasOne(TypeLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->language]);
+        $query = $this->hasOne(TypeLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->params['language']]);
         return $query;
     }
 

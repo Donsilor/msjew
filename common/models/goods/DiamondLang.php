@@ -33,7 +33,7 @@ class DiamondLang extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['goods_name'],'required'],
+            [[],'required'],
             [['master_id'], 'integer'],
             [['goods_body', 'mobile_body'], 'string'],
             [['language'], 'string', 'max' => 5],

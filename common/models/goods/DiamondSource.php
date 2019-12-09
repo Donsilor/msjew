@@ -32,7 +32,7 @@ class DiamondSource extends BaseModel
     {
         return [
             [['name'], 'required'],
-            [['status', 'created_at', 'updated_at'], 'integer'],
+            [['status', 'created_at', 'sort','updated_at'], 'integer'],
             [['name'], 'string', 'max' => 60],
             [['website'], 'string', 'max' => 255],
         ];
@@ -48,6 +48,7 @@ class DiamondSource extends BaseModel
             'name' => '来源名称',
             'website' => '来源网址',
             'status' => '状态',
+            'sort' => '排序',
             'created_at' => Yii::t('goods_diamond_source', '创建时间'),
             'updated_at' => Yii::t('goods_diamond_source', '更新时间'),
         ];

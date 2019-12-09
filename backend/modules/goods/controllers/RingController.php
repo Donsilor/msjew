@@ -47,7 +47,10 @@ class RingController extends BaseController
         ]);
 
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams);
+            ->search(Yii::$app->request->queryParams, ['ring_name','language']);
+        $this->setLocalLanguage($searchModel->language);
+        $dataProvider->query->joinWith(['lang']);
+        $dataProvider->query->andFilterWhere(['like', 'lang.ring_name',$searchModel->ring_name]);
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,

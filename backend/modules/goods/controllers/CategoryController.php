@@ -31,12 +31,15 @@ class CategoryController extends BaseController
      */
     public function actionIndex()
     {
+        $title = Yii::$app->request->get('title',null);
         $query = Category::find()->alias('a')
             ->orderBy('sort asc, created_at asc')
             ->andFilterWhere(['merchant_id' => $this->getMerchantId()])
             ->leftJoin('{{%goods_category_lang}} b', 'b.master_id = a.id and b.language = "'.Yii::$app->language.'"')
             ->select(['a.*', 'b.cat_name']);
-
+        if(!empty($title)){
+            $query->andWhere(['or',['=','a.id',$title],['like','b.cat_name',$title]]);
+        }
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => false

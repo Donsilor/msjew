@@ -32,23 +32,43 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\SerialColumn',
                 'visible' => false,
             ],
+            [
+                'class'=>'yii\grid\CheckboxColumn',
+                'name'=>'id',  //设置每行数据的复选框属性
+                'headerOptions' => ['width'=>'30'],
+                'footer'=> Html::batchButtons(['status_enabled','status_disabled','batch_delete']),//['search_export','status_disabled']
+                'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
+            ],
 
-            'id',
+
+            [
+                'attribute' => 'id',
+                'value' => 'id',
+                'filter' => Html::activeTextInput($searchModel, 'id', [
+                    'class' => 'form-control',
+                    'style' =>'width:50px'
+                ]),
+                'format' => 'raw',
+            ],
             [
                 'attribute' => 'lang.goods_name',
                 'value' => 'lang.goods_name',
                 'filter' => Html::activeTextInput($searchModel, 'goods_name', [
                     'class' => 'form-control',
+                    'style' =>'width:200px'
+                ]),
+                'format' => 'raw',
+            ],
+
+            [
+                'attribute' => 'goods_sn',
+                'value' => 'goods_sn',
+                'filter' => Html::activeTextInput($searchModel, 'goods_sn', [
+                    'class' => 'form-control',
                     'style' =>'width:100px'
                 ]),
                 'format' => 'raw',
             ],
-            [
-                'attribute' => 'goods_sn',
-                'filter' => true,
-                'format' => 'raw',
-            ],
-
             //'goods_image',
             //'goods_num',
             [
@@ -63,12 +83,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'form-control',
                 ]),
             ],
-
             [
                 'attribute' => 'cert_id',
-                'filter' => false,
+                'value' => 'cert_id',
+                'filter' => Html::activeTextInput($searchModel, 'cert_id', [
+                    'class' => 'form-control',
+                    'style' =>'width:100px'
+                ]),
                 'format' => 'raw',
             ],
+
             [
                 'attribute' => 'sale_price',
                 'filter' => false,

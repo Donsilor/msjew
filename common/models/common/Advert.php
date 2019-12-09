@@ -85,7 +85,7 @@ class Advert extends \common\models\base\BaseModel
      */
     public function getLang()
     {
-        $query = $this->hasOne(AdvertLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->language]);
+        $query = $this->hasOne(AdvertLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->params['language']]);
         return $query;
     }
 

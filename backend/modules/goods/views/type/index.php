@@ -50,16 +50,17 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     'options' => ['class' => 'table table-hover'],
 
                     'columns' => [
+
                         [
                             'attribute'=>'id',
                             'value'=> 'id',
                             'headerOptions'=>['style'=>'width:50px;'],
 
                         ],
+
                         [
                             'attribute' => 'type_name',
                             'format' => 'raw',
-                            'options'=>['style'=>'width:10px'],   
                             'value' => function ($model, $key, $index, $column){
                                 $str = Html::tag('span', $model->lang->type_name, [
                                     'class' => 'm-l-sm'
@@ -70,7 +71,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 ]);
                                 return $str;
                             },
-                           
+
                            ],
                         [
                             'attribute' => 'sort',

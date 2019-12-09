@@ -22,12 +22,14 @@ use common\helpers\ArrayHelper;
  * @property string $goods_body 商品内容
  * @property string $mobile_body 手机端商品描述
  * @property string $sale_price 销售价
+ * @property string $sale_volume 销量
+ * @property string $virtual_volume 虚拟销量
  * @property string $market_price 市场价
  * @property string $cost_price 成本价
  * @property string $goods_storage 库存量
  * @property string $goods_clicks 浏览量
+ * @property string $virtual_clicks 虚拟浏览量
  * @property int $storage_alarm 库存报警值
- * @property int $is_invoice 是否开具增值税发票 1是，0否
  * @property int $is_recommend 商品推荐 1是，0否，默认为0
  * @property int $is_lock 商品锁定 0未锁，1已锁
  * @property int $supplier_id 供应商id
@@ -57,7 +59,7 @@ class Style extends BaseModel
     public function rules()
     {
         return [
-            [['type_id','style_sex', 'merchant_id','sale_volume','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_invoice', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
+            [['type_id','style_sex', 'merchant_id','sale_volume','virtual_volume','virtual_clicks','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
             [['type_id','style_sn','attr_require','goods_images','style_sex', 'sale_price', 'market_price',], 'required'],
             [['style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['sale_price', 'market_price', 'cost_price'], 'number'],
@@ -138,12 +140,13 @@ class Style extends BaseModel
             'mobile_body' => Yii::t('goods', 'Mobile Body'),
             'sale_price' => Yii::t('goods', '销售价'),
             'sale_volume' => Yii::t('goods', '销量'),
+            'virtual_volume'=>  Yii::t('goods', '虚拟销量'),
             'market_price' => Yii::t('goods', '市场价'),
             'cost_price' => Yii::t('goods', '成本价'),
             'goods_storage'=>  Yii::t('goods', '商品库存'),
             'goods_clicks'=>  Yii::t('goods', '浏览量'),
+            'virtual_clicks'=>  Yii::t('goods', '虚拟浏览量'),
             'storage_alarm' => Yii::t('goods', 'Storage Alarm'),
-            'is_invoice' => Yii::t('goods', 'Is Invoice'),
             'is_recommend' => Yii::t('goods', 'Is Recommend'),
             'is_lock' => Yii::t('goods', 'Is Lock'),
             'supplier_id' => Yii::t('goods', 'Supplier ID'),

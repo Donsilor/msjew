@@ -78,11 +78,11 @@ class SkuTable extends Widget
         $asset = AppAsset::register($this->getView());
         if(!isset($this->inputAttrs)){
             $this->inputAttrs =  [
-                    ['name'=>'goods_sn','title'=>'商品编码','require'=>1],                    
-                    ['name'=>'market_price','title'=>'市场价','require'=>0],
-                    ['name'=>'sale_price','title'=>'销售价','require'=>1],
-                    ['name'=>'goods_storage','title'=>'库存','require'=>1],
-                    ['name'=>'status','title'=>'状态','require'=>0],
+                    ['name'=>'goods_sn','title'=>'商品编码','require'=>1,'batch'=>1],                    
+                    ['name'=>'market_price','title'=>'市场价','require'=>0,'batch'=>1],
+                    ['name'=>'sale_price','title'=>'销售价','require'=>1,'batch'=>1],
+                    ['name'=>'goods_storage','title'=>'库存','require'=>1,'batch'=>1],
+                    ['name'=>'status','title'=>'状态','require'=>0,'batch'=>0],
             ];
         }
         $inputAttrCode = '';
@@ -107,6 +107,7 @@ class SkuTable extends Widget
             'model' => $this->model,
             'name' => $this->name,   
             'data' => $this->data,
+            'inputAttrs'=>$this->inputAttrs,
             'inputAttrName'=>$this->inputAttrName,
             'inputAttrTitle'=>$this->inputAttrTitle, 
             'inputAttrRequire'=>$this->inputAttrRequire,

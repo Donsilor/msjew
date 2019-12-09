@@ -30,14 +30,19 @@ $model->style_attr = json_decode($model->style_attr,true);
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> 基础信息</li>
             </ul>
-            <div class="box-body col-lg-9" style="margin-left:9px">
+            <div class="box-body" style="margin-left:9px">
                 <?php 
                 $model->type_id = \Yii::$app->request->get("type_id")??$model->type_id;                    
-                ?>          
-    			<?= $form->field($model, 'type_id')->dropDownList(\Yii::$app->services->goodsType->getDropDown(),[
-    			        'onchange'=>"location.href='?type_id='+this.value",
-    			        'disabled'=>$model->isNewRecord?null:'disabled',
-    			]) ?> 
+                ?> 
+                 <div class="row">
+                 <div class="col-lg-4">         
+        			<?= $form->field($model, 'type_id')->dropDownList(\Yii::$app->services->goodsType->getDropDown(),[
+        			        'onchange'=>"location.href='?type_id='+this.value",
+        			        'disabled'=>$model->isNewRecord?null:'disabled',
+        			]) ?> 
+    			</div>
+    			<div class="col-lg-4"><?= $form->field($model, 'style_sn')->textInput(['maxlength'=>true]) ?></div>
+    			
                 <?php /* echo $form->field($model, 'cat_id')->widget(kartik\select2\Select2::class, [
      			        'data' => Yii::$app->services->goodsCate->getDropDown(),
                         'options' => ['placeholder' => Yii::t("common",'请选择')],
@@ -45,15 +50,19 @@ $model->style_attr = json_decode($model->style_attr,true);
                             'allowClear' => true
                         ],
                 ]); */?>
+                </div>
                 <div class="row">
-                <div class="col-lg-4"><?= $form->field($model, 'style_sn')->textInput(['maxlength'=>true]) ?></div>
-                <div class="col-lg-4">
-                <?= $form->field($model, 'market_price')->textInput(['maxlength'=>true]) ?>
-                </div>
-                <div class="col-lg-4">
-                <?= $form->field($model, 'sale_price')->textInput(['maxlength'=>true]) ?> 
-                </div>
-               </div>                                 
+                    <div class="col-lg-4"><?= $form->field($model, 'market_price')->textInput(['maxlength'=>true]) ?></div>
+                    <div class="col-lg-4"><?= $form->field($model, 'sale_price')->textInput(['maxlength'=>true]) ?></div>
+               </div> 
+               <div class="row">
+                    <div class="col-lg-4"><?= $form->field($model, 'sale_volume')->textInput(['maxlength'=>true,'disabled'=>true]) ?></div>
+                    <div class="col-lg-4"><?= $form->field($model, 'virtual_volume')->textInput(['maxlength'=>true]) ?></div>
+               </div>
+               <div class="row">
+                    <div class="col-lg-4"><?= $form->field($model, 'goods_clicks')->textInput(['maxlength'=>true,'disabled'=>true]) ?></div>
+                    <div class="col-lg-4"><?= $form->field($model, 'virtual_clicks')->textInput(['maxlength'=>true]) ?></div>
+               </div>                                  
     			<div class="nav-tabs-custom ">
     		        <?php echo Html::langTab("tab1")?>    			      
         			<div class="tab-content" style="padding-left:10px"> 
@@ -204,5 +213,116 @@ $model->style_attr = json_decode($model->style_attr,true);
 </div>
 
 <?php ActiveForm::end(); ?>
+<script type="text/javascript">
+$(function(){
+	$(document).on("click",'.batch-goods_sn',function(){
+		var hasEdit = false;
+		var fromValue = $("#style-style_sn").val();
+		if(fromValue ==""){
+             alert("请先填写基础信息的款式编号");
+             return false;
+		}
+		$("#skuTable tr[class*='sku_table_tr']").each(function(){
+			var skuValue = $(this).find(".setsku-goods_sn").val();
+        	if(skuValue != '' && skuValue != fromValue){
+        		hasEdit = true;
+        		return ;
+        	}
+        });
+        if(hasEdit === true){
+           	 if(!confirm("商品编码已修改过，是否覆盖？")){
+               	return false;
+           	 }
+        }
+    	$("#skuTable tr[class*='sku_table_tr']").each(function(){
+        	if($(this).find(".setsku-status").val() == 1){
+        		$(this).find(".setsku-goods_sn").val(fromValue);
+        	}
+        });
 
+	});
 
+	$(document).on("click",'.batch-market_price',function(){
+		var hasEdit = false;
+		var fromValue = $("#style-market_price").val();
+		if(fromValue ==""){
+             alert("请先填写基础信息的市场价");
+             return false;
+		}
+		$("#skuTable tr[class*='sku_table_tr']").each(function(){
+			var skuValue = $(this).find(".setsku-market_price").val();
+        	if(skuValue != '' && skuValue != fromValue){
+        		hasEdit = true;
+        		return ;
+        	}
+        });
+        if(hasEdit === true){
+           	 if(!confirm("市场价已修改过，是否覆盖？")){
+               	return false;
+           	 }
+        }
+    	$("#skuTable tr[class*='sku_table_tr']").each(function(){
+        	if($(this).find(".setsku-status").val() == 1){
+        		$(this).find(".setsku-market_price").val(fromValue);
+        	}
+        });
+
+	});
+
+	$(document).on("click",'.batch-sale_price',function(){
+		var hasEdit = false;
+		var fromValue = $("#style-sale_price").val();
+		if(fromValue ==""){
+             alert("请先填写基础信息的市场价");
+             return false;
+		}
+		$("#skuTable tr[class*='sku_table_tr']").each(function(){
+			var skuValue = $(this).find(".setsku-sale_price").val();
+        	if(skuValue != '' && skuValue != fromValue){
+        		hasEdit = true;
+        		return ;
+        	}
+        });
+        if(hasEdit === true){
+           	 if(!confirm("销售价已修改过，是否覆盖？")){
+               	return false;
+           	 }
+        }
+    	$("#skuTable tr[class*='sku_table_tr']").each(function(){
+        	if($(this).find(".setsku-status").val() == 1){
+        		$(this).find(".setsku-sale_price").val(fromValue);
+        	}
+        });
+
+	});
+	$(document).on("click",'.batch-goods_storage',function(){
+		var hasEdit = false;
+		var fromValue = $("#style-goods_storage").val();
+		var r = /^\+?[1-9][0-9]*$/;
+		if((fromValue = prompt("请输入库存数量","10")) && !r.test(fromValue)){
+             alert("库存数量不合法");
+             return false;
+		}
+		$("#skuTable tr[class*='sku_table_tr']").each(function(){
+			var skuValue = $(this).find(".setsku-goods_storage").val();
+        	if(skuValue != '' && skuValue != fromValue){
+        		hasEdit = true;
+        		return ;
+        	}
+        });
+        if(hasEdit === true){
+           	 if(!confirm("商品库存已修改过，是否覆盖？")){
+               	return false;
+           	 }
+        }
+    	$("#skuTable tr[class*='sku_table_tr']").each(function(){
+        	if($(this).find(".setsku-status").val() == 1){
+        		$(this).find(".setsku-goods_storage").val(fromValue);
+        	}
+        });
+
+	});
+	
+
+});
+</script>

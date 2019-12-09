@@ -6,6 +6,24 @@
  */
 
 //var alreadySetSkuVals = {};//已经设置的SKU值数据
+var langLabel = {
+	'zh-CN':{
+		'batchFill':'批量填充',
+		'enable':'启用',
+		'disable':'禁用',
+	},
+	'zh-TW':{
+		'batchFill':'批量填充',
+		'enable':'启用',
+		'disable':'禁用',
+	},
+	'en-US':{
+		'batch_fill':'批量填充',
+		'enable':'启用',
+		'disable':'禁用',
+	}
+};
+lang = typeof lang != 'undefined'? lang: "zh-CN";
 
 $(function(){
 
@@ -18,11 +36,8 @@ $(function(){
     function createTable(){
         getAlreadySetSkuVals();//获取已经设置的SKU值
         // console.log(alreadySetSkuVals);
-        var defaultSku = $("#defaultSku");
-        var defaultSkuRequireArr = defaultSku.attr('attr-require').split(',');
-        var defaultSkuTitleArr = defaultSku.attr('attr-title').split(',');
-        // console.log(defaultSkuTitleArr);
-        var defaultSkuNameArr = defaultSku.attr('attr-name').split(',');
+        var defaultSkuInputs = $("#skuTableBox input[name*='skuInput[]']");
+        var defaultSku = $("#defaultSku");        
         var b = true;
         var skuTypeArr =  [];//存放SKU类型的数组
         var totalRow = 1;//总行数
@@ -83,15 +98,19 @@ $(function(){
             for(var t = 0 ; t < skuTypeArr.length ; t ++){
                 SKUTableDom += '<th>'+skuTypeArr[t].skuTypeTitle+'</th>';
             }
-            for(var t = 0 ; t < defaultSkuTitleArr.length ; t ++){
-            	if(defaultSkuRequireArr[t] == 1){
-            		SKUTableDom += '<th class="required"><em>*</em>'+defaultSkuTitleArr[t]+'</th>';
+            
+            defaultSkuInputs.each(function(){
+            	var skuTitle = $(this).attr("attr-title");
+            	var skuName  = $(this).attr("attr-name");
+                if($(this).attr('attr-batch')==1){
+                	skuTitle += "<a class='btn btn-primary btn-xs batch-"+skuName+"'>"+langLabel[lang].batchFill+"</a>"
+                }
+            	if($(this).attr("attr-require") == 1){
+            		SKUTableDom += '<th class="required"><em>*</em>'+skuTitle+'</th>';
             	}else{
-            		SKUTableDom += '<th>'+defaultSkuTitleArr[t]+'</th>';
-            	} 
-            	
-            }
-            //SKUTableDom += '<th>Status</th>';
+            		SKUTableDom += '<th>'+skuTitle+'</th>';
+            	}
+            });            
 
             SKUTableDom += "</tr>";
             //循环处理表体
@@ -124,42 +143,51 @@ $(function(){
 
                 var propvalids = propvalidArr.toString();
                 var _propvalids = sortSkuIds(propvalids);
-                
                 SKUTableDom += '<tr propvalids=\''+propvalids+'\' propids=\''+propIdArr.toString()+'\' propvalnames=\''+propvalnameArr.join(";")+'\'  propnames=\''+propNameArr.join(";")+'\' class="sku_table_tr">'+currRowDoms;
-                for(var t = 0 ; t < defaultSkuTitleArr.length ; t ++){
+                defaultSkuInputs.each(function(t){
                 	var skuVal= "";
-                	var skuName = defaultSkuNameArr[t];
+                	var skuName = $(this).attr('attr-name');
                 	var skuValDefined = false;
-                	if(alreadySetSkuVals[_propvalids] && typeof alreadySetSkuVals[_propvalids][defaultSkuNameArr[t]] != 'undefined'){
-                		skuVal = alreadySetSkuVals[_propvalids][defaultSkuNameArr[t]];
+                	if(alreadySetSkuVals[_propvalids] && typeof alreadySetSkuVals[_propvalids][skuName] != 'undefined'){
+                		skuVal = alreadySetSkuVals[_propvalids][skuName];
                 		skuValDefined = true;
                 	}
                 	if(skuName == "status"){
-                		var _checked = skuValDefined == false || skuVal== 1?'checked':'';
-                		SKUTableDom += '<td><input type="checkbox" class="setting_sku_' +skuName+'" name="'+inputName+'[1]['+_propvalids+'][' +skuName+']" value="1" '+_checked+'/></td>';
+                		skuVal = skuValDefined == false || skuVal ==1?1:0;
+                		SKUTableDom += "<td>";
+                		SKUTableDom += '<input type="hidden" class="setsku-' +skuName+'" name="'+inputName+'[1]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/>';
+                		SKUTableDom += '<span class="btn btn-default btn-sm sku-status">'+langLabel[lang].disable+'</span></td>';
                 	}else{
-                    	SKUTableDom += '<td><input type="text" class="form-control setting_sku_' +skuName+'" name="'+inputName+'[1]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/></td>'
+                    	SKUTableDom += '<td><input type="text" class="form-control setsku-' +skuName+'" name="'+inputName+'[1]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/></td>';
                 	}
-               	}
+                });
                 SKUTableDom += '</tr>';
-
             }
             SKUTableDom += "</table>";
         }
         $("#skuTable").html(SKUTableDom);
-        $("tr[class*='sku_table_tr']").each(function(){
-        	if($(this).find("input[class*='setting_sku_status']").is(':checked')){
-        		$(this).find("input[type*='text']").attr("disabled",false);
+        
+        //初始化skuInput表单编辑状态
+        $("#skuTable tr[class*='sku_table_tr']").each(function(){
+        	if($(this).find("input[class*='setsku-status']").val()==1){
+        		$(this).find(".sku-status").removeClass("btn-success").addClass("btn-default").html(langLabel[lang].disable);
+        		$(this).find("input[type*='text']").attr("readonly",false);
         	}else{
-        		$(this).find("input[type*='text']").attr("disabled",true);
+        		$(this).find(".sku-status").removeClass("btn-default").addClass("btn-success").html(langLabel[lang].enable);
+        		$(this).find("input[type*='text']").attr("readonly",true);
         	}
         });
-        $("tr[class*='sku_table_tr']").find("input[class*='setting_sku_status']").change(function(){
-        	if($(this).is(':checked')){
-        		$(this).parent().parent().find("input[type*='text']").attr("disabled",false);
-        	}else{
-        		$(this).parent().parent().find("input[type*='text']").attr("disabled",true);
-        	}
+        $("#skuTable tr[class*='sku_table_tr']").find(".sku-status").click(function(){
+            var rowBox = $(this).parent().parent();
+	        if($(this).parent().find("input[class*='setsku-status']").val()==0){
+	    		$(this).removeClass("btn-success").addClass("btn-default").html(langLabel[lang].disable);
+	    		rowBox.find("input[class*='setsku-status']").val(1);
+	    		rowBox.find("input[type*='text']").attr("readonly",false);
+	    	}else{
+	    		$(this).removeClass("btn-default").addClass("btn-success").html(langLabel[lang].enable);
+	    		rowBox.find("input[class*='setsku-status']").val(0);
+	    		rowBox.find("input[type*='text']").attr("readonly",true);
+	    	}
         });
 	}
 
@@ -169,14 +197,15 @@ $(function(){
  * 获取已经设置的SKU值 
  */
 function getAlreadySetSkuVals(){
-	var defaultSkuNameArr = $("#defaultSku").attr('attr-name').split(',');
 	//获取设置的SKU属性值
 	$("tr[class*='sku_table_tr']").each(function(){	
+		var skuName = $("#skuTableBox input[name*='skuInput[]']").eq()
 		var _propvalids = sortSkuIds($(this).attr("propvalids"));//SKU值主键集合
 		var _skuVals = {};
-		for(i = 0 ; i< defaultSkuNameArr.length;i++){	
-			_skuVals[defaultSkuNameArr[i]] = $(this).find("input[type='text'][class*='setting_sku_"+defaultSkuNameArr[i]+"']").val();			
-		}
+		$("#skuTableBox input[name*='skuInput[]']").each(function(){
+			var skuName = $(this).attr("attr-name");
+			_skuVals[skuName] = $(this).find("input[type='text'][class*='setsku-"+skuName+"']").val();
+		});		
 		alreadySetSkuVals[_propvalids] = _skuVals;
 	});
 }
@@ -185,22 +214,22 @@ function getAlreadySetSkuVals(){
  * @returns
  */
 function checkSkuInputData(){
-	var defaultSku = $("#defaultSku");
+	/*var defaultSku = $("#defaultSku");
 	var defaultSkuNameArr = defaultSku.attr('attr-name').split(',');
 	var defaultSkuRequireArr = defaultSku.attr('attr-require').split(',');
 	var defaultSkuTitleArr = defaultSku.attr('attr-title').split(',');
 	$("tr[class*='sku_table_tr']").each(function(index){
-		if($(this).find("input[class*='setting_sku_status']").is(':checked')){
+		if($(this).find("input[class*='setsku-status']").is(':checked')){
 			for(i = 0 ; i< defaultSkuNameArr.length;i++){
 				if(defaultSkuNameArr[i] == 'status') continue;
-				var val = $(this).find("input[class*='setting_sku_"+defaultSkuNameArr[i]+"']").val();
+				var val = $(this).find("input[class*='setsku-"+defaultSkuNameArr[i]+"']").val();
 				if(defaultSkuRequireArr[i]==1 && val==''){
 					alert("【价格配置】第"+(index+1)+"行, "+defaultSkuTitleArr[i]+"不能为空");
 					return false;
 				}
 			}
 		}
-	});
+	});*/
 }
 /**
  * 排序
@@ -216,3 +245,6 @@ function sortSkuIds(str){
 $(".getSetSkuVal").on("click",function(){
 	checkSkuInputData();
 });
+
+    
+

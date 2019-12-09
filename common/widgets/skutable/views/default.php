@@ -1,6 +1,8 @@
 <script>
+//已保存属性配置
 var alreadySetSkuVals = <?= isset($model->style_spec[1])?json_encode($model->style_spec[1]):"{}"?>;
-var inputName = '<?= $name?>';
+var inputName = '<?= $name?>';//input控件名称
+var lang = '<?= Yii::$app->language?>';//当前语言
 </script>
 <div id="skuTableBox">
 <?php
@@ -27,6 +29,9 @@ foreach ($data as $key => $val){
 </li>
 <div class="clear"></div>
 <div id="skuTable"></div>
-<input type="hidden" id="defaultSku" attr-require="<?= $inputAttrRequire?>" attr-name="<?= $inputAttrName?>" attr-title="<?= $inputAttrTitle?>"/>
+<input type="hidden" id="defaultSku" attr-require="<?= implode(',',array_column($inputAttrs,'require'))?>" attr-name="<?= implode(',',array_column($inputAttrs,'name'))?>" attr-title="<?= implode(',',array_column($inputAttrs,'title'))?>"/>
+<?php foreach ($inputAttrs as $input){?>
+	<input type="hidden" name="skuInput[]" attr-require="<?= $input['require']?>" attr-name="<?= $input['name']?>" attr-title="<?= $input['title']?>" attr-batch="<?= $input['batch']?>" value="<?= $input['name']?>"/>
+<?php }?>
 <!--<input type="button" class="getSetSkuVal" value="校验数据" />  -->
 </div>

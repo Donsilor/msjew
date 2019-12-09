@@ -3,11 +3,11 @@
 namespace common\enums;
 
 /**
- * 属性枚举
+ * 属性ID枚举
  * @package common\enums
  * @author jianyan74 <751393839@qq.com>
  */
-class AttrEnum 
+class AttrIdEnum 
 {
     const DIA_SHAPE = 0;//钻石形状 ID
     const DIA_CUT = 0;//钻石切工ID

@@ -26,7 +26,6 @@ class AttrTypeEnum extends BaseEnum
         self::TYPE_SALE => '销售属性',
         self::TYPE_MADE => '定制属性',
         self::TYPE_CATE => '款式分类',
-        self::TYPE_SERVER => '物流及售后',
     ];
   }
 }

@@ -31,34 +31,41 @@ $this->params['breadcrumbs'][] = $this->title;
             </ul>
             <div class="box-body col-lg-9" style="margin-left:9px">
                 <div class="row">
-                    <div class="col-lg-4">
-                        <?= $form->field($model, 'source_id')->widget(kartik\select2\Select2::class, [
-                            'data' => Yii::$app->services->diamondSource->getDropDown(),
-                            'options' => ['placeholder' => Yii::t("common",'请选择')],
-                            'pluginOptions' => [
-                                'allowClear' => true
-                            ],
-                        ]);?>
-                    </div>
+<!--                    <div class="col-lg-4">-->
+<!--                        --><?//= $form->field($model, 'source_id')->widget(kartik\select2\Select2::class, [
+//                            'data' => Yii::$app->services->diamondSource->getDropDown(),
+//                            'options' => ['placeholder' => Yii::t("common",'请选择')],
+//                            'pluginOptions' => [
+//                                'allowClear' => true
+//                            ],
+//                        ]);?>
+<!--                    </div>-->
                     <div class="col-lg-4">
                         <?= $form->field($model, 'goods_sn')->textInput(['maxlength' => true]) ?>
                     </div>
                     <div class="col-lg-4">
                         <?= $form->field($model, 'cert_id')->textInput(['maxlength' => true]) ?>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-lg-4">
                         <?= $form->field($model, 'cert_type')->dropDownList(\common\enums\DiamondEnum::$typeOptions) ?>
                     </div>
+                </div>
+                <div class="row">
+
                     <div class="col-lg-4">
                         <?= $form->field($model, 'goods_num')->textInput() ?>
                     </div>
-                    <div class="col-lg-4"><?= $form->field($model, 'source_discount')->textInput(['maxlength' => true]) ?></div>
+                    <div class="col-lg-4">
+                        <?= $form->field($model, 'market_price')->textInput(['maxlength' => true]) ?>
+                    </div>
+                    <div class="col-lg-4">
+                        <?= $form->field($model, 'sale_price')->textInput(['maxlength' => true]) ?>
+                    </div>
+<!--                    <div class="col-lg-4">--><?//= $form->field($model, 'source_discount')->textInput(['maxlength' => true]) ?><!--</div>-->
                 </div>
 
                 <?= $form->field($model, 'is_stock')->radioList(\common\enums\IsStockEnum::getMap()) ?>
-                <?= $form->field($model, 'status')->radioList(\common\enums\StatusEnum::getMap()) ?>
+                <?= $form->field($model, 'status')->radioList(\common\enums\FrameEnum::getMap()) ?>
                 <div class="nav-tabs-custom ">
                     <?php echo Html::langTab("tab1")?>
                     <div class="tab-content" style="padding-left:10px">
@@ -83,47 +90,47 @@ $this->params['breadcrumbs'][] = $this->title;
             </ul>
           <div class="box-body" style="margin-left:10px">
               <div class="row">
-                  <div class="col-lg-3">
-                      <?= $form->field($model, 'carat')->textInput() ?>
-                  </div>
-                  <div class="col-lg-3">
-                      <?= $form->field($model, 'clarity')->dropDownList(\common\enums\DiamondEnum::$clarityOptions,['prompt'=>Yii::t("common",'请选择')]) ?>
-                  </div>
-                  <div class="col-lg-3">
-                      <?= $form->field($model, 'cut')->dropDownList(\common\enums\DiamondEnum::$cutOptions,['prompt'=>Yii::t("common",'请选择')]) ?>
-                  </div>
-                  <div class="col-lg-3">
-                      <?= $form->field($model, 'color')->dropDownList(\common\enums\DiamondEnum::$colorOptions,['prompt'=>Yii::t("common",'请选择')]) ?>
-                  </div>
-              </div>
-              <div class="row">
-
-                  <div class="col-lg-3">
+                  <div class="col-lg-4">
                       <?= $form->field($model, 'shape')->dropDownList(\common\enums\DiamondEnum::$shapeOptions,['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
-                  <div class="col-lg-3">
-                      <?= $form->field($model, 'depth_lv')->textInput(['maxlength' => true]) ?>
+                  <div class="col-lg-4">
+                      <?= $form->field($model, 'carat')->textInput() ?>
                   </div>
-                  <div class="col-lg-3">
-                      <?= $form->field($model, 'table_lv')->textInput(['maxlength' => true]) ?>
+                  <div class="col-lg-4">
+                      <?= $form->field($model, 'clarity')->dropDownList(\common\enums\DiamondEnum::$clarityOptions,['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
-                  <div class="col-lg-3">
-                      <?= $form->field($model, 'symmetry')->dropDownList(\common\enums\DiamondEnum::$symmetryOptions,['prompt'=>Yii::t("common",'请选择')]) ?>
-                  </div>
+
+
               </div>
               <div class="row">
-
-                  <div class="col-lg-3">
+                  <div class="col-lg-4">
+                      <?= $form->field($model, 'cut')->dropDownList(\common\enums\DiamondEnum::$cutOptions,['prompt'=>Yii::t("common",'请选择')]) ?>
+                  </div>
+                  <div class="col-lg-4">
+                      <?= $form->field($model, 'color')->dropDownList(\common\enums\DiamondEnum::$colorOptions,['prompt'=>Yii::t("common",'请选择')]) ?>
+                  </div>
+                  <div class="col-lg-4">
                       <?= $form->field($model, 'polish')->dropDownList(\common\enums\DiamondEnum::$polishOptions,['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
-                  <div class="col-lg-3">
+
+
+              </div>
+              <div class="row">
+                  <div class="col-lg-4">
                       <?= $form->field($model, 'fluorescence')->dropDownList(\common\enums\DiamondEnum::$fluorescenceOptions,['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
-                  <div class="col-lg-3">
-                      <?= $form->field($model, 'market_price')->textInput(['maxlength' => true]) ?>
+                  <div class="col-lg-4">
+                      <?= $form->field($model, 'symmetry')->dropDownList(\common\enums\DiamondEnum::$symmetryOptions,['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
-                  <div class="col-lg-3">
-                      <?= $form->field($model, 'sale_price')->textInput(['maxlength' => true]) ?>
+                  <div class="col-lg-4">
+                      <?= $form->field($model, 'depth_lv')->textInput(['maxlength' => true]) ?>
+                  </div>
+
+
+              </div>
+              <div class="row">
+                  <div class="col-lg-4">
+                      <?= $form->field($model, 'table_lv')->textInput(['maxlength' => true]) ?>
                   </div>
               </div>
 

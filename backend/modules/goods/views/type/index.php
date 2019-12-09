@@ -70,10 +70,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 ]);
                                 return $str;
                             },
-                            'filter' => Html::activeTextInput($model, 'type_name', [
-                                    'class' => 'form-control',
-                                    'style' =>'width:100px'
-                            ]),
+                           
                            ],
                         [
                             'attribute' => 'sort',

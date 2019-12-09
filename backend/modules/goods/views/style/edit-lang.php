@@ -14,6 +14,7 @@ use common\helpers\Url;
 $this->title = Yii::t('goods', 'Style');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('goods', 'Styles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+$model->style_attr = json_decode($model->style_attr,true);
 //
 ?>
 <?php $form = ActiveForm::begin([
@@ -37,17 +38,22 @@ $this->params['breadcrumbs'][] = $this->title;
     			        'onchange'=>"location.href='?type_id='+this.value",
     			        'disabled'=>$model->isNewRecord?null:'disabled',
     			]) ?> 
-                <?= $form->field($model, 'cat_id')->widget(kartik\select2\Select2::class, [
+                <?php /* echo $form->field($model, 'cat_id')->widget(kartik\select2\Select2::class, [
      			        'data' => Yii::$app->services->goodsCate->getDropDown(),
                         'options' => ['placeholder' => Yii::t("common",'请选择')],
                         'pluginOptions' => [
                             'allowClear' => true
                         ],
-                ]);?>
-                <?= $form->field($model, 'style_sex')->radioList(common\enums\StyleSexEnum::getMap()) ?> 
-                <?= $form->field($model, 'style_sn')->textInput(['maxlength'=>true]) ?>
+                ]); */?>
+                <div class="row">
+                <div class="col-lg-4"><?= $form->field($model, 'style_sn')->textInput(['maxlength'=>true]) ?></div>
+                <div class="col-lg-4">
                 <?= $form->field($model, 'market_price')->textInput(['maxlength'=>true]) ?>
-                <?= $form->field($model, 'sale_price')->textInput(['maxlength'=>true]) ?>                                 
+                </div>
+                <div class="col-lg-4">
+                <?= $form->field($model, 'sale_price')->textInput(['maxlength'=>true]) ?> 
+                </div>
+               </div>                                 
     			<div class="nav-tabs-custom ">
     		        <?php echo Html::langTab("tab1")?>    			      
         			<div class="tab-content" style="padding-left:10px"> 
@@ -67,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> 商品属性</li>
             </ul>
-            <div class="box-body col-lg-10">
+            <div class="box-body col-lg-12">
                <?php               
                 $attr_list_all = \Yii::$app->services->goodsAttribute->getAttrListByTypeId($model->type_id);
                 $type_sale = common\enums\AttrTypeEnum::TYPE_SALE;
@@ -99,8 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
                              echo common\widgets\skutable\SkuTable::widget(['form' => $form,'model' => $model,'data' =>$data,'name'=>'Style[style_spec]']);
                           }
                           echo $form->field($model, 'goods_storage')->textInput(['maxlength'=>true]) ;
-                      }else{
-                              $model->style_attr = json_decode($model->style_attr,true);
+                      }else{                              
                               foreach ($attr_list as $k=>$attr){ 
                                   $attr_field = $attr['is_require']==1?'attr_require':'attr_custom';                                  
                                   $attr_field_name = "{$attr_field}[{$attr['id']}]";                                  

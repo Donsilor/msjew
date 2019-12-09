@@ -57,8 +57,8 @@ class Style extends BaseModel
     public function rules()
     {
         return [
-            [['cat_id', 'type_id','style_sex', 'merchant_id','sale_volume','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_invoice', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
-            [['cat_id', 'type_id','style_sn','attr_require','goods_images','style_sex', 'sale_price', 'market_price',], 'required'],
+            [['type_id','style_sex', 'merchant_id','sale_volume','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_invoice', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
+            [['type_id','style_sn','attr_require','goods_images','style_sex', 'sale_price', 'market_price',], 'required'],
             [['style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['sale_price', 'market_price', 'cost_price'], 'number'],
             [['style_sn'], 'string', 'max' => 50],

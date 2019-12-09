@@ -2,7 +2,6 @@
 
 namespace backend\modules\goods\controllers;
 
-use common\models\goods\TypeLang;
 use common\models\goods\Type;
 use Yii;
 use common\components\Curd;
@@ -10,7 +9,7 @@ use yii\data\ActiveDataProvider;
 use backend\controllers\BaseController;
 use common\models\base\SearchModel;
 /**
- * 商品分类
+ * 商品类型(产品线)
  *
  * Class ArticleCateController
  * @package addons\RfArticle\backend\controllers

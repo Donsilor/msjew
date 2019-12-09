@@ -43,7 +43,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'footer'=> Html::batchButtons(),//['search_export','status_disabled']
                 'footerOptions' => ['colspan' => 3],  //设置删除按钮垮列显示                        
             ],
-            //'id',            
+            [
+                'attribute'=>'attr_id',
+                'label' =>'属性ID',
+                'value' =>'attr_id',
+                'filter' => Html::activeTextInput($searchModel, 'attr_id', [
+                        'class' => 'form-control',
+                        'style' =>'width:50px'
+                ]),
+            ],
             [
                 'attribute'=>'attr_name',
                 'value' =>'attr.attr_name',

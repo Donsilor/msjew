@@ -273,7 +273,7 @@ $(function(){
         	}
         });
 	});
-
+	//销售价批量填充
 	$(document).on("click",'.batch-sale_price',function(){
 		var hasEdit = false;
 		var fromValue = $("#style-sale_price").val();
@@ -299,6 +299,7 @@ $(function(){
         	}
         });
 	});
+	//成本价批量填充
 	$(document).on("click",'.batch-cost_price',function(){
 		var hasEdit = false;
 		var fromValue = $("#style-cost_price").val();
@@ -324,6 +325,7 @@ $(function(){
         	}
         });
 	});
+	//库存批量填充
 	$(document).on("click",'.batch-goods_storage',function(){
 		var hasEdit = false;
 		var fromValue = $("#style-goods_storage").val();

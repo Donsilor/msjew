@@ -15,6 +15,10 @@ class DiamondEnum extends  BaseEnum
     public static $typeOptions = [
         1 => '颜色',
     ];
+    public static function getCertTypeList()
+    {
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_CERT_TYPE);
+    }
     //钻石颜色   
     //const COLOR = 'color';
     public static $colorOptions = [

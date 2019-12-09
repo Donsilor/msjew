@@ -37,7 +37,6 @@ $(function(){
         getAlreadySetSkuVals();//获取已经设置的SKU值
         // console.log(alreadySetSkuVals);
         var defaultSkuInputs = $("#skuTableBox input[name*='skuInput[]']");
-        var defaultSku = $("#defaultSku");        
         var b = true;
         var skuTypeArr =  [];//存放SKU类型的数组
         var totalRow = 1;//总行数
@@ -199,15 +198,17 @@ $(function(){
 function getAlreadySetSkuVals(){
 	//获取设置的SKU属性值
 	$("tr[class*='sku_table_tr']").each(function(){	
+		var rowBox = $(this);
 		var skuName = $("#skuTableBox input[name*='skuInput[]']").eq()
-		var _propvalids = sortSkuIds($(this).attr("propvalids"));//SKU值主键集合
+		var _propvalids = sortSkuIds(rowBox.attr("propvalids"));//SKU值主键集合		
 		var _skuVals = {};
 		$("#skuTableBox input[name*='skuInput[]']").each(function(){
 			var skuName = $(this).attr("attr-name");
-			_skuVals[skuName] = $(this).find("input[type='text'][class*='setsku-"+skuName+"']").val();
+			_skuVals[skuName] = rowBox.find(".setsku-"+skuName).val();
 		});		
 		alreadySetSkuVals[_propvalids] = _skuVals;
 	});
+	console.log(alreadySetSkuVals);
 }
 /**
  * 数据校验

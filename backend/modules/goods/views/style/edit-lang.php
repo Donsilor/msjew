@@ -14,7 +14,8 @@ use common\helpers\Url;
 $this->title = Yii::t('goods', 'Style');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('goods', 'Styles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-$model->style_attr = json_decode($model->style_attr,true);
+$model->style_attr = $model->style_attr?json_decode($model->style_attr,true):[];
+$model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
 //
 ?>
 <?php $form = ActiveForm::begin([
@@ -50,19 +51,15 @@ $model->style_attr = json_decode($model->style_attr,true);
                             'allowClear' => true
                         ],
                 ]); */?>
-                </div>
+                </div>                
                 <div class="row">
-                    <div class="col-lg-4"><?= $form->field($model, 'market_price')->textInput(['maxlength'=>true]) ?></div>
-                    <div class="col-lg-4"><?= $form->field($model, 'sale_price')->textInput(['maxlength'=>true]) ?></div>
-               </div> 
-               <div class="row">
                     <div class="col-lg-4"><?= $form->field($model, 'sale_volume')->textInput(['maxlength'=>true,'disabled'=>true]) ?></div>
                     <div class="col-lg-4"><?= $form->field($model, 'virtual_volume')->textInput(['maxlength'=>true]) ?></div>
-               </div>
-               <div class="row">
+                </div>
+                <div class="row">
                     <div class="col-lg-4"><?= $form->field($model, 'goods_clicks')->textInput(['maxlength'=>true,'disabled'=>true]) ?></div>
                     <div class="col-lg-4"><?= $form->field($model, 'virtual_clicks')->textInput(['maxlength'=>true]) ?></div>
-               </div>                                  
+                </div>                                  
     			<div class="nav-tabs-custom ">
     		        <?php echo Html::langTab("tab1")?>    			      
         			<div class="tab-content" style="padding-left:10px"> 
@@ -98,22 +95,31 @@ $model->style_attr = json_decode($model->style_attr,true);
                       <?php
                       //如果是销售属性
                       if($attr_type == common\enums\AttrTypeEnum::TYPE_SALE){
-                          $data = [];
-                          $model->style_spec = json_decode($model->style_spec,true);
+                          ?>
+                            <div class="row">
+                                <div class="col-lg-4"><?= $form->field($model, 'sale_price')->textInput(['maxlength'=>true]) ?></div>
+                                <div class="col-lg-4"><?=  $form->field($model, 'cost_price')->textInput(['maxlength'=>true]) ?></div>
+                                <div class="col-lg-4"><?= $form->field($model, 'market_price')->textInput(['maxlength'=>true]) ?></div>
+                            </div> 
+   							<div class="row">
+   							    <div class="col-lg-4"><?=  $form->field($model, 'goods_storage')->textInput(['maxlength'=>true]) ?></div>
+   							    
+                            </div> 
+                          <?php 
+                          $data = [];                          
                           foreach ($attr_list as $k=>$attr){   
                               $values = Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']);
                               $data[] = [
                                   'id'=>$attr['id'],
                                   'name'=>$attr['attr_name'],
                                   'value'=>Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']),
-                                  'current'=>$model->style_spec[0][$attr['id']]??[]
+                                  'current'=>$model->style_spec['a'][$attr['id']]??[]
                               ];   
                           }
                          
                           if(!empty($data)){
                              echo common\widgets\skutable\SkuTable::widget(['form' => $form,'model' => $model,'data' =>$data,'name'=>'Style[style_spec]']);
                           }
-                          echo $form->field($model, 'goods_storage')->textInput(['maxlength'=>true]) ;
                       }else{                              
                               foreach ($attr_list as $k=>$attr){ 
                                   $attr_field = $attr['is_require']==1?'attr_require':'attr_custom';                                  
@@ -142,9 +148,9 @@ $model->style_attr = json_decode($model->style_attr,true);
                       ?>
                            <?php 
                            $collLg = 4;
-                           if($attr_type == common\enums\AttrTypeEnum::TYPE_SERVER){
+                           /* if($attr_type == common\enums\AttrTypeEnum::TYPE_SERVER){
                                 $collLg = 12;
-                           }?>
+                           } */?>
                               <?php if ($k % 3 ==0){ ?><div class="row"><?php }?>
     							<div class="col-lg-<?=$collLg?>"><?= $input ?></div>
                               <?php if(($k+1) % 3 == 0 || ($k+1) == count($attr_list)){?></div><?php }?>
@@ -219,7 +225,7 @@ $(function(){
 		var hasEdit = false;
 		var fromValue = $("#style-style_sn").val();
 		if(fromValue ==""){
-             alert("请先填写基础信息的款式编号");
+             alert("<?= Yii::t("goods","请先填写款式编号")?>");
              return false;
 		}
 		$("#skuTable tr[class*='sku_table_tr']").each(function(){
@@ -230,7 +236,7 @@ $(function(){
         	}
         });
         if(hasEdit === true){
-           	 if(!confirm("商品编码已修改过，是否覆盖？")){
+           	 if(!confirm("<?= Yii::t("goods","商品编码已修改过,是否覆盖")?>?")){
                	return false;
            	 }
         }
@@ -246,7 +252,7 @@ $(function(){
 		var hasEdit = false;
 		var fromValue = $("#style-market_price").val();
 		if(fromValue ==""){
-             alert("请先填写基础信息的市场价");
+             alert("<?= Yii::t("goods","请先填写市场价")?>");
              return false;
 		}
 		$("#skuTable tr[class*='sku_table_tr']").each(function(){
@@ -257,7 +263,7 @@ $(function(){
         	}
         });
         if(hasEdit === true){
-           	 if(!confirm("市场价已修改过，是否覆盖？")){
+           	 if(!confirm("<?= Yii::t("goods","市场价已修改过,是否覆盖")?>?")){
                	return false;
            	 }
         }
@@ -266,14 +272,13 @@ $(function(){
         		$(this).find(".setsku-market_price").val(fromValue);
         	}
         });
-
 	});
 
 	$(document).on("click",'.batch-sale_price',function(){
 		var hasEdit = false;
 		var fromValue = $("#style-sale_price").val();
 		if(fromValue ==""){
-             alert("请先填写基础信息的市场价");
+             alert("<?= Yii::t("goods","请先填写销售价")?>");
              return false;
 		}
 		$("#skuTable tr[class*='sku_table_tr']").each(function(){
@@ -284,7 +289,7 @@ $(function(){
         	}
         });
         if(hasEdit === true){
-           	 if(!confirm("销售价已修改过，是否覆盖？")){
+           	 if(!confirm("<?= Yii::t("goods","销售价已修改过,是否覆盖")?>?")){
                	return false;
            	 }
         }
@@ -293,14 +298,38 @@ $(function(){
         		$(this).find(".setsku-sale_price").val(fromValue);
         	}
         });
-
+	});
+	$(document).on("click",'.batch-cost_price',function(){
+		var hasEdit = false;
+		var fromValue = $("#style-cost_price").val();
+		if(fromValue ==""){
+             alert("<?= Yii::t("goods","请先填写成本价")?>");
+             return false;
+		}
+		$("#skuTable tr[class*='sku_table_tr']").each(function(){
+			var skuValue = $(this).find(".setsku-cost_price").val();
+        	if(skuValue != '' && skuValue != fromValue){
+        		hasEdit = true;
+        		return ;
+        	}
+        });
+        if(hasEdit === true){
+           	 if(!confirm("<?= Yii::t("goods","销售价已修改过,是否覆盖")?>?")){
+               	return false;
+           	 }
+        }
+    	$("#skuTable tr[class*='sku_table_tr']").each(function(){
+        	if($(this).find(".setsku-status").val() == 1){
+        		$(this).find(".setsku-cost_price").val(fromValue);
+        	}
+        });
 	});
 	$(document).on("click",'.batch-goods_storage',function(){
 		var hasEdit = false;
 		var fromValue = $("#style-goods_storage").val();
 		var r = /^\+?[1-9][0-9]*$/;
-		if((fromValue = prompt("请输入库存数量","10")) && !r.test(fromValue)){
-             alert("库存数量不合法");
+		if((fromValue = prompt("<?= Yii::t("goods","请输入库存数量")?>","10")) && !r.test(fromValue)){
+             alert("<?= Yii::t("goods","库存数量不合法")?>");
              return false;
 		}
 		$("#skuTable tr[class*='sku_table_tr']").each(function(){
@@ -311,7 +340,7 @@ $(function(){
         	}
         });
         if(hasEdit === true){
-           	 if(!confirm("商品库存已修改过，是否覆盖？")){
+           	 if(!confirm("<?= Yii::t("goods","商品库存已修改过,是否覆盖")?>?")){
                	return false;
            	 }
         }
@@ -322,6 +351,63 @@ $(function(){
         });
 
 	});
+	/* $(document).on("blur",'.setsku-goods_storage',function(){
+    	goodsStroageSum();
+	});
+	$(document).on("blur",'.setsku-sale_price',function(){
+		salePriceCalc();
+	});
+	$(document).on("blur",'.setsku-market_price',function(){
+		salePriceCalc();
+	});
+	function goodsStroageSum(){
+		var total = 0;
+		$("#skuTable tr[class*='sku_table_tr']").each(function(){
+        	if($(this).find(".setsku-status").val() == 1){
+        		var storage = $(this).find(".setsku-goods_storage").val();
+        		total += parseInt(storage);
+        	}
+        }); 
+		$("#style-goods_storage").val(total).attr('readonly',true);
+        return total; 
+	}
+	//基础信息销售价计算
+	function salePriceCalc(){
+		var priceList = [];
+		var minPrice = 0;
+		var hasOne = false;	
+		$("#skuTable tr[class*='sku_table_tr']").each(function(){			
+        	if($(this).find(".setsku-status").val() == 1 && (salePrice = $(this).find(".setsku-sale_price").val())){
+        		priceList.push(salePrice);
+        	}
+        }); 
+        if(!priceList){
+        	$("#style-sale_price").val().attr('readonly',false);
+            return minPrice;
+        }
+        priceList.sort(function(v1,v2){return v1-v2;});  
+        minPrice = priceList[0];  
+		$("#style-sale_price").val(minPrice).attr('readonly',true);
+        return minPrice; 
+	}
+	//基础信息销售价计算
+	function marketPriceCalc(){
+		var priceList = [];
+		var maxPrice = 0;
+		$("#skuTable tr[class*='sku_table_tr']").each(function(){			
+        	if($(this).find(".setsku-status").val() == 1 && (price = $(this).find(".setsku-market_price").val())){
+        		priceList.push(price);
+        	}
+        }); 
+        if(!priceList){
+        	$("#style-market_price").val().attr('readonly',false);
+            return minPrice;
+        }
+        priceList.sort(function(v1,v2){return v2-v1;});  
+        minPrice = priceList[0];  
+		//$("#style-market_price").val(minPrice).attr('readonly',true);
+        return minPrice; 
+	} */
 	
 
 });

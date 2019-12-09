@@ -1,6 +1,6 @@
 <script>
 //已保存属性配置
-var alreadySetSkuVals = <?= isset($model->style_spec[1])?json_encode($model->style_spec[1]):"{}"?>;
+var alreadySetSkuVals = <?= isset($model->style_spec['b'])?json_encode($model->style_spec['b']):"{}"?>;
 var inputName = '<?= $name?>';//input控件名称
 var lang = '<?= Yii::$app->language?>';//当前语言
 </script>
@@ -15,7 +15,7 @@ foreach ($data as $key => $val){
     <?php
         foreach ($val['value'] as $k => $v){
     ?>
-    <li><label><input type="checkbox" name="<?= $name?>[0][<?=$val['id']?>][]" <?php if(in_array($k,$val['current'])) echo 'checked' ?> class="sku_value" propvalid='<?php echo $k ?>' title="<?php echo $v ?>" value="<?php echo $k ?>"/><?php echo $v ?></label></li>
+    <li><label><input type="checkbox" name="<?= $name?>[a][<?=$val['id']?>][]" <?php if(in_array($k,$val['current'])) echo 'checked' ?> class="sku_value" propvalid='<?php echo $k ?>' title="<?php echo $v ?>" value="<?php echo $k ?>"/><?php echo $v ?></label></li>
     <?php } ?>
 </ul>
 <div class="clear"></div>
@@ -29,7 +29,6 @@ foreach ($data as $key => $val){
 </li>
 <div class="clear"></div>
 <div id="skuTable"></div>
-<input type="hidden" id="defaultSku" attr-require="<?= implode(',',array_column($inputAttrs,'require'))?>" attr-name="<?= implode(',',array_column($inputAttrs,'name'))?>" attr-title="<?= implode(',',array_column($inputAttrs,'title'))?>"/>
 <?php foreach ($inputAttrs as $input){?>
 	<input type="hidden" name="skuInput[]" attr-require="<?= $input['require']?>" attr-name="<?= $input['name']?>" attr-title="<?= $input['title']?>" attr-batch="<?= $input['batch']?>" value="<?= $input['name']?>"/>
 <?php }?>

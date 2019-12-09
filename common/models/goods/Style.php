@@ -60,7 +60,7 @@ class Style extends BaseModel
     {
         return [
             [['type_id','style_sex', 'merchant_id','sale_volume','virtual_volume','virtual_clicks','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
-            [['type_id','style_sn','attr_require','goods_images','style_sex', 'sale_price', 'market_price',], 'required'],
+            [['type_id','style_sn','attr_require','goods_images', 'sale_price','goods_storage'], 'required'],
             [['style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['sale_price', 'market_price', 'cost_price'], 'number'],
             [['style_sn'], 'string', 'max' => 50],
@@ -68,7 +68,6 @@ class Style extends BaseModel
             [['verify_remark'], 'string', 'max' => 255],
             [['style_image','style_name','language'], 'safe'],
             [['attr_require','attr_custom'],'parseStyleAttr'],
-            [['style_custom'],'parseStyleCustom'],
             [['style_spec'],'parseStyleSpec'],
             [['goods_images'],'parseGoodsImages'],
         ];
@@ -77,8 +76,13 @@ class Style extends BaseModel
      * 款式基础属性
      */
     public function parseStyleAttr()
-    { 
-        $this->style_attr = [];        
+    {   
+        if(!$this->style_attr){
+            $this->style_attr = [];
+        }else if(!is_array($this->style_attr)){
+            $this->style_attr = json_decode($this->style_attr,true);
+        }
+        
         if(!empty($this->attr_require)){
             $this->style_attr = $this->style_attr + $this->attr_require;//数组合并    
         }
@@ -88,16 +92,7 @@ class Style extends BaseModel
         if(is_array($this->style_attr)){
             $this->style_attr = json_encode($this->style_attr);
         }        
-    }
-    /**
-     * 款式定制属性
-     */
-    public function parseStyleCustom()
-    {
-        if(is_array(json_encode($this->style_custom))){
-            $this->style_custom = json_encode($this->style_custom);
-        }
-    }
+    }    
     /**
      * 款式规格属性
      */

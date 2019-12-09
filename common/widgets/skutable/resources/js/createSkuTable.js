@@ -154,10 +154,10 @@ $(function(){
                 	if(skuName == "status"){
                 		skuVal = skuValDefined == false || skuVal ==1?1:0;
                 		SKUTableDom += "<td>";
-                		SKUTableDom += '<input type="hidden" class="setsku-' +skuName+'" name="'+inputName+'[1]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/>';
+                		SKUTableDom += '<input type="hidden" class="setsku-' +skuName+'" name="'+inputName+'['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/>';
                 		SKUTableDom += '<span class="btn btn-default btn-sm sku-status">'+langLabel[lang].disable+'</span></td>';
                 	}else{
-                    	SKUTableDom += '<td><input type="text" class="form-control setsku-' +skuName+'" name="'+inputName+'[1]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/></td>';
+                    	SKUTableDom += '<td><input type="text" class="form-control setsku-' +skuName+'" name="'+inputName+'[b]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/></td>';
                 	}
                 });
                 SKUTableDom += '</tr>';

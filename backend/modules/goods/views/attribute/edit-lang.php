@@ -116,7 +116,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'edit' => function($url, $model, $key){                
                     return Html::edit(['attribute-value/ajax-edit-lang','id' => $model->id], '编辑', [
                         'data-toggle' => 'modal',
-                        'data-target' => '#ajaxModal',
+                        'data-target' => '#ajaxModalLg',
                     ]);
                 },
                'status' => function($url, $model, $key){

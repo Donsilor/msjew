@@ -78,22 +78,14 @@ class SkuTable extends Widget
         $asset = AppAsset::register($this->getView());
         if(!isset($this->inputAttrs)){
             $this->inputAttrs =  [
-                    ['name'=>'goods_sn','title'=>'商品编码','require'=>1,'batch'=>1],                    
-                    ['name'=>'market_price','title'=>'市场价','require'=>0,'batch'=>1],
+                    ['name'=>'goods_sn','title'=>'商品编码','require'=>1,'batch'=>1], 
                     ['name'=>'sale_price','title'=>'销售价','require'=>1,'batch'=>1],
+                    ['name'=>'cost_price','title'=>'成本价','require'=>0,'batch'=>1],
+                    ['name'=>'market_price','title'=>'市场价','require'=>0,'batch'=>1],                    
                     ['name'=>'goods_storage','title'=>'库存','require'=>1,'batch'=>1],
                     ['name'=>'status','title'=>'状态','require'=>0,'batch'=>0],
             ];
-        }
-        $inputAttrCode = '';
-        foreach ($this->inputAttrs as $attr){
-            $this->inputAttrName .= $attr['name'].',';
-            $this->inputAttrTitle .= $attr['title'].',';
-            $this->inputAttrRequire .= $attr['require'].',';
-        }
-        $this->inputAttrName = rtrim($this->inputAttrName,',');
-        $this->inputAttrTitle = rtrim($this->inputAttrTitle,',');
-        $this->inputAttrRequire = rtrim($this->inputAttrRequire,',');
+        }        
     }
 
     /**
@@ -108,9 +100,6 @@ class SkuTable extends Widget
             'name' => $this->name,   
             'data' => $this->data,
             'inputAttrs'=>$this->inputAttrs,
-            'inputAttrName'=>$this->inputAttrName,
-            'inputAttrTitle'=>$this->inputAttrTitle, 
-            'inputAttrRequire'=>$this->inputAttrRequire,
         ]);
     }
 }

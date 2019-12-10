@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         ],
                         'options' => ['class' => 'table table-hover'],
                         'columns' => [
-                                'id',
+
                             [
                                 'attribute' => 'title',
                                 'format' => 'raw',
@@ -67,6 +67,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                     return $str;
                                 }
                             ],
+                            'id',
                             'url',
                             [
                                 'attribute' => 'icon',

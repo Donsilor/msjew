@@ -76,9 +76,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
-                    return \common\enums\DiamondEnum::$typeOptions[$model->cert_type];
+                    return \common\enums\DiamondEnum::getCertTypeList()[$model->cert_type];
                 },
-                'filter' => Html::activeDropDownList($searchModel, 'cert_type',\common\enums\DiamondEnum::$typeOptions, [
+                'filter' => Html::activeDropDownList($searchModel, 'cert_type',\common\enums\DiamondEnum::getCertTypeList(), [
                     'prompt' => '全部',
                     'class' => 'form-control',
                 ]),

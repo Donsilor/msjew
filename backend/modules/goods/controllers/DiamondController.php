@@ -2,11 +2,13 @@
 
 namespace backend\modules\goods\controllers;
 
+use common\enums\AttrIdEnum;
 use Yii;
 use common\models\goods\Diamond;
 use common\components\Curd;
 use common\models\base\SearchModel;
 use backend\controllers\BaseController;
+use common\helpers\ResultHelper;
 
 /**
 * Diamond
@@ -52,5 +54,49 @@ class DiamondController extends BaseController
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
         ]);
+    }
+
+    public function actionGetGoodsName(){
+        $carat = Yii::$app->request->post('carat',null);
+        $cert_type_id = Yii::$app->request->post('cert_type',null);
+        $shape_id = Yii::$app->request->post('shape',null);
+        $color_id = Yii::$app->request->post('color',null);
+        $clarity_id = Yii::$app->request->post('clarity',null);
+
+        $carat_str = '';
+        if(!empty($carat)){
+            $carat_str .= $carat.'ct';
+        }
+        $languages = Yii::$app->params['languages'];
+        $ids = array($cert_type_id,$shape_id,$color_id,$clarity_id);
+        $data = array();
+        foreach ($languages as $key=>$val){
+            $goods_name = $carat_str;
+            $language = $key;
+            $attr_arr = \Yii::$app->services->goodsAttribute->getAttributeByValueIds($ids, $language);
+            if(isset($attr_arr[AttrIdEnum::DIA_SHAPE])){
+                $goods_name .= ' '.$attr_arr[AttrIdEnum::DIA_SHAPE];
+            }
+
+            if(isset($attr_arr[AttrIdEnum::DIA_COLOR])){
+                $goods_name .= ' '.$attr_arr[AttrIdEnum::DIA_COLOR].'色';
+            }
+            if(isset($attr_arr[AttrIdEnum::DIA_CLARITY])){
+                $goods_name .= ' '.$attr_arr[AttrIdEnum::DIA_CLARITY].'净度';
+            }
+            if(isset($attr_arr[AttrIdEnum::DIA_CERT_TYPE])){
+                $goods_name .= ' '.$attr_arr[AttrIdEnum::DIA_CERT_TYPE];
+            }
+
+            $data[$language] = $goods_name;
+
+        }
+
+        return ResultHelper::json(200, '保存成功',$data);
+
+
+
+
+
     }
 }

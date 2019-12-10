@@ -171,7 +171,35 @@ class RingController extends BaseController
 
             return ResultHelper::json(200, '保存成功',$data);
         }
+
     }
+
+
+    /**
+     * 删除
+     *
+     * @param $id
+     * @return mixed
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionDelete($id)
+    {
+        $model = $this->findModel($id);
+        if ($model->delete()) {
+            if(method_exists($model,'langModel')){
+                $langModel = $model->langModel();
+                $langModel->deleteAll(['in','master_id',[$id]]);
+
+                $relationsModel = $model->getRelations();
+                $relationsModel->deleteAll(['in','ring_id',[$id]]);
+            }
+            return $this->message("删除成功", $this->redirect(['index']));
+        }
+
+        return $this->message("删除失败", $this->redirect(['index']), 'error');
+    }
+
 
 
 

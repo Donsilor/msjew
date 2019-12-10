@@ -215,15 +215,12 @@ $model->ring_images = $model->ring_images?explode(',', $model->ring_images):null
                     rfMsg(data.message);
                 } else {
 
-
-
                     console.log(data.data);
                     var data = data.data
 
                     var hav = true;
                     $("#style_table input[name='RingRelation[style_id][]]'").each(function(){
                         if($(this).val() == data.id){
-
                             hav = false;
                         }
                     });

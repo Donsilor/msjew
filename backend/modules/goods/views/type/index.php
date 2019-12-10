@@ -45,18 +45,13 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     'parentColumnName' => 'pid',
                     'parentRootValue' => '0', //first parentId value
                     'pluginOptions' => [
-                        'initialState' => 'collapsed',
+//                        'initialState' => 'collapsed',
                     ],
                     'options' => ['class' => 'table table-hover'],
 
                     'columns' => [
 
-                        [
-                            'attribute'=>'id',
-                            'value'=> 'id',
-                            'headerOptions'=>['style'=>'width:50px;'],
 
-                        ],
 
                         [
                             'attribute' => 'type_name',
@@ -73,6 +68,13 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             },
 
                            ],
+
+                        [
+                            'attribute'=>'id',
+                            'value'=> 'id',
+                            'headerOptions'=>['style'=>'width:50px;'],
+
+                        ],
                         [
                             'attribute' => 'sort',
                             'format' => 'raw',

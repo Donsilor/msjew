@@ -46,6 +46,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                     return $str;
                                 }
                             ],
+                            'id',
                             'url',
                             [
                                 'attribute' => 'icon',

@@ -1575,3 +1575,8 @@ nav.page-tabs .page-tabs-content {
 }
 
 .nav-tabs-custom {box-shadow:none;margin-bottom:0px}
+
+.unit{
+    position: absolute; top: 30%; right: 3%; display: table-cell;font-size: 14px;
+    white-space: nowrap; padding: 10px 10px;
+}

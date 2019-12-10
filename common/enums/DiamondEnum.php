@@ -11,46 +11,47 @@ class DiamondEnum extends  BaseEnum
 {
 
     //证书类型
-    //const COLOR = 'color';
-    public static $typeOptions = [
-        1 => '颜色',
-    ];
     public static function getCertTypeList()
     {
         return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_CERT_TYPE);
     }
     //钻石颜色   
     //const COLOR = 'color';
-    public static $colorOptions = [
-        1 => '颜色',
-    ]; 
+    public static function getColorList()
+    {
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_COLOR);
+    }
+
     //钻石净度
-    //const CLARITY = 'clarity';
-    public static $clarityOptions = [
-        1=>'净度'            
-    ];
+    public static function getClarityList()
+    {
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_CLARITY);
+    }
     //钻石切工
     //const CUT = 'cut';
-    public static $cutOptions = [
-        1=>'切工',
-    ];
+    public static function getCutList()
+    {
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_CUT);
+    }
     //钻石形状
     //const SHAPE = 'shape';
-    public static $shapeOptions = [
-       1=>'形状'
-    ];
+    public static function getShapeList(){
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_SHAPE);
+    }
     //对称
-    public static $symmetryOptions = [
-       1=>'对称'
-    ];
+    public static function getSymmetryList(){
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_SYMMETRY);
+    }
     //抛光
-    public static $polishOptions = [
-       1=>'抛光'
-    ];
+    public static function getPolishList(){
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_POLISH);
+    }
+
     //荧光
-    public static $fluorescenceOptions = [
-       1=>'荧光'
-    ];
+    public static function getFluorescenceList(){
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_FLUORESCENCE);
+    }
+
     
     /**
      * @return array

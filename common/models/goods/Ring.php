@@ -105,7 +105,7 @@ class Ring extends BaseModel
 
     public function getRelations()
     {
-        return $this->hasMany(RingRelation::class,['ring'=>'id']);
+        return $this->hasMany(RingRelation::class,['ring_id'=>'id']);
 
     }
 

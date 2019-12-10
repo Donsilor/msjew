@@ -149,4 +149,29 @@ class AttributeService extends Service
                     ->asArray()->all();
         return array_column($models, 'attr_value_name','master_id');
     }
+
+
+
+
+    /**
+     * 根据属性值ID，查询属性值列表
+     * @param unknown $ids
+     * @param unknown $language
+     * @return array
+     */
+    public function getAttributeByValueIds($ids,$language = null)
+    {
+        if(empty($language)){
+            $language = Yii::$app->language;
+        }
+        if(!is_array($ids)){
+            $ids = explode(",",$ids);
+        }
+        $models = AttributeValue::find()->alias("val")
+            ->leftJoin(AttributeValueLang::tableName()." lang","val.id=lang.master_id and lang.language='".$language."'")
+            ->select(['val.attr_id','lang.attr_value_name'])
+            ->where(['in','val.id',$ids])
+            ->asArray()->all();
+        return array_column($models, 'attr_value_name','attr_id');
+    }
 }

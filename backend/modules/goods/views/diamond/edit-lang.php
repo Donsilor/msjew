@@ -191,13 +191,28 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php ActiveForm::end(); ?>
 
 <script>
+    //裸钻编号根据证书号获取
     $('input[name="Diamond[cert_id]"]').on('change',function (){
         $('input[name="Diamond[goods_sn]"]').val('DSN' + $(this).val());
     });
 
+
+    // 商品名称根据石重、形状、颜色、净度、证书类型 设置
+    $('input[name="Diamond[carat]"]').on('change',function (){
+        setGoodsName();
+    });
+
     $('select[name="Diamond[cert_type]"]').on('change',function (){
         setGoodsName();
-
+    });
+    $('select[name="Diamond[shape]"]').on('change',function (){
+        setGoodsName();
+    });
+    $('select[name="Diamond[color]"]').on('change',function (){
+        setGoodsName();
+    });
+    $('select[name="Diamond[clarity]"]').on('change',function (){
+        setGoodsName();
     });
 
     function setGoodsName(){
@@ -206,8 +221,6 @@ $this->params['breadcrumbs'][] = $this->title;
         var shape = $('select[name="Diamond[shape]"]').children('option:selected').val();
         var color = $('select[name="Diamond[color]"]').children('option:selected').val();
         var clarity = $('select[name="Diamond[clarity]"]').children('option:selected').val();
-
-
         var param_data = {carat:carat,cert_type:cert_type,shape:shape,color:color,clarity:clarity}
 
         $.ajax({
@@ -217,13 +230,12 @@ $this->params['breadcrumbs'][] = $this->title;
             data: param_data,
             success: function (data) {
                 if (parseInt(data.code) !== 200) {
-                    rfMsg(data.message);
+                    // rfMsg(data.message);
                 } else {
                     console.log(data.data);
                     $.each(data.data, function (key,value) {
                         $('input[name="DiamondLang['+ key +'][goods_name]"]').val(value);
                     })
-
 
                 }
             }

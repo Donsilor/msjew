@@ -77,7 +77,6 @@ class DiamondController extends BaseController
             if(isset($attr_arr[AttrIdEnum::DIA_SHAPE])){
                 $goods_name .= ' '.$attr_arr[AttrIdEnum::DIA_SHAPE];
             }
-
             if(isset($attr_arr[AttrIdEnum::DIA_COLOR])){
                 $goods_name .= ' '.$attr_arr[AttrIdEnum::DIA_COLOR].'色';
             }
@@ -87,9 +86,7 @@ class DiamondController extends BaseController
             if(isset($attr_arr[AttrIdEnum::DIA_CERT_TYPE])){
                 $goods_name .= ' '.$attr_arr[AttrIdEnum::DIA_CERT_TYPE];
             }
-
             $data[$language] = $goods_name;
-
         }
 
         return ResultHelper::json(200, '保存成功',$data);

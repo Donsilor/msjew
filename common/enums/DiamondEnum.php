@@ -52,7 +52,33 @@ class DiamondEnum extends  BaseEnum
         return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_FLUORESCENCE);
     }
 
-    
+    //切割深度
+    public static function getCuttingDepthList(){
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_CUTTING_DEPTH);
+    }
+
+    //石底层
+    public static function getStoneFloorList(){
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_STONE_FLOOR);
+    }
+
+    //石面
+    public static function getStoneSurfaceList(){
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_STONE_SURFACE);
+    }
+
+    //长宽比
+    public static function getAspectRatioList(){
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_ASPECT_RATIO);
+    }
+
+    //售后服务
+    public static function getSaleServicesList(){
+        return \Yii::$app->services->goodsAttribute->getValuesByAttrId(AttrIdEnum::DIA_SALE_SERVICES);
+    }
+
+
+
     /**
      * @return array
      */

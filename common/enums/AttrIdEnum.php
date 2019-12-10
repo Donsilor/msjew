@@ -17,6 +17,11 @@ class AttrIdEnum
     const DIA_SYMMETRY = 29;//钻石对称ID
     const DIA_POLISH = 28;//钻石抛光
     const DIA_FLUORESCENCE = 8;//钻石荧光
+    const DIA_CUTTING_DEPTH = 32;//切割深度
+    const DIA_STONE_FLOOR = 37;//石底层
+    const DIA_STONE_SURFACE = 33;//石面
+    const DIA_ASPECT_RATIO = 36;//长宽比
+    const DIA_SALE_SERVICES = 25;//长宽比
 
 
     

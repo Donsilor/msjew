@@ -52,7 +52,7 @@ class DiamondLang extends \yii\db\ActiveRecord
             'id' => '商品公共表id',
             'master_id' => '款式ID',
             'language' => '语言类型',
-            'goods_name' => '款式名称',
+            'goods_name' => '商品名称',
             'goods_body' => Yii::t('goods_diamond_lang', 'Goods Body'),
             'mobile_body' => '手机端商品描述',
             'meta_title' => 'SEO标题',

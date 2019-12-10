@@ -3,11 +3,12 @@
 use common\helpers\Html;
 use common\helpers\Url;
 use yii\grid\GridView;
+use common\helpers\ImageHelper;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('goods_diamond', 'Diamonds');
+$this->title = Yii::t('goods_diamond', '裸钻管理');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -39,7 +40,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'footer'=> Html::batchButtons(['status_enabled','status_disabled','batch_delete']),//['search_export','status_disabled']
                 'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
             ],
-
+            [
+                'attribute' => 'goods_image',
+                'value' => function ($model) {
+                    return ImageHelper::fancyBox($model->goods_image);
+                },
+                'filter' => false,
+                'format' => 'raw',
+            ],
 
             [
                 'attribute' => 'id',
@@ -71,18 +79,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             //'goods_image',
             //'goods_num',
-            [
-                'attribute' => 'cert_type',
-                'format' => 'raw',
-                'headerOptions' => ['class' => 'col-md-1'],
-                'value' => function ($model){
-                    return \common\enums\DiamondEnum::getCertTypeList()[$model->cert_type];
-                },
-                'filter' => Html::activeDropDownList($searchModel, 'cert_type',\common\enums\DiamondEnum::getCertTypeList(), [
-                    'prompt' => '全部',
-                    'class' => 'form-control',
-                ]),
-            ],
+//            [
+//                'attribute' => 'cert_type',
+//                'format' => 'raw',
+//                'headerOptions' => ['class' => 'col-md-1'],
+//                'value' => function ($model){
+//                    return \common\enums\DiamondEnum::getCertTypeList()[$model->cert_type];
+//                },
+//                'filter' => Html::activeDropDownList($searchModel, 'cert_type',\common\enums\DiamondEnum::getCertTypeList(), [
+//                    'prompt' => '全部',
+//                    'class' => 'form-control',
+//                ]),
+//            ],
             [
                 'attribute' => 'cert_id',
                 'value' => 'cert_id',

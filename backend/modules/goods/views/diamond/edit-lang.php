@@ -98,24 +98,26 @@ $this->params['breadcrumbs'][] = $this->title;
           <div class="box-body" style="margin-left:10px">
               <div class="row">
                   <div class="col-lg-4">
-                      <?= $form->field($model, 'shape')->dropDownList(\common\enums\DiamondEnum::getShapeList(),['prompt'=>Yii::t("common",'请选择')]) ?>
+                      <?= $form->field($model, 'shape')->dropDownList(\common\enums\DiamondEnum::getShapeList()) ?>
                   </div>
                   <div class="col-lg-4">
                       <?= $form->field($model, 'carat')->textInput()->hint('ct',['tag'=>'span','class'=>'unit']) ?>
                   </div>
                   <div class="col-lg-4">
-                      <?= $form->field($model, 'clarity')->dropDownList(\common\enums\DiamondEnum::getClarityList(),['prompt'=>Yii::t("common",'请选择')]) ?>
+                      <?= $form->field($model, 'color')->dropDownList(\common\enums\DiamondEnum::getColorList(),['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
 
 
               </div>
               <div class="row">
                   <div class="col-lg-4">
+                      <?= $form->field($model, 'clarity')->dropDownList(\common\enums\DiamondEnum::getClarityList(),['prompt'=>Yii::t("common",'请选择')]) ?>
+                  </div>
+
+                  <div class="col-lg-4">
                       <?= $form->field($model, 'cut')->dropDownList(\common\enums\DiamondEnum::getCutList(),['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
-                  <div class="col-lg-4">
-                      <?= $form->field($model, 'color')->dropDownList(\common\enums\DiamondEnum::getColorList(),['prompt'=>Yii::t("common",'请选择')]) ?>
-                  </div>
+
                   <div class="col-lg-4">
                       <?= $form->field($model, 'polish')->dropDownList(\common\enums\DiamondEnum::getPolishList(),['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
@@ -124,22 +126,38 @@ $this->params['breadcrumbs'][] = $this->title;
               </div>
               <div class="row">
                   <div class="col-lg-4">
-                      <?= $form->field($model, 'fluorescence')->dropDownList(\common\enums\DiamondEnum::getFluorescenceList(),['prompt'=>Yii::t("common",'请选择')]) ?>
-                  </div>
-                  <div class="col-lg-4">
                       <?= $form->field($model, 'symmetry')->dropDownList(\common\enums\DiamondEnum::getSymmetryList(),['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
                   <div class="col-lg-4">
-                      <?= $form->field($model, 'depth_lv')->textInput(['maxlength' => true])->hint('mm',['tag'=>'span','class'=>'unit']) ?>
+                      <?= $form->field($model, 'fluorescence')->dropDownList(\common\enums\DiamondEnum::getFluorescenceList(),['prompt'=>Yii::t("common",'请选择')]) ?>
+                  </div>
+                  <div class="col-lg-4">
+                      <?= $form->field($model, 'cutting_depth')->dropDownList(\common\enums\DiamondEnum::getCuttingDepthList(),['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
 
+              </div>
 
+              <div class="row">
+
+                  <div class="col-lg-4">
+                      <?= $form->field($model, 'aspect_ratio')->dropDownList(\common\enums\DiamondEnum::getAspectRatioList(),['prompt'=>Yii::t("common",'请选择')]) ?>
+                  </div>
+                  <div class="col-lg-4">
+                      <?= $form->field($model, 'stone_surface')->dropDownList(\common\enums\DiamondEnum::getStoneSurfaceList(),['prompt'=>Yii::t("common",'请选择')]) ?>
+                  </div>
+                  <div class="col-lg-4">
+                      <?= $form->field($model, 'stone_floor')->dropDownList(\common\enums\DiamondEnum::getStoneFloorList(),['prompt'=>Yii::t("common",'请选择')]) ?>
+                  </div>
               </div>
               <div class="row">
+                  <div class="col-lg-4">
+                      <?= $form->field($model, 'depth_lv')->textInput(['maxlength' => true])->hint('mm',['tag'=>'span','class'=>'unit']) ?>
+                  </div>
                   <div class="col-lg-4">
                       <?= $form->field($model, 'table_lv')->textInput(['maxlength' => true])->hint('mm',['tag'=>'span','class'=>'unit']) ?>
                   </div>
               </div>
+
 
 
           </div>
@@ -151,14 +169,39 @@ $this->params['breadcrumbs'][] = $this->title;
               <li class="pull-left header"><i class="fa fa-th"></i> 图片信息</li>
             </ul>
             <div class="box-body col-lg-9">
-      <?= $form->field($model, 'goods_image')->widget(common\widgets\webuploader\Files::class, [
-            'config' => [
-                'pick' => [
-                    'multiple' => false,
-                ],
+            <?= $form->field($model, 'goods_3ds')->textInput(['maxlength' => true]) ?>
+              <?= $form->field($model, 'goods_image')->widget(common\widgets\webuploader\Files::class, [
+                    'config' => [
+                        'pick' => [
+                            'multiple' => false,
+                        ],
 
-            ]
-        ]); ?>
+                    ]
+                ]); ?>
+
+              <?php $model->parame_images = !empty($model->parame_images)?explode(',', $model->parame_images):null;?>
+              <?= $form->field($model, 'parame_images')->widget(common\widgets\webuploader\Files::class, [
+                  'config' => [
+                      'pick' => [
+                          'multiple' => true,
+                      ],
+                      'formData' => [
+                          'drive' => 'local',// 默认本地 支持 qiniu/oss 上传
+                      ],
+                  ]
+              ]); ?>
+            <?= $form->field($model, 'goods_gia_image')->widget(common\widgets\webuploader\Files::class, [
+                'type' => 'files',
+                'config' => [
+                    'pick' => [
+                        'multiple' => false,
+                    ],
+                    'formData' => [
+//                        'drive' => 'local',// 默认本地 支持 qiniu/oss 上传
+                    ],
+                ]
+            ]); ?>
+
             </div>  
             <!-- ./box-body -->          
       </div>

@@ -8,7 +8,7 @@ use common\helpers\ImageHelper;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('goods', 'Styles');
+$this->title = Yii::t('goods', $typeModel['type_name'].'管理');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

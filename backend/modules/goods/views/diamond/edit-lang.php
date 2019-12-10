@@ -19,7 +19,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php $form = ActiveForm::begin([
          'id' => $model->formName(),
         'enableAjaxValidation' => true,
-        'validationUrl' => Url::to(['ajax-edit-lang', 'id' => $model['id']]),       
+        'validationUrl' => Url::to(['ajax-edit-lang', 'id' => $model['id']]),
+        'fieldConfig' => [
+            'template' => "{label}{input}{hint}",
+
+        ],
+
+
 ]); ?>
 <div class="box-body nav-tabs-custom">
      <h2 class="page-header">裸钻发布</h2>
@@ -57,10 +63,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $form->field($model, 'goods_num')->textInput() ?>
                     </div>
                     <div class="col-lg-4">
-                        <?= $form->field($model, 'market_price')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'market_price')->textInput(['maxlength' => true])->hint('￥',['tag'=>'span','class'=>'unit']) ?>
                     </div>
                     <div class="col-lg-4">
-                        <?= $form->field($model, 'sale_price')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'sale_price')->textInput(['maxlength' => true])->hint('￥',['tag'=>'span','class'=>'unit']) ?>
                     </div>
 <!--                    <div class="col-lg-4">--><?//= $form->field($model, 'source_discount')->textInput(['maxlength' => true]) ?><!--</div>-->
                 </div>
@@ -95,7 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
                       <?= $form->field($model, 'shape')->dropDownList(\common\enums\DiamondEnum::getShapeList(),['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
                   <div class="col-lg-4">
-                      <?= $form->field($model, 'carat')->textInput() ?>
+                      <?= $form->field($model, 'carat')->textInput()->hint('ct',['tag'=>'span','class'=>'unit']) ?>
                   </div>
                   <div class="col-lg-4">
                       <?= $form->field($model, 'clarity')->dropDownList(\common\enums\DiamondEnum::getClarityList(),['prompt'=>Yii::t("common",'请选择')]) ?>
@@ -124,14 +130,14 @@ $this->params['breadcrumbs'][] = $this->title;
                       <?= $form->field($model, 'symmetry')->dropDownList(\common\enums\DiamondEnum::getSymmetryList(),['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
                   <div class="col-lg-4">
-                      <?= $form->field($model, 'depth_lv')->textInput(['maxlength' => true]) ?>
+                      <?= $form->field($model, 'depth_lv')->textInput(['maxlength' => true])->hint('mm',['tag'=>'span','class'=>'unit']) ?>
                   </div>
 
 
               </div>
               <div class="row">
                   <div class="col-lg-4">
-                      <?= $form->field($model, 'table_lv')->textInput(['maxlength' => true]) ?>
+                      <?= $form->field($model, 'table_lv')->textInput(['maxlength' => true])->hint('mm',['tag'=>'span','class'=>'unit']) ?>
                   </div>
               </div>
 

@@ -70,7 +70,7 @@ class TypeService extends Service
             $models = $models[0];
             $models['ids'] = [$id];
             if(!empty($models['chidren'])){
-                $models['ids'] += array_column($models['chidren'], 'id');
+                $models['ids'] = array_merge($models['ids'],array_column($models['chidren'], 'id'));
             }
         }
         

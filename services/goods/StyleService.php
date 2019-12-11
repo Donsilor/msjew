@@ -18,7 +18,7 @@ use common\models\goods\Style;
 class StyleService extends Service
 {
 
-    public function getStyle($id=null,$language=null){
+    public function getStyle($id,$language = null){
         if(empty($language)){
             $language = Yii::$app->language;
         }

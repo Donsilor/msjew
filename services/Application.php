@@ -50,8 +50,10 @@ use common\components\Service;
  * @property \services\goods\CategoryService $goodsCate 商品分类
  * @property \services\goods\AttributeService $goodsAttribute 商品属性
  * @property \services\goods\TypeService $goodsType 商品类型（产品线）
- * @property \services\goods\DiamondSourceService $getDropDown 裸钻来源
- * @author jianyan74 <751393839@qq.com>
+ * @property \services\goods\DiamondService $diamond 裸钻
+ * @property \services\goods\DiamondSourceService $diamondSource 裸钻来源
+ * @property \services\goods\GoodsService $goods 商品
+ * @property \services\goods\StyleService $style 款式
  */
 class Application extends Service
 {
@@ -121,7 +123,11 @@ class Application extends Service
         /*********商品相关*********/
         'goodsCate' => 'services\goods\CategoryService',
         'goodsAttribute' => 'services\goods\AttributeService',
-        'goodsType' => 'services\goods\TypeService',
+        'goodsType' => 'services\goods\TypeService',        
+        'goodsStyle' => 'services\goods\StyleService',
+        'goods' => 'services\goods\GoodsService',
+        
+        'diamond' => 'services\goods\DiamondService',
         'diamondSource' => 'services\goods\DiamondSourceService',
 
     ];

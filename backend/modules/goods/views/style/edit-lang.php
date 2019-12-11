@@ -19,7 +19,7 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
 //
 ?>
 <?php $form = ActiveForm::begin([
-         'id' => $model->formName(),
+        'id' => $model->formName(),
         'enableAjaxValidation' => true,
         'validationUrl' => Url::to(['ajax-edit-lang', 'id' => $model['id']]),       
 ]); ?>
@@ -33,12 +33,13 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
             </ul>
             <div class="box-body" style="margin-left:9px">
                 <?php 
-                $model->type_id = \Yii::$app->request->get("type_id")??$model->type_id;                    
+                $type_id = Yii::$app->request->get("type_id");
+                $model->type_id = $model->type_id?? $type_id;                    
                 ?> 
                  <div class="row">
                  <div class="col-lg-4">         
         			<?= $form->field($model, 'type_id')->dropDownList(\Yii::$app->services->goodsType->getDropDown(),[
-        			        'onchange'=>"location.href='?type_id='+this.value",
+        			        'onchange'=>"location.href='?type_id='+this.value+'&top_type_id={$type_id}'",
         			        'disabled'=>$model->isNewRecord?null:'disabled',
         			]) ?> 
     			</div>

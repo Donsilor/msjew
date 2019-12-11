@@ -46,7 +46,6 @@ class StyleController extends BaseController
             'pageSize' => $this->pageSize
         ]);
         $typeModel = Yii::$app->services->goodsType->getAllTypesById($type_id);
-
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams,['style_name','language']);
         //切换默认语言
@@ -72,6 +71,7 @@ class StyleController extends BaseController
     public function actionEditLang()
     {
         $id = Yii::$app->request->get('id', null);       
+        $type_id = Yii::$app->request->get('type_id', 0);
         
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post())) {
@@ -84,7 +84,7 @@ class StyleController extends BaseController
                 $this->editLang($model);
                 
                 $trans->commit();
-                return $this->message("保存成功", $this->redirect(['index']), 'success');
+                return $this->message("保存成功", $this->redirect(['index','type_id'=>$type_id]), 'success');
             }catch (Exception $e){
                 $trans->rollBack();
                 return $this->message("保存失败:".$e->getMessage(), $this->redirect([$this->action->id]), 'error');

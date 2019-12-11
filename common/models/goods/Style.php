@@ -15,6 +15,7 @@ use common\helpers\ArrayHelper;
  * @property int $type_id 产品线
  * @property int $merchant_id 商户ID
  * @property string $style_image 商品主图
+ * @property string $style_image360 360商品主图
  * @property string $goods_images 商品图库
  * @property string $style_attr 款式属性
  * @property string $style_custom 款式自定义属性
@@ -59,19 +60,41 @@ class Style extends BaseModel
     public function rules()
     {
         return [
-            [['type_id','style_sex', 'merchant_id','sale_volume','virtual_volume','virtual_clicks','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
-            [['type_id','style_sn','attr_require','goods_images', 'sale_price','goods_storage'], 'required'],
-            [['style_custom', 'goods_body', 'mobile_body'], 'string'],
-            [['sale_price', 'market_price', 'cost_price'], 'number'],
-            [['style_sn'], 'string', 'max' => 50],
-            [['style_image'], 'string', 'max' => 100],
-            [['verify_remark'], 'string', 'max' => 255],
-            [['style_image','style_name','language'], 'safe'],
-            [['attr_require','attr_custom'],'parseStyleAttr'],
-            [['style_spec'],'parseStyleSpec'],
-            [['goods_images'],'parseGoodsImages'],
+                [['style_name','language'], 'safe'],
+                [['type_id','style_sex', 'merchant_id','sale_volume','virtual_volume','virtual_clicks','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
+                [['type_id','style_sn','sale_price','goods_storage'], 'required'],
+                
+                [['goods_body','mobile_body','style_image360'], 'string'],
+                [['sale_price', 'market_price', 'cost_price'], 'number'],
+                [['style_sn'], 'string', 'max' => 50],
+                [['style_image','style_image360'], 'string', 'max' => 100],
+                [['verify_remark'], 'string', 'max' => 255],
+                [['attr_require','attr_custom'],'parseStyleAttr'],
+    
+                [['style_spec'],'parseStyleSpec'],
+                [['goods_images'],'parseGoodsImages'], 
+                [['style_sn'],'unique'],
+                
+                [['attr_require'], 'required','isEmpty'=>function($value){
+                    return false;
+                }], 
+                /* [['sale_price','goods_storage'], 'required','isEmpty'=>function($value){
+                    return $value <= 0 ? true: false;
+                }], */
+                //['attr_require','validAttrRequire'],
         ];
-    }
+    }    
+    /* public function validAttrRequire($attribute, $params)
+    {
+        
+        if($this->$attribute && is_array($this->$attribute)){
+            foreach ($this->$attribute as $key=>$val){
+                if($val == ""){
+                    $this->addError($attribute."[{$key}]","当前属性不能为空222");
+                }
+            }            
+        }        
+    } */
     /**
      * 款式基础属性
      */
@@ -84,14 +107,12 @@ class Style extends BaseModel
         }
         
         if(!empty($this->attr_require)){
-            $this->style_attr = $this->style_attr + $this->attr_require;//数组合并    
+            $this->style_attr =  $this->attr_require + $this->style_attr;
         }
         if(!empty($this->attr_custom)){
-            $this->style_attr = $this->style_attr + $this->attr_custom;//数组合并
+            $this->style_attr =  $this->attr_custom + $this->style_attr;
         }
-        if(is_array($this->style_attr)){
-            $this->style_attr = json_encode($this->style_attr);
-        }        
+        $this->style_attr = json_encode($this->style_attr);
     }    
     /**
      * 款式规格属性
@@ -126,8 +147,8 @@ class Style extends BaseModel
             'cat_id' => Yii::t('goods', '款式分类'),
             'type_id' => Yii::t('goods', '产品线'),
             'merchant_id' => Yii::t('goods', '商户ID'),
-            'style_sex' => Yii::t('goods', '款式性别'),
             'style_image' => Yii::t('goods', '商品图片'),
+            'style_image360' => Yii::t('goods', '360主图'),
             'goods_images' => Yii::t('goods', '商品图片'),
             'style_attr' => Yii::t('goods', '款式属性'),            
             'style_custom' => Yii::t('goods', 'Style Custom'),
@@ -138,14 +159,14 @@ class Style extends BaseModel
             'virtual_volume'=>  Yii::t('goods', '虚拟销量'),
             'market_price' => Yii::t('goods', '市场价'),
             'cost_price' => Yii::t('goods', '成本价'),
-            'goods_storage'=>  Yii::t('goods', '商品库存'),
+            'goods_storage'=>  Yii::t('goods', '库存'),
             'goods_clicks'=>  Yii::t('goods', '浏览量'),
             'virtual_clicks'=>  Yii::t('goods', '虚拟浏览量'),
             'storage_alarm' => Yii::t('goods', 'Storage Alarm'),
             'is_recommend' => Yii::t('goods', 'Is Recommend'),
             'is_lock' => Yii::t('goods', 'Is Lock'),
             'supplier_id' => Yii::t('goods', 'Supplier ID'),
-            'status' => Yii::t('goods', 'Status'),
+            'status' => Yii::t('goods', '上下架'),
             'verify_status' => Yii::t('goods', 'Verify Status'),
             'verify_remark' => Yii::t('goods', 'Verify Remark'),
             'created_at' => Yii::t('goods', 'Created At'),

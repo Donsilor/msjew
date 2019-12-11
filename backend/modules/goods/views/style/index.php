@@ -40,7 +40,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'footer'=> Html::batchButtons(false),//['search_export','status_disabled']
                 'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
             ],
-             [
+            [
+                'attribute' => 'id',
+                'filter' => true,
+                'format' => 'raw',
+                'headerOptions' => ['width'=>'50'],
+            
+            ],
+            /*  [
                 'attribute' => 'lang.language',
                  'value' => function ($model) {
                     return \common\enums\LanguageEnum::getValue($model->lang->language);
@@ -49,7 +56,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'prompt' => '默认',
                         'class' => 'form-control',
                 ]),
-            ], 
+                'headerOptions' => ['width'=>'110'],
+            ],  */
             [
                 'attribute' => 'style_image',
                 'value' => function ($model) {
@@ -57,21 +65,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => false,
                 'format' => 'raw',
+                'headerOptions' => ['width'=>'80'],
+                
             ],
                 
             [
+                'headerOptions' => ['width'=>'200'],
                 'attribute' => 'lang.style_name',
                 'value' => 'lang.style_name',
                 'filter' => Html::activeTextInput($searchModel, 'style_name', [
                         'class' => 'form-control',
-                        'style' =>'width:100px'
                 ]),
-                'format' => 'raw',
+                'format' => 'raw',                
             ],
             [
                 'attribute' => 'style_sn',
                 'filter' => true,
                 'format' => 'raw',
+                'headerOptions' => ['width'=>'120'],
             ],
             
             [
@@ -91,12 +102,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => "sale_price",
                 'filter' => true,
                 'format' => 'raw',
+                'headerOptions' => ['width'=>'100'],
             ],
             [
                 'attribute' => 'sale_volume',
                 'value' => "sale_volume",
                 'filter' => true,
                 'format' => 'raw',
+                'headerOptions' => ['width'=>'80'],
+            ],
+            [
+                'attribute' => 'goods_storage',
+                'value' => "goods_storage",
+                'filter' => true,
+                'format' => 'raw',
+                'headerOptions' => ['width'=>'80'],
             ],
             [
                 'attribute' => 'status',
@@ -116,7 +136,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{edit} {status} {delete}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
-                    return Html::edit(['edit-lang','id' => $model->id]);
+                    return Html::edit(['edit-lang','id' => $model->id,'type_id'=>Yii::$app->request->get('type_id')]);
                 },
                'status' => function($url, $model, $key){
                         return Html::status($model['status']);

@@ -37,7 +37,7 @@ class StyleLang extends \yii\db\ActiveRecord
     {
         return [
             [['master_id'], 'integer'],
-            [['style_name',], 'required'],
+            [['style_name'], 'required'],
             [['style_attr', 'style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['language'], 'string', 'max' => 5],
             [['style_name'], 'string', 'max' => 50],

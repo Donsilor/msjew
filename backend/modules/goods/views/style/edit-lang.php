@@ -182,7 +182,10 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
                     'drive' => 'local',// 默认本地 支持 qiniu/oss 上传
                 ],
             ]
-        ]); ?>
+      ])->error(['required'=>'required']); ?>
+                <div class="row">
+                    <div class="col-lg-8"><?= $form->field($model, 'style_image360')->textInput(['maxlength'=>true]) ?></div>
+                </div> 
             </div>  
             <!-- ./box-body -->          
       </div>
@@ -353,15 +356,17 @@ $(function(){
         });
 
 	});
-	/* $(document).on("blur",'.setsku-goods_storage',function(){
+	$(document).on("blur",'.setsku-goods_storage',function(){
     	goodsStroageSum();
 	});
-	$(document).on("blur",'.setsku-sale_price',function(){
+	
+	/*$(document).on("blur",'.setsku-sale_price',function(){
 		salePriceCalc();
 	});
 	$(document).on("blur",'.setsku-market_price',function(){
 		salePriceCalc();
 	});
+	*/
 	function goodsStroageSum(){
 		var total = 0;
 		$("#skuTable tr[class*='sku_table_tr']").each(function(){
@@ -373,6 +378,7 @@ $(function(){
 		$("#style-goods_storage").val(total).attr('readonly',true);
         return total; 
 	}
+	/*
 	//基础信息销售价计算
 	function salePriceCalc(){
 		var priceList = [];
@@ -410,7 +416,6 @@ $(function(){
 		//$("#style-market_price").val(minPrice).attr('readonly',true);
         return minPrice; 
 	} */
-	
 
 });
 </script>

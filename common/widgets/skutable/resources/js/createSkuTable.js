@@ -245,8 +245,7 @@ function sortSkuIds(str){
    array.sort(function(v1,v2){return v1-v2;});
    return array.toString();
 }
-//获取已经设置的SKU
-$(document).on("click",'.getSetSkuVal',function(){
+function checkSkuData(){
 	var skuInputs = $("#skuTableBox input[name*='skuInput[]']");
 	var uniqueArr = {};
 	skuInputs.each(function(){
@@ -294,6 +293,10 @@ $(document).on("click",'.getSetSkuVal',function(){
 			}
 
 	});
+}
+//获取已经设置的SKU
+$(document).on("click",'.getSetSkuVal',function(){
+	
 });
 
 

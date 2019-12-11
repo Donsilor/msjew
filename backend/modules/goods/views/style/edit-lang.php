@@ -224,6 +224,13 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
 <?php ActiveForm::end(); ?>
 <script type="text/javascript">
 $(function(){
+	$('form#Style').on('submit', function (e) {
+		var r = checkSkuData();
+    	if(!r){
+        	e.preventDefault();
+    	}
+    });
+    
 	$(document).on("click",'.batch-goods_sn',function(){
 		var hasEdit = false;
 		var fromValue = $("#style-style_sn").val();
@@ -359,20 +366,17 @@ $(function(){
 	$(document).on("blur",'.setsku-goods_storage',function(){
     	goodsStroageSum();
 	});
-	
-	/*$(document).on("blur",'.setsku-sale_price',function(){
-		salePriceCalc();
-	});
-	$(document).on("blur",'.setsku-market_price',function(){
-		salePriceCalc();
-	});
-	*/
+	$(document).on("click",'.sku-status',function(){
+    	goodsStroageSum();
+	});	
 	function goodsStroageSum(){
 		var total = 0;
 		$("#skuTable tr[class*='sku_table_tr']").each(function(){
         	if($(this).find(".setsku-status").val() == 1){
         		var storage = $(this).find(".setsku-goods_storage").val();
-        		total += parseInt(storage);
+        		if(parseInt(storage)){
+        			total += parseInt(storage);
+        		}
         	}
         }); 
 		$("#style-goods_storage").val(total).attr('readonly',true);

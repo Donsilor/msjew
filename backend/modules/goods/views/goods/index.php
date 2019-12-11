@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('goods', '商品列表');
+$this->title = Yii::t('goods', $typeModel['type_name'].'商品列表');
 $style_title = Yii::t('goods', $typeModel['type_name'].'管理');
 $this->params['breadcrumbs'][] = $this->title;
 ?>

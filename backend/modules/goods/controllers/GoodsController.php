@@ -2,116 +2,56 @@
 
 namespace backend\modules\goods\controllers;
 
-
 use Yii;
+use common\models\goods\Goods;
 use common\components\Curd;
-use yii\data\ActiveDataProvider;
-use backend\controllers\BaseController;
 use common\models\base\SearchModel;
-use common\models\goods\Type;
+use backend\controllers\BaseController;
+
 /**
- * 商品
- *
- * Class ArticleCateController
- * @package addons\RfArticle\backend\controllers
- * @author jianyan74 <751393839@qq.com>
- */
-class TypeController extends BaseController
+* Goods
+*
+* Class GoodsController
+* @package backend\modules\goods\controllers
+*/
+class GoodsController extends BaseController
 {
     use Curd;
-    
+
     /**
-     * @var TypeController
-     */
-    public $modelClass = Type::class;
-    
+    * @var Goods
+    */
+    public $modelClass = Goods::class;
+
+
     /**
-     * Lists all Tree models.
-     * @return mixed
-     */
+    * 首页
+    *
+    * @return string
+    * @throws \yii\web\NotFoundHttpException
+    */
     public function actionIndex()
     {
+        $type_id = Yii::$app->request->get('type_id',0);
         $searchModel = new SearchModel([
-                'model' => $this->modelClass,
-                'scenario' => 'default',
-                'partialMatchAttributes' => [], // 模糊查询
-                'defaultOrder' => [
-                        'id' => SORT_ASC
-                ],
-                'pageSize' => $this->pageSize
+            'model' => $this->modelClass,
+            'scenario' => 'default',
+            'partialMatchAttributes' => [], // 模糊查询
+            'defaultOrder' => [
+                'id' => SORT_DESC
+            ],
+            'pageSize' => $this->pageSize
         ]);
-        $query = Type::find()->alias('a')
-        ->orderBy('sort asc, created_at asc')
-        ->andFilterWhere(['merchant_id' => $this->getMerchantId()])
-        ->leftJoin('{{%goods_type_lang}} b', 'b.master_id = a.id and b.language = "'.Yii::$app->language.'"')
-        ->select(['a.*', 'b.type_name']);
-        
-        $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-                'pagination' => false
-        ]);
-        $dataProvider->query->andWhere(['>','status',-1]);
-        
-        
+
+        $typeModel = Yii::$app->services->goodsType->getAllTypesById($type_id);
+
+        $dataProvider = $searchModel
+            ->search(Yii::$app->request->queryParams);
+
         return $this->render('index', [
-                'dataProvider' => $dataProvider,
-                'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'typeModel'  =>$typeModel,
         ]);
-    }
-    
-    /**
-     * @return mixed|string|\yii\console\Response|\yii\web\Response
-     * @throws \yii\base\ExitException
-     */
-    public function actionAjaxEditLang()
-    {
-        $request = Yii::$app->request;
-        $id = $request->get('id');
-        $model = $this->findModel($id);
-        
-        
-        $model->pid = $request->get('pid', null) ?? $model->pid; // 父id
-        
-        // ajax 验证
-        $this->activeFormValidate($model);
-        if ($model->load(Yii::$app->request->post())) {
-            $trans = Yii::$app->db->beginTransaction();
-            $res = $model->save();
-            $resl = $this->editLang($model,true);
-            $resl = true;
-            
-            if($res && $resl){
-                $trans->commit();
-                $this->redirect(['index']);
-            }else{
-                $trans->rollBack();
-                $this->message($this->getError($model), $this->redirect(['index']), 'error');
-            }
-            
-        }
-        
-        return $this->renderAjax($this->action->id, [
-                'model' => $model,
-                'cateDropDownList' => Type::getDropDownForEdit($id),
-        ]);
-    }
-    
-    /**
-     * 删除
-     *
-     * @param $id
-     * @return mixed
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function actionDelete($id)
-    {
-        if ($model = $this->findModel($id)) {
-            $model->status = -1;
-            $model->save();
-            return $this->message("删除成功", $this->redirect(['index', 'id' => $model->id]));
-        }
-        
-        return $this->message("删除失败", $this->redirect(['index', 'id' => $model->id]), 'error');
     }
 }

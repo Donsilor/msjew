@@ -7,20 +7,21 @@ use common\helpers\ImageHelper;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
+$goods_title = Yii::t('goods', '商品列表');
 $this->title = Yii::t('goods', $typeModel['type_name'].'管理');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="row">
-    <div class="col-xs-12">
-        <div class="box">
-            <div class="box-header">
-                <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
-                <div class="box-tools">
+    <div class="col-sm-12">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="<?= Url::to(['style/index?type_id='.Yii::$app->request->get('type_id',0)]) ?>"> <?= Html::encode($this->title) ?></a></li>
+                <li><a href="<?= Url::to(['goods/index?type_id='.Yii::$app->request->get('type_id',0)]) ?>"> <?= Html::encode($goods_title) ?></a></li>
+                <li class="pull-right">
                     <?= Html::create(['edit-lang','type_id'=>Yii::$app->request->get('type_id',0)]) ?>
-                </div>
-            </div>
+                </li>
+            </ul>
             <div class="box-body table-responsive">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

@@ -140,7 +140,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{edit} {status} {delete}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
-                        return Html::edit(['ajax-edit','id' => $model->id], '编辑', [
+                        return Html::edit(['ajax-edit','id' => $model->id,'returnUrl' => \common\components\Helper::getReturnUrl()], '编辑', [
                                 'data-toggle' => 'modal',
                                 'data-target' => '#ajaxModalLg',
                         ]);

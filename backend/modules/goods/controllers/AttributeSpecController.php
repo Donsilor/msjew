@@ -71,6 +71,7 @@ class AttributeSpecController extends BaseController
     public function actionAjaxEdit()
     {
         $id = Yii::$app->request->get('id');
+        $returnUrl = Yii::$app->request->get('returnUrl');
         $model = $this->findModel($id);     
         
         $this->activeFormValidate($model);
@@ -78,7 +79,8 @@ class AttributeSpecController extends BaseController
         if ($model->load(Yii::$app->request->post())) {
             
             return $model->save()
-            ? $this->redirect(['index'])
+//            ? $this->redirect(['index'])
+            ? $this->redirect($returnUrl)
             : $this->message($this->getError($model), $this->redirect(['index']), 'error');
         }
         

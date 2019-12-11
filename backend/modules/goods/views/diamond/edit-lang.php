@@ -37,12 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
             </ul>
             <div class="box-body col-lg-9" style="margin-left:9px">
                 <div class="row">
-
-                    <div class="col-lg-4">
-                        <?= $form->field($model, 'cert_id')->textInput(['maxlength' => true]) ?>
-                    </div>
                     <div class="col-lg-4">
                         <?= $form->field($model, 'cert_type')->dropDownList(\common\enums\DiamondEnum::getCertTypeList(),['prompt'=>Yii::t("common",'请选择')]) ?>
+                    </div>
+                    <div class="col-lg-4">
+                        <?= $form->field($model, 'cert_id')->textInput(['maxlength' => true]) ?>
                     </div>
                     <div class="col-lg-4">
                         <?= $form->field($model, 'goods_sn')->textInput(['maxlength' => true]) ?>
@@ -54,10 +53,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $form->field($model, 'goods_num')->textInput() ?>
                     </div>
                     <div class="col-lg-4">
-                        <?= $form->field($model, 'market_price')->textInput(['maxlength' => true])->hint('￥',['tag'=>'span','class'=>'unit']) ?>
+                        <?= $form->field($model, 'cost_price')->textInput(['maxlength' => true])->hint('￥',['tag'=>'span','class'=>'unit']) ?>
                     </div>
                     <div class="col-lg-4">
                         <?= $form->field($model, 'sale_price')->textInput(['maxlength' => true])->hint('￥',['tag'=>'span','class'=>'unit']) ?>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <?= $form->field($model, 'market_price')->textInput(['maxlength' => true])->hint('￥',['tag'=>'span','class'=>'unit']) ?>
                     </div>
                 </div>
 
@@ -75,7 +80,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         ?>
                     </div>
                 </div>
-
+                <?php $model->sale_services = !empty($model->sale_services)?explode(',', $model->sale_services):null;?>
+                <?= $form->field($model, 'sale_services')->checkboxList(common\enums\DiamondEnum::getSaleServicesList()) ?>
 
     		    <!-- ./nav-tabs-custom -->
             </div>
@@ -122,7 +128,7 @@ $this->params['breadcrumbs'][] = $this->title;
                       <?= $form->field($model, 'fluorescence')->dropDownList(\common\enums\DiamondEnum::getFluorescenceList(),['prompt'=>Yii::t("common",'请选择')]) ?>
                   </div>
                   <div class="col-lg-4">
-                      <?= $form->field($model, 'cutting_depth')->dropDownList(\common\enums\DiamondEnum::getCuttingDepthList(),['prompt'=>Yii::t("common",'请选择')]) ?>
+                      <?= $form->field($model, 'cutting_depth')->textInput()->hint('%',['tag'=>'span','class'=>'unit']) ?>
                   </div>
 
               </div>
@@ -130,10 +136,10 @@ $this->params['breadcrumbs'][] = $this->title;
               <div class="row">
 
                   <div class="col-lg-4">
-                      <?= $form->field($model, 'aspect_ratio')->dropDownList(\common\enums\DiamondEnum::getAspectRatioList(),['prompt'=>Yii::t("common",'请选择')]) ?>
+                      <?= $form->field($model, 'aspect_ratio')->textInput()->hint('%',['tag'=>'span','class'=>'unit']) ?>
                   </div>
                   <div class="col-lg-4">
-                      <?= $form->field($model, 'stone_surface')->dropDownList(\common\enums\DiamondEnum::getStoneSurfaceList(),['prompt'=>Yii::t("common",'请选择')]) ?>
+                      <?= $form->field($model, 'stone_surface')->textInput()->hint('%',['tag'=>'span','class'=>'unit']) ?>
                   </div>
                   <div class="col-lg-4">
                       <?= $form->field($model, 'stone_floor')->dropDownList(\common\enums\DiamondEnum::getStoneFloorList(),['prompt'=>Yii::t("common",'请选择')]) ?>
@@ -191,6 +197,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ]
             ]); ?>
+
 
             </div>  
             <!-- ./box-body -->          

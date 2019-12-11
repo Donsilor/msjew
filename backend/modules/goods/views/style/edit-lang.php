@@ -225,7 +225,7 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
 <script type="text/javascript">
 $(function(){
 	$('form#Style').on('submit', function (e) {
-		var r = checkSkuData();
+		var r = checkSkuInputData();
     	if(!r){
         	e.preventDefault();
     	}

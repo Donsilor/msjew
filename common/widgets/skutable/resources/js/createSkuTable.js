@@ -249,7 +249,7 @@ function sortSkuIds(str){
  * sku验证
  * @returns
  */
-function checkSkuData(){
+function checkSkuInputData(){
 	var skuInputs = $("#skuTableBox input[name*='skuInput[]']");
 	var uniqueArr = {};
 	var returnFlag = true;

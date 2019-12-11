@@ -10,6 +10,7 @@ use common\helpers\ImageHelper;
 
 $this->title = Yii::t('goods_diamond', '裸钻管理');
 $this->params['breadcrumbs'][] = $this->title;
+//$cert_type = \common\enums\DiamondEnum::getCertTypeList();
 ?>
 
 <div class="row">
@@ -84,9 +85,9 @@ $this->params['breadcrumbs'][] = $this->title;
 //                'format' => 'raw',
 //                'headerOptions' => ['class' => 'col-md-1'],
 //                'value' => function ($model){
-//                    return \common\enums\DiamondEnum::getCertTypeList()[$model->cert_type];
+//                    return $cert_type[$model->cert_type];
 //                },
-//                'filter' => Html::activeDropDownList($searchModel, 'cert_type',\common\enums\DiamondEnum::getCertTypeList(), [
+//                'filter' => Html::activeDropDownList($searchModel, 'cert_type',$cert_type, [
 //                    'prompt' => '全部',
 //                    'class' => 'form-control',
 //                ]),

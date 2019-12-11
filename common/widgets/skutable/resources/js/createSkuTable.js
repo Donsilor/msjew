@@ -245,9 +245,14 @@ function sortSkuIds(str){
    array.sort(function(v1,v2){return v1-v2;});
    return array.toString();
 }
+/**
+ * sku验证
+ * @returns
+ */
 function checkSkuData(){
 	var skuInputs = $("#skuTableBox input[name*='skuInput[]']");
 	var uniqueArr = {};
+	var returnFlag = true;
 	skuInputs.each(function(){
 		if($(this).attr("attr-unique") == 1){						
 			uniqueArr[$(this).attr("attr-name")] = [];
@@ -255,50 +260,47 @@ function checkSkuData(){
 	});
 	
 	$("#skuTableBox tr[class*='sku_table_tr']").each(function(index){
-		    var uniqueVals = {};
-		    var rowTip = "价格列表第"+(index+1)+"行"; 
-			var rowBox = $(this);
-			if(rowBox.find(".setsku-status").val() == 1){				
-				skuInputs.each(function(){
-					var skuName   = $(this).attr("attr-name");
-					var skuTitle  = $(this).attr("attr-title");
-					var skuValue  = rowBox.find(".setsku-"+skuName).val();
-					var skuRequire = $(this).attr("attr-require");
-					var skuUnique = $(this).attr("attr-unique");
-					var skuDType = $(this).attr("attr-dtype");
-					if(skuRequire){
-						if($.inArray(skuDType,['integer','double']) >-1 && skuValue==0){
-							 appConfirm(skuTitle+"不能为0",rowTip);
-							 return false;
-						 }else if(skuValue==""){
-							 appConfirm(skuTitle+"不能为空",rowTip);
-							 return false;
-						 }
-	
-					}else if(skuUnique == 1){	
-						if($.inArray(skuValue,uniqueArr[skuName])>-1){
-							appConfirm(skuTitle+"\""+skuValue+"\"重复",rowTip);
-							return false;
-						}
-						uniqueArr[skuName][index] = skuValue;
-		        	}
-					if($.inArray(skuDType,['integer','double']) >-1 && !$.isNumeric(skuValue)){
-						 appConfirm(skuTitle+"必须为数字",rowTip);
-						 return false;
-					}
-					
+	    var uniqueVals = {};
+	    var rowTip = "价格列表第"+(index+1)+"行"; 
+		var rowBox = $(this);
+		if(rowBox.find(".setsku-status").val() == 1){				
+			skuInputs.each(function(i){				
+				var skuName   = $(this).attr("attr-name");
+				var skuTitle  = $(this).attr("attr-title");
+				var skuValue  = rowBox.find(".setsku-"+skuName).val();
+				var skuRequire = $(this).attr("attr-require");
+				var skuUnique = $(this).attr("attr-unique");
+				var skuDType = $(this).attr("attr-dtype");
+				if(skuRequire == 1){
+					if($.inArray(skuDType,['integer','double']) >-1 && skuValue==0){
+	    				 appConfirm(skuTitle+"不能为0",rowTip);
+						 returnFlag = false;
+						 return returnFlag;
+					 }else if(skuValue==""){
+						 appConfirm(skuTitle+"不能为空",rowTip);
+						 returnFlag = false;
+						 return returnFlag;
+					 }
 
-				});				
-				
-			}
+				}
+				if(skuUnique == 1){	
+					if($.inArray(skuValue,uniqueArr[skuName])>-1){
+						appConfirm(skuTitle+"\""+skuValue+"\"重复",rowTip);
+						returnFlag = false;
+						return false;
+					}
+					uniqueArr[skuName][index] = skuValue;
+	        	}
+				if($.inArray(skuDType,['integer','double']) >-1 && !$.isNumeric(skuValue)){
+					 appConfirm(skuTitle+"必须为数字",rowTip);
+					 returnFlag = false;
+					 return returnFlag;
+				}				
+
+			});			
+			
+		}
 
 	});
+	return returnFlag;
 }
-//获取已经设置的SKU
-$(document).on("click",'.getSetSkuVal',function(){
-	
-});
-
-
-    
-

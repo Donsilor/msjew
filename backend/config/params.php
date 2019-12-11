@@ -2,8 +2,8 @@
 
 return [
     'adminEmail' => 'admin@example.com',
-    'adminAcronym' => 'RF',
-    'adminTitle' => 'RageFrame',
+    'adminAcronym' => 'BDD',
+    'adminTitle' => 'BDD后台管理',
     'adminDefaultHomePage' => ['main/system'], // 默认主页
 
     /** ------ 总管理员配置 ------ **/

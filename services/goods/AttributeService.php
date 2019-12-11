@@ -64,7 +64,7 @@ class AttributeService extends Service
         
         $query = Attribute::find()->alias('a')
                 ->leftJoin('{{%goods_attribute_lang}} b', 'b.master_id = a.id and b.language = "'.$language.'"')
-                ->select(['a.*', 'b.attr_name'])
+                ->select(['a.*','b.attr_name'])
                 ->orderBy('sort asc,created_at asc');
         
         if($status){
@@ -73,9 +73,9 @@ class AttributeService extends Service
         
         $models = $query->asArray()->all();        
         
-        $models = ArrayHelper::itemsMerge($models);
+        //$models = ArrayHelper::itemsMerge($models);
         
-        return ArrayHelper::map(ArrayHelper::itemsMergeDropDown($models,'id','attr_name'), 'id', 'attr_name');
+        return array_column($models,'attr_name','id');
     }
     
     /**

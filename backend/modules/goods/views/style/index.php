@@ -47,17 +47,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['width'=>'50'],
             
             ],
-            /*  [
+            [
                 'attribute' => 'lang.language',
                  'value' => function ($model) {
                     return \common\enums\LanguageEnum::getValue($model->lang->language);
                  },
-                'filter' => Html::activeDropDownList($searchModel, 'language',Yii::$app->params['languages'], [
+                 'filter' => Html::activeDropDownList($searchModel, 'language',\common\enums\LanguageEnum::getMap(), [
                         'prompt' => '默认',
                         'class' => 'form-control',
                 ]),
                 'headerOptions' => ['width'=>'110'],
-            ],  */
+            ], 
             [
                 'attribute' => 'style_image',
                 'value' => function ($model) {

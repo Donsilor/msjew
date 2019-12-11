@@ -29,8 +29,8 @@ foreach ($data as $key => $val){
 </li>
 <div class="clear"></div>
 <div id="skuTable"></div>
-<?php foreach ($inputAttrs as $input){?>
-	<input type="hidden" name="skuInput[]" attr-require="<?= $input['require']?>" attr-name="<?= $input['name']?>" attr-title="<?= $input['title']?>" attr-batch="<?= $input['batch']?>" value="<?= $input['name']?>"/>
+<?php foreach ($inputs as $input){?>
+	<input type="hidden" name="skuInput[]" attr-require="<?= $input['require']??0 ?>" attr-name="<?= $input['name']??'' ?>" attr-title="<?= $input['title']??'' ?>" attr-batch="<?= $input['batch']??0 ?>" attr-unique="<?= $input['unique']??0?>" attr-dtype="<?= $input['dtype']??'string'?>" value="<?= $input['name']?>"/>
 <?php }?>
-<!--<input type="button" class="getSetSkuVal" value="校验数据" />  -->
+<input type="button" class="getSetSkuVal" value="校验数据" /> 
 </div>

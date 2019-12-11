@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <li><a href="<?= Url::to(['style/index?type_id='.Yii::$app->request->get('type_id',0)]) ?>"> <?= Html::encode($style_title) ?></a></li>
                 <li class="active"><a href="<?= Url::to(['goods/index?type_id='.Yii::$app->request->get('type_id',0)]) ?>"> <?= Html::encode($this->title) ?></a></li>
                 <li class="pull-right">
-                    <?= Html::create(['edit-lang','type_id'=>Yii::$app->request->get('type_id',0)]) ?>
+                    <div class="box-header box-tools"> <?= Html::create(['edit-lang','type_id'=>Yii::$app->request->get('type_id',0)]) ?></div>
                 </li>
             </ul>
             <div class="box-body table-responsive">

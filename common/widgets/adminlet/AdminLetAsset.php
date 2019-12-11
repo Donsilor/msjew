@@ -25,7 +25,7 @@ class AdminLetAsset extends AssetBundle
         'bower_components/bootstrap/dist/js/bootstrap.min.js',
         'bower_components/fastclick/lib/fastclick.js',
         'dist/js/adminlte.js',
-        'dist/js/demo.js',
+        'dist/js/theme.js',
     ];
 
     public $depends = [

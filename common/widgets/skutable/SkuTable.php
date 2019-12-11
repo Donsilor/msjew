@@ -64,10 +64,7 @@ class SkuTable extends Widget
      */
     public $form;
     public $name = 'Style[style_spec]';
-    public $inputAttrs;
-    private $inputAttrName = '';
-    private $inputAttrTitle = '';
-    private $inputAttrRequire = '';
+    public $inputs;
     /**
      * @inheritdoc
      */
@@ -76,14 +73,14 @@ class SkuTable extends Widget
         parent::init();
         
         $asset = AppAsset::register($this->getView());
-        if(!isset($this->inputAttrs)){
-            $this->inputAttrs =  [
-                    ['name'=>'goods_sn','title'=>'商品编码','require'=>1,'batch'=>1], 
-                    ['name'=>'sale_price','title'=>'销售价','require'=>1,'batch'=>1],
-                    ['name'=>'cost_price','title'=>'成本价','require'=>0,'batch'=>1],
-                    ['name'=>'market_price','title'=>'市场价','require'=>0,'batch'=>1],                    
-                    ['name'=>'goods_storage','title'=>'库存','require'=>1,'batch'=>1],
-                    ['name'=>'status','title'=>'状态','require'=>0,'batch'=>0],
+        if(!isset($this->inputs)){
+            $this->inputs =  [
+                    ['name'=>'goods_sn','title'=>'商品编码','require'=>1,'batch'=>1,'unique'=>1,'dtype'=>"string"], 
+                    ['name'=>'sale_price','title'=>'销售价','require'=>1,'batch'=>1,'unique'=>0,'dtype'=>"double"],
+                    ['name'=>'cost_price','title'=>'成本价','require'=>0,'batch'=>1,'unique'=>0,'dtype'=>"double"],
+                    ['name'=>'market_price','title'=>'市场价','require'=>0,'batch'=>1,'unique'=>0,'dtype'=>"double"],                    
+                    ['name'=>'goods_storage','title'=>'库存','require'=>1,'batch'=>1,'unique'=>0,'dtype'=>"integer"],
+                    ['name'=>'status','title'=>'状态','require'=>0,'batch'=>0,'unique'=>0,'dtype'=>"integer"],
             ];
         }        
     }
@@ -99,7 +96,7 @@ class SkuTable extends Widget
             'model' => $this->model,
             'name' => $this->name,   
             'data' => $this->data,
-            'inputAttrs'=>$this->inputAttrs,
+            'inputs'=>$this->inputs,
         ]);
     }
 }

@@ -50,7 +50,7 @@ class Diamond extends \yii\db\ActiveRecord
     {
         return [
             [['id','goods_num', 'shape', 'source_id', 'is_stock', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['market_price', 'sale_price','source_id','shape','goods_num','goods_sn', 'carat', 'clarity', 'cut', 'color', 'symmetry', 'polish', 'fluorescence'], 'required'],
+            [[ 'sale_price','source_id','shape','goods_num','goods_sn', 'carat', 'clarity', 'cut', 'color', 'symmetry', 'polish', 'fluorescence'], 'required'],
             [['market_price', 'sale_price', 'cost_price', 'carat', 'source_discount'], 'number'],
             [['goods_sn'], 'string', 'max' => 60],
             [['goods_image'], 'string', 'max' => 100],
@@ -59,9 +59,33 @@ class Diamond extends \yii\db\ActiveRecord
             [['clarity'], 'string', 'max' => 40],
             [['depth_lv', 'table_lv'], 'string', 'max' => 20],
             [['cert_id'], 'unique'],
+            [['parame_images'],'parseParameImages'],
+            [['sale_services'],'parseSaleServices'],
             [['goods_name','language'],'safe'],
             [['cert_type', 'cert_id'], 'unique', 'targetAttribute' => ['cert_type', 'cert_id']],
         ];
+    }
+
+    /**
+ * 款式图库
+ */
+    public function parseParameImages()
+    {
+        if(is_array($this->parame_images)){
+            $this->parame_images = implode(',',$this->parame_images);
+        }
+        return $this->parame_images;
+    }
+
+    /**
+     * 售后服务
+     */
+    public function parseSaleServices()
+    {
+        if(is_array($this->sale_services)){
+            $this->sale_services = implode(',',$this->sale_services);
+        }
+        return $this->sale_services;
     }
 
     /**
@@ -78,7 +102,7 @@ class Diamond extends \yii\db\ActiveRecord
             'cert_id' => '证书号',
             'market_price' => '市场价',
             'sale_price' => '销售价',
-            'cost_price' => Yii::t('goods_diamond', 'Cost Price'),
+            'cost_price' => Yii::t('goods_diamond', '成本价'),
             'carat' => '石重',
             'clarity' => '净度',
             'cut' => '切工',

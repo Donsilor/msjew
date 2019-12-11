@@ -75,7 +75,7 @@ class AttributeService extends Service
         
         //$models = ArrayHelper::itemsMerge($models);
         
-        return ArrayHelper::map(ArrayHelper::itemsMergeDropDown($models,'id','attr_name'), 'id', 'attr_name');
+        return array_column($models,'attr_name','id');
     }
     
     /**

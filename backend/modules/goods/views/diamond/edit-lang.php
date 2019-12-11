@@ -37,15 +37,6 @@ $this->params['breadcrumbs'][] = $this->title;
             </ul>
             <div class="box-body col-lg-9" style="margin-left:9px">
                 <div class="row">
-<!--                    <div class="col-lg-4">-->
-<!--                        --><?//= $form->field($model, 'source_id')->widget(kartik\select2\Select2::class, [
-//                            'data' => Yii::$app->services->diamondSource->getDropDown(),
-//                            'options' => ['placeholder' => Yii::t("common",'请选择')],
-//                            'pluginOptions' => [
-//                                'allowClear' => true
-//                            ],
-//                        ]);?>
-<!--                    </div>-->
 
                     <div class="col-lg-4">
                         <?= $form->field($model, 'cert_id')->textInput(['maxlength' => true]) ?>
@@ -68,7 +59,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-lg-4">
                         <?= $form->field($model, 'sale_price')->textInput(['maxlength' => true])->hint('￥',['tag'=>'span','class'=>'unit']) ?>
                     </div>
-<!--                    <div class="col-lg-4">--><?//= $form->field($model, 'source_discount')->textInput(['maxlength' => true]) ?><!--</div>-->
                 </div>
 
                 <?= $form->field($model, 'is_stock')->radioList(\common\enums\IsStockEnum::getMap()) ?>

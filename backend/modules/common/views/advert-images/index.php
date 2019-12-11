@@ -9,9 +9,6 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = $advert['name'];
-$this->params['breadcrumbs'][] = $this->title;
-
 ?>
 <div class="row">
     <div class="col-sm-12">

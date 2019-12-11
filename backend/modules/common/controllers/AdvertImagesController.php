@@ -77,8 +77,6 @@ class AdvertImagesController extends BaseController
         $advert = $AdvertService->getDropDown(Yii::$app->language);
 
 
-
-
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'adv_id' => $this->adv_id,

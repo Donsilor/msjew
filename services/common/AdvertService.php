@@ -42,7 +42,7 @@ class AdvertService extends Service
 
     public function getDropDown($language){
         $models = $this->findAll($language);
-        return ArrayHelper::map(ArrayHelper::itemsMergeDropDown($models,'id','name'), 'id', 'name');
+        return ArrayHelper::map($models, 'id', 'name');
 
     }
 

@@ -140,7 +140,7 @@ $type_id = Yii::$app->request->get('type_id',0);
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => ' {status} {view} {edit}',
+                'template' => '   {edit} {view} {status}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
                     return Html::edit(['edit-lang','id' => $model->id,'type_id'=>Yii::$app->request->get('type_id')]);

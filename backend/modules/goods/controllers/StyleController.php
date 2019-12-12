@@ -81,13 +81,16 @@ class StyleController extends BaseController
                 if(false === $model->save()){
                     throw new Exception(current($model->getFirstErrors()));
                 }
+                $style_id = $model->id;
                 $this->editLang($model);
                 
                 $trans->commit();
+                //商品更新
+                \Yii::$app->services->goods->createGoods($style_id);
                 return $this->message("保存成功", $this->redirect(['index','type_id'=>$type_id]), 'success');
             }catch (Exception $e){
                 $trans->rollBack();
-                return $this->message("保存失败:".$e->getMessage(), $this->redirect([$this->action->id]), 'error');
+                return $this->message("保存失败:".$e->getMessage(), $this->redirect([$this->action->id,'type_id'=>$type_id]), 'error');
             }
         }
         return $this->render($this->action->id, [

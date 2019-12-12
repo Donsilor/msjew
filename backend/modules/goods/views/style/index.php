@@ -10,17 +10,18 @@ use common\helpers\ImageHelper;
 $goods_title = Yii::t('goods', $typeModel['type_name'].'商品列表');
 $this->title = Yii::t('goods', $typeModel['type_name'].'管理');
 $this->params['breadcrumbs'][] = $this->title;
+$type_id = Yii::$app->request->get('type_id',0);
 ?>
 
 <div class="row">
     <div class="col-sm-12">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="<?= Url::to(['style/index?type_id='.Yii::$app->request->get('type_id',0)]) ?>"> <?= Html::encode($this->title) ?></a></li>
-                <li><a href="<?= Url::to(['goods/index?type_id='.Yii::$app->request->get('type_id',0)]) ?>"> <?= Html::encode($goods_title) ?></a></li>
+                <li class="active"><a href="<?= Url::to(['style/index?type_id='.$type_id]) ?>"> <?= Html::encode($this->title) ?></a></li>
+                <li><a href="<?= Url::to(['goods/index?type_id='.$type_id]) ?>"> <?= Html::encode($goods_title) ?></a></li>
                 <li class="pull-right">
                 	<div class="box-header box-tools">
-                    <?= Html::create(['edit-lang','type_id'=>Yii::$app->request->get('type_id',0)]) ?>
+                    <?= Html::create(['edit-lang','type_id'=>$type_id]) ?>
                     </div>
                 </li>
             </ul>
@@ -91,7 +92,10 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                     'attribute' => 'type_id',
                     'value' => "type.type_name",
-                    'filter' => false,
+                    'filter' => Html::activeDropDownList($searchModel, 'type_id',Yii::$app->services->goodsType->getDropDown($type_id), [
+                        'prompt' => '全部',
+                        'class' => 'form-control',
+                    ]),
                     'format' => 'raw',
             ],
             /* [
@@ -136,7 +140,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{edit} {status} {view}',
+                'template' => ' {status} {view} {edit}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
                     return Html::edit(['edit-lang','id' => $model->id,'type_id'=>Yii::$app->request->get('type_id')]);
@@ -148,7 +152,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::delete(['delete', 'id' => $model->id]);
                 },
                 'view'=> function($url, $model, $key){
-                        return Html::a('预览', '',['class'=>'btn btn-sm']);
+                        return Html::a('预览', '',['class'=>'btn btn-info btn-sm']);
                 }
                 ]
             ]

@@ -51,6 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'style' =>'width:80px'
                     ]),
             ],
+
             [
                 'attribute'=>'attr_name',
                 'value' =>'lang.attr_name',
@@ -59,6 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'style' =>'width:100px'
                 ]),
             ],
+            'lang.remark',
             [
                  'attribute'=>'lang.attr_values',
             ],

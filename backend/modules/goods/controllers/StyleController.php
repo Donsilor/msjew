@@ -72,7 +72,7 @@ class StyleController extends BaseController
     {
         $id = Yii::$app->request->get('id', null);       
         $type_id = Yii::$app->request->get('type_id', 0);
-        $type_id = Yii::$app->request->get('top_type_id',$type_id);
+        $top_type_id = Yii::$app->request->get('top_type_id',$type_id);
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post())) {
             $trans = Yii::$app->db->beginTransaction();
@@ -92,6 +92,7 @@ class StyleController extends BaseController
         }
         return $this->render($this->action->id, [
                 'model' => $model,
+                'top_type_id'=>$top_type_id,
         ]);
     }
     

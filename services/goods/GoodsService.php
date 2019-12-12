@@ -183,7 +183,6 @@ class GoodsService extends Service
             $spec_array['style_attr'] = $style_attr;
         }
         if(!empty($style_spec['b'])) {
-            $spec_array['style_attr'] = $spec_array['style_attr'] +
             $spec_array['style_spec_b'] = $style_spec['b'];
         }
         $format_data = [];
@@ -193,7 +192,7 @@ class GoodsService extends Service
                 continue;
             }else {
                 $attr_ids = array_keys($spec);
-                $attr_list = \Yii::$app->services->goodsAttribute->getSpecAttrList($attr_ids,$type_id,1,$language);
+                $attr_list = \Yii::$app->services->goodsAttribute->getSpecAttrList($attr_ids,$type_id,1);
                 foreach ($attr_list as $attr){
                     $attr_id = $attr['id'];
                     $is_text = InputTypeEnum::isText($attr['input_type']);

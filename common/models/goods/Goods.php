@@ -50,8 +50,8 @@ class Goods extends BaseModel
     public function rules()
     {
         return [
-            [['style_id', 'cat_id', 'cat_id1', 'cat_id2', 'status', 'verify_status', 'created_at', 'updated_at'], 'required'],
-            [['style_id', 'goods_type', 'merchant_id', 'cat_id', 'cat_id1', 'cat_id2', 'promotion_type', 'storage_alarm', 'goods_clicks', 'goods_salenum', 'goods_collects', 'goods_comments', 'goods_stars', 'goods_storage', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
+            [['style_id', 'type_id','status', 'verify_status', 'created_at', 'updated_at'], 'required'],
+            [['style_id', 'type_id', 'merchant_id', 'type_id','promotion_type', 'storage_alarm', 'goods_clicks', 'sale_volume', 'goods_collects', 'goods_comments', 'goods_stars', 'goods_storage', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
             [['sale_price', 'market_price', 'promotion_price'], 'number'],
             ['sale_price','compare','compareValue' => 0, 'operator' => '>'],
             ['market_price','compare','compareValue' => 0, 'operator' => '>'],
@@ -72,7 +72,7 @@ class Goods extends BaseModel
             'merchant_id' => Yii::t('goods', 'Merchant ID'),
             'style_id' => Yii::t('goods', 'Style ID'),
             'goods_sn' => Yii::t('goods', 'Goods Sn'),
-            'goods_type' => Yii::t('goods', 'Goods Type'),
+            'type_id' => Yii::t('goods', 'Goods Type'),
             'goods_image' => Yii::t('goods', 'Goods Image'),            
             'type_id' => Yii::t('goods', 'Type ID'),
             'cost_price' => Yii::t('goods', 'Cost Price'),

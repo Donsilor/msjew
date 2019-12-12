@@ -128,7 +128,9 @@ $(function(){
                     var point = ((i / anInterBankNum) % skuValueLen);
                     propNameArr.push(skuTypeArr[j].skuTypeTitle);
                     if(0  == (i % anInterBankNum)){//需要创建td
-                        currRowDoms += '<td rowspan='+anInterBankNum+'>'+skuValues[point].skuValueTitle+'</td>';
+                        currRowDoms += '<td rowspan='+anInterBankNum+'>';
+                        currRowDoms += skuValues[point].skuValueTitle;
+                        currRowDoms += '</td>';
                         propvalidArr.push(skuValues[point].skuValueId);
                         propIdArr.push(skuValues[point].skuPropId);
                         propvalnameArr.push(skuValues[point].skuValueTitle);
@@ -139,10 +141,18 @@ $(function(){
                         propvalnameArr.push(skuValues[parseInt(point)].skuValueTitle);
                     }
                 }
-
-                var propvalids = propvalidArr.toString();
+                
+                /*var specids = [];
+                for(i = 0;i<propIdArr.length;i++){
+                	//alert(propIdArr[i]);
+                }*/
+                //console.log(specids.toString());
+                
+                var propids = propIdArr.toString();
+                var propvalids = propvalidArr.toString();                
                 var _propvalids = sortSkuIds(propvalids);
-                SKUTableDom += '<tr propvalids=\''+propvalids+'\' propids=\''+propIdArr.toString()+'\' propvalnames=\''+propvalnameArr.join(";")+'\'  propnames=\''+propNameArr.join(";")+'\' class="sku_table_tr">'+currRowDoms;
+                //var _propids = sortSkuIds(propids);
+                SKUTableDom += '<tr propvalids=\''+propvalids+'\' propids=\''+propids+'\' propvalnames=\''+propvalnameArr.join(";")+'\'  propnames=\''+propNameArr.join(";")+'\' class="sku_table_tr">'+currRowDoms;
                 defaultSkuInputs.each(function(t){
                 	var skuVal= "";
                 	var skuName = $(this).attr('attr-name');
@@ -154,10 +164,12 @@ $(function(){
                 	if(skuName == "status"){
                 		skuVal = skuValDefined == false || skuVal ==1?1:0;
                 		SKUTableDom += "<td>";
-                		SKUTableDom += '<input type="hidden" class="setsku-' +skuName+'" name="'+inputName+'[b]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/>';
+                		SKUTableDom += '<input type="hidden" name="'+inputName+'[b]['+_propvalids+'][ids]" value="'+propids+'"/>';
+                		SKUTableDom += '<input type="hidden" name="'+inputName+'[b]['+_propvalids+'][vids]" value="'+propvalids+'"/>';
+                		SKUTableDom += '<input type="hidden" class="setsku-' +skuName+'" name="'+inputName+'[c]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/>';
                 		SKUTableDom += '<span class="btn btn-default btn-sm sku-status">'+langLabel[lang].disable+'</span></td>';
                 	}else{
-                    	SKUTableDom += '<td><input type="text" class="form-control setsku-' +skuName+'" name="'+inputName+'[b]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/></td>';
+                    	SKUTableDom += '<td><input type="text" class="form-control setsku-' +skuName+'" name="'+inputName+'[c]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/></td>';
                 	}
                 });
                 SKUTableDom += '</tr>';

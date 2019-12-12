@@ -303,10 +303,17 @@ function checkSkuInputData(){
 					}
 					uniqueArr[skuName][index] = skuValue;
 	        	}
-				if($.inArray(skuDType,['integer','double']) >-1 && !$.isNumeric(skuValue)){
-					 appConfirm(skuTitle+"必须为数字",rowTip);
-					 returnFlag = false;
-					 return returnFlag;
+				if($.inArray(skuDType,['integer','double']) >-1){
+					 if(!$.isNumeric(skuValue)){
+						 appConfirm(skuTitle+"必须为数字",rowTip);
+						 returnFlag = false;
+						 return returnFlag;
+					 }else if(skuDType == 'double' && skuValue<0){
+						 appConfirm(skuTitle+"必须大于0",rowTip);
+						 returnFlag = false;
+						 return returnFlag;
+					 }
+					 
 				}				
 
 			});			

@@ -1580,3 +1580,6 @@ nav.page-tabs .page-tabs-content {
     position: absolute; top: 30%; right: 3%; display: table-cell;font-size: 14px;
     white-space: nowrap; padding: 10px 10px;
 }
+tr.filters{
+    background: #ecf0f5;
+}

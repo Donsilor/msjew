@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class'=>'yii\grid\CheckboxColumn',
                 'name'=>'id',  //设置每行数据的复选框属性
                 'headerOptions' => ['width'=>'30'],
-                'footer'=> Html::batchButtons(false),//['search_export','status_disabled']
+                'footer'=> Html::batchButtons(['status_enabled','status_disabled']),//
                 'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
             ],
             [
@@ -107,13 +107,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'headerOptions' => ['width'=>'100'],
             ],
-            [
-                'attribute' => 'sale_volume',
-                'value' => "sale_volume",
-                'filter' => true,
-                'format' => 'raw',
-                'headerOptions' => ['width'=>'80'],
-            ],
+//            [
+//                'attribute' => 'sale_volume',
+//                'value' => "sale_volume",
+//                'filter' => true,
+//                'format' => 'raw',
+//                'headerOptions' => ['width'=>'80'],
+//            ],
             [
                 'attribute' => 'goods_storage',
                 'value' => "goods_storage",
@@ -136,7 +136,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{edit} {status} {delete}',
+                'template' => '{edit} {status} {view}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
                     return Html::edit(['edit-lang','id' => $model->id,'type_id'=>Yii::$app->request->get('type_id')]);
@@ -147,6 +147,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'delete' => function($url, $model, $key){
                         return Html::delete(['delete', 'id' => $model->id]);
                 },
+                'view'=> function($url, $model, $key){
+                        return Html::a('预览', '',['class'=>'btn btn-sm']);
+                }
                 ]
             ]
     ]

@@ -41,14 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'footer'=> Html::batchButtons(['status_enabled','status_disabled','batch_delete']),//['search_export','status_disabled']
                 'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
             ],
-            [
-                'attribute' => 'goods_image',
-                'value' => function ($model) {
-                    return ImageHelper::fancyBox($model->goods_image);
-                },
-                'filter' => false,
-                'format' => 'raw',
-            ],
+
 
             [
                 'attribute' => 'id',
@@ -57,6 +50,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'form-control',
                     'style' =>'width:50px'
                 ]),
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'goods_image',
+                'value' => function ($model) {
+                    return ImageHelper::fancyBox($model->goods_image);
+                },
+                'filter' => false,
                 'format' => 'raw',
             ],
             [
@@ -104,14 +105,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'sale_price',
-                'filter' => false,
+                'filter' => true,
                 'format' => 'raw',
             ],
 
             //'cost_price',
             [
                 'attribute' => 'carat',
-                'filter' => false,
+                'filter' => true,
                 'format' => 'raw',
             ],
 

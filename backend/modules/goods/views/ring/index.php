@@ -3,6 +3,7 @@
 use common\helpers\Html;
 use common\helpers\Url;
 use yii\grid\GridView;
+use common\helpers\ImageHelper;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -48,14 +49,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]),
                 'format' => 'raw',
             ],
-
-
             [
-                'attribute' => 'ring_sn',
-                'filter' => Html::activeTextInput($searchModel, 'ring_sn', [
-                    'class' => 'form-control',
-                    'style' =>'width:100px'
-                ]),
+                'attribute' => 'ring_images',
+                'value' => function ($model) {
+                    if(!empty($model->ring_images)){
+                        $ring_images = explode(',', $model->ring_images);
+                        $ring_image = $ring_images[0];
+                    }else{
+                        $ring_image = '';
+                    }
+                    return ImageHelper::fancyBox($ring_image);
+                },
+                'filter' => false,
                 'format' => 'raw',
             ],
             [
@@ -66,6 +71,30 @@ $this->params['breadcrumbs'][] = $this->title;
                     'style' =>'width:200px'
                 ]),
                 'format' => 'raw',
+            ],
+
+            [
+                'attribute' => 'ring_sn',
+                'filter' => Html::activeTextInput($searchModel, 'ring_sn', [
+                    'class' => 'form-control',
+                    'style' =>'width:100px'
+                ]),
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'sale_price',
+                'filter' => Html::activeTextInput($searchModel, 'sale_price', [
+                    'class' => 'form-control',
+                    'style' =>'width:100px'
+                ]),
+                'format' => 'raw',
+            ],
+
+            [
+                'attribute'  => '库存',
+                'value' => function($model){
+                    return Yii::$app->services->goodsStyle->getRingStorage($model->id);
+                }
             ],
 
 

@@ -74,17 +74,17 @@ class DiamondController extends BaseController
             $goods_name = $carat_str;
             $language = $key;
             $attr_arr = \Yii::$app->services->goodsAttribute->getAttributeByValueIds($ids, $language);
-            if(isset($attr_arr[AttrIdEnum::DIA_SHAPE])){
-                $goods_name .= ' '.$attr_arr[AttrIdEnum::DIA_SHAPE];
+            if(isset($attr_arr[AttrIdEnum::SHAPE])){
+                $goods_name .= ' '.$attr_arr[AttrIdEnum::SHAPE];
             }
-            if(isset($attr_arr[AttrIdEnum::DIA_COLOR])){
-                $goods_name .= ' '.$attr_arr[AttrIdEnum::DIA_COLOR].'色';
+            if(isset($attr_arr[AttrIdEnum::COLOR])){
+                $goods_name .= ' '.$attr_arr[AttrIdEnum::COLOR].'色';
             }
-            if(isset($attr_arr[AttrIdEnum::DIA_CLARITY])){
-                $goods_name .= ' '.$attr_arr[AttrIdEnum::DIA_CLARITY].'净度';
+            if(isset($attr_arr[AttrIdEnum::CLARITY])){
+                $goods_name .= ' '.$attr_arr[AttrIdEnum::CLARITY].'净度';
             }
-            if(isset($attr_arr[AttrIdEnum::DIA_CERT_TYPE])){
-                $goods_name .= ' '.$attr_arr[AttrIdEnum::DIA_CERT_TYPE];
+            if(isset($attr_arr[AttrIdEnum::CERT_TYPE])){
+                $goods_name .= ' '.$attr_arr[AttrIdEnum::CERT_TYPE];
             }
             $data[$language] = $goods_name;
         }

@@ -362,7 +362,7 @@ $(function(){
         		$(this).find(".setsku-goods_storage").val(fromValue);
         	}
         });
-
+        goodsStroageSum();
 	});
 	$(document).on("blur",'.setsku-goods_storage',function(){
     	goodsStroageSum();

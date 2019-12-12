@@ -1,6 +1,6 @@
 <script>
 //已保存属性配置
-var alreadySetSkuVals = <?= isset($model->style_spec['b'])?json_encode($model->style_spec['b']):"{}"?>;
+var alreadySetSkuVals = <?= isset($model->style_spec['c'])?json_encode($model->style_spec['c']):"{}"?>;
 var inputName = '<?= $name?>';//input控件名称
 var lang = '<?= Yii::$app->language?>';//当前语言
 </script>

@@ -30,9 +30,10 @@ class AttributeIndex extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['goods_id', 'cat_id', 'attr_value_id', 'style_id', 'type_id', 'attr_id'], 'required'],
-            [['goods_id', 'cat_id', 'attr_value_id', 'style_id', 'type_id', 'attr_id'], 'integer'],
-            [['goods_id', 'cat_id', 'attr_value_id'], 'unique', 'targetAttribute' => ['goods_id', 'cat_id', 'attr_value_id']],
+            [['goods_id', 'attr_value_id', 'style_id', 'type_id', 'attr_id'], 'required'],
+            [['goods_id', 'attr_value_id', 'style_id', 'type_id', 'attr_id'], 'integer'],
+            [['attr_value'], 'string'],
+            [['goods_id', 'attr_value_id'], 'unique', 'targetAttribute' => ['goods_id', 'cat_id', 'attr_value_id']],
         ];
     }
 

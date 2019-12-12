@@ -363,4 +363,21 @@ class ArrayHelper extends BaseArrayHelper
         $xml .= "</xml>";
         return $xml;
     }
+    /**
+     * 多维转一维度
+     * @param unknown $array
+     * @return unknown[]
+     */
+    public static function multiToArray($array) {
+        static $result_array = array();
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                self::multiToArray($value);
+            }
+            else{
+                $result_array[$key] = $value;
+            }
+        }
+        return $result_array;
+    }
 }

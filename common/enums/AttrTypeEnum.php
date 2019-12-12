@@ -21,11 +21,12 @@ class AttrTypeEnum extends BaseEnum
    */
   public static function getMap(): array
   {
-    return [
-        self::TYPE_BASE => '基础属性',
-        self::TYPE_SALE => '销售属性',
-        self::TYPE_MADE => '定制属性',
-        self::TYPE_CATE => '款式分类',
-    ];
-  }
+        return [
+            self::TYPE_BASE => '基础属性',
+            self::TYPE_SALE => '销售属性',
+            self::TYPE_MADE => '定制属性',
+            self::TYPE_CATE => '款式分类',
+        ];
+  }  
+  
 }

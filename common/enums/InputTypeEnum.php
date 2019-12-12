@@ -28,5 +28,27 @@ class InputTypeEnum extends BaseEnum
                 self::INPUT_MUlTI => "多选框",
         ];
     }   
+    /**
+     * 是否文本
+     * @param unknown $id
+     * @return number
+     */
+    public static function isText($id)
+    {
+        return $id == self::INPUT_TEXT?1:0;
+    }
+    /**
+     *  是否单选
+     * @param unknown $attr_type
+     * @return number
+     */
+    public static function isSingle($id)
+    {
+        $map = [
+                self::INPUT_SELECT,
+                self::INPUT_RADIO,
+        ];
+        return in_array($id,$map)?1:0;
+    }
     
 }

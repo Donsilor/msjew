@@ -61,7 +61,7 @@ class Style extends BaseModel
     {
         return [
                 [['style_name','language'], 'safe'],
-                [['type_id','style_sex', 'merchant_id','sale_volume','virtual_volume','virtual_clicks','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
+                [['type_id', 'merchant_id','sale_volume','virtual_volume','virtual_clicks','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
                 [['type_id','style_sn','sale_price','goods_storage'], 'required'],
                 
                 [['goods_body','mobile_body','style_image360'], 'string'],

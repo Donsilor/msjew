@@ -100,13 +100,39 @@ class AttributeService extends Service
         }
         
         $models = $query->orderBy("spec.sort asc")->asArray()->all();
+
         $attr_list = [];
         foreach ($models as $model){
             $attr_list[$model['attr_type']][] = $model;
         }
         ksort($attr_list);
-        return $attr_list;
+        return $attr_list;        
     }
+    /**
+     * 根据属性ID和产品线ID查询 属性列表
+     * @param unknown $attr_ids
+     * @param unknown $type_id
+     * @param number $status
+     * @param unknown $language
+     */
+    public function getSpecAttrList($attr_ids,$type_id,$status = 1,$language = null)
+    {
+        if(empty($language)){
+            $language = Yii::$app->params['language'];
+        }
+        $query = AttributeSpec::find()->alias("spec")
+            ->select(["attr.id","lang.attr_name",'spec.attr_type','spec.input_type','spec.is_require'])
+            ->innerJoin(Attribute::tableName()." attr",'spec.attr_id=attr.id')
+            ->innerJoin(AttributeLang::tableName().' lang',"attr.id=lang.master_id and lang.language='".$language."'")
+            ->where(['spec.type_id'=>$type_id,'spec.attr_id'=>$attr_ids]);
+        if(is_numeric($status)){
+            $query->andWhere(['=','spec.status',$status]);
+        }
+        $models = $query->orderBy("spec.sort asc,spec.id asc")->asArray()->all();
+
+        return $models;
+    }
+    
     /**
      * 根据属性ID查询属性值列表
      * @param unknown $attr_id

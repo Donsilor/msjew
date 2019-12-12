@@ -28,9 +28,11 @@ class TypeService extends Service
         $query = Type::find()->alias('a')
                     ->where(['status' => StatusEnum::ENABLED])
                     ->andWhere(['merchant_id' => Yii::$app->services->merchant->getId()]);
-        
+
         if($pid !== null){
             $query->andWhere(['a.pid'=>$pid]);
+        }else{
+            $pid = 0;
         }
         
         $models =$query->leftJoin('{{%goods_type_lang}} b', 'b.master_id = a.id and b.language = "'.$language.'"')
@@ -39,7 +41,7 @@ class TypeService extends Service
             ->asArray()
             ->all();
 
-        $models = ArrayHelper::itemsMerge($models);
+        $models = ArrayHelper::itemsMerge($models,$pid);
         return ArrayHelper::map(ArrayHelper::itemsMergeDropDown($models,'id','type_name'), 'id', 'type_name');
     }
     /**
@@ -75,5 +77,19 @@ class TypeService extends Service
         }
         
         return $models;        
+    }
+
+    public static function getTypeNameById($id ,$language=null){
+        if(empty($language)){
+            $language = Yii::$app->params['language'];
+        }
+        $query = Type::find()->alias('a');
+        $query->andWhere(['a.id'=>$id]);
+        $model =$query->leftJoin('{{%goods_type_lang}} b', 'b.master_id = a.id and b.language = "'.$language.'"')
+            ->select([ 'b.type_name'])
+            ->asArray()
+            ->one();
+
+        return $model['type_name'];
     }
 }

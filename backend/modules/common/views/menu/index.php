@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 
                         <div class="col-sm-4">
                             <div class="input-group m-b">
-                                <input type="text" class="form-control" name="title" placeholder="标题或者ID" value="<?= $title ?>"/>
+                                <input type="text" class="form-control" name="title" placeholder="标题或者ID" value="<?= \Yii::$app->request->get('title') ?>"/>
                                 <span class="input-group-btn"><button class="btn btn-white"><i class="fa fa-search"></i> 搜索</button></span>
                             </div>
                         </div>

@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= $form->field($model, 'goods_comments')->textInput() ?>
                     <?= $form->field($model, 'goods_stars')->textInput() ?>
                     <?= $form->field($model, 'goods_storage')->textInput() ?>
-                    <?= $form->field($model, 'status')->checkboxList(\common\enums\StatusEnum::$listExplain) ?>
+                    <?= $form->field($model, 'status')->checkboxList(\common\enums\StatusEnum::getMap()) ?>
                     <?= $form->field($model, 'verify_status')->textInput() ?>
                     <?= $form->field($model, 'verify_remark')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'created_at')->widget(kartik\date\DatePicker::class, [

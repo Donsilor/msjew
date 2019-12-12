@@ -38,10 +38,14 @@ class Ring extends BaseModel
         return [
             [['id','ring_salenum', 'ring_style', 'status', 'created_at', 'updated_at'], 'integer'],
             [['sale_price'], 'number'],
+            [['ring_sn','sale_price'],'required'],
+            ['sale_price','compare','compareValue' => 0, 'operator' => '>'],
+            ['market_price','compare','compareValue' => 0, 'operator' => '>'],
+            ['cost_price','compare','compareValue' => 0, 'operator' => '>'],
             [['ring_sn'],'string', 'max' => 100],
             [['qr_code'], 'string', 'max' => 200],
             [['ring_images'],'parseRingImages'],
-            [['ring_name','language'], 'safe'],
+            [['ring_name','language','ring_images'], 'safe'],
         ];
     }
 
@@ -59,6 +63,8 @@ class Ring extends BaseModel
             'ring_salenum' => '对戒销量',
             'ring_style' => '对戒款式',
             'sale_price' => '销售价格',
+            'market_price' => '市场价',
+            'cost_price' => '成本价',
             'status' => '是否上架',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',

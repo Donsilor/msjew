@@ -33,12 +33,28 @@ class StyleService extends Service
     }
 
 
-    public function getStyleIdsByRing($ring_id){
+    public function getRelationByRing($ring_id){
         $model = RingRelation::find()
             ->where(['ring_id'=>$ring_id])
-            ->select(['style_id'])
             ->asArray()
             ->all();
-        return array_column($model,'style_id');
+        return $model;
     }
+
+    //获取对戒库存
+    public function getRingStorage($id){
+        $model = RingRelation::find()->alias('r')
+            ->where(['r.ring_id'=>$id])
+            ->leftJoin('{{%goods_style}} s','s.id = r.style_id')
+            ->select('s.goods_storage')
+            ->asArray()
+            ->all();
+        $ring_storage_list = array_column($model,'goods_storage');
+        return min($ring_storage_list);
+    }
+
+
+
+
+
 }

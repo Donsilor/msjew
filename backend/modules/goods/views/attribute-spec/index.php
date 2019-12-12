@@ -137,7 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{edit} {status} {delete}',
+                'template' => '{edit} {status}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
                         return Html::edit(['ajax-edit','id' => $model->id,'returnUrl' => \common\components\Helper::getReturnUrl()], '编辑', [

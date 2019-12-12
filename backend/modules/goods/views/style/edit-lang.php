@@ -34,12 +34,13 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
             <div class="box-body" style="margin-left:9px">
                 <?php 
                 $type_id = Yii::$app->request->get("type_id");
-                $model->type_id = $model->type_id?? $type_id;                    
+                $model->type_id = $model->type_id?? $type_id;
+                $top_type_name = Yii::$app->services->goodsType->getTypeNameById($top_type_id);
                 ?> 
                  <div class="row">
                  <div class="col-lg-4">         
-        			<?= $form->field($model, 'type_id')->dropDownList(\Yii::$app->services->goodsType->getDropDown(),[
-        			        'onchange'=>"location.href='?type_id='+this.value+'&top_type_id={$type_id}'",
+        			<?= $form->field($model, 'type_id')->dropDownList(\yii\helpers\ArrayHelper::merge([$top_type_id=>$top_type_name],\Yii::$app->services->goodsType->getDropDown($top_type_id)),[
+        			        'onchange'=>"location.href='?type_id='+this.value+'&top_type_id={$top_type_id}'",
         			        'disabled'=>$model->isNewRecord?null:'disabled',
         			]) ?> 
     			</div>
@@ -72,6 +73,7 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
             			?>
         			</div>
     		    </div>
+                <?= $form->field($model, 'status')->radioList(\common\enums\FrameEnum::getMap()) ?>
     		    <!-- ./nav-tabs-custom -->
             </div>
         <!-- ./box-body -->
@@ -362,7 +364,7 @@ $(function(){
         		$(this).find(".setsku-goods_storage").val(fromValue);
         	}
         });
-
+        goodsStroageSum();
 	});
 	$(document).on("blur",'.setsku-goods_storage',function(){
     	goodsStroageSum();

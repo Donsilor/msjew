@@ -51,6 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'style' =>'width:80px'
                     ]),
             ],
+
             [
                 'attribute'=>'attr_name',
                 'value' =>'lang.attr_name',
@@ -59,6 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'style' =>'width:100px'
                 ]),
             ],
+            'lang.remark',
             [
                  'attribute'=>'lang.attr_values',
             ],
@@ -101,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{edit} {add} {status} {delete}',
+                'template' => '{edit} {add} {status} ',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
                         return Html::edit(['edit-lang', 'id' => $model->id]);

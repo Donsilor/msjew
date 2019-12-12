@@ -2,6 +2,7 @@
 
 namespace backend\modules\goods\controllers;
 
+use common\enums\StatusEnum;
 use common\models\goods\RingRelation;
 use common\models\goods\Style;
 use services\goods\StyleService;
@@ -11,6 +12,7 @@ use common\components\Curd;
 use common\models\base\SearchModel;
 use backend\controllers\BaseController;
 use common\helpers\ResultHelper;
+use yii\db\Exception;
 
 /**
 * Ring
@@ -71,17 +73,17 @@ class RingController extends BaseController
         //$trans = Yii::$app->db->beginTransaction();
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $this->editLang($model,true);
             $this->editRingRelation($model);
+            $this->editLang($model,true);
 
             return $this->redirect(['index']);
         }
         $style_ids = array();
         if($id){
-            $styleService = new StyleService();
-            $style_ids = $styleService->getStyleIdsByRing($id);
-
+            $ring_relations = Yii::$app->services->goodsStyle->getRelationByRing($id);
+            $style_ids = array_column($ring_relations,'style_id');
         }
+
         return $this->render($this->action->id, [
             'model' => $model,
             'style_ids' => $style_ids,
@@ -91,28 +93,93 @@ class RingController extends BaseController
 
     public function editRingRelation(&$model){
         $relationModel = new RingRelation();
+        $styleModel = new Style();
         $relationClassName  = basename($relationModel->className());
         $relationPosts = Yii::$app->request->post($relationClassName);
 //       print_r($relationPosts);exit();
         if(empty($relationPosts)){
             return false;
         }
-        if(isset($relationPosts['style_id']) && is_array($relationPosts['style_id'])){
-            $style_ids = $relationPosts['style_id'];
 
-            $relationModel::deleteAll(['ring_id'=>$model->id]);
-            foreach ($style_ids as $val){
-                $relationModel = new RingRelation();
-                $relationModel->style_id = $val;
-                $relationModel->ring_id = $model->id;
-                $r = $relationModel->save();
-                var_dump($r);
+        try{
+            $trans = Yii::$app->db->beginTransaction();
+            if(isset($relationPosts['style_id']) && is_array($relationPosts['style_id'])){
+
+                $style_ids = $relationPosts['style_id'];
+                $relation_list = Yii::$app->services->goodsStyle->getRelationByRing($model->id);
+                $del_relation_ids = array();
+                $update_style_lock = array();
+                foreach ($relation_list as $key => $val){
+                    $style_id = $val['style_id'];
+                    if(in_array($style_id,$style_ids)){
+                        $style_ids = array_flip($style_ids);
+                        unset($style_ids[$style_id]);
+                        $style_ids = array_flip($style_ids);
+                        continue;
+                    }
+                    $del_relation_ids[] = $val['id'];
+                    $update_style_lock[] = $style_id;
+
+                }
+
+                //解绑去掉的商品
+                if(!empty($del_relation_ids)){
+                    $res1 = $relationModel::deleteAll(['in','id',$del_relation_ids]);
+                    if(!$res1){
+                        $trans->rollBack();
+                        $this->message("原有商品解绑失败", $this->redirect(['index']), 'error');
+                        return;
+                    }
+                }
+
+                //给此对戒解绑的商品解锁
+                if(!empty($update_style_lock)){
+                    $res2 = $styleModel::updateAll(['is_lock'=>0],['in','id', $update_style_lock]);
+                    if(!$res2){
+                        $trans->rollBack();
+                        $this->message("原有商品解锁失败", $this->redirect(['index']), 'error');
+                        return;
+                    }
+                }
+
+                if(!empty($style_ids)){
+                    //给添加的商品上锁
+                    $res3 = $styleModel::updateAll(['is_lock'=>1],['and',['in','id', $style_ids],['is_lock'=>0]]);
+                    if(!$res3){
+                        $trans->rollBack();
+                        $this->message("新增商品已经绑定", $this->redirect(['index']), 'error');
+                        return;
+                    }
+
+                    //绑定添加的商品
+                    foreach ($style_ids as $val){
+                        $relationModel = new RingRelation();
+                        $relationModel->style_id = $val;
+                        $relationModel->ring_id = $model->id;
+                        $res4 = $relationModel->save();
+                        if(!$res4){
+                            $trans->rollBack();
+                            $this->message("新增商品添加失败", $this->redirect(['index']), 'error');
+                            return;
+                        }
+                    }
+                }
+
             }
+            $trans->commit();
+
+
+        } catch (Exception $e) {
+            $trans->rollBack();
+            $this->message("商品添加失败", $this->redirect(['index']), 'error');
+            return;
         }
+
 
     }
 
 
+    //添加商品时查询戒指数据
     public function actionSelectStyle()
     {
 
@@ -122,8 +189,10 @@ class RingController extends BaseController
             $post = Yii::$app->request->post();
             if(!isset($post['style_id']) || empty($post['style_id'])){
                 return ResultHelper::json(422, '请选择商品');
+            }else{
+                $style_id = $post['style_id'];
             }
-            return ResultHelper::json(200, '保存成功',['style_id'=>$post['style_id']]);
+            return ResultHelper::json(200, '保存成功',['style_id'=>$style_id]);
         }
 
 
@@ -139,8 +208,13 @@ class RingController extends BaseController
 
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams,['style_name']);
+        $dataProvider->query->andWhere(['>=', 'status', StatusEnum::DISABLED]);
+       //戒指分类
+        $dataProvider->query->andFilterWhere(['=', 'type_id',2]);
+        $dataProvider->query->andFilterWhere(['=', 'is_lock',0]);
 
         $dataProvider->query->joinWith(['lang']);
+
         $dataProvider->query->andFilterWhere(['like', 'lang.style_name',$searchModel->style_name]);
         return $this->render('select-style', [
             'dataProvider' => $dataProvider,
@@ -148,7 +222,7 @@ class RingController extends BaseController
         ]);
     }
 
-
+    //编辑时获取单个戒指数据
     public function actionGetStyle(){
         $request = Yii::$app->request;
 
@@ -161,7 +235,7 @@ class RingController extends BaseController
             }
             $style_id = $post['style_id'];
             $styleService = new StyleService();
-            $model = $styleService->getStyle($style_id);
+            $model = Yii::$app->services->goodsStyle->getStyle($style_id);
             $data['id'] = $model['id'];
             $data['style_name'] = $model['style_name'];
             $data['style_sn'] = $model['style_sn'];
@@ -199,6 +273,9 @@ class RingController extends BaseController
 
         return $this->message("删除失败", $this->redirect(['index']), 'error');
     }
+
+
+
 
 
 

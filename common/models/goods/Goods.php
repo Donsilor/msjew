@@ -50,9 +50,12 @@ class Goods extends BaseModel
     public function rules()
     {
         return [
-            [['style_id', 'cat_id', 'type_id','status', 'verify_status', 'created_at', 'updated_at'], 'required'],
-            [['style_id', 'type_id', 'merchant_id', 'promotion_type', 'storage_alarm', 'goods_clicks', 'sale_volume', 'goods_collects', 'goods_comments', 'goods_stars', 'goods_storage', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
-            [['sale_price', 'market_price', 'promotion_price','cost_price'], 'number'],
+            [['style_id', 'cat_id', 'cat_id1', 'cat_id2', 'status', 'verify_status', 'created_at', 'updated_at'], 'required'],
+            [['style_id', 'goods_type', 'merchant_id', 'cat_id', 'cat_id1', 'cat_id2', 'promotion_type', 'storage_alarm', 'goods_clicks', 'goods_salenum', 'goods_collects', 'goods_comments', 'goods_stars', 'goods_storage', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
+            [['sale_price', 'market_price', 'promotion_price'], 'number'],
+            ['sale_price','compare','compareValue' => 0, 'operator' => '>'],
+            ['market_price','compare','compareValue' => 0, 'operator' => '>'],
+            ['cost_price','compare','compareValue' => 0, 'operator' => '>'],
             [['goods_sn'], 'string', 'max' => 50],
             [['goods_image', 'verify_remark'], 'string', 'max' => 100],
             [['spec_key'], 'safe'],

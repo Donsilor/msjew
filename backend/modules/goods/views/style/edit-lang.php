@@ -6,6 +6,7 @@ use common\widgets\langbox\LangBox;
 use yii\base\Widget;
 use common\widgets\skutable\SkuTable;
 use common\helpers\Url;
+use common\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\goods\Style */
@@ -34,25 +35,26 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
             <div class="box-body" style="margin-left:9px">
                 <?php 
                 $type_id = Yii::$app->request->get("type_id");
-                $model->type_id = $model->type_id?? $type_id;
-                $top_type_name = Yii::$app->services->goodsType->getTypeNameById($top_type_id);
+                $_type_id = Yii::$app->request->get("_type_id");
+                $model->type_id = $model->type_id?? $_type_id;
+                $type_name = Yii::$app->services->goodsType->getTypeNameById($type_id);
+
+                $typeDropDown = \Yii::$app->services->goodsType->getDropDown($type_id);
+                if(empty($typeDropDown)){
+                    $typeDropDown = [$type_id=>$type_name];
+                }else{
+                    $typeDropDown = ArrayHelper::merge([''=>'请选择'], $typeDropDown);
+                }
+                //print_r($typeDropDown);
                 ?> 
                  <div class="row">
                  <div class="col-lg-4">         
-        			<?= $form->field($model, 'type_id')->dropDownList(\yii\helpers\ArrayHelper::merge([$top_type_id=>$top_type_name],\Yii::$app->services->goodsType->getDropDown($top_type_id)),[
-        			        'onchange'=>"location.href='?type_id='+this.value+'&top_type_id={$top_type_id}'",
+        			<?= $form->field($model, 'type_id')->dropDownList($typeDropDown,[
+        			        'onchange'=>"location.href='?_type_id='+this.value+'&type_id={$type_id}'",
         			        'disabled'=>$model->isNewRecord?null:'disabled',
         			]) ?> 
     			</div>
     			<div class="col-lg-4"><?= $form->field($model, 'style_sn')->textInput(['maxlength'=>true]) ?></div>
-    			
-                <?php /* echo $form->field($model, 'cat_id')->widget(kartik\select2\Select2::class, [
-     			        'data' => Yii::$app->services->goodsCate->getDropDown(),
-                        'options' => ['placeholder' => Yii::t("common",'请选择')],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                ]); */?>
                 </div>                
                 <div class="row">
                     <div class="col-lg-4"><?= $form->field($model, 'sale_volume')->textInput(['maxlength'=>true,'disabled'=>true]) ?></div>

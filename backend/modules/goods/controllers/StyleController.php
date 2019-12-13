@@ -72,8 +72,10 @@ class StyleController extends BaseController
     {
         $id = Yii::$app->request->get('id', null);
         $type_id = Yii::$app->request->get('type_id', 0);
-        $top_type_id = Yii::$app->request->get('top_type_id',$type_id);
         $model = $this->findModel($id);
+        
+        //$typeModel = Yii::$app->services->goodsType->getAllTypesById($top_type_id);
+        //print_r($typeModel);
         if ($model->load(Yii::$app->request->post())) {
             $trans = Yii::$app->db->beginTransaction();
             try{
@@ -87,15 +89,14 @@ class StyleController extends BaseController
                 $trans->commit();
                 //商品更新
                 //\Yii::$app->services->goods->createGoods($id);
-                return $this->message("保存成功", $this->redirect(['index','top_type_id'=>$top_type_id]), 'success');
+                return $this->message("保存成功", $this->redirect(['index','type_id'=>$type_id]), 'success');
             }catch (Exception $e){
                 $trans->rollBack();
-                return $this->message("保存失败:".$e->getMessage(), $this->redirect([$this->action->id,'id'=>$id,'top_type_id'=>$top_type_id]), 'error');
+                return $this->message("保存失败:".$e->getMessage(), $this->redirect([$this->action->id,'id'=>$id,'type_id'=>$type_id]), 'error');
             }
         }
         return $this->render($this->action->id, [
                 'model' => $model,
-                'top_type_id'=>$top_type_id,
         ]);
     }
     

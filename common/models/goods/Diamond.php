@@ -51,10 +51,11 @@ class Diamond extends \yii\db\ActiveRecord
         return [
             [['id','goods_num', 'shape', 'source_id', 'is_stock', 'status', 'created_at', 'updated_at'], 'integer'],
             [[ 'sale_price','source_id','shape','goods_num','goods_sn', 'carat', 'clarity', 'cut', 'color', 'symmetry', 'polish', 'fluorescence'], 'required'],
-            [['market_price', 'sale_price', 'cost_price', 'carat', 'source_discount'], 'number'],
+            [['goods_num','market_price', 'sale_price', 'cost_price', 'carat', 'source_discount'], 'number'],
             ['sale_price','compare','compareValue' => 0, 'operator' => '>'],
             ['market_price','compare','compareValue' => 0, 'operator' => '>'],
             ['cost_price','compare','compareValue' => 0, 'operator' => '>'],
+            ['goods_num','compare','compareValue' => 0, 'operator' => '>'],
             [['goods_sn'], 'string', 'max' => 60],
             [['goods_image'], 'string', 'max' => 100],
             [['cert_type', 'cut', 'color', 'symmetry', 'polish', 'fluorescence'], 'string', 'max' => 10],

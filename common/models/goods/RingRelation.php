@@ -31,7 +31,7 @@ class RingRelation extends BaseModel
     {
         return [
             [['style_id', 'ring_id', 'created_at', 'updated_at'], 'integer'],
-            ['style_id','unique '],
+            ['style_id','unique'],
         ];
     }
 

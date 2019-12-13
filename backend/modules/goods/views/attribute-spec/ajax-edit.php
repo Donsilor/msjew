@@ -39,7 +39,7 @@ $model->attr_values = $model->attr_values?explode(",",$model->attr_values):[];
 			</div>
 			
 			<?= $form->field($model, 'attr_type')->widget(kartik\select2\Select2::class, [
-			        'data' => common\enums\AttrTypeEnum::getMap(),
+			        'data' => common\enums\AttrTypeEnum::getMapMs(),
                     'options' => [],
                     'pluginOptions' => [
                         'allowClear' => false

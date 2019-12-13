@@ -84,7 +84,7 @@ class StyleController extends BaseController
                 $this->editLang($model);
                 
                 $trans->commit();
-                return $this->message("保存成功", $this->redirect(['index','type_id'=>$type_id]), 'success');
+                return $this->message("保存成功", $this->redirect(['index','type_id'=>$top_type_id]), 'success');
             }catch (Exception $e){
                 $trans->rollBack();
                 return $this->message("保存失败:".$e->getMessage(), $this->redirect([$this->action->id]), 'error');

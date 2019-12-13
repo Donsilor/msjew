@@ -60,7 +60,7 @@ class Style extends BaseModel
     public function rules()
     {
         return [
-                [['style_name','language'], 'safe'],
+                [['style_name','language','id'], 'safe'],
                 [['type_id', 'merchant_id','sale_volume','virtual_volume','virtual_clicks','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
                 [['type_id','style_sn','sale_price','goods_storage'], 'required'],
                 [['sale_price', 'market_price', 'cost_price'], 'number'],
@@ -168,7 +168,7 @@ class Style extends BaseModel
             'is_recommend' => Yii::t('goods', 'Is Recommend'),
             'is_lock' => Yii::t('goods', 'Is Lock'),
             'supplier_id' => Yii::t('goods', 'Supplier ID'),
-            'status' => Yii::t('goods', '状态'),
+            'status' => Yii::t('goods', '上架状态'),
             'verify_status' => Yii::t('goods', 'Verify Status'),
             'verify_remark' => Yii::t('goods', 'Verify Remark'),
             'created_at' => Yii::t('goods', 'Created At'),

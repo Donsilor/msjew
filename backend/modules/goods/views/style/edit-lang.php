@@ -202,7 +202,7 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
             ]
       ])->error(['required'=>'required']); ?>
                 <div class="row">
-                    <div class="col-lg-12"><?= $form->field($model, 'style_image360')->textInput(['maxlength'=>true]) ?></div>
+                    <div class="col-lg-12"><?= $form->field($model, 'style_3ds')->textInput(['maxlength'=>true]) ?></div>
                     <div class="col-lg-12">
                     <?= $form->field($model, 'goods_body')->widget(\common\widgets\ueditor\UEditor::class, [
                         'formData' => [

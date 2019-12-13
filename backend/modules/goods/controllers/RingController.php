@@ -74,7 +74,7 @@ class RingController extends BaseController
         //$trans = Yii::$app->db->beginTransaction();
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $this->editRingRelation($model);
+            $this->editRingRelation($model->id);
             $this->editLang($model,true);
 
             return $this->redirect(['index']);
@@ -124,92 +124,47 @@ class RingController extends BaseController
             }            
         }        
     }
-    public function editRingRelation(&$model){
-        $relationModel = new RingRelation();
-        $styleModel = new Style();
-        $relationClassName  = basename($relationModel->className());
-        $relationPosts = Yii::$app->request->post($relationClassName);
-//       print_r($relationPosts);exit();
-        if(empty($relationPosts)){
-            return false;
-        }
 
+    public function editRingRelation($ring_id)
+    {
+
+        $relationClassName  = basename(RingRelation::className());
+        $posts = Yii::$app->request->post($relationClassName);
         try{
-            $trans = Yii::$app->db->beginTransaction();
-            if(isset($relationPosts['style_id']) && is_array($relationPosts['style_id'])){
-
-                $style_ids = $relationPosts['style_id'];
-                $relation_list = Yii::$app->services->goodsStyle->getRelationByRing($model->id);
-                $del_relation_ids = array();
-                $update_style_lock = array();
-                foreach ($relation_list as $key => $val){
-                    $style_id = $val['style_id'];
-                    if(in_array($style_id,$style_ids)){
-                        $style_ids = array_flip($style_ids);
-                        unset($style_ids[$style_id]);
-                        $style_ids = array_flip($style_ids);
-                        continue;
-                    }
-                    $del_relation_ids[] = $val['id'];
-                    $update_style_lock[] = $style_id;
-
-                }
-
-                //解绑去掉的商品
-                if(!empty($del_relation_ids)){
-                    $res1 = $relationModel::deleteAll(['in','id',$del_relation_ids]);
-                    if(!$res1){
-                        $trans->rollBack();
-                        $this->message("原有商品解绑失败", $this->redirect(['index']), 'error');
-                        return;
-                    }
-                }
-
-                //给此对戒解绑的商品解锁
-                if(!empty($update_style_lock)){
-                    $res2 = $styleModel::updateAll(['is_lock'=>0],['in','id', $update_style_lock]);
-                    if(!$res2){
-                        $trans->rollBack();
-                        $this->message("原有商品解锁失败", $this->redirect(['index']), 'error');
-                        return;
-                    }
-                }
-
-                if(!empty($style_ids)){
-                    //给添加的商品上锁
-                    $res3 = $styleModel::updateAll(['is_lock'=>1],['and',['in','id', $style_ids],['is_lock'=>0]]);
-                    if(!$res3){
-                        $trans->rollBack();
-                        $this->message("新增商品已经绑定", $this->redirect(['index']), 'error');
-                        return;
-                    }
-
-                    //绑定添加的商品
-                    foreach ($style_ids as $val){
-                        $relationModel = new RingRelation();
-                        $relationModel->style_id = $val;
-                        $relationModel->ring_id = $model->id;
-                        $res4 = $relationModel->save();
-                        if(!$res4){
-                            $trans->rollBack();
-                            $this->message("新增商品添加失败", $this->redirect(['index']), 'error');
-                            return;
-                        }
-                    }
-                }
-
+            $style_ids = array();
+            if(!empty($posts['style_id']) && is_array($posts['style_id'])){
+                $style_ids = $posts['style_id'];
             }
-            $trans->commit();
-
-
-        } catch (Exception $e) {
-            $trans->rollBack();
-            $this->message("商品添加失败", $this->redirect(['index']), 'error');
-            return;
+            $ringRelationRows = RingRelation::find()->where(['ring_id'=>$ring_id])->asArray()->all();
+            $old_style_ids =array();
+            if(!empty($ringRelationRows)){
+                $old_style_ids= array_column($ringRelationRows, 'style_id');
+            }
+            //删除的商品解绑、解锁
+            $uplock_style_ids = array_diff($old_style_ids,$style_ids);
+            if($uplock_style_ids){
+                RingRelation::deleteAll(['and','ring_id'=>$ring_id,['in','style_id',$uplock_style_ids]]);
+                Style::updateAll(['is_lock'=>0],['in','id',$uplock_style_ids]);
+            }
+            //新增商品的id，需要上锁
+            $unlock_style_ids = array_diff($style_ids,$old_style_ids);
+            if($unlock_style_ids){
+                //数据入库
+                foreach ($unlock_style_ids as $style_id){
+                    $relationModel = new RingRelation();
+                    $relationModel->ring_id  = $ring_id;
+                    $relationModel->style_id = $style_id;
+                    $relationModel->save();
+                }
+                // Style::updateAll(['is_lock'=>1],['and',['in','id', $unlock_style_ids],['is_lock'=>0]]);
+                Style::updateAll(['is_lock'=>1],['in','id', $unlock_style_ids]);
+            }
+        }catch (Exception $e){
+            throw $e;
         }
-
 
     }
+
 
 
     //添加商品时查询戒指数据

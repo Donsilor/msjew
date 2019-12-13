@@ -109,7 +109,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <li class="pull-left header"><i class="fa fa-th"></i> 图片信息</li>
                 </ul>
                 <div class="box-body col-lg-9">
-                    <?= $form->field($model, 'goods_3ds')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'ring_3ds')->textInput(['maxlength' => true]) ?>
                     <?php $model->ring_images = !empty($model->ring_images)?explode(',', $model->ring_images):null;?>
                     <?= $form->field($model, 'ring_images')->widget(common\widgets\webuploader\Files::class, [
                         'type' => 'images',

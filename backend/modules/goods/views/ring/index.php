@@ -123,13 +123,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]),
             ],
 
-            [
-                'attribute' => 'created_at',
-                'filter' => false,
-                'value' => function($model){
-                    return date('Y-m-d',$model->created_at);
-                },
-            ],
+
 
             //'updated_at',
             [

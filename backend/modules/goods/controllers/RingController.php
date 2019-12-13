@@ -222,7 +222,6 @@ class RingController extends BaseController
                 return ResultHelper::json(422, '参数错误');
             }
             $style_id = $post['style_id'];
-            $styleService = new StyleService();
             $model = Yii::$app->services->goodsStyle->getStyle($style_id);
             $data['id'] = $model['id'];
             $data['style_name'] = $model['style_name'];

@@ -130,7 +130,7 @@ trait BaseAction
     public function editLang(& $model,$is_ajax = false){
         
         $langModel = $model->langModel();
-        $langClassName  = basename($langModel->className());
+        $langClassName = substr(strrchr($model->className(), '\\'), 1);
         $langPosts = Yii::$app->request->post($langClassName);
         if(empty($langPosts)){
             return false;

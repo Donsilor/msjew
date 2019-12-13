@@ -73,13 +73,9 @@ class StyleController extends BaseController
         $id = Yii::$app->request->get('id', null);
         $type_id = Yii::$app->request->get('type_id', 0);
         $model = $this->findModel($id);
-        
-        //$typeModel = Yii::$app->services->goodsType->getAllTypesById($top_type_id);
-        //print_r($typeModel);
         if ($model->load(Yii::$app->request->post())) {
             $trans = Yii::$app->db->beginTransaction();
-            try{
-                
+            try{                
                 if(false === $model->save()){
                     throw new Exception(current($model->getFirstErrors()));
                 }
@@ -92,7 +88,7 @@ class StyleController extends BaseController
                 return $this->message("保存成功", $this->redirect(['index','type_id'=>$type_id]), 'success');
             }catch (Exception $e){
                 $trans->rollBack();
-                return $this->message("保存失败:".$e->getMessage(), $this->redirect([$this->action->id,'id'=>$id,'type_id'=>$type_id]), 'error');
+                return $this->message("保存失败", $this->redirect([$this->action->id,'id'=>$id,'type_id'=>$type_id]), 'error');
             }
         }
         return $this->render($this->action->id, [

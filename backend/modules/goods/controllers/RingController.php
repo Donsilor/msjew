@@ -13,6 +13,7 @@ use common\models\base\SearchModel;
 use backend\controllers\BaseController;
 use common\helpers\ResultHelper;
 use yii\db\Exception;
+use common\helpers\ArrayHelper;
 
 /**
 * Ring
@@ -90,7 +91,39 @@ class RingController extends BaseController
 
         ]);
     }
-
+    public function editRingRelation2($ring_id)
+    {  
+        
+        $relationClassName  = basename(RingRelation::className());
+        $posts = Yii::$app->request->post($relationClassName);        
+            
+        if(!empty($posts['style_id']) && is_array($posts['style_id'])){              
+            try{
+                $style_ids = $posts['style_id'];  
+                //要删除的数据
+                $delRows = RingRelation::find()->where(['ring_id'=>$ring_id,['not in','style_id',$style_ids]])->asArray()->all();
+                if(!empty($delRows)){
+                    $del_style_ids = array_column($delRows, 'style_id');
+                    //更新款式锁定状态
+                    //Style::updateAll(['is_lock'=>0],['style_id'=>$del_style_ids]);
+                    RingRelation::deleteAll(['ring_id'=>$ring_id,['not in','style_id',$del_style_ids]]);
+                }
+                //数据入库
+                foreach ($style_ids as $style_id){
+                    $relationModel = RingRelation::find()->where(['ring_id'=>$ring_id,'style_id'])->count();
+                    if(!$relationModel){
+                        $relationModel = new RingRelation();
+                        $relationModel->ring_id  = $ring_id;
+                        $relationModel->style_id = $style_id;
+                        $relationModel->save(false);
+                    }
+                }
+                
+            }catch (Exception $e){
+                throw $e;
+            }            
+        }        
+    }
     public function editRingRelation(&$model){
         $relationModel = new RingRelation();
         $styleModel = new Style();

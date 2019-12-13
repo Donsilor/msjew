@@ -152,27 +152,32 @@ $(function(){
                 var propvalids = propvalidArr.toString();                
                 var _propvalids = sortSkuIds(propvalids);
                 //var _propids = sortSkuIds(propids);
-                SKUTableDom += '<tr propvalids=\''+propvalids+'\' propids=\''+propids+'\' propvalnames=\''+propvalnameArr.join(";")+'\'  propnames=\''+propNameArr.join(";")+'\' class="sku_table_tr">'+currRowDoms;
-                defaultSkuInputs.each(function(t){
-                	var skuVal= "";
-                	var skuName = $(this).attr('attr-name');
-                	var skuValDefined = false;
-                	if(alreadySetSkuVals[_propvalids] && typeof alreadySetSkuVals[_propvalids][skuName] != 'undefined'){
-                		skuVal = alreadySetSkuVals[_propvalids][skuName];
-                		skuValDefined = true;
-                	}
-                	if(skuName == "status"){
-                		skuVal = skuValDefined == false || skuVal ==1?1:0;
-                		SKUTableDom += "<td>";
-                		SKUTableDom += '<input type="hidden" name="'+inputName+'[b]['+_propvalids+'][ids]" value="'+propids+'"/>';
-                		SKUTableDom += '<input type="hidden" name="'+inputName+'[b]['+_propvalids+'][vids]" value="'+propvalids+'"/>';
-                		SKUTableDom += '<input type="hidden" class="setsku-' +skuName+'" name="'+inputName+'[c]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/>';
-                		SKUTableDom += '<span class="btn btn-default btn-sm sku-status">'+langLabel[lang].disable+'</span></td>';
-                	}else{
-                    	SKUTableDom += '<td><input type="text" class="form-control setsku-' +skuName+'" name="'+inputName+'[c]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/></td>';
-                	}
-                });
-                SKUTableDom += '</tr>';
+                if(currRowDoms != ''){
+                	SKUTableDom += '<tr propvalids=\''+propvalids+'\' propids=\''+propids+'\' propvalnames=\''+propvalnameArr.join(";")+'\'  propnames=\''+propNameArr.join(";")+'\' class="sku_table_tr">'+currRowDoms;
+                    defaultSkuInputs.each(function(t){
+                    	var skuVal= "";
+                    	var skuName = $(this).attr('attr-name');
+                    	var skuValDefined = false;
+                    	if(alreadySetSkuVals[_propvalids] && typeof alreadySetSkuVals[_propvalids][skuName] != 'undefined'){
+                    		skuVal = alreadySetSkuVals[_propvalids][skuName];
+                    		skuValDefined = true;
+                    	}
+                    	if(skuName == "status"){
+                    		skuVal = skuValDefined == false || skuVal ==1?1:0;
+                    		SKUTableDom += "<td>";
+                    		SKUTableDom += '<input type="hidden" name="'+inputName+'[b]['+_propvalids+'][ids]" value="'+propids+'"/>';
+                    		SKUTableDom += '<input type="hidden" name="'+inputName+'[b]['+_propvalids+'][vids]" value="'+propvalids+'"/>';
+                    		SKUTableDom += '<input type="hidden" class="setsku-' +skuName+'" name="'+inputName+'[c]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/>';
+                    		SKUTableDom += '<span class="btn btn-default btn-sm sku-status">'+langLabel[lang].disable+'</span></td>';
+                    	}else{
+                        	SKUTableDom += '<td><input type="text" class="form-control setsku-' +skuName+'" name="'+inputName+'[c]['+_propvalids+'][' +skuName+']" value="'+skuVal+'"/></td>';
+                    	}
+                    });
+                    SKUTableDom += '</tr>';
+                	
+                	
+                }
+                
             }
             SKUTableDom += "</table>";
         }
@@ -303,10 +308,9 @@ function checkSkuInputData(){
 					}
 					uniqueArr[skuName][index] = skuValue;
 	        	}
-				if(skuValue <> '' && $.inArray(skuDType,['integer','double']) >-1){
+				if(skuValue != '' && $.inArray(skuDType,['integer','double']) >-1){
 					 if(!$.isNumeric(skuValue)){
-						 alert(skuValue);
-						 appConfirm(skuTitle+"必须为数字",rowTip);
+						 appConfirm(skuTitle+"["+skuValue+"]必须为数字",rowTip);
 						 returnFlag = false;
 						 return returnFlag;
 					 }else if(skuDType == 'double' && skuValue<0){

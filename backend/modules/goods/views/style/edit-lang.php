@@ -35,7 +35,7 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
             <div class="box-body" style="margin-left:9px">
                 <?php 
                 $type_id = Yii::$app->request->get("type_id");
-                $_type_id = Yii::$app->request->get("_type_id");
+                $_type_id = Yii::$app->request->get("_type_id",$type_id);
                 $model->type_id = $model->type_id?? $_type_id;
                 $type_name = Yii::$app->services->goodsType->getTypeNameById($type_id);
 

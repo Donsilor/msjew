@@ -269,7 +269,7 @@ Css
      */
     public static function langInputName ($model,$language,$field)
     {
-        $className = basename($model->className());
+        $className = substr(strrchr($model->className(), '\\'), 1);
         return "{$className}[{$language}][{$field}]";
     }
     /**

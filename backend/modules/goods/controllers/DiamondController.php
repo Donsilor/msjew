@@ -49,7 +49,6 @@ class DiamondController extends BaseController
         $this->setLocalLanguage($searchModel->language);
         $dataProvider->query->joinWith(['lang']);
         $dataProvider->query->andFilterWhere(['like', 'lang.goods_name',$searchModel->goods_name]);
-
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,

@@ -8,7 +8,7 @@ use common\helpers\ImageHelper;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('goods_ring', 'Rings');
+$this->title = Yii::t('goods_ring', '对戒');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -80,6 +80,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     'style' =>'width:100px'
                 ]),
                 'format' => 'raw',
+            ],
+            [
+                'attribute' => '产品线',
+                'value'=>function($model){
+                    return '对戒';
+                }
             ],
             [
                 'attribute' => 'sale_price',

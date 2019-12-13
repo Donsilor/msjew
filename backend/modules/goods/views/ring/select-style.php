@@ -33,6 +33,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         ],
                         [
+                            'attribute' => 'id',
+                            'filter' => true,
+                            'format' => 'raw',
+                            'headerOptions' => ['width'=>'50'],
+                        ],
+
+                        [
                             'attribute' => 'lang.style_name',
                             'value' => 'lang.style_name',
                             'filter' => Html::activeTextInput($searchModel, 'style_name', [
@@ -46,6 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'attribute' => 'style_sn',
                             'filter' => true,
                             'format' => 'raw',
+                            'headerOptions' => ['width'=>'150'],
                         ],
 
                         [
@@ -53,12 +61,19 @@ $this->params['breadcrumbs'][] = $this->title;
                             'value' => "type.type_name",
                             'filter' => true,
                             'format' => 'raw',
+                            'headerOptions' => ['width'=>'100'],
                         ],
                         [
-                            'attribute' => 'cat_id',
-                            'value' => "cate.cat_name",
-                            'filter' => true,
+                            'attribute' => 'status',
                             'format' => 'raw',
+                            'headerOptions' => ['class' => 'col-md-1'],
+                            'value' => function ($model){
+                                return \common\enums\FrameEnum::getValue($model->status);
+                            },
+                            'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\FrameEnum::getMap(), [
+                                'prompt' => '全部',
+                                'class' => 'form-control',
+                            ]),
                         ],
                         [
                             'attribute' => 'sale_price',

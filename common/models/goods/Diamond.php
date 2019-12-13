@@ -101,7 +101,7 @@ class Diamond extends \yii\db\ActiveRecord
             'id' => Yii::t('goods_diamond', 'ID'),
             'goods_sn' => '商品编码',
             'goods_image' => '主图',
-            'goods_num' => '商品数量',
+            'goods_num' => '库存',
             'cert_type' => '证书类型',
             'cert_id' => '证书号',
             'market_price' => '市场价',

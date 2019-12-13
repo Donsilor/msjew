@@ -55,10 +55,10 @@ class Ring extends BaseModel
     public function attributeLabels()
     {
         return [
-            'id' => '主键ID',
+            'id' => 'ID',
             'ring_name' => '对戒名称',
             'ring_sn' => '对戒款号',
-            'ring_images' => '商品图',
+            'ring_images' => '商品图片',
             'qr_code' => '对戒二维码',
             'ring_salenum' => '对戒销量',
             'ring_style' => '对戒款式',
@@ -66,7 +66,7 @@ class Ring extends BaseModel
             'market_price' => '市场价',
             'cost_price' => '成本价',
             'status' => '上架状态',
-            'goods_3ds' => '360°主图',
+            'ring_3ds' => '360°主图',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
         ];

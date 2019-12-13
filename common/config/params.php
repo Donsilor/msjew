@@ -27,7 +27,7 @@ return [
             'subName' => 'Y/m/d', // 图片上传子目录规则
             'prefix' => 'image_', // 图片名称前缀
             'mimeTypes' => 'image/*', // 媒体类型
-            'compress' => false, // 是否开启压缩
+            'compress' => true, // 是否开启压缩
             'compressibility' => [ // 100不压缩 值越大越清晰 注意先后顺序
                 1024 * 100 => 100, // 0 - 100k 内不压缩
                 1024 * 1024 => 30, // 100k - 1M 区间压缩质量到30

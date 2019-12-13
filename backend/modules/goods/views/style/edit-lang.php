@@ -26,11 +26,12 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
 ]); ?>
 <div class="box-body nav-tabs-custom">
      <h2 class="page-header">商品发布</h2>
-     <?php echo Html::tab([0=>'全部',1=>'基础信息',2=>'商品属性',3=>'图片信息',4=>'SEO优化'],0,'tab')?>
+     <?php $tab_list = [0=>'全部',1=>'基础信息',2=>'商品属性',3=>'图文信息',4=>'SEO优化'];?>
+     <?php echo Html::tab($tab_list,0,'tab')?>
      <div class="tab-content">     
        <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_1">
             <ul class="nav nav-tabs pull-right">
-              <li class="pull-left header"><i class="fa fa-th"></i> 基础信息</li>
+              <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[1]??'';?></li>
             </ul>
             <div class="box-body" style="margin-left:9px">
                 <?php 
@@ -82,7 +83,7 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
       </div>            
       <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_2">
             <ul class="nav nav-tabs pull-right">
-              <li class="pull-left header"><i class="fa fa-th"></i> 商品属性</li>
+              <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[2]??'';?></li>
             </ul>
             <div class="box-body col-lg-12">
                <?php               
@@ -186,7 +187,7 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
     
       <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_3">
             <ul class="nav nav-tabs pull-right">
-              <li class="pull-left header"><i class="fa fa-th"></i> 图片信息</li>
+              <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[3]??'';?></li>
             </ul>
             <div class="box-body col-lg-9">
       <?php $model->goods_images = !empty($model->goods_images)?explode(',', $model->goods_images):null;?>      
@@ -196,19 +197,33 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
                     'multiple' => true,
                 ],
                 'formData' => [
-                    'drive' => 'local',// 默认本地 支持 qiniu/oss 上传
+                    //'drive' => 'local',// 默认本地 支持 qiniu/oss 上传
                 ],
             ]
       ])->error(['required'=>'required']); ?>
                 <div class="row">
-                    <div class="col-lg-8"><?= $form->field($model, 'style_image360')->textInput(['maxlength'=>true]) ?></div>
+                    <div class="col-lg-12"><?= $form->field($model, 'style_3ds')->textInput(['maxlength'=>true]) ?></div>
+                    <div class="col-lg-12">
+                    <?= $form->field($model, 'goods_body')->widget(\common\widgets\ueditor\UEditor::class, [
+                        'formData' => [
+                            'drive' => 'qiniu', // 默认本地 支持qiniu/oss/cos 上传
+                            'poster' => false, // 上传视频时返回视频封面图，开启此选项需要安装 ffmpeg 命令
+                            'thumb' => [
+                                [
+                                    'width' => 800,
+                                    'height' => 800,
+                                ]
+                            ]
+                        ],
+                    ]) ?>
+               </div>
                 </div> 
             </div>  
             <!-- ./box-body -->          
       </div>
      <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_4">
             <ul class="nav nav-tabs pull-right">
-              <li class="pull-left header"><i class="fa fa-th"></i> SEO信息</li>
+              <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[4]??'';?></li>
             </ul>
             <div class="box-body nav-tabs-custom none-shadow col-lg-9" style="margin-left:10px">
                  <?php echo Html::langTab("tab4")?>           

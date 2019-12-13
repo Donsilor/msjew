@@ -279,7 +279,7 @@ function checkSkuInputData(){
 			skuInputs.each(function(i){				
 				var skuName   = $(this).attr("attr-name");
 				var skuTitle  = $(this).attr("attr-title");
-				var skuValue  = rowBox.find(".setsku-"+skuName).val();
+				var skuValue  = $.trim(rowBox.find(".setsku-"+skuName).val());
 				var skuRequire = $(this).attr("attr-require");
 				var skuUnique = $(this).attr("attr-unique");
 				var skuDType = $(this).attr("attr-dtype");
@@ -303,8 +303,9 @@ function checkSkuInputData(){
 					}
 					uniqueArr[skuName][index] = skuValue;
 	        	}
-				if($.inArray(skuDType,['integer','double']) >-1){
+				if(skuValue <> '' && $.inArray(skuDType,['integer','double']) >-1){
 					 if(!$.isNumeric(skuValue)){
+						 alert(skuValue);
 						 appConfirm(skuTitle+"必须为数字",rowTip);
 						 returnFlag = false;
 						 return returnFlag;

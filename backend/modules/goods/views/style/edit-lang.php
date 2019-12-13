@@ -122,6 +122,18 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
                          
                           if(!empty($data)){
                              echo common\widgets\skutable\SkuTable::widget(['form' => $form,'model' => $model,'data' =>$data,'name'=>'Style[style_spec]']);
+                             ?>
+                             <script type="text/javascript">
+                                 $(function(){  
+                                  	$('form#Style').on('submit', function (e) {
+                                		var r = checkSkuInputData();
+                                    	if(!r){
+                                        	e.preventDefault();
+                                    	}
+                                    });
+                                 });
+                             </script>
+                             <?php 
                           }
                       }else{                              
                               foreach ($attr_list as $k=>$attr){ 
@@ -226,14 +238,7 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
 
 <?php ActiveForm::end(); ?>
 <script type="text/javascript">
-$(function(){
-	$('form#Style').on('submit', function (e) {
-		var r = checkSkuInputData();
-    	if(!r){
-        	e.preventDefault();
-    	}
-    });
-    
+$(function(){    
 	$(document).on("click",'.batch-goods_sn',function(){
 		var hasEdit = false;
 		var fromValue = $("#style-style_sn").val();

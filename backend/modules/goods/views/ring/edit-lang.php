@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul class="nav nav-tabs pull-right">
                 <li class="pull-left header"><i class="fa fa-th"></i> 基础信息</li>
             </ul>
-            <div class="box-body col-lg-9" style="margin-left:9px">
+            <div class="box-body nav-tabs-custom col-lg-9" style="margin-left:9px">
                 <?php echo Html::langTab('tab')?>
                 <div class="tab-content">
                     <?php

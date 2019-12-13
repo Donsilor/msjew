@@ -67,7 +67,7 @@ class Style extends BaseModel
                 ['sale_price','compare','compareValue' => 0, 'operator' => '>'],
                 ['market_price','compare','compareValue' => 0, 'operator' => '>'],
                 ['cost_price','compare','compareValue' => 0, 'operator' => '>'],
-                [['goods_body','mobile_body','style_image360'], 'string'],
+                [['goods_body','mobile_body'], 'string'],
                 [['style_sn'], 'string', 'max' => 50],
                 [['style_image','style_3ds'], 'string', 'max' => 100],
                 [['verify_remark'], 'string', 'max' => 255],

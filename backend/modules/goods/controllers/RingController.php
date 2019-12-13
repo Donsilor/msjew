@@ -128,7 +128,7 @@ class RingController extends BaseController
     public function editRingRelation($ring_id)
     {
 
-        $relationClassName  = basename(RingRelation::className());
+        $relationClassName  = 'RingRelation';
         $posts = Yii::$app->request->post($relationClassName);
         try{
             $style_ids = array();

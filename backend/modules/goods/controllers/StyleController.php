@@ -70,7 +70,7 @@ class StyleController extends BaseController
      */
     public function actionEditLang()
     {
-        $id = Yii::$app->request->get('id', null);       
+        $id = Yii::$app->request->get('id', null);
         $type_id = Yii::$app->request->get('type_id', 0);
         $top_type_id = Yii::$app->request->get('top_type_id',$type_id);
         $model = $this->findModel($id);
@@ -81,16 +81,16 @@ class StyleController extends BaseController
                 if(false === $model->save()){
                     throw new Exception(current($model->getFirstErrors()));
                 }
-                $style_id = $model->id;
+                $id = $model->id;
                 $this->editLang($model);
                 
                 $trans->commit();
-
-                \Yii::$app->services->goods->createGoods($style_id);
-                return $this->message("保存成功", $this->redirect(['index','type_id'=>$type_id]), 'success');
+                //商品更新
+                \Yii::$app->services->goods->createGoods($id);
+                return $this->message("保存成功", $this->redirect(['index','top_type_id'=>$top_type_id]), 'success');
             }catch (Exception $e){
                 $trans->rollBack();
-                return $this->message("保存失败:".$e->getMessage(), $this->redirect([$this->action->id,'type_id'=>$type_id]), 'error');
+                return $this->message("保存失败:".$e->getMessage(), $this->redirect([$this->action->id,'id'=>$id,'top_type_id'=>$top_type_id]), 'error');
             }
         }
         return $this->render($this->action->id, [

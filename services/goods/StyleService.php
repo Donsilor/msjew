@@ -23,7 +23,6 @@ class StyleService extends Service
             $language = Yii::$app->language;
         }
         $model = Style::find()->alias('a')
-            ->where(['status' => StatusEnum::ENABLED])
             ->andWhere(['a.id'=>$id])
             ->leftJoin('{{%goods_style_lang}} b',  'b.master_id = a.id and b.language = "'.$language.'"')
             ->select(['a.*', 'b.style_name'])

@@ -49,6 +49,7 @@ class StyleService extends Service
             ->select('s.goods_storage')
             ->asArray()
             ->all();
+        if(empty($model)) return 0;
         $ring_storage_list = array_column($model,'goods_storage');
         return min($ring_storage_list);
     }

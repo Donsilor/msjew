@@ -47,7 +47,7 @@ class UEditor extends InputWidget
             'serverUrl' => Url::to(['/ueditor/index']),
             'UEDITOR_HOME_URL' => $asset->baseUrl . '/',
             'lang' => 'zh-cn',
-            'initialFrameHeight' => 400,
+            'initialFrameHeight' => 200,
             'initialFrameWidth' => '100%',
             'enableAutoSave' => false,
             'toolbars' => [

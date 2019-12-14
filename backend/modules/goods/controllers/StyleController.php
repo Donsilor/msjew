@@ -45,7 +45,7 @@ class StyleController extends BaseController
             ],
             'pageSize' => $this->pageSize
         ]);
-        $typeModel = Yii::$app->services->goodsType->getAllTypesById($type_id);
+        $typeModel = Yii::$app->services->goodsType->getAllTypesById($type_id,null);
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams,['style_name','language']);
         //切换默认语言
@@ -89,7 +89,6 @@ class StyleController extends BaseController
             }catch (Exception $e){
                 $trans->rollBack();
                 $error = $e->getMessage();
-                echo $error;exit;
                 return $this->message("保存失败", $this->redirect([$this->action->id,'id'=>$id,'type_id'=>$type_id]), 'error');
             }
         }

@@ -92,11 +92,12 @@ $type_id = Yii::$app->request->get('type_id',0);
             [
                     'attribute' => 'type_id',
                     'value' => "type.type_name",
-                    'filter' => Html::activeDropDownList($searchModel, 'type_id',Yii::$app->services->goodsType->getDropDown($type_id), [
+                    'filter' => Html::activeDropDownList($searchModel, 'type_id',Yii::$app->services->goodsType->getGrpDropDown($type_id,0), [
                         'prompt' => '全部',
                         'class' => 'form-control',
                     ]),
                     'format' => 'raw',
+                    'headerOptions' => ['width'=>'120'],
             ],
             /* [
                 'attribute' => 'cat_id',

@@ -67,15 +67,13 @@ class AttributeService extends Service
                 ->select(['a.*','b.attr_name'])
                 ->orderBy('sort asc,created_at asc');
         
-        if($status){
+        if( $status ){
             $query->andWhere(['=','a.status',$status]);
         }
         
-        $models = $query->asArray()->all();        
+        $models = $query->asArray()->all();       
         
-        //$models = ArrayHelper::itemsMerge($models);
-        
-        return array_column($models,'attr_name','id');
+        return ArrayHelper::map($models,'id','attr_name');
     }
     
     /**

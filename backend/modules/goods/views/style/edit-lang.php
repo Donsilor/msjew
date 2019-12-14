@@ -38,19 +38,11 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
                 $type_id = Yii::$app->request->get("type_id");
                 $_type_id = Yii::$app->request->get("_type_id",$type_id);
                 $model->type_id = $model->type_id?? $_type_id;
-                $type_name = Yii::$app->services->goodsType->getTypeNameById($type_id);
-
-                $typeDropDown = \Yii::$app->services->goodsType->getDropDown($type_id);
-                if(empty($typeDropDown)){
-                    $typeDropDown = [$type_id=>$type_name];
-                }else{
-                    $typeDropDown = ArrayHelper::merge([''=>'请选择'], $typeDropDown);
-                }
-                //print_r($typeDropDown);
                 ?> 
                  <div class="row">
                  <div class="col-lg-4">         
-        			<?= $form->field($model, 'type_id')->dropDownList($typeDropDown,[
+        			<?= $form->field($model, 'type_id')->dropDownList(\Yii::$app->services->goodsType->getGrpDropDown($type_id),[
+        			        'prompt' => '请选择',
         			        'onchange'=>"location.href='?_type_id='+this.value+'&type_id={$type_id}'",
         			        'disabled'=>$model->isNewRecord?null:'disabled',
         			]) ?> 

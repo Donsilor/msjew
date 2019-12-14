@@ -20,7 +20,7 @@ class TypeService extends Service
     /**
      * @return array|\yii\db\ActiveRecord[]
      */
-    public static function getDropDown($pid = null,$language = null)
+    public static function getDropDown($pid = null,$treeStat = 1,$language = null)
     {
         if(empty($language)){
             $language = Yii::$app->params['language'];
@@ -42,7 +42,39 @@ class TypeService extends Service
             ->all();
 
         $models = ArrayHelper::itemsMerge($models,$pid);
-        return ArrayHelper::map(ArrayHelper::itemsMergeDropDown($models,'id','type_name'), 'id', 'type_name');
+        return ArrayHelper::map(ArrayHelper::itemsMergeDropDown($models,'id','type_name',$treeStat), 'id', 'type_name');
+    }
+    /**
+     * 分组下拉框
+     * @param unknown $pid
+     * @param unknown $language
+     * @return array
+     */
+    public static function getGrpDropDown($pid = null,$treeStat = 1,$language = null)
+    {
+        if(empty($language)){
+            $language = Yii::$app->params['language'];
+        }
+        $query = Type::find()->alias('a')
+            ->where(['status' => StatusEnum::ENABLED])
+            ->andWhere(['merchant_id' => Yii::$app->services->merchant->getId()]);
+        
+        if($pid !== null){
+            if($pid ==0){
+                $query->andWhere(['a.pid'=>$pid]);
+            }
+            else{
+                $query->andWhere(['or',['a.pid'=>$pid],['a.id'=>$pid]]);
+            }            
+        }
+        
+        $models =$query->leftJoin('{{%goods_type_lang}} b', 'b.master_id = a.id and b.language = "'.$language.'"')
+            ->select(['a.*', 'b.type_name'])
+            ->orderBy('sort asc,created_at asc')
+            ->asArray()
+            ->all();
+        
+       return  ArrayHelper::itemsMergeGrpDropDown($models,0,'id','type_name','pid',$treeStat);
     }
     /**
      * 查询指定ID下所有产品线

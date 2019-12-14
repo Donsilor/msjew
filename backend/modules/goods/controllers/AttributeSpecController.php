@@ -86,7 +86,7 @@ class AttributeSpecController extends BaseController
         
         $attrValues = [];
         if ($model->attr_id){
-            $attrValues = $values = Yii::$app->services->goodsAttribute->getValuesByAttrId($model->attr_id);
+            $attrValues = \Yii::$app->services->goodsAttribute->getValuesByAttrId($model->attr_id);
         }
         return $this->renderAjax($this->action->id, [
                 'model' => $model,

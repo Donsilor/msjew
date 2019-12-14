@@ -32,7 +32,6 @@ $form = ActiveForm::begin([
                     'fields'=>
                     [    
                         'attr_name'=>['type'=>'textInput'],
-                        'long_name'=>['type'=>'textInput'],
                         'remark'=>['type'=>'textArea','options'=>[]] 
                     ]]);
     	    ?>

@@ -84,10 +84,12 @@ class StyleController extends BaseController
                 
                 $trans->commit();
                 //商品更新
-                //\Yii::$app->services->goods->createGoods($id);
+                \Yii::$app->services->goods->createGoods($id);
                 return $this->message("保存成功", $this->redirect(['index','type_id'=>$type_id]), 'success');
             }catch (Exception $e){
                 $trans->rollBack();
+                $error = $e->getMessage();
+                echo $error;exit;
                 return $this->message("保存失败", $this->redirect([$this->action->id,'id'=>$id,'type_id'=>$type_id]), 'error');
             }
         }

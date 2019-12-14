@@ -4,6 +4,7 @@ use common\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\grid\GridView;
 use common\helpers\Url;
+use common\widgets\langbox\LangBox;
 
 
 /* @var $this yii\web\View */
@@ -28,11 +29,12 @@ $this->params['breadcrumbs'][] = $this->title;
 ]); ?>
 <div class="box-body nav-tabs-custom">
     <h2 class="page-header">对戒发布</h2>
-    <?php echo Html::tab([0=>'全部',1=>'基础信息',2=>'款式分类',3=>'图片信息',4=>'SEO优化'],0,'tab')?>
+    <?php $tab_list = [0=>'全部',1=>'基础信息',2=>'款式分类',3=>'图文信息',4=>'SEO优化'];?>
+    <?php echo Html::tab($tab_list,0,'tab')?>>
     <div class="tab-content">
         <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_1">
             <ul class="nav nav-tabs pull-right">
-                <li class="pull-left header"><i class="fa fa-th"></i> 基础信息</li>
+                <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[1]??'' ?></li>
             </ul>
             <div class="box-body nav-tabs-custom col-lg-9" style="margin-left:9px">
                 <?php echo Html::langTab('tab')?>
@@ -75,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
             <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_2">
                 <ul class="nav nav-tabs pull-right">
-                    <li class="pull-left header"><i class="fa fa-th"></i> 款式分类</li>
+                    <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[2]??'' ?></li>
                 </ul>
                 <div class="box-body" style="margin-left:10px">
                     <?= $form->field($model, 'ring_style')->widget(kartik\select2\Select2::class, [
@@ -106,7 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_3">
                 <ul class="nav nav-tabs pull-right">
-                    <li class="pull-left header"><i class="fa fa-th"></i> 图片信息</li>
+                    <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[3]??'' ?></li>
                 </ul>
                 <div class="box-body col-lg-9">
 
@@ -129,19 +131,44 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         ]
                     ]); ?>
-
+                    <div class="row nav-tabs-custom">
+        		        <?php echo Html::langTab("tab_body")?>    			      
+            			<div class="tab-content " style="padding-left:10px"> 
+            				<?php 
+                    			echo LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab_body','fields'=>[
+                    			        'ring_body'=>[
+                    			            //'label'=>Yii::t("common","商品介绍"),
+                			                'type'=>'widget',
+                			                'class'=> \common\widgets\ueditor\UEditor::class,
+                			                'options'=>[
+                			                        'formData' => [
+                			                                'drive' => 'qiniu', // 默认本地 支持qiniu/oss/cos 上传
+                			                                'poster' => false, // 上传视频时返回视频封面图，开启此选项需要安装 ffmpeg 命令
+                			                                'thumb' => [
+                			                                        [
+            			                                                'width' => 800,
+            			                                                'height' => 800,
+                			                                        ]
+                			                                ]
+                			                        ],
+                			                ],//end options            			                                			                
+                    			        ],//end goods_body
+                    			]]);
+                			?>
+            			</div>                  
+                    </div> <!-- ./nav-tabs-custom -->
                 </div>
                 <!-- ./box-body -->
             </div>
             <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_4">
                 <ul class="nav nav-tabs pull-right">
-                    <li class="pull-left header"><i class="fa fa-th"></i> SEO信息</li>
+                    <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[4]??'' ?></li>
                 </ul>
                 <div class="box-body nav-tabs-custom none-shadow col-lg-9" style="margin-left:10px">
                     <?php echo Html::langTab("tab4")?>
                     <div class="tab-content">
                         <?php
-                        echo common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab4',
+                        echo LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab4',
                             'fields'=>
                                 [
                                     'meta_title'=>['type'=>'textInput'],

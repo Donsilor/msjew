@@ -33,13 +33,14 @@ class DiamondLang extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [[],'required'],
+            [['goods_name'],'required'],
             [['master_id'], 'integer'],
             [['goods_body', 'mobile_body'], 'string'],
             [['language'], 'string', 'max' => 5],
             [['goods_name'], 'string', 'max' => 50],
-            [['meta_title', 'meta_word'], 'string', 'max' => 200],
+            [['meta_title', 'meta_word'], 'string', 'max' => 255],
             [['meta_desc'], 'string', 'max' => 500],
+            [['goods_desc'], 'string', 'max' => 1000],
         ];
     }
 
@@ -49,15 +50,16 @@ class DiamondLang extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '商品公共表id',
-            'master_id' => '款式ID',
-            'language' => '语言类型',
-            'goods_name' => '商品名称',
-            'goods_body' => Yii::t('goods_diamond_lang', 'Goods Body'),
-            'mobile_body' => '手机端商品描述',
-            'meta_title' => 'SEO标题',
-            'meta_word' => 'SEO关键词',
-            'meta_desc' => 'SEO描述',
+            'id' => 'ID',
+            'master_id' =>'Style ID',
+            'language' => Yii::t('common', '语言类型'),
+            'goods_name' =>Yii::t('goods', '商品名称'),
+            'goods_desc' =>Yii::t('goods', '商品简介'),
+            'goods_body' =>Yii::t('goods', '商品详情'),
+            'mobile_body'=> Yii::t('goods', '商品详情(Wap)'),
+            'meta_title' =>Yii::t('common', 'SEO标题'),
+            'meta_word' =>Yii::t('common', 'SEO关键词'),
+            'meta_desc' =>Yii::t('common', 'SEO描述'),
         ];
     }
 }

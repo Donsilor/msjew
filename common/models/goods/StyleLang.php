@@ -41,8 +41,9 @@ class StyleLang extends \yii\db\ActiveRecord
             [['style_attr', 'style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['language'], 'string', 'max' => 5],
             [['style_name'], 'string', 'max' => 50],
-            [['style_desc'], 'string', 'max' => 150],
-            [['meta_title', 'meta_word', 'meta_desc'], 'string', 'max' => 255],
+            [['style_desc'], 'string', 'max' => 1000],
+            [['meta_title', 'meta_word'], 'string', 'max' => 255],
+            [['meta_desc'], 'string', 'max' => 500],
         ];
     }
 
@@ -59,7 +60,7 @@ class StyleLang extends \yii\db\ActiveRecord
             'style_desc' => Yii::t('goods', '商品描述'),
             'style_attr' => Yii::t('goods', 'Style Attr'),
             'style_custom' => Yii::t('goods', 'Style Custom'),
-            'goods_body' => Yii::t('goods', 'Goods Body'),
+            'goods_body' => Yii::t('goods', '商品详情'),
             'mobile_body' => Yii::t('goods', 'Mobile Body'),
             'meta_title' => Yii::t('goods', 'SEO标题'),
             'meta_word' => Yii::t('goods', 'SEO关键词'),

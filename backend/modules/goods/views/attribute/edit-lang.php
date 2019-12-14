@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                        <?= common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
                                 'fields'=>
                                 [
-                                    'attr_name'=>['type'=>'textInput'],
+                                    'attr_name'=>['type'=>'textInput'],                                  
                                     'remark'=>['type'=>'textArea','options'=>[]]                            
                                 ]]);
                 	    ?>

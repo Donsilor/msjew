@@ -44,8 +44,8 @@ class GoodsController extends BaseController
             'pageSize' => $this->pageSize
         ]);
 
-        $typeModel = Yii::$app->services->goodsType->getAllTypesById($type_id);
-
+        $typeModel = Yii::$app->services->goodsType->getAllTypesById($type_id,null);
+         
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
 

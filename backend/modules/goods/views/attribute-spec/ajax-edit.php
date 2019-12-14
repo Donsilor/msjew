@@ -21,7 +21,7 @@ $model->attr_values = $model->attr_values?explode(",",$model->attr_values):[];
 </div>
     <div class="modal-body">
  			<?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
- 			        'data' => Yii::$app->services->goodsType->getDropDown(),
+ 			        'data' => Yii::$app->services->goodsType->getGrpDropDown(),
                     'options' => ['placeholder' => '请选择'],
                     'pluginOptions' => [
                         'allowClear' => true

@@ -30,9 +30,9 @@ $form = ActiveForm::begin([
             <?php 
             echo common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
                     'fields'=>
-                    [
+                    [    
                         'attr_name'=>['type'=>'textInput'],
-                        'remark'=>['type'=>'textArea','options'=>[]]                            
+                        'remark'=>['type'=>'textArea','options'=>[]] 
                     ]]);
     	    ?>
     	  

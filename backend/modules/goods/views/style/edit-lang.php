@@ -38,19 +38,11 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
                 $type_id = Yii::$app->request->get("type_id");
                 $_type_id = Yii::$app->request->get("_type_id",$type_id);
                 $model->type_id = $model->type_id?? $_type_id;
-                $type_name = Yii::$app->services->goodsType->getTypeNameById($type_id);
-
-                $typeDropDown = \Yii::$app->services->goodsType->getDropDown($type_id);
-                if(empty($typeDropDown)){
-                    $typeDropDown = [$type_id=>$type_name];
-                }else{
-                    $typeDropDown = ArrayHelper::merge([''=>'请选择'], $typeDropDown);
-                }
-                //print_r($typeDropDown);
                 ?> 
                  <div class="row">
                  <div class="col-lg-4">         
-        			<?= $form->field($model, 'type_id')->dropDownList($typeDropDown,[
+        			<?= $form->field($model, 'type_id')->dropDownList(\Yii::$app->services->goodsType->getGrpDropDown($type_id),[
+        			        'prompt' => '请选择',
         			        'onchange'=>"location.href='?_type_id='+this.value+'&type_id={$type_id}'",
         			        'disabled'=>$model->isNewRecord?null:'disabled',
         			]) ?> 
@@ -190,34 +182,49 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
               <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[3]??'';?></li>
             </ul>
             <div class="box-body col-lg-9">
-      <?php $model->goods_images = !empty($model->goods_images)?explode(',', $model->goods_images):null;?>      
-      <?= $form->field($model, 'goods_images')->widget(common\widgets\webuploader\Files::class, [
-            'config' => [
-                'pick' => [
-                    'multiple' => true,
-                ],
-                'formData' => [
-                    //'drive' => 'local',// 默认本地 支持 qiniu/oss 上传
-                ],
-            ]
-      ])->error(['required'=>'required']); ?>
+            	<div class="row">
+                  <?php $model->goods_images = !empty($model->goods_images)?explode(',', $model->goods_images):null;?>      
+                  <?= $form->field($model, 'goods_images')->widget(common\widgets\webuploader\Files::class, [
+                        'config' => [
+                            'pick' => [
+                                'multiple' => true,
+                            ],
+                            'formData' => [
+                                //'drive' => 'local',// 默认本地 支持 qiniu/oss 上传
+                            ],
+                        ]
+                  ]); ?>
+                </div>
                 <div class="row">
                     <div class="col-lg-12"><?= $form->field($model, 'style_3ds')->textInput(['maxlength'=>true]) ?></div>
-                    <div class="col-lg-12">
-                    <?= $form->field($model, 'goods_body')->widget(\common\widgets\ueditor\UEditor::class, [
-                        'formData' => [
-                            'drive' => 'qiniu', // 默认本地 支持qiniu/oss/cos 上传
-                            'poster' => false, // 上传视频时返回视频封面图，开启此选项需要安装 ffmpeg 命令
-                            'thumb' => [
-                                [
-                                    'width' => 800,
-                                    'height' => 800,
-                                ]
-                            ]
-                        ],
-                    ]) ?>
-               </div>
-                </div> 
+                </div>
+                    
+                <div class="row nav-tabs-custom">
+    		        <?php echo Html::langTab("tab_body")?>    			      
+        			<div class="tab-content " style="padding-left:10px"> 
+        				<?php 
+                			echo LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab_body','fields'=>[
+                			        'goods_body'=>[
+                			            //'label'=>Yii::t("common","商品介绍"),
+            			                'type'=>'widget',
+            			                'class'=> \common\widgets\ueditor\UEditor::class,
+            			                'options'=>[
+            			                        'formData' => [
+            			                                'drive' => 'qiniu', // 默认本地 支持qiniu/oss/cos 上传
+            			                                'poster' => false, // 上传视频时返回视频封面图，开启此选项需要安装 ffmpeg 命令
+            			                                'thumb' => [
+            			                                        [
+        			                                                'width' => 800,
+        			                                                'height' => 800,
+            			                                        ]
+            			                                ]
+            			                        ],
+            			                ],//end options            			                                			                
+                			        ],//end goods_body
+                			]]);
+            			?>
+        			</div>                  
+                </div> <!-- ./nav-tabs-custom -->    
             </div>  
             <!-- ./box-body -->          
       </div>

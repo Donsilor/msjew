@@ -191,14 +191,13 @@ class ArrayHelper extends BaseArrayHelper
     {
         $str = '';
         for ($i = 1; $i < $level; $i++) {
-            $str .= '　　';
-
+            $str .= '　 ';
             if ($i == $level - $treeStat) {
                 if (isset($models[$k + 1])) {
-                    return $str . "├──";
+                    return $str . "├─";
                 }
 
-                return $str . "└──";
+                return $str . "└─";
             }
         }
 
@@ -380,4 +379,32 @@ class ArrayHelper extends BaseArrayHelper
         }
         return $result_array;
     }
+    /**
+     * 分组下拉框
+     * @param unknown $models
+     * @param number $pid
+     * @param string $idField
+     * @param string $titleField
+     * @param string $pidField
+     * @param number $treeStat
+     * @return string[]|string[][]|unknown[][]
+     */
+    public static function itemsMergeGrpDropDown($models,$pid = 0, $idField = 'id',$titleField = 'name',$pidField = 'pid', $treeStat = 1)
+    {
+        $tree = array();                                //每次都声明一个新数组用来放子元素
+        foreach($models as $key=>$model){
+            if($model[$pidField] == $pid){                      //匹配子记录
+                $attr = self::itemsMergeGrpDropDown($models,$model[$idField],$idField,$titleField,$pidField, $treeStat);
+                $title = self::itemsLevel($model['level'], $models, $key,$treeStat) . " " . $model[$titleField];
+                if(empty($attr)){
+                    $tree[$model[$idField]] = $title;
+                }else{
+                    $tree[$title] = $attr;//将记录存入新数组
+                }
+                
+            }
+        }
+        return $tree;
+    }
+        
 }

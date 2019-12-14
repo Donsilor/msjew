@@ -37,6 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'fields'=>
                                 [
                                     'attr_name'=>['type'=>'textInput'],
+                                    'long_name'=>['type'=>'textInput'],                                    
                                     'remark'=>['type'=>'textArea','options'=>[]]                            
                                 ]]);
                 	    ?>

@@ -64,7 +64,7 @@ class AttributeService extends Service
         
         $query = Attribute::find()->alias('a')
                 ->leftJoin('{{%goods_attribute_lang}} b', 'b.master_id = a.id and b.language = "'.$language.'"')
-                ->select(['a.*','b.attr_name'])
+                ->select(['a.*',"if((b.long_name='' or b.long_name is null),b.attr_name,concat(b.attr_name,'(',b.long_name,')')) as attr_name"])
                 ->orderBy('sort asc,created_at asc');
         
         if( $status ){

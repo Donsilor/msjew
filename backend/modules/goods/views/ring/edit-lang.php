@@ -109,7 +109,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     <li class="pull-left header"><i class="fa fa-th"></i> 图片信息</li>
                 </ul>
                 <div class="box-body col-lg-9">
-                    <?= $form->field($model, 'ring_3ds')->textInput(['maxlength' => true]) ?>
+
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <?= $form->field($model, 'ring_3ds')->textInput(['maxlength' => true]) ?>
+                        </div>
+
+                    </div>
+
                     <?php $model->ring_images = !empty($model->ring_images)?explode(',', $model->ring_images):null;?>
                     <?= $form->field($model, 'ring_images')->widget(common\widgets\webuploader\Files::class, [
                         'type' => 'images',
@@ -160,7 +167,75 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
     <?php ActiveForm::end(); ?>
 
+    <script type="text/javascript">
+        $(function(){
+            $('form#Ring').on('submit', function (e) {
+                var count = 0;
+                var style_arr = [];
+                $("input[name*='RingRelation[style_id][]']").each(function(){
+                    if($(this).val != ''){
+                        count += 1;
+                    }
+                    style_arr.push($(this).val());
+                });
 
+                $.unique(style_arr); //去重
+                var leng = style_arr.length;
+                if(leng != count){
+                    rfError("商品添加有重复");
+                    e.preventDefault();
+                    return
+                }
+
+                if(count == 0){
+                    $(".openIframe1").addClass('btn-danger');
+                    $('body,html').animate({scrollTop: $('.openIframe1').offset().top}, 500);
+                    rfError("请选添加商品");
+                    e.preventDefault();
+                    return
+                }else if(count == 1){
+                    $("#ring-status input[value=0]").attr('checked','true');
+                    // appConfirm('只有一个商品，默认下架','ss', function (value) {
+                    //     switch (value) {
+                    //         case "defeat":
+                    //             $('form#Ring').submit();
+                    //             return true;
+                    //             break;
+                    //         default:
+                    //     }
+                    // });
+                    $("form#Ring").data('yiiActiveForm').validated = true;
+                    if (!confirm('只要一个商品，默认下架')){
+                        e.preventDefault();
+                        return
+                    }
+                }
+
+                $.ajax({
+                    type: "post",
+                    url: 'is-have',
+                    dataType: "json",
+                    async: false,
+                    data: {style_ids:style_arr,ring_id:<?= $model->id?? 0 ?>},
+                    success: function (data) {
+                        if (parseInt(data.code) !== 200) {
+                            rfMsg(data.message);
+                        } else {
+                            console.log(data.data.count);
+                            if(data.data.count > 0){
+                                rfError('ID：' + data.data.style_ids + "已经被其他对戒添加");
+                                e.preventDefault();
+                                return
+                            }
+
+                        }
+                    }
+                });
+
+
+            })
+        });
+    </script>
     <script>
         var style_ids=<?php echo json_encode($style_ids);?>;
         var style_arr=eval(style_ids);

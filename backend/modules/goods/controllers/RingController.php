@@ -144,7 +144,7 @@ class RingController extends BaseController
             $uplock_style_ids = array_diff($old_style_ids,$style_ids);
             if($uplock_style_ids){
                 RingRelation::deleteAll(['and','ring_id'=>$ring_id,['in','style_id',$uplock_style_ids]]);
-                Style::updateAll(['is_lock'=>0],['in','id',$uplock_style_ids]);
+                Style::updateAll(['ring_id'=>0],['in','id',$uplock_style_ids]);
             }
             //新增商品的id，需要上锁
             $unlock_style_ids = array_diff($style_ids,$old_style_ids);
@@ -157,7 +157,7 @@ class RingController extends BaseController
                     $relationModel->save();
                 }
                 // Style::updateAll(['is_lock'=>1],['and',['in','id', $unlock_style_ids],['is_lock'=>0]]);
-                Style::updateAll(['is_lock'=>1],['in','id', $unlock_style_ids]);
+                Style::updateAll(['ring_id'=>$ring_id],['in','id', $unlock_style_ids]);
             }
         }catch (Exception $e){
             throw $e;
@@ -199,7 +199,7 @@ class RingController extends BaseController
         $dataProvider->query->andWhere(['>=', 'status', StatusEnum::DISABLED]);
        //戒指分类
         $dataProvider->query->andFilterWhere(['=', 'type_id',2]);
-        $dataProvider->query->andFilterWhere(['=', 'is_lock',0]);
+        $dataProvider->query->andFilterWhere(['=', 'ring_id',0]);
 
         $dataProvider->query->joinWith(['lang']);
 
@@ -235,6 +235,33 @@ class RingController extends BaseController
 
     }
 
+
+    //查询是否存在
+    public function actionIsHave(){
+        $request = Yii::$app->request;
+
+        if($request->isPost)
+        {
+            $post = Yii::$app->request->post();
+//            return ResultHelper::json(200, '保存成功',['model'=>$post]);
+            if(!isset($post['style_ids']) || empty($post['style_ids'])){
+                return ResultHelper::json(422, '参数错误');
+            }
+            $style_ids = $post['style_ids'];
+            $ring_id = $post['ring_id'];
+
+            $list = RingRelation::find()
+                ->where(['in','style_id',$style_ids])
+                ->andWhere(['<>','ring_id',$ring_id])
+                ->asArray()
+                ->all();
+            $data['style_ids'] = array_column($list,'style_id');
+            $data['count'] = count($list);
+
+            return ResultHelper::json(200, 'ok',$data);
+        }
+
+    }
 
     /**
      * 删除

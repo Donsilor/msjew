@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::delete(['delete', 'id' => $model->id]);
                 },
                 'view'=> function($url, $model, $key){
-                    return Html::a('预览', '',['class'=>'btn btn-sm']);
+                    return Html::a('预览', '',['class'=>'btn btn-info btn-sm']);
                 },
                 ]
             ]

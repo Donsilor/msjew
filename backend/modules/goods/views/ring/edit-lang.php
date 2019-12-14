@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box-body nav-tabs-custom">
     <h2 class="page-header">对戒发布</h2>
     <?php $tab_list = [0=>'全部',1=>'基础信息',2=>'款式分类',3=>'图文信息',4=>'SEO优化'];?>
-    <?php echo Html::tab($tab_list,0,'tab')?>>
+    <?php echo Html::tab($tab_list,0,'tab')?>
     <div class="tab-content">
         <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_1">
             <ul class="nav nav-tabs pull-right">

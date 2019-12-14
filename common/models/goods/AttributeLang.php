@@ -38,7 +38,7 @@ class AttributeLang extends \yii\db\ActiveRecord
             [['attr_values','remark'], 'string', 'max' => 500],
             [['attr_name'],'unique', 'targetAttribute'=>['attr_name','language'],
                  //'targetClass' => 'models\AttributeLang', // 模型，缺省时默认当前模型。
-                 'comboNotUnique' => '属性显示名称重复' //错误信息
+                 'comboNotUnique' => '属性名称重复' //错误信息
             ]
         ];
     }
@@ -56,7 +56,7 @@ class AttributeLang extends \yii\db\ActiveRecord
             'long_name' => Yii::t('goods_attribute', '属性长名称'),
             'attr_values' => Yii::t('goods_attribute', '属性值'),
             'default_value' => Yii::t('goods_attribute', '默认值'),
-            'remark' => Yii::t('goods_attribute', '属性描述'),
+            'remark' => Yii::t('goods_attribute', '备注'),
         ];
     }
 }

@@ -32,11 +32,12 @@ class RingLang extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['ring_name'],'required'],
             [['master_id'], 'integer'],
             [['ring_body'], 'string'],
             [['language'], 'string', 'max' => 5],
             [['ring_name'], 'string', 'max' => 100],
-            [['meta_title', 'meta_word'], 'string', 'max' => 200],
+            [['meta_title', 'meta_word'], 'string', 'max' => 255],
             [['meta_desc'], 'string', 'max' => 500],
         ];
     }
@@ -47,14 +48,14 @@ class RingLang extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '主键ID',
-            'master_id' => '对接ID',
-            'language' => '语言类型',
-            'ring_name' => '对戒名称',
-            'ring_body' => '图文描述',
-            'meta_title' => 'meta标题',
-            'meta_desc' => 'meta描述',
-            'meta_word' => 'meta关键字',
+            'id' => 'ID',
+            'master_id' => 'Ring ID',
+            'language' => Yii::t("common","语言类型"),
+            'ring_name' => Yii::t("goods","对戒名称"),
+            'ring_body' => Yii::t("goods","对戒详情"),
+            'meta_title' => Yii::t('goods', 'SEO标题'),
+            'meta_word' => Yii::t('goods', 'SEO关键词'),
+            'meta_desc' => Yii::t('goods', 'SEO描述'),
         ];
     }
 }

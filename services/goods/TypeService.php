@@ -90,7 +90,7 @@ class TypeService extends Service
         }
         
         $query = Type::find()->alias('a');        
-        if($status){
+        if($status !== null){
             $query->andWhere(['=','a.status',$status]);
         }
         $query->andWhere(['or',['a.id'=>$id],['a.pid'=>$id]]);      

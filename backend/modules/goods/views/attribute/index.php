@@ -65,6 +65,17 @@ $this->params['breadcrumbs'][] = $this->title;
                  'attribute'=>'lang.attr_values',
             ],
             [
+                'attribute' => 'use_type',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\AttrUseTypeEnum::getValue($model->use_type);
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'use_type',\common\enums\AttrUseTypeEnum::getMap(), [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+            ],
+            [
                 'attribute' => 'status',
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],

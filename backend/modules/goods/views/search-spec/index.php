@@ -8,7 +8,7 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('goods_attribute', '产品规格管理');
+$this->title = Yii::t('goods_attribute', '搜索规格管理');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -78,41 +78,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]),
             ],
             [
-                'attribute' => 'attr_type',
+                'attribute' => 'search_type',
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
-                    return \common\enums\AttrTypeEnum::getValue($model->attr_type);
+                    return common\enums\SearchTypeEnum::getValue($model->search_type);
                 },
-                'filter' => Html::activeDropDownList($searchModel, 'attr_type',\common\enums\AttrTypeEnum::getMap(), [
+                'filter' => Html::activeDropDownList($searchModel, 'search_type',common\enums\SearchTypeEnum::getMap(), [
                         'prompt' => '全部',
                         'class' => 'form-control'
                 ]),
-            ],
-            [
-                'attribute' => 'input_type',
-                'format' => 'raw',
-                'headerOptions' => ['class' => 'col-md-1'],
-                'value' => function ($model){
-                    return \common\enums\InputTypeEnum::getValue($model->input_type);
-                },
-                'filter' => Html::activeDropDownList($searchModel, 'input_type',\common\enums\InputTypeEnum::getMap(), [
-                        'prompt' => '全部',
-                        'class' => 'form-control'
-                ]),
-            ],
-            [
-                'attribute' => 'is_require',
-                'format' => 'raw',
-                'headerOptions' => ['class' => 'col-md-1'],
-                'value' => function ($model){
-                    return \common\enums\ConfirmEnum::getValue($model->is_require);
-                },
-                'filter' => Html::activeDropDownList($searchModel, 'is_require',\common\enums\ConfirmEnum::getMap(), [
-                        'prompt' => '全部',
-                        'class' => 'form-control'
-                ]),
-            ],            
+            ],                   
             [
                 'attribute' => 'status',
                 'format' => 'raw',
@@ -137,7 +113,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{edit} {status}',
+                'template' => '{edit} {status} {delete}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
                         return Html::edit(['ajax-edit','id' => $model->id,'returnUrl' => \common\components\Helper::getReturnUrl()], '编辑', [

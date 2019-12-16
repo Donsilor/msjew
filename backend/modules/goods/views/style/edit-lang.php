@@ -274,7 +274,19 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
 
 <?php ActiveForm::end(); ?>
 <script type="text/javascript">
-$(function(){    
+$(function(){ 
+	$(document).on("click",'.control-label',function(){
+         var checked = false; 
+		 if(!$(this).hasClass('checked')){
+			 checked = true;
+			 $(this).addClass('checked');
+		 }else{
+			 $(this).removeClass('checked');
+		 }
+
+         $(this).parent().find("input[type*='checkbox']").prop("checked",checked);
+	});
+	//批量商品编码复制
 	$(document).on("click",'.batch-goods_sn',function(){
 		var hasEdit = false;
 		var fromValue = $("#style-style_sn").val();

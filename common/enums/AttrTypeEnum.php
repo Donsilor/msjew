@@ -28,8 +28,8 @@ class AttrTypeEnum extends BaseEnum
         self::TYPE_CATE => '款式分类',
     ];
   }
-
-    public static function getMapMs(): array
+   
+    public static function getRemarkMap(): array
     {
         return [
             self::TYPE_BASE => '基础属性（商品基本参数--信息在商品详情编辑“基础属性”模块展示）',

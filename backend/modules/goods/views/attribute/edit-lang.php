@@ -2,12 +2,9 @@
 
 use common\helpers\Html;
 use yii\widgets\ActiveForm;
-use common\enums\ConfirmEnum;
-use common\enums\InputTypeEnum;
-use common\enums\AttrTypeEnum;
-use common\enums\StatusEnum;
 use yii\grid\GridView;
 use common\helpers\Url;
+
 /* @var $this yii\web\View */
 /* @var $model common\models\goods\Attribute */
 /* @var $form yii\widgets\ActiveForm */
@@ -40,7 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'remark'=>['type'=>'textArea','options'=>[]]                            
                                 ]]);
                 	    ?>
-                        <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
+                	    <?= $form->field($model, 'use_type')->radioList(common\enums\AttrUseTypeEnum::getMap())?>
+                        <?= $form->field($model, 'status')->radioList(common\enums\StatusEnum::getMap())?>
                         <?= $form->field($model, 'sort')->textInput() ?>                    
                     </div>  
                 </div>                

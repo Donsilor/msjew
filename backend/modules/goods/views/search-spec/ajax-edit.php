@@ -28,25 +28,16 @@ $model->attr_values = $model->attr_values?explode(",",$model->attr_values):[];
                     ],
             ]);?>
             <?= $form->field($model, 'attr_id')->widget(kartik\select2\Select2::class, [
-                    'data' => Yii::$app->services->goodsAttribute->getDropDown(),
+                    'data' => Yii::$app->services->goodsAttribute->getDropDown(1,2),
                     'options' => ['placeholder' => '请选择'],
                     'pluginOptions' => [
                         'allowClear' => true
                     ],
             ]);?>
-			<div id="box-attributespec-attr_values" style="<?php echo empty($attrValues)?'display:none':''?>">
+			<div id="box-searchspec-attr_values" style="<?php echo empty($attrValues)?'display:none':''?>">
 				<?= $form->field($model, 'attr_values')->checkboxList($attrValues,['prompt'=>'请选择']);?>
-			</div>
-			
-			<?= $form->field($model, 'attr_type')->widget(kartik\select2\Select2::class, [
-			        'data' => common\enums\AttrTypeEnum::getRemarkMap(),
-                    'options' => [],
-                    'pluginOptions' => [
-                        'allowClear' => false
-                    ],
-            ]);?>             
-            <?= $form->field($model, 'input_type')->radioList(common\enums\InputTypeEnum::getMap()) ?>
-            <?= $form->field($model, 'is_require')->radioList(common\enums\ConfirmEnum::getMap())?>
+			</div>     
+            <?= $form->field($model, 'search_type')->radioList(common\enums\SearchTypeEnum::getMap()) ?>
             <?= $form->field($model, 'status')->radioList(common\enums\StatusEnum::getMap())?>
             <?= $form->field($model, 'sort')->textInput() ?> 
                    
@@ -58,16 +49,14 @@ $model->attr_values = $model->attr_values?explode(",",$model->attr_values):[];
 <?php ActiveForm::end(); ?>
 
 <script>
-$("#attributespec-attr_id").change(function(){
-
-	$("#box-attributespec-attr_values").hide();
-
+$("#searchspec-attr_id").change(function(){    
+	$("#box-searchspec-attr_values").hide();
 	var attr_id = $(this).val();	
 	if(attr_id){
         $.post("<?php echo Url::to(['ajax-attr-values'])?>",{'id':'<?= $model->id ?>','attr_id':attr_id},function(data){
             if(data) {        
-                 $("#attributespec-attr_values").html(data); 
-                 $("#box-attributespec-attr_values").show();
+                 $("#searchspec-attr_values").html(data); 
+                 $("#box-searchspec-attr_values").show();
             }
         });
 	}

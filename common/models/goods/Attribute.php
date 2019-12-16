@@ -36,7 +36,7 @@ class Attribute extends BaseModel
     public function rules()
     {
         return [
-            [['status'], 'required'],
+            [['status','use_type'], 'required'],
             [['id','status', 'sort','created_at', 'updated_at'], 'integer'],
             [['attr_name','language'], 'safe'],            
         ];
@@ -51,13 +51,10 @@ class Attribute extends BaseModel
             'id' => Yii::t('goods_attribute', 'ID'),            
             'status' => Yii::t('goods_attribute', '状态'),
             'sort' => Yii::t('goods_attribute', '排序'),
-            'attr_type' => Yii::t('goods_attribute', '属性类型'),
-            'type_id' => Yii::t('goods_attribute', '产品线'),
             'input_type' => Yii::t('goods_attribute', '显示类型'),
-            'is_require' => Yii::t('goods_attribute', '是否必填'),
+            'use_type' => Yii::t('goods_attribute', '使用类型'),
             'created_at' => Yii::t('goods_attribute', '创建时间'),
-            'updated_at' => Yii::t('goods_attribute', '更新时间'),  
-                
+            'updated_at' => Yii::t('goods_attribute', '更新时间'),
             'attr_name'=>Yii::t('goods_attribute', '属性名称'),
         ];
     }
@@ -86,13 +83,5 @@ class Attribute extends BaseModel
     public function getLang()
     {
         return $this->hasOne(AttributeLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language'=>Yii::$app->language]);
-    }
-    /**
-     * 关联产品线分类一对一
-     * @return \yii\db\ActiveQuery
-     */
-    public function getType()
-    {
-        return $this->hasOne(TypeLang::class, ['master_id'=>'type_id'])->alias('type')->where(['type.language'=>Yii::$app->language]);
-    }
+    }    
 }

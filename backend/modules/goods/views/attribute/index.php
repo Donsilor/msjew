@@ -68,9 +68,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'use_type',
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
-                    return common\enums\AttrUseTypeEnum::getValue($model->use_type);
+                    return \common\enums\AttrUseTypeEnum::getValue($model->use_type);
                 },
-                'filter' => Html::activeDropDownList($searchModel, 'use_type',common\enums\AttrUseTypeEnum::getMap(), [
+                'filter' => Html::activeDropDownList($searchModel, 'use_type',\common\enums\AttrUseTypeEnum::getMap(), [
                     'prompt' => '全部',
                     'class' => 'form-control',
                 ]),

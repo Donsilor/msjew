@@ -236,7 +236,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     //     }
                     // });
                     $("form#Ring").data('yiiActiveForm').validated = true;
-                    if (!confirm('只要一个商品，默认下架')){
+                    if (!confirm('只有一款商品，系统默认下架状态！')){
                         e.preventDefault();
                         return
                     }

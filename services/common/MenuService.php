@@ -13,6 +13,7 @@ use common\enums\TypeEnum;
 use common\helpers\StringHelper;
 use common\helpers\Auth;
 use common\helpers\TreeHelper;
+use common\models\common\MenuLang;
 
 /**
  * Class MenuService
@@ -79,14 +80,14 @@ class MenuService extends Service
     public function getDropDown(MenuCate $menuCate, $app_id, $id = '', $language=null)
     {
         if(empty($language)){
-            $language = Yii::$app->language;
+            $language = Yii::$app->params['language'];;
         }
         $list = Menu::find()->alias('a')
             ->where(['>=', 'status', StatusEnum::DISABLED])
             ->andWhere(['app_id' => $app_id])
             ->andWhere(['type' => $menuCate->type])
             ->andWhere(['cate_id' => $menuCate->id])
-            ->leftJoin('{{%common_menu_lang%}} as b','b.master_id = a.id and b.language = "'.$language.'"')
+            ->leftJoin(MenuLang::tableName().' b','b.master_id = a.id and b.language = "'.$language.'"')
             ->andFilterWhere(['b.addons_name' => $menuCate->addons_name])
             ->andFilterWhere(['<>', 'a.id', $id])
 
@@ -154,10 +155,10 @@ class MenuService extends Service
     /**
      * @return array|\yii\db\ActiveRecord[]
      */
-    public function findAll($language=null)
+    public function findAll($language = null)
     {
         if(empty($language)){
-            $language = Yii::$app->language;
+            $language = Yii::$app->params['language'];
         }
         $data = Menu::find()->alias('a')->where(['status' => StatusEnum::ENABLED]);
         // 关闭开发模式
@@ -165,7 +166,7 @@ class MenuService extends Service
             $data = $data->andWhere(['dev' => StatusEnum::DISABLED]);
         }
 
-        $models = $data->leftJoin('{{%common_menu_lang%}} as b','b.master_id = a.id and b.language = "'.$language.'"')
+        $models = $data->leftJoin(MenuLang::tableName().' b','b.master_id = a.id and b.language = "'.$language.'"')
             ->orderBy('cate_id asc, sort asc')
             ->andWhere(['app_id' => Yii::$app->id])
             ->with(['cate' => function (\yii\db\ActiveQuery $query) {

@@ -41,7 +41,7 @@ class AccessToken extends RateLimit
      *
      * @var array
      */
-    public static $ruleGroupRnage = ['miniProgram', 'app', 'wechat'];
+    public static $ruleGroupRnage = ['miniProgram', 'app', 'wechat','front'];
 
     /**
      * {@inheritdoc}

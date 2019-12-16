@@ -1,5 +1,6 @@
 <?php
 return [
+    'language'=>'zh-CN',//默认语言'    
     'adminEmail' => 'admin@example.com',
     'supportEmail' => 'support@example.com',
     'user.passwordResetTokenExpire' => 3600,

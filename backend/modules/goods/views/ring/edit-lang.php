@@ -113,8 +113,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="box-body col-lg-9">
 
                     <div class="row">
+                        <div class="col-lg-4">
+                            <?= $form->field($model, 'ring_3ds')->textInput(['maxlength' => true, 'id'=>'ds3']) ?>
+                        </div>
                         <div class="col-lg-5">
-                            <?= $form->field($model, 'ring_3ds')->textInput(['maxlength' => true]) ?>
+                            <?= Html::button('预览',['class'=>'btn btn-info btn-sm','style'=>'margin-top:25px;','onclick'=>"view_3ds()"]) ?>
                         </div>
 
                     </div>
@@ -142,7 +145,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 			                'class'=> \common\widgets\ueditor\UEditor::class,
                 			                'options'=>[
                 			                        'formData' => [
-                			                                'drive' => 'qiniu', // 默认本地 支持qiniu/oss/cos 上传
+                			                                'drive' => 'oss', // 默认本地 支持qiniu/oss/cos 上传
                 			                                'poster' => false, // 上传视频时返回视频封面图，开启此选项需要安装 ffmpeg 命令
                 			                                'thumb' => [
                 			                                        [
@@ -396,5 +399,7 @@ $this->params['breadcrumbs'][] = $this->title;
             });
 
         }
+        
+
 
     </script>

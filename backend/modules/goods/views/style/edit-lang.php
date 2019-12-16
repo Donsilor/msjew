@@ -196,9 +196,15 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
                   ]); ?>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12"><?= $form->field($model, 'style_3ds')->textInput(['maxlength'=>true]) ?></div>
+                    <div class="col-lg-5">
+                        <?= $form->field($model, 'style_3ds')->textInput(['maxlength' => true, 'id'=>'ds3']) ?>
+                    </div>
+                    <div class="col-lg-5">
+                        <?= Html::button('预览',['class'=>'btn btn-info btn-sm','style'=>'margin-top:25px;','onclick'=>"view_3ds()"]) ?>
+                    </div>
+
                 </div>
-                    
+
                 <div class="row nav-tabs-custom">
     		        <?php echo Html::langTab("tab_body")?>    			      
         			<div class="tab-content " style="padding-left:10px"> 

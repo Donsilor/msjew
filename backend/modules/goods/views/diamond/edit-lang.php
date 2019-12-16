@@ -164,7 +164,15 @@ $this->params['breadcrumbs'][] = $this->title;
               <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[3]??''?></li>
             </ul>
             <div class="box-body col-lg-9">
-              <?= $form->field($model, 'goods_3ds')->textInput(['maxlength' => true]) ?>
+            <div class="row">
+                <div class="col-lg-5">
+                    <?= $form->field($model, 'goods_3ds')->textInput(['maxlength' => true, 'id'=>'ds3']) ?>
+                </div>
+                <div class="col-lg-5">
+                    <?= Html::button('预览',['class'=>'btn btn-info btn-sm','style'=>'margin-top:25px;','onclick'=>"view_3ds()"]) ?>
+                </div>
+
+            </div>
               <?= $form->field($model, 'goods_image')->widget(common\widgets\webuploader\Files::class, [
                     'config' => [
                         'pick' => [

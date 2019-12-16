@@ -261,4 +261,23 @@ $this->registerJs($script);
             });
         }
     }
+
+    //显示360 主图
+    function view_3ds() {
+        var ds3 = $("#ds3").val();
+        if(ds3 == ''){
+            rfMsg('请填写360°主图');
+            return;
+        }
+        var title = '360°主图';
+        var width = '498px';
+        var height = '498px';
+        var offset = "0";
+        var btn = [];
+        // var href = ds3;
+        var href = "https://spins0.arqspin.com/iframe.html?spin=" + ds3 + "&is=0.16"
+        openIframe(title, width, height, href, offset,btn);
+        e.preventDefault();
+        return false;
+    }
 </script>

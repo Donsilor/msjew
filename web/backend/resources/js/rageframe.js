@@ -201,14 +201,14 @@ layer.config({
 });
 
 // 打一个新窗口
-function openIframe(title, width, height, content, offset) {
+function openIframe(title, width, height, content, offset, btn=['保存', '关闭']) {
     layer.open({
         type: 2,
         title: title,
         shade: 0.3,
         offset: offset,
         shadeClose: true,
-        btn: ['保存', '关闭'],
+        btn: btn,
         yes: function (index, layero) {
             var body = layer.getChildFrame('body', index);
             var form = body.find('#w0');

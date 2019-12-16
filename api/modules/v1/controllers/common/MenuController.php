@@ -31,4 +31,9 @@ class MenuController extends OnAuthController
         
         return Yii::$app->services->menu->getOnAuthList();
     }
+    
+    public function actionTest()
+    {
+        return 'test';
+    }
 }

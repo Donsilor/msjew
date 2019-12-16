@@ -189,7 +189,7 @@ $this->params['breadcrumbs'][] = $this->title;
                           'multiple' => true,
                       ],
                       'formData' => [
-                          'drive' => 'local',// 默认本地 支持 qiniu/oss 上传
+                          //'drive' => 'local',// 默认本地 支持 qiniu/oss 上传
                       ],
                   ]
               ]); ?>
@@ -216,14 +216,14 @@ $this->params['breadcrumbs'][] = $this->title;
         			                'class'=> \common\widgets\ueditor\UEditor::class,
         			                'options'=>[
         			                        'formData' => [
-        			                                'drive' => 'qiniu', // 默认本地 支持qiniu/oss/cos 上传
+        			                                /* //'drive' => 'qiniu', // 默认本地 支持qiniu/oss/cos 上传
         			                                'poster' => false, // 上传视频时返回视频封面图，开启此选项需要安装 ffmpeg 命令
         			                                'thumb' => [
         			                                        [
     			                                                'width' => 800,
     			                                                'height' => 800,
         			                                        ]
-        			                                ]
+        			                                ] */
         			                        ],
         			                ],//end options            			                                			                
             			        ],//end goods_body

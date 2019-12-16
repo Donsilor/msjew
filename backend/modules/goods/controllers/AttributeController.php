@@ -126,14 +126,15 @@ class AttributeController extends BaseController
         // ajax 校验
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
-            $is_new = $model->isNewRecord;
+            $is_new = $model->isNewRecord;            
             if($flag1 = $model->save()){
+                $id = $model->id;
                 //多语言编辑
                 $flag2 = $this->editLang($model,true);
             }
             if($flag1 !== false && $flag2 !== false){   
                 return $is_new ? 
-                $this->message("添加成功", $this->redirect(['edit-lang','id'=>$model->id]), 'success'):
+                $this->message("添加成功", $this->redirect(['edit-lang','id'=>$id]), 'success'):
                 $this->message("保存成功", $this->redirect(['index']), 'success');
             }
             return $this->message($this->getError($model), $this->redirect(['index']), 'error');

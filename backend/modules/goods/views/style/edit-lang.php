@@ -189,9 +189,15 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
                             'pick' => [
                                 'multiple' => true,
                             ],
-                            'formData' => [
-                                //'drive' => 'local',// 默认本地 支持 qiniu/oss 上传
-                            ],
+                            /* 'formData' => [
+                                    'drive' => 'oss',// 默认本地 支持 qiniu/oss 上传
+                                    'thumb' => [
+                                            [
+                                                    'width' => 800,
+                                                    'height' => 800,
+                                            ]
+                                    ]
+                            ], */
                         ]
                   ]); ?>
                 </div>
@@ -215,8 +221,8 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
             			                'type'=>'widget',
             			                'class'=> \common\widgets\ueditor\UEditor::class,
             			                'options'=>[
-            			                        'formData' => [
-            			                                'drive' => 'qiniu', // 默认本地 支持qiniu/oss/cos 上传
+            			                         /* 'formData' => [
+            			                                //'drive' => 'qiniu', // 默认本地 支持qiniu/oss/cos 上传
             			                                'poster' => false, // 上传视频时返回视频封面图，开启此选项需要安装 ffmpeg 命令
             			                                'thumb' => [
             			                                        [
@@ -224,7 +230,7 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
         			                                                'height' => 800,
             			                                        ]
             			                                ]
-            			                        ],
+            			                        ],  */
             			                ],//end options            			                                			                
                 			        ],//end goods_body
                 			]]);

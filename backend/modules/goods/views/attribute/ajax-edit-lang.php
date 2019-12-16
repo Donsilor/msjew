@@ -2,13 +2,8 @@
 
 use yii\widgets\ActiveForm;
 use common\helpers\Url;
-use common\enums\StatusEnum;
 use common\helpers\Html;
-use common\enums\AttrTypeEnum;
-use common\enums\InputTypeEnum;
-use common\enums\ConfirmEnum;
 use common\widgets\langbox\LangBox;
-
 $form = ActiveForm::begin([
     'id' => $model->formName(),
     'enableAjaxValidation' => true,
@@ -35,8 +30,8 @@ $form = ActiveForm::begin([
                         'remark'=>['type'=>'textArea','options'=>[]] 
                     ]]);
     	    ?>
-    	  
-            <?= $form->field($model, 'status')->radioList(StatusEnum::getMap())?>
+    	    <?= $form->field($model, 'use_type')->radioList(common\enums\AttrUseTypeEnum::getMap())?>
+            <?= $form->field($model, 'status')->radioList(common\enums\StatusEnum::getMap())?>
             <?= $form->field($model, 'sort')->textInput() ?>
             </div> 
         </div>    

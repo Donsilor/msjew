@@ -8,7 +8,7 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('goods_attribute', '规格管理');
+$this->title = Yii::t('goods_attribute', '产品规格管理');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

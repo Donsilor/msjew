@@ -53,28 +53,32 @@ class AttributeService extends Service
         return \Yii::$app->db->createCommand($sql)->execute();
     }
     /**
-     * 属性列表
+     * 基础属性下拉列表
      * @return array|\yii\db\ActiveRecord[]
      */
-    public function getDropDown($status = null,$language = null)
+    public function getDropDown($status = 1,$use_type = 1,$language = null)
     {
         if(empty($language)){
             $language = Yii::$app->params['language'];
         }
         
         $query = Attribute::find()->alias('a')
-                ->leftJoin('{{%goods_attribute_lang}} b', 'b.master_id = a.id and b.language = "'.$language.'"')
-                ->select(['a.*',"if((b.remark='' or b.remark is null),b.attr_name,concat(b.attr_name,'(',b.remark,')')) as attr_name"])
-                ->orderBy('sort asc,created_at asc');
+            ->leftJoin(AttributeLang::tableName().' b', 'b.master_id = a.id and b.language = "'.$language.'"')
+            ->select(['a.*',"if((b.remark='' or b.remark is null),b.attr_name,concat(b.attr_name,'(',b.remark,')')) as attr_name"]);
         
-        if( $status ){
+        if($use_type >0) {
+            $query->andWhere(['in','a.use_type',[0,$use_type]]);
+        }
+        if( $status !== null){
             $query->andWhere(['=','a.status',$status]);
         }
         
-        $models = $query->asArray()->all();       
+        $query ->orderBy('sort asc,created_at asc');
+        $models = $query->asArray()->all();
         
         return ArrayHelper::map($models,'id','attr_name');
     }
+   
     
     /**
      * 根据产品线查询属性列表（数据行）
@@ -148,7 +152,7 @@ class AttributeService extends Service
         if(is_numeric($status)){
             $query->andWhere(['=','val.status',$status]);
         }
-        $models = $query->orderBy('sort asc')->asArray()->all();
+        $models = $query->orderBy('val.sort asc,val.id asc')->asArray()->all();
         
         return array_column($models,'attr_value_name','id');
     }

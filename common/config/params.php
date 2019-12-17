@@ -4,6 +4,7 @@ return [
     'adminEmail' => 'admin@example.com',
     'supportEmail' => 'support@example.com',
     'user.passwordResetTokenExpire' => 3600,
+    'default_image'=>'https://bddco.oss-cn-hongkong.aliyuncs.com/images/2019/12/14/image_157631778355995698.jpg',    
     // 是否在模块内
     'inAddon' => false,
     // 多商户开启
@@ -21,7 +22,7 @@ return [
             'originalName' => false, // 是否保留原名
             'fullPath' => true, // 是否开启返回完整的文件路径
             'takeOverUrl' => '', // 配置后，接管所有的上传地址
-            'drive' => 'qiniu', // 默认本地 可修改 local/qiniu/oss/cos 上传
+            'drive' => 'local', // 默认本地 可修改 local/qiniu/oss/cos 上传
             'maxSize' => 1024 * 1024 * 10,// 图片最大上传大小,默认10M
             'extensions' => ["png", "jpg", "jpeg", "gif", "bmp"],// 可上传图片后缀不填写即为不限
             'path' => 'images/', // 图片创建路径

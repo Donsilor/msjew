@@ -78,4 +78,13 @@ class ImageHelper
 
         return false;
     }
+    
+    public static function thumb($image ,$tag = '')
+    {   
+          if(empty($image)) {
+              $image = \Yii::$app->params['default_image'];
+          }
+          
+          return $image;
+    }
 }

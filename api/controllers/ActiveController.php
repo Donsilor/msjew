@@ -12,8 +12,8 @@ use yii\filters\auth\HttpHeaderAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\web\BadRequestHttpException;
 use common\components\BaseAction;
-use common\behaviors\ActionLogBehavior;
 use common\behaviors\HttpSignAuth;
+use common\components\Page;
 
 /**
  * Class ActiveController
@@ -23,7 +23,7 @@ use common\behaviors\HttpSignAuth;
 class ActiveController extends \yii\rest\ActiveController
 {
     use BaseAction;
-
+    use Page;
     /**
      * 不用进行登录验证的方法
      * 例如： ['index', 'update', 'create', 'view', 'delete']

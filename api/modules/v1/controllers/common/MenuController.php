@@ -27,7 +27,7 @@ class MenuController extends OnAuthController
      */
     public function actionIndex()
     {   
-        $cat_id = \Yii::$app->request->post('cat_id',6);
+        $cat_id = 6;
         $models = Yii::$app->services->menu->getFrontList($cat_id);
         $models = ArrayHelper::itemsMerge($models,0,'id','pid','items');
         return $models;

@@ -2,6 +2,7 @@
 
 namespace backend\modules\member\controllers;
 
+use common\models\member\Book;
 use Yii;
 use common\models\base\SearchModel;
 use common\components\Curd;
@@ -9,6 +10,7 @@ use common\models\member\Member;
 use common\enums\StatusEnum;
 use backend\controllers\BaseController;
 use backend\modules\member\forms\RechargeForm;
+use common\helpers\ExcelHelper;
 
 /**
  * 会员管理
@@ -34,6 +36,9 @@ class MemberController extends BaseController
      */
     public function actionIndex()
     {
+        $title = Yii::$app->request->post('title',null);
+        $start_time = Yii::$app->request->post('start_time', null);
+        $end_time = Yii::$app->request->post('end_time', null);
         $searchModel = new SearchModel([
             'model' => $this->modelClass,
             'scenario' => 'default',
@@ -46,11 +51,19 @@ class MemberController extends BaseController
 
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
+
+        if($title){
+            $dataProvider->query->andFilterWhere(['=','email',$title]);
+        }
+        if($start_time && $end_time){
+            $dataProvider->query->andFilterWhere(['between','created_at', strtotime($start_time), strtotime($end_time)]);
+        }
+
         $dataProvider->query
             ->andWhere(['>=', 'status', StatusEnum::DISABLED])
             ->with('account');
 
-        return $this->render($this->action->id, [
+        return $this->render('member', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
         ]);
@@ -117,5 +130,48 @@ class MemberController extends BaseController
             'model' => $member,
             'rechargeForm' => $rechargeForm,
         ]);
+    }
+
+    /**
+     * 导出Excel
+     *
+     * @return bool
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function actionExport()
+    {
+        $title = Yii::$app->request->get('title',null);
+        $start_time = Yii::$app->request->get('start_time', null);
+        $end_time = Yii::$app->request->get('end_time', null);
+
+        // [名称, 字段名, 类型, 类型规则]
+        $header = [
+            ['ID', 'id'],
+            ['账号', 'email', 'text'],
+            ['注册时间', 'created_at', 'date', 'Y-m-d'],
+            ['首次登陆', 'visit_count', 'function', function($m){ return $m == 1 ? "是":"否";}],
+            ['是否留言', 'id', 'function' ,function($m){
+                $count = \common\models\member\Book::find()->where(['member_id'=>$m])->count();
+                return $count > 0 ? "是":"否";
+            }]
+
+        ];
+        $searchModel = Member::find();
+
+        if($title){
+            $searchModel->andFilterWhere(['=','email',$title]);
+        }
+        if($start_time && $end_time){
+            $searchModel->andFilterWhere(['between','created_at', strtotime($start_time), strtotime($end_time)]);
+        }
+
+        $list = $searchModel
+            ->orderBy('created_at desc')
+            ->asArray()
+            ->all();
+
+
+        return ExcelHelper::exportData($list, $header, 'Curd数据导出_' . time());
     }
 }

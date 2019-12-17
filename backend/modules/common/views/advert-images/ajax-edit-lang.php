@@ -36,20 +36,26 @@ $form = ActiveForm::begin([
                 'fields'=>
                     [
                         'title'=>['type'=>'textInput'],
+                        'adv_image'=>[
+                            //'label'=>Yii::t("common","商品介绍"),
+                            'type'=>'widget',
+                            'class'=> Files::class,
+                            'options'=>[
+                                'config' => [
+                                    // 可设置自己的上传地址, 不设置则默认地址
+                                    // 'server' => '',
+                                    'pick' => [
+                                        'multiple' => false,
+                                    ],
+                                ]
+                            ],//end options
+                        ],//end goods_body
 
                     ]]);
             ?>
         </div>
 
-        <?= $form->field($model, 'adv_image')->widget(Files::class, [
-            'config' => [
-                // 可设置自己的上传地址, 不设置则默认地址
-                // 'server' => '',
-                'pick' => [
-                    'multiple' => false,
-                ],
-            ]
-        ]); ?>
+
         <?= $form->field($model, 'adv_url')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'start_time')->widget(kartik\date\DatePicker::class, [

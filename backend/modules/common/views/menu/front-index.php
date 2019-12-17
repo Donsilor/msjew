@@ -11,15 +11,17 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 <div class="row">
     <div class="col-sm-12">
         <div class="nav-tabs-custom">
-            <div class="box-header">
-                <h3 class="box-title"><?= $this->title; ?></h3>
-                <div class="box-tools">
+            <ul class="nav nav-tabs">
+                <?php foreach ($cates as $cate){ ?>
+                    <li class="<?php if ($cate['id'] == $cate_id ){ echo 'active' ;}?>"><a href="<?= Url::to(['front-index', 'cate_id' => $cate['id']]) ?>"> <?= $cate['title'] ?></a></li>
+                <?php } ?>
+                <li class="pull-right">
                     <?= Html::create(['front-edit-lang', 'cate_id' => $cate_id], '创建', [
                         'data-toggle' => 'modal',
                         'data-target' => '#ajaxModalLg',
-                    ])?>
-                </div>
-            </div>
+                    ]); ?>
+                </li>
+            </ul>
             <div class="tab-content">
                 <div class="active tab-pane">
                     <?= TreeGrid::widget([
@@ -28,7 +30,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         'parentColumnName' => 'pid',
                         'parentRootValue' => '0', //first parentId value
                         'pluginOptions' => [
-                            'initialState' => 'collapsed',
+                            //'initialState' => 'collapsed',
                         ],
                         'options' => ['class' => 'table table-hover'],
                         'columns' => [

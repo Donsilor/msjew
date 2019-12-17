@@ -96,7 +96,6 @@ HTML;
                 var status=<?php echo json_encode(common\enums\MemberEnum::getBookStatus());?>;
                 var status_arr=eval(status);
                 $.each(list, function (index, content) {
-
                     tpl += '<li>'
                         + '<time>' + content['created_at'] + '</time>'
                         + '<div class="title">' + content['email'] + '<span style="margin-left: 10px;">在线留言：</span>' + content['title'] +'</div>'

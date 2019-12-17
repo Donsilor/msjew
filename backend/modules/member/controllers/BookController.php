@@ -98,7 +98,7 @@ class BookController extends BaseController
             $searchModel->andFilterWhere(['between','b.created_at', strtotime($start_time), strtotime($end_time)]);
         }
 
-        $pageSize = 3; //每页显示数
+        $pageSize = 10; //每页显示数
         $total = $searchModel->count();
         $totalPage = ceil($total / $pageSize); //总页数
         $startPage = $page * $pageSize; //开始页数

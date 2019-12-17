@@ -101,14 +101,19 @@ class MenuService extends Service
 
         return ArrayHelper::merge([0 => '顶级菜单'], $data);
     }
-
+    
+    public function getSimpleList($languge = null)
+    {
+        return $this->findAll(null,$languge);
+    }
+    
+    
     /**
      * @return array
      */
     public function getOnAuthList()
     {
         $models = $this->findAll();
-
         // 获取权限信息
         $auth = [];
         if (!Yii::$app->services->auth->isSuperAdmin()) {
@@ -155,8 +160,11 @@ class MenuService extends Service
     /**
      * @return array|\yii\db\ActiveRecord[]
      */
-    public function findAll($language = null)
+    public function findAll($app_id = null,$language = null)
     {
+        if(empty($app_id)){
+            $app_id = Yii::$app->id;
+        }
         if(empty($language)){
             $language = Yii::$app->params['language'];
         }
@@ -165,21 +173,19 @@ class MenuService extends Service
         if (empty(Yii::$app->debris->config('sys_dev', false, 1))) {
             $data = $data->andWhere(['dev' => StatusEnum::DISABLED]);
         }
-
         $models = $data->leftJoin(MenuLang::tableName().' b','b.master_id = a.id and b.language = "'.$language.'"')
             ->orderBy('cate_id asc, sort asc')
-            ->andWhere(['app_id' => Yii::$app->id])
+            ->andWhere(['app_id' => $app_id])
             ->with(['cate' => function (\yii\db\ActiveQuery $query) {
-                return $query->andWhere(['app_id' => Yii::$app->id]);
+                return $query->andWhere(['app_id' => $app_id]);
             }])
             ->orderBy('sort asc, a.id asc')
             ->select(['a.*','ifnull(b.title,a.title) as title'])
             ->asArray()
             ->all();
-
         return $models;
     }
-
+    
     /**
      * @param $tree
      * @param $id

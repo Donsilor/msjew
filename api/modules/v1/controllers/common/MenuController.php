@@ -5,11 +5,11 @@ namespace api\modules\v1\controllers\common;
 use Yii;
 use api\controllers\OnAuthController;
 use common\models\common\Menu;
+//use api\controllers\ActiveController;
 
 /**
  * Class ProvincesController
  * @package api\modules\v1\controllers\member
- * @author jianyan74 <751393839@qq.com>
  */
 class MenuController extends OnAuthController
 {
@@ -17,7 +17,7 @@ class MenuController extends OnAuthController
      * @var Provinces
      */
     public $modelClass = Menu::class;
-    
+    protected $authOptional = ['index'];
     /**
      * 获取省市区
      *
@@ -25,15 +25,8 @@ class MenuController extends OnAuthController
      * @return array|yii\data\ActiveDataProvider
      */
     public function actionIndex()
-    {
-        return '111';
-        $pid = Yii::$app->request->get('pid', 0);
-        
-        return Yii::$app->services->menu->getOnAuthList();
+    {        
+        return Yii::$app->services->menu->getSimpleList();
     }
     
-    public function actionTest()
-    {
-        return 'test';
-    }
 }

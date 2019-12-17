@@ -49,6 +49,13 @@ class ActiveController extends \yii\rest\ActiveController
      */
     public function behaviors()
     {
+        //更改默认语言
+        $lang = \Yii::$app->request->get("lang");
+        if($lang) {
+            \Yii::$app->language = $lang;
+            \Yii::$app->params['language'] = $lang;
+        }
+       
         $behaviors = parent::behaviors();
         // 跨域支持
         $behaviors['corsFilter'] = [

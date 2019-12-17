@@ -175,7 +175,7 @@ class MenuService extends Service
         }
         $models = $data->leftJoin(MenuLang::tableName().' b','b.master_id = a.id and b.language = "'.$language.'"')
             ->orderBy('cate_id asc, sort asc')
-            ->andWhere(['app_id' => $app_id])
+            ->andWhere(['app_id' => \Yii::$app->id])
             ->with(['cate' => function (\yii\db\ActiveQuery $query) {
                 return $query->andWhere(['app_id' => \Yii::$app->id]);
             }])

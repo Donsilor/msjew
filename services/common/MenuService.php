@@ -14,6 +14,7 @@ use common\helpers\StringHelper;
 use common\helpers\Auth;
 use common\helpers\TreeHelper;
 use common\models\common\MenuLang;
+use common\enums\AppEnum;
 
 /**
  * Class MenuService
@@ -101,10 +102,26 @@ class MenuService extends Service
 
         return ArrayHelper::merge([0 => '顶级菜单'], $data);
     }
-    
-    public function getSimpleList($languge = null)
+    /**
+     * 前端菜单列表
+     * @param unknown $languge
+     * @return array
+     */
+    public function getFrontList($cate_id = null,$languge = null)
     {
-        return $this->findAll(null,$languge);
+        if(empty($language)){
+            $language = Yii::$app->params['language'];
+        }
+        $query = Menu::find()->alias('a')->where(['status' => StatusEnum::ENABLED]);
+        $query->leftJoin(MenuLang::tableName().' b','b.master_id = a.id and b.language = "'.$language.'"')
+                ->select(['a.id','a.pid','a.url','a.level','ifnull(b.title,a.title) as title'])
+                ->orderBy('cate_id asc, sort asc')
+                ->andWhere(['app_id' => \Yii::$app->id]);
+        if($cate_id >0) {
+            $query->andWhere(['=','a.cate_id',$cate_id]);
+        }
+        $models = $query->orderBy('sort asc, a.id asc')->asArray()->all();
+        return $models;
     }
     
     
@@ -160,29 +177,25 @@ class MenuService extends Service
     /**
      * @return array|\yii\db\ActiveRecord[]
      */
-    public function findAll($app_id = null,$language = null)
+    public function findAll($language = null)
     {
-        if(!empty($app_id)){
-            \Yii::$app->id = $app_id;
-        }
+
         if(empty($language)){
             $language = Yii::$app->params['language'];
         }
-        $data = Menu::find()->alias('a')->where(['status' => StatusEnum::ENABLED]);
+        $query = Menu::find()->alias('a')->where(['status' => StatusEnum::ENABLED]);
         // 关闭开发模式
         if (empty(Yii::$app->debris->config('sys_dev', false, 1))) {
-            $data = $data->andWhere(['dev' => StatusEnum::DISABLED]);
+            $query->andWhere(['dev' => StatusEnum::DISABLED]);
         }
-        $models = $data->leftJoin(MenuLang::tableName().' b','b.master_id = a.id and b.language = "'.$language.'"')
-            ->orderBy('cate_id asc, sort asc')
-            ->andWhere(['app_id' => \Yii::$app->id])
-            ->with(['cate' => function (\yii\db\ActiveQuery $query) {
-                return $query->andWhere(['app_id' => \Yii::$app->id]);
-            }])
-            ->orderBy('sort asc, a.id asc')
-            ->select(['a.*','ifnull(b.title,a.title) as title'])
-            ->asArray()
-            ->all();
+        $query->leftJoin(MenuLang::tableName().' b','b.master_id = a.id and b.language = "'.$language.'"')
+              ->select(['a.*','ifnull(b.title,a.title) as title'])
+              ->orderBy('cate_id asc, sort asc')
+              ->andWhere(['app_id' => \Yii::$app->id])
+              ->with(['cate' => function (\yii\db\ActiveQuery $query) {
+                        return $query->andWhere(['app_id' => \Yii::$app->id]);
+              }]); 
+        $models = $query->orderBy('sort asc, a.id asc')->asArray()->all();        
         return $models;
     }
     

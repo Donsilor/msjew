@@ -162,8 +162,8 @@ class MenuService extends Service
      */
     public function findAll($app_id = null,$language = null)
     {
-        if(empty($app_id)){
-            $app_id = Yii::$app->id;
+        if(!empty($app_id)){
+            \Yii::$app->id = $app_id;
         }
         if(empty($language)){
             $language = Yii::$app->params['language'];
@@ -177,7 +177,7 @@ class MenuService extends Service
             ->orderBy('cate_id asc, sort asc')
             ->andWhere(['app_id' => $app_id])
             ->with(['cate' => function (\yii\db\ActiveQuery $query) {
-                return $query->andWhere(['app_id' => $app_id]);
+                return $query->andWhere(['app_id' => \Yii::$app->id]);
             }])
             ->orderBy('sort asc, a.id asc')
             ->select(['a.*','ifnull(b.title,a.title) as title'])

@@ -5,6 +5,7 @@ namespace backend\modules\common\controllers;
 
 use common\models\common\Advert;
 use common\models\common\AdvertLang;
+use common\models\goods\Type;
 use function Complex\negative;
 use services\common\AdvertService;
 use Yii;
@@ -58,24 +59,14 @@ class AdvertImagesController extends BaseController
 
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams,['title','start_end']);
-
+        $dataProvider->query->andWhere(['type'=>1]);
         $dataProvider->query->joinWith(['lang']);
         $dataProvider->query->andFilterWhere(['like', 'lang.title',$searchModel->title]) ;
-
-//        if(!empty($this->start_end)) {
-//            $dataProvider->query->andWhere('>=','start_time', explode('/',$this->start_end)[0]);//起始时间
-//            $dataProvider->query->andWhere('<','end_time', (explode('/',$this->start_end)[1]));//结束时间
-//            }
-
-
-
-
         $dataProvider->query->andWhere(['>','status',-1]);
 
         $AdvertService = new AdvertService();
         //获取广告位
         $advert = $AdvertService->getDropDown(Yii::$app->language);
-
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -86,6 +77,45 @@ class AdvertImagesController extends BaseController
         ]);
     }
 
+    /**
+     * 首页
+     *
+     * @return string
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function actionBanner()
+    {
+        $searchModel = new SearchModel([
+            'model' => $this->modelClass,
+            'scenario' => 'default',
+            'partialMatchAttributes' => [], // 模糊查询
+            'defaultOrder' => [
+                'id' => SORT_DESC
+            ],
+            'pageSize' => $this->pageSize
+        ]);
+
+        $dataProvider = $searchModel
+            ->search(Yii::$app->request->queryParams,['title','start_end']);
+        $dataProvider->query->andWhere(['type'=>2]);
+        $dataProvider->query->joinWith(['lang']);
+        $dataProvider->query->andFilterWhere(['like', 'lang.title',$searchModel->title]) ;
+
+        $dataProvider->query->andWhere(['>','status',-1]);
+
+
+        //获取产品线
+        $type = Type::getDropDown();
+
+
+        return $this->render('banner', [
+            'dataProvider' => $dataProvider,
+            'adv_id' => $this->adv_id,
+            'type' =>$type,
+            'searchModel' => $searchModel,
+
+        ]);
+    }
 
 
     /**
@@ -116,6 +146,38 @@ class AdvertImagesController extends BaseController
         return $this->renderAjax($this->action->id, [
             'model' => $model,
             'advert' =>$advert,
+        ]);
+    }
+
+
+
+    /**
+     * ajax编辑/创建
+     *
+     * @return mixed|string|\yii\web\Response
+     * @throws \yii\base\ExitException
+     */
+    public function actionBannerEditLang()
+    {
+        $id = Yii::$app->request->get('id');
+        //$trans = Yii::$app->db->beginTransaction();
+        $model = $this->findModel($id);
+        // ajax 校验
+        $this->activeFormValidate($model);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->type = 2;
+            if($model->save()){
+                //多语言编辑
+                $this->editLang($model,true);
+                return $this->redirect(['advert-images/banner']);
+            }else{
+                return $this->message($this->getError($model), $this->redirect(['advert-images/banner']), 'error');
+            }
+        }
+
+        return $this->renderAjax($this->action->id, [
+            'model' => $model,
+            'type' =>Type::getDropDown(),
         ]);
     }
 

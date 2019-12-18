@@ -3,6 +3,7 @@
 namespace api\modules\v1\forms;
 
 use common\enums\StatusEnum;
+use common\helpers\ResultHelper;
 use common\models\api\AccessToken;
 use common\models\member\Member;
 
@@ -66,9 +67,10 @@ class LoginForm extends \common\models\forms\LoginForm
         if(!$user){
             $user = new Member();
             $user->email = $this->username;
-            $user->save();
         }
-        $user->save();
+        if (!$user->save()) {
+            return ResultHelper::api(422, $this->getError($user));
+        }
         return $user;
     }
 }

@@ -24,7 +24,7 @@ $form = ActiveForm::begin([
 
         <div class="tab-content">
             <?= $form->field($model, 'adv_id')->widget(Select2::class, [
-                'data' => $advert,
+                'data' => $type,
                 'options' => ['placeholder' => '请选择'],
                 'pluginOptions' => [
                     'allowClear' => true

@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="<?= Url::to(['advert-images/index']) ?>"> 广告位图片</a></li>
-                <li class="active"><a href="<?= Url::to(['advert-images/banner']) ?>">banner图片</a></li>
+                <li><a href="<?= Url::to(['advert-images/banner']) ?>">banner图片</a></li>
                 <li><a href="<?= Url::to(['advert/index']) ?>"> 广告位位置</a></li>
                 <li class="pull-right">
                     <?= Html::create(['ajax-edit-lang'], '创建', [

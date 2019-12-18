@@ -20,7 +20,7 @@ use Yii;
  * @property int $created_at
  * @property int $updated_at
  */
-class Book extends \yii\db\ActiveRecord
+class Book extends \common\models\base\BaseModel
 {
     /**
      * {@inheritdoc}
@@ -36,8 +36,8 @@ class Book extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['member_id', 'type_id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['first_name', 'last_name', 'telphone', 'type_id'], 'required'],
+            [['member_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['title', 'content', 'member_id'], 'required'],
             [['content'], 'string'],
             [['language'], 'string', 'max' => 5],
             [['title'], 'string', 'max' => 200],
@@ -60,7 +60,6 @@ class Book extends \yii\db\ActiveRecord
             'first_name' => '名',
             'last_name' => '姓',
             'telphone' => '电话',
-            'type_id' => '留言类别',
             'content' => '留言内容',
             'remark' => '备注',
             'status' => Yii::t('member_book', '跟进状态'),

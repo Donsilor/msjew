@@ -73,11 +73,11 @@ class MemberController extends OnAuthController
     public function actionLogin()
     {
         $username = Yii::$app->request->post('username',null);
-        if($username == null) return ResultHelper::api(400, '参数错误');
+        if($username == null) return ResultHelper::api(400, '缺省参数');
         $model = new LoginForm();
         $model->username = $username;
         $user = $model->login();
-        return ['user_id'=>$user->id];
+        return $user;
 
 
 

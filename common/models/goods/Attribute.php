@@ -38,7 +38,7 @@ class Attribute extends BaseModel
         return [
             [['status','use_type'], 'required'],
             [['id','status', 'sort','created_at', 'updated_at'], 'integer'],
-            [['attr_name','language'], 'safe'],            
+            [['attr_name','language','remark'], 'safe'],            
         ];
     }
 
@@ -56,6 +56,7 @@ class Attribute extends BaseModel
             'created_at' => Yii::t('goods_attribute', '创建时间'),
             'updated_at' => Yii::t('goods_attribute', '更新时间'),
             'attr_name'=>Yii::t('goods_attribute', '属性名称'),
+            'remark'=>Yii::t('goods_attribute', '备注'),
         ];
     }
     

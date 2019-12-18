@@ -128,7 +128,7 @@ class StyleController extends OnAuthController
     public function actionGuessList()
     {
         $style_id= \Yii::$app->request->get("style_id");
-        if(empty($id)) {
+        if(empty($style_id)) {
             return ResultHelper::api(422,"style_id不能为空");
         }
         $model = Style::find()->where(['id'=>$style_id])->one();

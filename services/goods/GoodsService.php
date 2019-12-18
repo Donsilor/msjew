@@ -54,7 +54,7 @@ class GoodsService extends Service
             }
             $goodsModel->style_id = $styleModel->id;//款式ID
             $goodsModel->type_id  = $styleModel->type_id;//产品线ID
-            $goodsModel->goods_image  = $styleModel->style_image;//商品默认图片
+            $goodsModel->goods_image  = $styleModel->style_cover;//商品默认图片
             $goodsModel->goods_sn = $goods['goods_sn'];//商品编码            
             $goodsModel->sale_price = $goods['sale_price']??0;//销售价 
             $goodsModel->market_price = $goods['market_price']??0; //成本价

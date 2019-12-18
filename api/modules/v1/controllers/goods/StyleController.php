@@ -31,7 +31,10 @@ class StyleController extends OnAuthController
     {
         return [];
     }
-    
+    /**
+     * 款式商品搜索
+     * @return array
+     */
     public function actionSearch()
     {
         $sort_map = [
@@ -68,12 +71,19 @@ class StyleController extends OnAuthController
         $result = $this->pagination($query,$page,$page_size);
         
         foreach($result['data'] as & $val) {
-            $val['sale_price_label'] = Yii::t("common","参考价"). ' ￥'.$val['sale_price']; 
+            $val['sale_price_label'] = 'Reference Price $'.$val['sale_price']; 
             $val['style_image'] = ImageHelper::thumb($val['style_image']);
         } 
         
         return $result;
         
     }
+    
+    public function actionDetail()
+    {
+        return 'view';
+    }
+    
+    
     
 }

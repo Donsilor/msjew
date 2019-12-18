@@ -19,6 +19,13 @@ return [
             'class' => 'api\modules\v2\Module',
         ],
     ],
+    'as cors' =>[
+            'class' => '\yii\filters\Cors',
+            'cors' => [
+                    'Origin' => ['*'],
+                    'Access-Control-Allow-Credentials' => true,
+            ],
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-api',
@@ -61,7 +68,7 @@ return [
                         'POST v1/<module>/<controller>/<action>' => 'v1/<module>/<controller>/<action>',
                         'GET v1/<module>/<controller>/<action>' => 'v1/<module>/<controller>/<action>',                        
                 ],
-        ],
+        ],        
     ],
     'params' => $params,
 ];

@@ -99,8 +99,8 @@ class StyleController extends OnAuthController
                 $attr_value = $attr['value'];
             }
             $attr_list[] = [
-                    'attr_name'=>$attr['attr_name'],
-                    'attr_value'=>$attr_value                    
+                    'name'=>$attr['attr_name'],
+                    'value'=>$attr_value                    
             ];
         }
         if($model->goods_images) {
@@ -130,11 +130,11 @@ class StyleController extends OnAuthController
      */
     public function actionGuessList()
     {
-        $id = \Yii::$app->request->get("id");
+        $style_id= \Yii::$app->request->get("style_id");
         if(empty($id)) {
-            return ResultHelper::api(422,"id不能为空");
+            return ResultHelper::api(422,"style_id不能为空");
         }
-        $model = Style::find()->where(['id'=>$id])->one();
+        $model = Style::find()->where(['id'=>$style_id])->one();
         if(empty($model)) {
             return [];
         }
@@ -143,7 +143,7 @@ class StyleController extends OnAuthController
         $query = Style::find()->alias('s')->select($fields)
                     ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
                     ->andWhere(['s.type_id'=>$type_id])
-                    ->andWhere(['<>','s.id',$id])
+                    ->andWhere(['<>','s.id',$style_id])
                     ->orderby("s.goods_clicks desc");
         $models = $query->limit(10)->asArray()->all();
         foreach ($models as &$model){

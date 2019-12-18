@@ -38,18 +38,5 @@ return [
     'noAuthRoute' => [
         '/main/index',// 系统主页
         '/main/system',// 系统首页
-    ],
-	'languages'=>[		
-		'zh-CN'=>'简体中文',
-		'zh-TW'=>'繁体中文',
-	    //'en-US'=>'English',
-	],
-    'currencies'=>[
-        '$'=>'美元',
-        'HK$'=>'港元',
-        '￥'=>'人民币',
-    ],
-    'language'=>'zh-CN',//默认语言
-    'currency' =>'￥',//默认货币
-	
+    ],	
 ];

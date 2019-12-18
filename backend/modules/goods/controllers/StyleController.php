@@ -9,6 +9,8 @@ use common\models\base\SearchModel;
 
 use backend\controllers\BaseController;
 use yii\base\Exception;
+use common\helpers\ResultHelper;
+use common\helpers\ArrayHelper;
 
 
 /**
@@ -73,9 +75,14 @@ class StyleController extends BaseController
         $id = Yii::$app->request->get('id', null);
         $type_id = Yii::$app->request->get('type_id', 0);
         $model = $this->findModel($id);
+        
+        $status = $model ? $model->status:0;        
         if ($model->load(Yii::$app->request->post())) {
             $trans = Yii::$app->db->beginTransaction();
-            try{                
+            try{
+                if($model->status == 1 && $status == 0){
+                    $model->onsale_time = time();
+                }                
                 if(false === $model->save()){
                     throw new Exception(current($model->getFirstErrors()));
                 }
@@ -99,10 +106,26 @@ class StyleController extends BaseController
         ]);
     }
     
-    public function actionTest()
+    /**
+     * ajax更新排序/状态
+     *
+     * @param $id
+     * @return array
+     */
+    public function actionAjaxUpdate($id)
     {
-        $style_id = Yii::$app->request->get("style_id");
-        Yii::$app->services->goods->createGoods($style_id);
+        if (!($model = $this->modelClass::findOne($id))) {
+            return ResultHelper::json(404, '找不到数据');
+        }
+        $status = $model ? $model->status :0;
+        $model->attributes = ArrayHelper::filter(Yii::$app->request->get(), ['sort', 'status']);
+        
+        if($model->status ==1 && $status == 0){
+            $model->onsale_time = time();
+        }
+        if (!$model->save(false)) {
+            return ResultHelper::json(422, $this->getError($model));
+        }
+        return ResultHelper::json(200, '修改成功');
     }
-    
 }

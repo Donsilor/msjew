@@ -52,16 +52,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $form->field($model, 'goods_num')->textInput() ?>
                     </div>
                     <div class="col-lg-4">
-                        <?= $form->field($model, 'cost_price')->textInput(['maxlength' => true])->hint('￥',['tag'=>'span','class'=>'unit']) ?>
+                        <?= $form->field($model, 'cost_price')->textInput(['maxlength' => true]) ?>
                     </div>
                     <div class="col-lg-4">
-                        <?= $form->field($model, 'sale_price')->textInput(['maxlength' => true])->hint('￥',['tag'=>'span','class'=>'unit']) ?>
+                        <?= $form->field($model, 'sale_price')->textInput(['maxlength' => true]) ?>
                     </div>
 
                 </div>
                 <div class="row">
                     <div class="col-lg-4">
-                        <?= $form->field($model, 'market_price')->textInput(['maxlength' => true])->hint('￥',['tag'=>'span','class'=>'unit']) ?>
+                        <?= $form->field($model, 'market_price')->textInput(['maxlength' => true]) ?>
                     </div>
                 </div>
 

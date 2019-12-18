@@ -54,4 +54,21 @@ class LoginForm extends \common\models\forms\LoginForm
 
         return $this->_user;
     }
+
+
+    /**
+     * 用户登录
+     *
+     * @return mixed|null|static
+     */
+    public function login(){
+        $user = Member::findOne(['email' => $this->username]);
+        if(!$user){
+            $user = new Member();
+            $user->email = $this->username;
+            $user->save();
+        }
+        $user->save();
+        return $user;
+    }
 }

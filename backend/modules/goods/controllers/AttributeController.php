@@ -64,6 +64,7 @@ class AttributeController extends BaseController
     public function actionEditLang()
     {
         $id = Yii::$app->request->get('id', null);
+        $returnUrl = Yii::$app->request->get('returnUrl');
         //$trans = Yii::$app->db->beginTransaction();
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -75,8 +76,7 @@ class AttributeController extends BaseController
               if($model->isNewRecord){
                     return $this->message("添加成功",$this->redirect(['edit-lang','id'=>$model->id]));
               }
-              
-              return $this->message("保存成功",$this->redirect(['index']));
+              return $this->message("保存成功",$this->redirect($returnUrl));
               
         }
         

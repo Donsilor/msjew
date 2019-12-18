@@ -38,6 +38,7 @@ class AdvertImagesController extends OnAuthController
             ->andWhere(['and',['<=','start_time',$time], ['>=','end_time',$time]])
             ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
             ->select(['lang.title as title','lang.adv_image','adv_url'])
+            ->orderby('m.sort desc, m.created_at desc')
             ->asArray()
             ->all();
         return $model;

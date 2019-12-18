@@ -2,6 +2,9 @@
 
 namespace api\modules\v1\controllers\member;
 
+use api\modules\v1\forms\LoginForm;
+use common\helpers\ResultHelper;
+use Yii;
 use yii\web\NotFoundHttpException;
 use api\controllers\OnAuthController;
 use common\enums\StatusEnum;
@@ -21,6 +24,7 @@ class MemberController extends OnAuthController
      * @var Member
      */
     public $modelClass = Member::class;
+    protected $authOptional = ['login'];
 
     /**
      * 单个显示
@@ -49,7 +53,6 @@ class MemberController extends OnAuthController
 
         return $model;
     }
-
     /**
      * 权限验证
      *
@@ -65,4 +68,21 @@ class MemberController extends OnAuthController
             throw new \yii\web\BadRequestHttpException('权限不足');
         }
     }
+
+    //登陆
+    public function actionLogin()
+    {
+        $username = Yii::$app->request->post('username',null);
+        if($username == null) return ResultHelper::api(400, '参数错误');
+        $model = new LoginForm();
+        $model->username = $username;
+        $user = $model->login();
+        return ['user_id'=>$user->id];
+
+
+
+    }
+
+
+
 }

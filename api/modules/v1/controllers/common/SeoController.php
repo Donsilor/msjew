@@ -35,11 +35,11 @@ class SeoController extends OnAuthController
         if($id == null) return ResultHelper::api(400, '参数错误');
         $language = Yii::$app->params['language'];
         $model = $this->modelClass::find()->alias('m')
-            ->where(['m.status' => StatusEnum::ENABLED, 'm.id'=>$id])
+            ->where(['m.id'=>$id])
             ->leftJoin(WebSeoLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
             ->select(['lang.*'])
             ->asArray()
-            ->all();
+            ->one();
         return $model;
     }
 

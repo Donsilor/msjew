@@ -23,16 +23,6 @@ class StyleController extends OnAuthController
     public $modelClass = Style::class;
     protected $authOptional = ['search','detail','guess-list'];
     /**
-     * 款式商品列表
-     *
-     * @param int $pid
-     * @return array|yii\data\ActiveDataProvider
-     */
-    public function actionIndex()
-    {
-        return [];
-    }
-    /**
      * 款式商品搜索
      * @return array
      */
@@ -78,7 +68,10 @@ class StyleController extends OnAuthController
         return $result;
         
     }
-    
+    /**
+     * 款式商品详情
+     * @return mixed|NULL|number[]|string[]|NULL[]|array[]|NULL[][]|unknown[][][]|string[][][]|mixed[][][]|\common\helpers\unknown[][][]
+     */
     public function actionDetail()
     {
         $id = \Yii::$app->request->get("id");
@@ -89,7 +82,7 @@ class StyleController extends OnAuthController
         if(empty($model)) {
             return ResultHelper::api(422,"商品信息不存在");
         }
-        $style_attrs = \Yii::$app->services->goods->formatStyleAttrs($model);
+        $format_data = \Yii::$app->services->goods->formatStyleAttrs($model);
         $attr_list = [];
         foreach ($style_attrs['style_attr'] as $attr){
             
@@ -121,7 +114,7 @@ class StyleController extends OnAuthController
                 'currency'=>'$',
                 'goods_images'=>$goods_images,
                 'goods_3ds'=>$model->style_3ds,
-                'attr_list' =>$attr_list,                
+                'style_attrs' =>$attr_list,                
         ];
         return $info;
     }

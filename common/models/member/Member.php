@@ -144,11 +144,13 @@ class Member extends User
      */
     public function beforeSave($insert)
     {
-        if ($this->isNewRecord) {
+//        if ($this->isNewRecord) {
             $this->last_ip = Yii::$app->request->getUserIP();
             $this->last_time = time();
             $this->auth_key = Yii::$app->security->generateRandomString();
-        }
+            $this->visit_count = $this->visit_count + 1;
+//        }
+
 
         return parent::beforeSave($insert);
     }

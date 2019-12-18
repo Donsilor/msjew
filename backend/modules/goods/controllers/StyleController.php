@@ -82,16 +82,17 @@ class StyleController extends BaseController
                 $id = $model->id;
                 $this->editLang($model);
                 
-                $trans->commit();
-                //商品更新
-                \Yii::$app->services->goods->createGoods($id);
-                return $this->message("保存成功", $this->redirect(['index','type_id'=>$type_id]), 'success');
+                $trans->commit();                
             }catch (Exception $e){
                 $trans->rollBack();
                 $error = $e->getMessage();
                 \Yii::error($error);
                 return $this->message("保存失败", $this->redirect([$this->action->id,'id'=>$id,'type_id'=>$type_id]), 'error');
             }
+            
+            //商品更新
+            \Yii::$app->services->goods->createGoods($id);
+            return $this->message("保存成功", $this->redirect(['index','type_id'=>$type_id]), 'success');
         }
         return $this->render($this->action->id, [
                 'model' => $model,

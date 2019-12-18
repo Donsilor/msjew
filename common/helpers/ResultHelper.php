@@ -23,7 +23,7 @@ class ResultHelper
      */
     public static function json($code = 404, $message = '未知错误', $data = [] , $flashMsg = false)
     {
-        $message = \Yii::t("message",$message);
+        //$message = \Yii::t("message",$message);
         Yii::$app->response->format = Response::FORMAT_JSON;
         $result = [
             'code' => strval($code),
@@ -45,7 +45,7 @@ class ResultHelper
      */
     public static function api($code = 404, $message = '未知错误', $data = [] , $flashMsg = false)
     {
-        $message = \Yii::t("message",$message);
+        //$message = \Yii::t("message",$message);
         
         Yii::$app->response->setStatusCode($code, $message);
         Yii::$app->response->data = $data ? ArrayHelper::toArray($data) : [];

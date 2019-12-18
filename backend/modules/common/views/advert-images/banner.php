@@ -14,11 +14,11 @@ use yii\widgets\ActiveForm;
     <div class="col-sm-12">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="<?= Url::to(['advert-images/index']) ?>"> 广告位图片</a></li>
+                <li><a href="<?= Url::to(['advert-images/index']) ?>"> 广告位图片</a></li>
                 <li class="active"><a href="<?= Url::to(['advert-images/banner']) ?>">banner图片</a></li>
                 <li><a href="<?= Url::to(['advert/index']) ?>"> 广告位位置</a></li>
                 <li class="pull-right">
-                    <?= Html::create(['ajax-edit-lang'], '创建', [
+                    <?= Html::create(['banner-edit-lang'], '创建', [
                         'data-toggle' => 'modal',
                         'data-target' => '#ajaxModalLg',
                     ]) ?>
@@ -104,8 +104,8 @@ use yii\widgets\ActiveForm;
 //            'updated_at:date',
             [
                 'attribute' => 'adv_id',
-                'value' => 'cate.lang.adv_name',
-                'filter' => Html::activeDropDownList($searchModel, 'adv_id', $advert, [
+                'value' => 'types.lang.type_name',
+                'filter' => Html::activeDropDownList($searchModel, 'adv_id', $type, [
                         'prompt' => '全部',
                         'class' => 'form-control'
                     ]
@@ -138,7 +138,7 @@ use yii\widgets\ActiveForm;
                 'template' => '{edit} {status} {delete}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
-                        return Html::edit(['ajax-edit-lang', 'id' => $model->id , 'adv_id' => $model->adv_id],'编辑',[
+                        return Html::edit(['banner-edit-lang', 'id' => $model->id , 'adv_id' => $model->adv_id],'编辑',[
                             'data-toggle' => 'modal',
                             'data-target' => '#ajaxModalLg',
                         ]);

@@ -120,7 +120,7 @@ class Type extends \common\models\base\BaseModel
             ->all();
 
         $models = ArrayHelper::itemsMerge($models);
-        return ArrayHelper::map(ArrayHelper::itemsMergeDropDown($models), 'id', 'type_name');
+        return ArrayHelper::map(ArrayHelper::itemsMergeDropDown($models,'id', 'type_name'), 'id', 'type_name');
     }
 
     /**

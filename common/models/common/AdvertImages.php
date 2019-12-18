@@ -2,6 +2,7 @@
 
 namespace common\models\common;
 
+use common\models\goods\Type;
 use Yii;
 
 /**
@@ -30,7 +31,7 @@ class AdvertImages extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['adv_image'], 'required'],
+            [['adv_id'], 'required'],
             [['adv_id','status','sort'], 'integer'],
             [['start_time', 'end_time','start_end','adv_name','title'], 'safe'],
             [['adv_image'], 'string', 'max' => 200],
@@ -93,5 +94,17 @@ class AdvertImages extends \common\models\base\BaseModel
     public function getCate()
     {
         return $this->hasOne(Advert::class, ['id' => 'adv_id']);
+    }
+
+
+
+    /**
+     * 关联产品线
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTypes()
+    {
+        return $this->hasOne(Type::class, ['id' => 'adv_id']);
     }
 }

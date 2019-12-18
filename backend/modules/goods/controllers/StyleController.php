@@ -89,6 +89,7 @@ class StyleController extends BaseController
             }catch (Exception $e){
                 $trans->rollBack();
                 $error = $e->getMessage();
+                \Yii::$app->log($error);
                 return $this->message("保存失败", $this->redirect([$this->action->id,'id'=>$id,'type_id'=>$type_id]), 'error');
             }
         }

@@ -9,6 +9,7 @@ use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
 use common\helpers\ImageHelper;
 use common\enums\StatusEnum;
+use yii\db\Expression;
 
 /**
  * Class ProvincesController
@@ -82,9 +83,9 @@ class StyleController extends OnAuthController
         if(empty($model)) {
             return ResultHelper::api(422,"商品信息不存在");
         }
-        $format_data = \Yii::$app->services->goods->formatStyleAttrs($model);
+        $attr_data = \Yii::$app->services->goods->formatStyleAttrs($model);
         $attr_list = [];
-        foreach ($style_attrs['style_attr'] as $attr){
+        foreach ($attr_data['style_attr'] as $attr){
             
             if(is_array($attr['value'])){
                 $attr_value = implode('/',$attr['value']);
@@ -116,6 +117,9 @@ class StyleController extends OnAuthController
                 'goods_3ds'=>$model->style_3ds,
                 'style_attrs' =>$attr_list,                
         ];
+        $model->goods_clicks = new Expression("goods_clicks+1");
+        $model->virtual_clicks = new Expression("virtual_clicks+1");
+        $model->save(false);//更新浏览量
         return $info;
     }
     /**

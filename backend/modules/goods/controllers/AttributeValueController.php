@@ -99,7 +99,7 @@ class AttributeValueController extends BaseController
   {
       if ($model = $this->findModel($id)) {
           $model->status = -1;
-          $model->save();
+          $model->save(false);
           
           //更新属性值到attribute_lang.attr_values;
           Yii::$app->services->goodsAttribute->updateAttrValues($model->attr_id);

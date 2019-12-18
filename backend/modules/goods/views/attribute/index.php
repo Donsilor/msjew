@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' =>'lang.attr_name',
                 'filter' => Html::activeTextInput($searchModel, 'attr_name', [
                         'class' => 'form-control',
-                        'style' =>'width:100px'
+                        //'style' =>'width:100px'
                 ]),
             ],
             'lang.remark',

@@ -71,14 +71,14 @@ class SkuTable extends Widget
     public function init()
     {
         parent::init();
-        
+        $currency = \Yii::$app->params['currency'];
         $asset = AppAsset::register($this->getView());
         if(!isset($this->inputs)){
             $this->inputs =  [
                     ['name'=>'goods_sn','title'=>'库存编号','require'=>1,'batch'=>1,'unique'=>1,'dtype'=>"string"],
-                    ['name'=>'sale_price','title'=>'销售价(￥)','require'=>1,'batch'=>1,'unique'=>0,'dtype'=>"double"],
-                    ['name'=>'cost_price','title'=>'成本价(￥)','require'=>0,'batch'=>1,'unique'=>0,'dtype'=>"double"],
-                    ['name'=>'market_price','title'=>'市场价(￥)','require'=>0,'batch'=>1,'unique'=>0,'dtype'=>"double"],                    
+                    ['name'=>'sale_price','title'=>"销售价({$currency})",'require'=>1,'batch'=>1,'unique'=>0,'dtype'=>"double"],
+                    ['name'=>'cost_price','title'=>"成本价({$currency})",'require'=>0,'batch'=>1,'unique'=>0,'dtype'=>"double"],
+                    ['name'=>'market_price','title'=>"市场价({$currency})",'require'=>0,'batch'=>1,'unique'=>0,'dtype'=>"double"],                    
                     ['name'=>'goods_storage','title'=>'库存','require'=>1,'batch'=>1,'unique'=>0,'dtype'=>"integer"],
                     ['name'=>'status','title'=>'状态','require'=>0,'batch'=>0,'unique'=>0,'dtype'=>"integer"],
             ];

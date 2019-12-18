@@ -1,6 +1,7 @@
 <?php
 
-return [
+return [        
+        
     'adminEmail' => 'admin@example.com',
     'adminAcronym' => 'BDD',
     'adminTitle' => 'BDD后台管理',
@@ -37,12 +38,5 @@ return [
     'noAuthRoute' => [
         '/main/index',// 系统主页
         '/main/system',// 系统首页
-    ],
-	'languages'=>[		
-		'zh-CN'=>'简体中文',
-		'zh-TW'=>'繁体中文',
-	    //'en-US'=>'English',
-	],
-    'language'=>'zh-CN',//默认语言
-	
+    ],	
 ];

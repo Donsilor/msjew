@@ -54,6 +54,7 @@ class Ring extends BaseModel
      */
     public function attributeLabels()
     {
+        $currency = \Yii::$app->params['currency'];
         return [
             'id' => 'ID',
             'ring_name' => '对戒名称',
@@ -62,9 +63,9 @@ class Ring extends BaseModel
             'qr_code' => '对戒二维码',
             'ring_salenum' => '对戒销量',
             'ring_style' => '对戒款式',
-            'sale_price' => '销售价（$）',
-            'market_price' => '市场价（$）',
-            'cost_price' => '成本价（$）',
+            'sale_price' => Yii::t('goods', '销售价')."({$currency})",
+            'market_price' => Yii::t('goods', '市场价')."({$currency})",
+            'cost_price' => Yii::t('goods', '成本价')."({$currency})",
             'status' => '上架状态',
             'ring_3ds' => '360°主图',
             'created_at' => '创建时间',

@@ -97,6 +97,7 @@ class Diamond extends \yii\db\ActiveRecord
      */
     public function attributeLabels()
     {
+        $currency = \Yii::$app->params['currency'];
         return [
             'id' => Yii::t('goods_diamond', 'ID'),
             'goods_sn' => '商品编码',
@@ -104,9 +105,9 @@ class Diamond extends \yii\db\ActiveRecord
             'goods_num' => '库存',
             'cert_type' => '证书类型',
             'cert_id' => '证书号',
-            'market_price' => '市场价（$）',
-            'sale_price' => '销售价（$）',
-            'cost_price' => Yii::t('goods_diamond', '成本价（$）'),
+            'sale_price' => Yii::t('goods', '销售价')."({$currency})",
+            'market_price' => Yii::t('goods', '市场价')."({$currency})",
+            'cost_price' => Yii::t('goods', '成本价')."({$currency})",
             'carat' => '石重',
             'clarity' => '净度',
             'cut' => '切工',

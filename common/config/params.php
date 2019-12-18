@@ -1,10 +1,23 @@
 <?php
-return [
-    'language'=>'zh-CN',//默认语言'    
+return [    
+  
     'adminEmail' => 'admin@example.com',
     'supportEmail' => 'support@example.com',
     'user.passwordResetTokenExpire' => 3600,
-    'default_image'=>'https://bddco.oss-cn-hongkong.aliyuncs.com/images/2019/12/14/image_157631778355995698.jpg',    
+    'default_image'=>'https://bddco.oss-cn-hongkong.aliyuncs.com/images/2019/12/14/image_157631778355995698.jpg', 
+    'languages'=>[
+        'zh-CN'=>'简体中文',
+        'zh-TW'=>'繁体中文',
+        'en-US'=>'English',
+    ],
+    'currencies'=>[
+        '$'=>'美元',
+        'HK$'=>'港元',
+        '¥'=>'人民币',
+    ],
+    'language'=>'zh-CN',//默认语言
+    'currency' =>'¥',//默认货币
+    
     // 是否在模块内
     'inAddon' => false,
     // 多商户开启

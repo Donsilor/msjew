@@ -54,13 +54,23 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute'=>'attr_name',
+                'headerOptions' => ['class' => 'col-md-1'],
                 'value' =>'lang.attr_name',
                 'filter' => Html::activeTextInput($searchModel, 'attr_name', [
                         'class' => 'form-control',
-                        'style' =>'width:100px'
+                        //'style' =>'width:100px'
                 ]),
             ],
-            'lang.remark',
+            [
+                    'attribute'=>'remark',
+                    'headerOptions' => ['class' => 'col-md-1'],
+                    'value' =>'lang.remark',
+                    'filter' => Html::activeTextInput($searchModel, 'remark', [
+                            'class' => 'form-control',
+                            //'style' =>'width:100px'
+                    ]),
+            ],
+
             [
                  'attribute'=>'lang.attr_values',
             ],

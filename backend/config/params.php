@@ -1,6 +1,7 @@
 <?php
 
-return [
+return [        
+        
     'adminEmail' => 'admin@example.com',
     'adminAcronym' => 'BDD',
     'adminTitle' => 'BDD后台管理',
@@ -43,6 +44,12 @@ return [
 		'zh-TW'=>'繁体中文',
 	    //'en-US'=>'English',
 	],
+    'currencies'=>[
+        '$'=>'美元',
+        'HK$'=>'港元',
+        '￥'=>'人民币',
+    ],
     'language'=>'zh-CN',//默认语言
+    'currency' =>'￥',//默认货币
 	
 ];

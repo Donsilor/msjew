@@ -9,6 +9,7 @@ use yii\web\UnauthorizedHttpException;
 use common\components\BaseAction;
 use common\helpers\Auth;
 use common\behaviors\ActionLogBehavior;
+use common\components\Page;
 
 /**
  * Class BaseController
@@ -18,13 +19,13 @@ use common\behaviors\ActionLogBehavior;
 class BaseController extends Controller
 {
     use BaseAction;
-
+    use Page;
     /**
      * @return array
      */
     public function behaviors()
     {
-        Yii::$app->language = 'zh-CN';
+        //Yii::$app->language = 'zh-CN';
         return [
             'access' => [
                 'class' => AccessControl::class,

@@ -53,7 +53,7 @@ use common\components\Service;
  * @property \services\goods\DiamondService $diamond 裸钻
  * @property \services\goods\DiamondSourceService $diamondSource 裸钻来源
  * @property \services\goods\GoodsService $goods 商品
- * @property \services\goods\StyleService $style 款式
+ * @property \services\goods\StyleService $goodsStyle 款式
  */
 class Application extends Service
 {

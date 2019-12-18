@@ -83,8 +83,18 @@ class ImageHelper
     {   
           if(empty($image)) {
               $image = \Yii::$app->params['default_image'];
-          }
+          }          
           
           return $image;
+    }
+    
+    public static function thumbs($images ,$tag = '')
+    {
+        if(!empty($images) && is_array($images)){
+            foreach ($images as &$image){
+                self::thumb($image,$tag);
+            }
+        }        
+        return $images;
     }
 }

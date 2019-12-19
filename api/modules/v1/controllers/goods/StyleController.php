@@ -94,7 +94,8 @@ class StyleController extends OnAuthController
             }
             $attr_list[] = [
                     'name'=>$attr['attr_name'],
-                    'value'=>$attr_value                    
+                    'value'=>$attr_value,
+                    'f'=>($attr['value'] != "")
             ];
         }
         if($model->goods_images) {

@@ -143,7 +143,7 @@ class AttributeService extends Service
     public function getValuesByAttrId($attr_id,$status = 1,$language = null)
     {
         if(empty($language)){
-            $language = Yii::$app->language;
+            $language = Yii::$app->params['language'];
         }
         $query = AttributeValue::find()->alias("val")
                     ->leftJoin(AttributeValueLang::tableName()." lang","val.id=lang.master_id and lang.language='".$language."'")

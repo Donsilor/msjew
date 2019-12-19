@@ -8,7 +8,7 @@ use common\components\Curd;
 use common\models\base\SearchModel;
 use backend\controllers\BaseController;
 use common\models\goods\AttributeValue;
-
+use yii\base\Exception;
 /**
 * Attribute
 *
@@ -126,18 +126,25 @@ class AttributeController extends BaseController
         // ajax 校验
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
-            $is_new = $model->isNewRecord;            
-            if($flag1 = $model->save()){
+            $is_new = $model->isNewRecord;  
+            $trans = Yii::$app->db->beginTransaction();
+            try{
+                if(false === $model->save()){
+                    throw new Exception($this->getError($model));
+                }
                 $id = $model->id;
-                //多语言编辑
-                $flag2 = $this->editLang($model,true);
-            }
-            if($flag1 !== false && $flag2 !== false){   
-                return $is_new ? 
+                $this->editLang($model);
+                
+                $trans->commit();
+                return $is_new ?
                 $this->message("添加成功", $this->redirect(['edit-lang','id'=>$id]), 'success'):
                 $this->message("保存成功", $this->redirect(['index']), 'success');
-            }
-            return $this->message($this->getError($model), $this->redirect(['index']), 'error');
+            }catch (Exception $e){
+                $trans->rollBack();
+                $error = $e->getMessage();
+                \Yii::error($error);
+                return $this->message("保存失败", $this->redirect([$this->action->id,'id'=>$id,'type_id'=>$type_id]), 'error');
+            }            
         }
         
         return $this->renderAjax($this->action->id, [

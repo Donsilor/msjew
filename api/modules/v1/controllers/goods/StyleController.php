@@ -8,7 +8,6 @@ use common\models\goods\Style;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
 use common\helpers\ImageHelper;
-use common\enums\StatusEnum;
 use yii\db\Expression;
 
 /**

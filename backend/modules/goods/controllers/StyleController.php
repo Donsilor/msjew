@@ -84,7 +84,7 @@ class StyleController extends BaseController
                     $model->onsale_time = time();
                 }                
                 if(false === $model->save()){
-                    throw new Exception(current($model->getFirstErrors()));
+                    throw new Exception($this->getError($model));
                 }
                 $id = $model->id;
                 $this->editLang($model);
@@ -94,7 +94,7 @@ class StyleController extends BaseController
                 $trans->rollBack();
                 $error = $e->getMessage();
                 \Yii::error($error);
-                return $this->message("保存失败", $this->redirect([$this->action->id,'id'=>$id,'type_id'=>$type_id]), 'error');
+                return $this->message("保存失败:".$error, $this->redirect([$this->action->id,'id'=>$id,'type_id'=>$type_id]), 'error');
             }
             
             //商品更新

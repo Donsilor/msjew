@@ -118,7 +118,8 @@ trait BaseAction
         if (!$msgType || !in_array($msgType, ['success', 'error', 'info', 'warning'])) {
             $msgType = 'success';
         }
-        $msgText = Yii::t('message',$msgText);
+        //$msgText = Yii::t('message',$msgText);
+        $msgText = $this->substr($msgText);
         Yii::$app->getSession()->setFlash($msgType, $msgText);
         return $skipUrl;
     }
@@ -158,5 +159,10 @@ trait BaseAction
         }
         
         return true;
+    }
+    
+    public function substr($message,$length = 900)
+    {
+        return \yii\helpers\StringHelper::truncate($message, $length);
     }
 }

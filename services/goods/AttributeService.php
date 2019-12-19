@@ -165,7 +165,7 @@ class AttributeService extends Service
     public function getValuesByValueIds($ids,$language = null)
     {
         if(empty($language)){
-            $language = Yii::$app->language;
+            $language = Yii::$app->params['language'];
         }
         if(!is_array($ids)){
             $ids = explode(",",$ids);
@@ -190,7 +190,7 @@ class AttributeService extends Service
     public function getAttributeByValueIds($ids,$language = null)
     {
         if(empty($language)){
-            $language = Yii::$app->language;
+            $language = Yii::$app->params['language'];
         }
         if(!is_array($ids)){
             $ids = explode(",",$ids);

@@ -78,15 +78,15 @@ class StyleController extends BaseController
         
         $status = $model ? $model->status:0;        
         if ($model->load(Yii::$app->request->post())) {
-            $trans = Yii::$app->db->beginTransaction();
+            
             try{
+                $trans = Yii::$app->db->beginTransaction();
                 if($model->status == 1 && $status == 0){
                     $model->onsale_time = time();
                 }                
                 if(false === $model->save()){
                     throw new Exception($this->getError($model));
-                }
-                $id = $model->id;
+                }                
                 $this->editLang($model);
                 
                 $trans->commit();                
@@ -94,11 +94,11 @@ class StyleController extends BaseController
                 $trans->rollBack();
                 $error = $e->getMessage();
                 \Yii::error($error);
-                return $this->message("保存失败:".$error, $this->redirect([$this->action->id,'id'=>$id,'type_id'=>$type_id]), 'error');
+                return $this->message("保存失败:".$error, $this->redirect([$this->action->id,'id'=>$model->id,'type_id'=>$type_id]), 'error');
             }
             
             //商品更新
-            \Yii::$app->services->goods->createGoods($id);
+            \Yii::$app->services->goods->createGoods($model->id);
             return $this->message("保存成功", $this->redirect(['index','type_id'=>$type_id]), 'success');
         }
         return $this->render($this->action->id, [

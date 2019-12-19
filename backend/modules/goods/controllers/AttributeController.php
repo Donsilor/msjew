@@ -82,7 +82,7 @@ class AttributeController extends BaseController
                     $this->message("保存成功", $this->redirect($returnUrl), 'success');
             }catch (Exception $e){
                 $trans->rollBack();
-                $error = $this->getExcetionMessage($e);
+                $error = $e->getMessage();
                 \Yii::error($error);
                 return $this->message("保存失败:".$error, $this->redirect([$this->action->id,'id'=>$model->id]), 'error');
             }
@@ -136,18 +136,17 @@ class AttributeController extends BaseController
                 if(false === $model->save()){
                     throw new Exception($this->getError($model));
                 }
-                $id = $model->id;
                 $this->editLang($model);                
                 $trans->commit();
                 
                 return $is_new ?
-                    $this->message("添加成功", $this->redirect(['edit-lang','id'=>$id]), 'success'):
+                    $this->message("添加成功", $this->redirect(['edit-lang','id'=>$model->id]), 'success'):
                     $this->message("保存成功", $this->redirect(['index']), 'success');
             }catch (Exception $e){
                 $trans->rollBack();
-                $error = $this->getExcetionMessage($e);
+                $error = $e->getMessage();
                 \Yii::error($error);
-                return $this->message("保存失败:".$error, $this->redirect([$this->action->id,'id'=>$id]), 'error');
+                return $this->message("保存失败:".$error, $this->redirect([$this->action->id,'id'=>$model->id]), 'error');
             }            
         }
         

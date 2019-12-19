@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         'parentColumnName' => 'pid',
                         'parentRootValue' => '0', //first parentId value
                         'pluginOptions' => [
-                            //'initialState' => 'collapsed',
+                            'initialState' => 'collapsed',
                         ],
                         'options' => ['class' => 'table table-hover'],
                         'columns' => [

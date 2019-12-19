@@ -85,19 +85,16 @@ class StyleController extends OnAuthController
         $attr_data = \Yii::$app->services->goods->formatStyleAttrs($model);
         $attr_list = [];
         foreach ($attr_data['style_attr'] as $attr){
-            if(empty($attr['value'])) {
+            $attr_value = $attr['value'];
+            if(empty($attr_value)) {
                 continue;
             }
-            if(is_array($attr['value'])){
-                $attr_value = implode('/',$attr['value']);
-            }else{
-                $attr_value = $attr['value'];
+            if(is_array($attr_value)){
+                $attr_value = implode('/',$attr_value);
             }
             $attr_list[] = [
-                    'name'=>$attr['attr_name'],
-                    'value'=>$attr_value,
-                    'f'=>var_export($attr_value,true),
-                    'is_array'=>is_array($attr_value)
+                  'name'=>$attr['attr_name'],
+                  'value'=>$attr_value,
             ];
         }
         if($model->goods_images) {

@@ -219,8 +219,7 @@ class GoodsService extends Service
                                 'attr_value_id'=>$val_id,
                                 'attr_value'=> null,
                         ];
-                    }
-                    
+                    }                    
                 }else if(trim($attr['value']) != ''){
                     $index_list[] = [
                             'attr_name'=>$attr['attr_name'],

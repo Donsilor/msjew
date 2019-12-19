@@ -128,4 +128,13 @@ class StyleController extends BaseController
         }
         return ResultHelper::json(200, '修改成功');
     }
+    
+    public function actionTest($id)
+    {
+        $model = $this->modelClass::findOne($id);
+        $res = \Yii::$app->services->goods->formatStyleAttrs($model,true);
+        echo '<pre/>';
+        print_r($res);
+        exit;
+    }
 }

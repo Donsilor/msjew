@@ -87,14 +87,13 @@ class StyleController extends OnAuthController
         foreach ($attr_data['style_attr'] as $attr){
             if(is_array($attr['value'])){
                 $attr_value = implode('/',$attr['value']);
-            }else if(isset($attr['value']) && $attr['value'] != ""){
-                $attr_value = $attr['value'];
             }else{
-                continue;
+                $attr_value = $attr['value'];
             }
             $attr_list[] = [
                     'name'=>$attr['attr_name'],
                     'value'=>$attr_value,
+                    'f'=>var_export($attr['value'],true)
             ];
         }
         if($model->goods_images) {

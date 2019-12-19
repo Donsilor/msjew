@@ -42,8 +42,7 @@ class StyleController extends OnAuthController
         
         $type_id = \Yii::$app->request->post("type_id");//产品线
         $keyword = \Yii::$app->request->post("keyword");//产品线
-        $min_price   = \Yii::$app->request->post("min_price");//最低价格
-        $max_price   = \Yii::$app->request->post("max_price");//最高价格
+        $price_range   = \Yii::$app->request->post("price_range");//最低价格
         $attr_id  = \Yii::$app->request->post("attr_id");//属性
         $attr_value  = \Yii::$app->request->post("attr_value");//属性
         
@@ -64,11 +63,19 @@ class StyleController extends OnAuthController
         if($keyword) {
             $query->andWhere(['or',['like','lang.style_name',$keyword],['=','s.style_sn',$keyword]]);
         }
-        if(is_numeric($min_price)){
-            $query->andWhere(['>','s.sale_price',$min_price]);
-        }
-        if(is_numeric($max_price)){
-            $query->andWhere(['<=','s.sale_price',$max_price]);
+        if($price_range){
+            $arr = explode('-',$price_range);
+            if(count($arr) == 2 ){
+                list($min_price,$max_price) = $arr;
+                if(is_numeric($min_price)){
+                    $query->andWhere(['>','s.sale_price',$min_price]);
+                }
+                
+                if(is_numeric($max_price) && $max_price>0){
+                    $query->andWhere(['<=','s.sale_price',$max_price]);
+                }
+                
+            }            
         }
         //print_r($attr_value);exit;
         //属性，属性值查询
@@ -78,6 +85,9 @@ class StyleController extends OnAuthController
                 $subQuery->where(['type_id'=>$type_id]);
             }
             if($attr_id) {
+                if(!is_array($attr_id)){
+                    $attr_id = explode(',',$attr_id);
+                }
                 $subQuery->andWhere(['attr_value_id'=>$attr_id]);
             }
             if($attr_value && is_array($attr_value)){

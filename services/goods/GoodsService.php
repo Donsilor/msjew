@@ -151,8 +151,8 @@ class GoodsService extends Service
                     $attr_id = $attr['id'];
                     $is_text = InputTypeEnum::isText($attr['input_type']);
                     $is_single = InputTypeEnum::isSingle($attr['input_type']);
-                    $attr['is_text'] = $is_text;
-                    $attr['is_single'] = $is_single;
+                    //$attr['is_text'] = $is_text;
+                    //$attr['is_single'] = $is_single;
                     $attr['value_id'] = 0;
                     $attr['value'] = $spec[$attr_id];
                     $attr['all'] = [];
@@ -221,7 +221,7 @@ class GoodsService extends Service
                         ];
                     }
                     
-                }else {
+                }else if(trim($attr['value']) != ''){
                     $index_list[] = [
                             'attr_name'=>$attr['attr_name'],
                             'attr_id' =>$attr['id'],

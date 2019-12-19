@@ -90,14 +90,15 @@ class StyleController extends OnAuthController
                 }
                 $subQuery->andWhere(['attr_value_id'=>$attr_id]);
             }
-            if($attr_value && is_array($attr_value)){
-                foreach ($attr_value as $k=>$v){
-                    $arr = explode('-',$v);
+            if($attr_value && $attr_value = explode("|", $attr_value)){
+                foreach ($attr_value as $k=>$val){
+                    list($k,$v) = explode("@",$val);
+                    $arr = explode("-",$v);
                     if(count($arr) ==1) {
                         $subQuery->andWhere(['attr_id'=>$k,'attr_value'=>$v]);
                     }else if(count($arr)==2){
                         $subQuery->andWhere(['and',['=','attr_id',$k],['between','attr_value',$arr[0], $arr[1]]]);
-                    }                    
+                    }                                      
                 }
             }            
             $query->andWhere(['in','s.id',$subQuery]);

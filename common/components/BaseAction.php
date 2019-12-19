@@ -5,6 +5,7 @@ namespace common\components;
 use Yii;
 use yii\base\Model;
 use common\enums\AppEnum;
+use yii\base\Exception;
 
 /**
  * trait BaseAction
@@ -150,7 +151,9 @@ trait BaseAction
                 $langModel->load([$langClassName =>$lang_post]);
                 $langModel->master_id = $model->id;
                 $langModel->language = $lang_key;
-                $res = $langModel->save();
+                if(false === $langModel->save()){
+                    throw new Exception($this->getError($langModel));
+                }
             }
         }
         

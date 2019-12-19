@@ -9,6 +9,7 @@ use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
 use common\helpers\ImageHelper;
 use yii\db\Expression;
+use common\models\goods\AttributeIndex;
 
 /**
  * Class ProvincesController
@@ -41,6 +42,11 @@ class StyleController extends OnAuthController
         
         $type_id = \Yii::$app->request->post("type_id");//产品线
         $keyword = \Yii::$app->request->post("keyword");//产品线
+        $min_price   = \Yii::$app->request->post("min_price");//最低价格
+        $max_price   = \Yii::$app->request->post("max_price");//最高价格
+        $attr_id  = \Yii::$app->request->post("attr_id");//属性
+        $attr_value  = \Yii::$app->request->post("attr_value");//属性
+        
         $sort = \Yii::$app->request->post("sort",'4_1');//排序
         $page = \Yii::$app->request->post("page",1);//页码
         $page_size = \Yii::$app->request->post("page_size",20);//每页大小
@@ -57,7 +63,36 @@ class StyleController extends OnAuthController
         }
         if($keyword) {
             $query->andWhere(['or',['like','lang.style_name',$keyword],['=','s.style_sn',$keyword]]);
-        }        
+        }
+        if(is_numeric($min_price)){
+            $query->andWhere(['>','s.sale_price',$min_price]);
+        }
+        if(is_numeric($max_price)){
+            $query->andWhere(['<=','s.sale_price',$max_price]);
+        }
+        //print_r($attr_value);exit;
+        //属性，属性值查询
+        if($attr_id || $attr_value){
+            $subQuery = AttributeIndex::find()->select(['style_id'])->distinct("style_id");
+            if($type_id) {
+                $subQuery->where(['type_id'=>$type_id]);
+            }
+            if($attr_id) {
+                $subQuery->andWhere(['attr_value_id'=>$attr_id]);
+            }
+            if($attr_value && is_array($attr_value)){
+                foreach ($attr_value as $k=>$v){
+                    $arr = explode('-',$v);
+                    if(count($arr) ==1) {
+                        $subQuery->andWhere(['attr_id'=>$k,'attr_value'=>$v]);
+                    }else if(count($arr)==2){
+                        $subQuery->andWhere(['and',['=','attr_id',$k],['between','attr_value',$arr[0], $arr[1]]]);
+                    }                    
+                }
+            }            
+            $query->andWhere(['in','s.id',$subQuery]);
+        }
+        //echo $query->createCommand()->getSql();exit;
         $result = $this->pagination($query,$page,$page_size);
         
         foreach($result['data'] as & $val) {

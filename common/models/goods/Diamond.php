@@ -21,8 +21,8 @@ use Yii;
  * @property string $cut 切工
  * @property string $color 颜色
  * @property int $shape 形状
- * @property string $depth_lv 深度
- * @property string $table_lv 台宽
+ * @property string $depth_lv 深度比
+ * @property string $table_lv 台宽比
  * @property string $symmetry 对称
  * @property string $polish 抛光
  * @property string $fluorescence 荧光
@@ -51,7 +51,7 @@ class Diamond extends \yii\db\ActiveRecord
         return [
             [['id','goods_num', 'shape', 'source_id', 'is_stock', 'status', 'created_at', 'updated_at'], 'integer'],
             [[ 'sale_price','source_id','shape','goods_num','goods_sn', 'carat', 'clarity', 'cut', 'color', 'symmetry', 'polish', 'fluorescence'], 'required'],
-            [['goods_num','market_price', 'sale_price', 'cost_price', 'carat', 'source_discount'], 'number'],
+            [['goods_num','market_price', 'sale_price', 'cost_price', 'carat', 'source_discount','length','width','aspect_ratio'], 'number'],
             ['sale_price','compare','compareValue' => 0, 'operator' => '>'],
             ['market_price','compare','compareValue' => 0, 'operator' => '>'],
             ['cost_price','compare','compareValue' => 0, 'operator' => '>'],
@@ -113,14 +113,14 @@ class Diamond extends \yii\db\ActiveRecord
             'cut' => '切工',
             'color' => '颜色',
             'shape' => '形状',
-            'depth_lv' => '长度',
-            'table_lv' => '宽度',
+            'depth_lv' => '切割深度(%)',
+            'table_lv' => '台宽(%)',            
             'symmetry' => '对称',
             'polish' => '抛光',
             'stone_floor' => '石底层',
-            'stone_surface' => '石面',
-            'aspect_ratio' => '长宽比',
-            'cutting_depth' => '切割深度',
+            'length' => '长度',
+            'width' => '宽度',
+            'aspect_ratio' => '长宽比(%)',
             'sale_services' => '售后服务',
             'goods_3ds' => '360°主图',
             'parame_images' => '参数示意图',
@@ -130,8 +130,8 @@ class Diamond extends \yii\db\ActiveRecord
             'source_discount' => '来源折扣',
             'is_stock' => '库存类型',
             'status' => '上架状态',
-            'created_at' => Yii::t('goods_diamond', '创建时间'),
-            'updated_at' => Yii::t('goods_diamond', '更新时间'),
+            'created_at' => Yii::t('common', '创建时间'),
+            'updated_at' => Yii::t('common', '更新时间'),
         ];
     }
 

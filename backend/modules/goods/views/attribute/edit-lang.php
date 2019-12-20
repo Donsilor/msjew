@@ -77,9 +77,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'visible' => false,
             ],
             'id',
-            [
+            /* [
                     'attribute'=>'attr_value_code',
-            ],
+            ], */
             [
                 'attribute'=>'lang.attr_value_name',
             ], 

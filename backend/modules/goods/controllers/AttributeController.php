@@ -8,7 +8,7 @@ use common\components\Curd;
 use common\models\base\SearchModel;
 use backend\controllers\BaseController;
 use common\models\goods\AttributeValue;
-
+use yii\base\Exception;
 /**
 * Attribute
 *
@@ -64,21 +64,28 @@ class AttributeController extends BaseController
      */
     public function actionEditLang()
     {
-        $id = Yii::$app->request->get('id', null);
-        $returnUrl = Yii::$app->request->get('returnUrl');
-        //$trans = Yii::$app->db->beginTransaction();
+        $id = Yii::$app->request->get('id');
+        $returnUrl = Yii::$app->request->get('returnUrl',['index']);
         $model = $this->findModel($id);
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-              $this->editLang($model);
-              
-              //更新属性值到attribute_lang.attr_values;
-              Yii::$app->services->goodsAttribute->updateAttrValues($model->id);   
-              
-              if($model->isNewRecord){
-                    return $this->message("添加成功",$this->redirect(['edit-lang','id'=>$model->id]));
-              }
-              return $this->message("保存成功",$this->redirect($returnUrl));
-              
+        if ($model->load(Yii::$app->request->post())) {
+            $is_new = $model->isNewRecord;            
+            try{
+                $trans = Yii::$app->db->beginTransaction();
+                if(false === $model->save()){
+                    throw new Exception($this->getError($model));
+                }
+                $this->editLang($model);
+                
+                $trans->commit();
+                return $is_new ?
+                    $this->message("添加成功", $this->redirect(['edit-lang','id'=>$model->id]), 'success'):
+                    $this->message("保存成功", $this->redirect($returnUrl), 'success');
+            }catch (Exception $e){
+                $trans->rollBack();
+                $error = $e->getMessage();
+                \Yii::error($error);
+                return $this->message("保存失败:".$error, $this->redirect([$this->action->id,'id'=>$model->id]), 'error');
+            }
         }
         
         $dataProvider = null;
@@ -96,13 +103,11 @@ class AttributeController extends BaseController
             
             $dataProvider = $searchModel
               ->search(Yii::$app->request->queryParams);
-              
-            $dataProvider->query->andWhere(['attr_id'=>$id]);
-            $dataProvider->query->andWhere(['<>','status',-1]);
             
-            $dataProvider->query->with(['lang'=>function($query){
-               $query->where(['language'=>Yii::$app->language]);
-            }]);
+            $dataProvider->query->with(['lang']);
+            $dataProvider->query->andWhere(['attr_id'=>$id]);
+            $dataProvider->query->andWhere(['>','status',-1]);            
+            
             
             $dataProvider->setSort(false);
         }
@@ -121,23 +126,28 @@ class AttributeController extends BaseController
     public function actionAjaxEditLang()
     {
         $id = Yii::$app->request->get('id');
-        //$trans = Yii::$app->db->beginTransaction();
         $model = $this->findModel($id);
         // ajax 校验
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
-            $is_new = $model->isNewRecord;            
-            if($flag1 = $model->save()){
-                $id = $model->id;
-                //多语言编辑
-                $flag2 = $this->editLang($model,true);
-            }
-            if($flag1 !== false && $flag2 !== false){   
-                return $is_new ? 
-                $this->message("添加成功", $this->redirect(['edit-lang','id'=>$id]), 'success'):
-                $this->message("保存成功", $this->redirect(['index']), 'success');
-            }
-            return $this->message($this->getError($model), $this->redirect(['index']), 'error');
+            $is_new = $model->isNewRecord;             
+            try{
+                $trans = Yii::$app->db->beginTransaction();
+                if(false === $model->save()){
+                    throw new Exception($this->getError($model));
+                }
+                $this->editLang($model);                
+                $trans->commit();
+                
+                return $is_new ?
+                    $this->message("添加成功", $this->redirect(['edit-lang','id'=>$model->id]), 'success'):
+                    $this->message("保存成功", $this->redirect(['index']), 'success');
+            }catch (Exception $e){
+                $trans->rollBack();
+                $error = $e->getMessage();
+                \Yii::error($error);
+                return $this->message("保存失败:".$error, $this->redirect([$this->action->id,'id'=>$model->id]), 'error');
+            }            
         }
         
         return $this->renderAjax($this->action->id, [

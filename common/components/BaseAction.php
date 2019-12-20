@@ -5,6 +5,7 @@ namespace common\components;
 use Yii;
 use yii\base\Model;
 use common\enums\AppEnum;
+use yii\base\Exception;
 
 /**
  * trait BaseAction
@@ -117,7 +118,8 @@ trait BaseAction
         if (!$msgType || !in_array($msgType, ['success', 'error', 'info', 'warning'])) {
             $msgType = 'success';
         }
-        $msgText = Yii::t('message',$msgText);
+        //$msgText = Yii::t('message',$msgText);
+        $msgText = $this->substr($msgText);
         Yii::$app->getSession()->setFlash($msgType, $msgText);
         return $skipUrl;
     }
@@ -150,10 +152,17 @@ trait BaseAction
                 $langModel->load([$langClassName =>$lang_post]);
                 $langModel->master_id = $model->id;
                 $langModel->language = $lang_key;
-                $res = $langModel->save();
+                if(false === $langModel->save()){
+                    throw new Exception($this->getError($langModel));
+                }
             }
         }
         
         return true;
+    }
+    
+    public function substr($message,$length = 900)
+    {
+        return \yii\helpers\StringHelper::truncate($message, $length);
     }
 }

@@ -7,6 +7,9 @@ use common\enums\InputTypeEnum;
 use common\models\goods\Goods;
 use common\helpers\ArrayHelper;
 use common\models\goods\GoodsLang;
+use common\enums\StatusEnum;
+use common\models\goods\AttributeIndex;
+use common\enums\AttrTypeEnum;
 
 
 /**
@@ -40,7 +43,17 @@ class GoodsService extends Service
                  ]                
             ];
         }
-        $default_data = $this->formatStyleAttrs($styleModel);
+        $default_data = $this->formatStyleAttrs($styleModel,true);
+        //款式商品属性索引表 更新入库
+        $attr_index_list = $default_data['attr_index']??[];
+        AttributeIndex::deleteAll(['style_id'=>$styleModel->id]);
+        foreach ($attr_index_list as $attributes){
+              $model = new AttributeIndex();
+              $attributes['style_id'] = $styleModel->id;
+              $attributes['type_id'] = $styleModel->type_id;
+              $model->attributes = $attributes;
+              $model->save(false);
+        }
         //商品更新
         foreach ($goods_list as $key=>$goods){
             //禁用没有填写商品编号的，过滤掉
@@ -54,7 +67,7 @@ class GoodsService extends Service
             }
             $goodsModel->style_id = $styleModel->id;//款式ID
             $goodsModel->type_id  = $styleModel->type_id;//产品线ID
-            $goodsModel->goods_image  = $styleModel->style_cover;//商品默认图片
+            $goodsModel->goods_image  = $styleModel->style_image;//商品默认图片
             $goodsModel->goods_sn = $goods['goods_sn'];//商品编码            
             $goodsModel->sale_price = $goods['sale_price']??0;//销售价 
             $goodsModel->market_price = $goods['market_price']??0; //成本价
@@ -70,6 +83,7 @@ class GoodsService extends Service
                 $goods_spec = array_combine($spec_ids, $spec_vids);
                 $goodsModel->goods_spec = json_encode($goods_spec);
             } */
+            
             if(!empty($default_data['style_spec_b'][$key])){
                 $goods_specs = $default_data['style_spec_b'][$key];
                 $goodsModel->goods_spec = json_encode($goods_specs['spec_keys']);
@@ -83,7 +97,7 @@ class GoodsService extends Service
                 if($lang_key == \Yii::$app->language){
                     $format_data = $default_data;
                 }else{
-                    $format_data = $this->formatStyleAttrs($styleModel,$lang_key);
+                    $format_data = $this->formatStyleAttrs($styleModel,false,$lang_key);
                 }
                 $spec_list = $format_data['style_spec_b']??[];
                 $langModel = GoodsLang::find()->where(['master_id'=>$goodsModel->id,'language'=>$lang_key])->one();
@@ -91,7 +105,7 @@ class GoodsService extends Service
                     //新增
                     $langModel = new GoodsLang();
                     $langModel->master_id = $goodsModel->id;
-                    $langModel->language  = $lang_key;
+                    $langModel->language  = $lang_key;                    
                 }
                 $goods_spec = $format_data['style_spec_b'][$key]??[];
                 $langModel->goods_spec = !empty($goods_spec)?json_encode($goods_spec) : null;
@@ -100,10 +114,14 @@ class GoodsService extends Service
         }
 
     }
-    /*
-     * 
-     */
-    public function formatStyleAttrs($styleModel,$language = null)
+    /**
+    * 款式属性格式化
+    * @param Style $styleModel  款式model实例
+    * @param string $is_attrindex 是否属性索引 
+    * @param string $language 语言
+    * @return array[]|string[][]|unknown[][]|\common\helpers\unknown[][]|unknown[]
+    */
+    public function formatStyleAttrs($styleModel,$is_attrindex = false,$language = null)
     {
         $type_id = $styleModel->type_id;
         $style_attr = json_decode($styleModel->style_attr,true);
@@ -133,8 +151,8 @@ class GoodsService extends Service
                     $attr_id = $attr['id'];
                     $is_text = InputTypeEnum::isText($attr['input_type']);
                     $is_single = InputTypeEnum::isSingle($attr['input_type']);
-                    $attr['is_text'] = $is_text;
-                    $attr['is_single'] = $is_single;
+                    //$attr['is_text'] = $is_text;
+                    //$attr['is_single'] = $is_single;
                     $attr['value_id'] = 0;
                     $attr['value'] = $spec[$attr_id];
                     $attr['all'] = [];
@@ -176,8 +194,68 @@ class GoodsService extends Service
                 ];
             }
         }
+        if($is_attrindex == true) {
+            //属性索引
+            $format_data['attr_index'] = $this->formatGoodsAttrIndex($format_data);
+        }
         return $format_data;
-    }   
+    } 
+    /**
+     * 款式属性索引格式化
+     * @param array $data
+     */
+    public function formatGoodsAttrIndex($data)
+    {
+        $index_list = [];
+        if(!empty($data['style_attr']) && is_array($data['style_attr'])) {
+            foreach ($data['style_attr'] as $attr){
+                $attr_list = [];
+                if(is_array($attr['value'])){
+                    foreach ($attr['value'] as $val_id=>$val_name){
+                        $index_list[] = [
+                                'attr_name'=>$attr['attr_name'],
+                                'attr_id' =>$attr['id'],
+                                'attr_type'=>$attr['attr_type'],
+                                'attr_value_id'=>$val_id,
+                                'attr_value'=> null,
+                        ];
+                    }                    
+                }else if(trim($attr['value']) != ''){
+                    $index_list[] = [
+                            'attr_name'=>$attr['attr_name'],
+                            'attr_id' =>$attr['id'],
+                            'attr_type'=>$attr['attr_type'],
+                            'attr_value_id'=>$attr['value_id'],
+                            'attr_value'=>$attr['value'],
+                    ];
+                }
+            }
+            
+        }
+        
+        if(!empty($data['style_spec_b']) && is_array($data['style_spec_b'])) {
+            foreach ($data['style_spec_b'] as $key=>$attr){
+                $goods = $data['style_spec_c'][$key];
+                if(empty($goods['status']) || empty($goods['goods_sn'])){
+                    continue;
+                }
+                if(is_array($attr['spec_keys'])){
+                    foreach ($attr['spec_keys'] as $attr_id=>$val_id){
+                        $index_list['spec_'.$attr_id.'_'.$val_id] = [
+                                'attr_name'=>$attr['spec_name'][$attr_id],
+                                'attr_id' =>$attr_id,
+                                'attr_type'=>AttrTypeEnum::TYPE_SALE,
+                                'attr_value_id'=>$val_id,
+                                'attr_value'=> null,
+                        ];
+                    }                    
+                }
+            }
+            
+        }
+        
+        return $index_list;
+    }
    
 
 }

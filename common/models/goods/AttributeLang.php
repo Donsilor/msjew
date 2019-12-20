@@ -36,10 +36,10 @@ class AttributeLang extends \yii\db\ActiveRecord
             [['attr_name'], 'string', 'max' => 100],
             [['default_value'], 'string', 'max' => 20],
             [['attr_values','remark'], 'string', 'max' => 500],
-            [['attr_name'],'unique', 'targetAttribute'=>['attr_name','language'],
+            /* [['attr_name'],'unique', 'targetAttribute'=>['attr_name','language','remark'],
                  //'targetClass' => 'models\AttributeLang', // 模型，缺省时默认当前模型。
                  'comboNotUnique' => '属性名称重复' //错误信息
-            ]
+            ] */
         ];
     }
 

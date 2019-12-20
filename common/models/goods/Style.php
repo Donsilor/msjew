@@ -61,7 +61,7 @@ class Style extends BaseModel
     {
         return [
                 [['style_name','language','id'], 'safe'],
-                [['type_id', 'merchant_id','sale_volume','virtual_volume','virtual_clicks','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
+                [['type_id', 'merchant_id','sale_volume','virtual_volume','virtual_clicks','goods_clicks','goods_storage','goods_clicks', 'storage_alarm', 'is_recommend', 'is_lock', 'supplier_id', 'status', 'verify_status','onsale_time', 'created_at', 'updated_at'], 'integer'],
                 [['type_id','style_sn','sale_price','goods_storage'], 'required'],
                 [['sale_price', 'market_price', 'cost_price'], 'number'],
                 ['sale_price','compare','compareValue' => 0, 'operator' => '>'],
@@ -137,7 +137,7 @@ class Style extends BaseModel
             $this->goods_images = implode(',',$this->goods_images);
         }
         return $this->goods_images;
-    }
+    }   
     /**
      * {@inheritdoc}
      */
@@ -172,8 +172,9 @@ class Style extends BaseModel
             'status' => Yii::t('goods', '上架状态'),
             'verify_status' => Yii::t('goods', 'Verify Status'),
             'verify_remark' => Yii::t('goods', 'Verify Remark'),
-            'created_at' => Yii::t('goods', 'Created At'),
-            'updated_at' => Yii::t('goods', 'Updated At'), 
+            'onsale_time' => Yii::t('goods', '上架时间'),
+            'created_at' => Yii::t('goods', '创建时间'),
+            'updated_at' => Yii::t('goods', '更新时间'), 
             //自定义属性    
             'attr_require' => Yii::t('goods', '当前属性'),
             'attr_custom' => Yii::t('goods', '当前属性'),

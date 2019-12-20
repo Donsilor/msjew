@@ -17,7 +17,8 @@ $addon = <<< HTML
 <span class="input-group-addon">
     <i class="glyphicon glyphicon-calendar"></i>
 </span>
-HTML
+HTML;
+
 ?>
 
 <div class="row">
@@ -31,7 +32,7 @@ HTML
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" style="display: none">
                 <div class="col-sm-12">
                     <?php $form = ActiveForm::begin([
                         'action' => Url::to(['/member/member']),
@@ -40,6 +41,7 @@ HTML
                     <div class="col-sm-4">
                         <div class="input-group drp-container">
                             <?= DateRangePicker::widget([
+                                'id'=>'datepicker',
                                 'name' => 'queryDate',
                                 'value' => $start_time . '-' . $end_time,
                                 'readonly' => 'readonly',
@@ -55,6 +57,18 @@ HTML
                             ]) . $addon;?>
                         </div>
                     </div>
+                    <div class="form-group field-attributespec-type_id">
+
+                        <div class="col-sm-1">
+                            <label class="control-label text-right" for="attributespec-type_id">首页登陆</label>
+                            <select id="searchmodel-use_type" class="form-control" name="visit_count">
+                                <option value="">全部</option>
+                                <option value="1">是</option>
+                                <option value="0">否</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="col-sm-4">
                         <div class="input-group m-b">
                             <input type="text" class="form-control" name="title" placeholder="账号" value="<?= $title ?>"/>
@@ -67,6 +81,7 @@ HTML
             <div class="box-body table-responsive">
                 <?= GridView::widget([
                     'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
                     //重新定义分页样式
                     'tableOptions' => ['class' => 'table table-hover'],
                     'columns' => [
@@ -82,12 +97,32 @@ HTML
                         [
                             'attribute' => 'username',
                             'value'=>'email',
-                            'filter' => false, //不显示搜索框
+                            'filter' => Html::activeTextInput($searchModel, 'email', [
+                                'class' => 'form-control',
+                                'style' =>'width:200px'
+                            ]),
                         ],
 
                         [
                             'label' => '登录信息',
-                            'filter' => false, //不显示搜索框
+                            'filter' => DateRangePicker::widget([    // 日期组件
+                                'model' => $searchModel,
+                                'attribute' => 'created_at',
+                                'value' => $searchModel->created_at,
+                                'options' => ['readonly' => true],
+                                'pluginOptions' => [
+                                    'format' => 'yyyy-mm-dd',
+                                    'locale' => [
+                                        'separator' => '/',
+                                    ],
+                                    'endDate' => date('Y-m-d',time()),
+                                    'todayHighlight' => true,
+                                    'autoclose' => true,
+                                    'todayBtn' => 'linked',
+                                    'clearBtn' => true,
+
+                                ],
+                            ]),
                             'value' => function ($model) {
                                 return "最后访问IP：" . $model->last_ip . '<br>' .
                                     "最后访问：" . Yii::$app->formatter->asDatetime($model->last_time) . '<br>' .
@@ -100,14 +135,22 @@ HTML
                             'label'=>'首次登陆',
                             'value'=>function($model){
                                 return $model->visit_count == 1 ? "是":"否";
-                             }
+                             },
+                             'filter' => Html::activeDropDownList($searchModel, 'visit_count',['1'=>'是','2'=>'否'], [
+                                 'prompt' => '全部',
+                                 'class' => 'form-control',
+                             ]),
                         ],
                         [
                             'label'=>'是否留言',
                             'value'=>function($model){
                                 $count = \common\models\member\Book::find()->where(['member_id'=>$model->id])->count();
                                 return $count > 0 ? "是":"否";
-                            }
+                            },
+                            'filter' => Html::activeDropDownList($searchModel, 'is_book',['1'=>'是','2'=>'否'], [
+                                'prompt' => '全部',
+                                'class' => 'form-control',
+                            ]),
                         ],
                         [
                             'header' => "操作",

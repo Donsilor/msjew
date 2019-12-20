@@ -50,13 +50,42 @@ class MemberController extends BaseController
         ]);
 
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams);
+            ->search(Yii::$app->request->queryParams,['created_at','visit_count','is_book']);
 
         if($title){
             $dataProvider->query->andFilterWhere(['=','email',$title]);
         }
         if($start_time && $end_time){
             $dataProvider->query->andFilterWhere(['between','created_at', strtotime($start_time), strtotime($end_time)]);
+        }
+
+        $created_at = $searchModel->created_at;
+        if (!empty($created_at)) {
+            $dataProvider->query->andFilterWhere(['>=','created_at', strtotime(explode('/', $searchModel->created_at)[0])]);//起始时间
+            $dataProvider->query->andFilterWhere(['<','created_at', (strtotime(explode('/', $searchModel->created_at)[1]) + 86400)] );//结束时间
+        }
+
+        //是否首次登陆
+        $visit_count = $searchModel->visit_count;
+        if (!empty($visit_count)) {
+            if($visit_count  == 1){
+                $dataProvider->query->andFilterWhere(['=','visit_count',1 ]);
+            }else{
+                $dataProvider->query->andFilterWhere(['>','visit_count',1 ]);
+            }
+        }
+
+        //是否留言
+        $is_book = $searchModel->is_book;
+        if (!empty($is_book)) {
+            $member_ids = Book::find()->select(['member_id'])->distinct()->asArray()->all();
+            $member_ids = array_column($member_ids,'member_id');
+            if($is_book  == 1){
+                $dataProvider->query->andFilterWhere(['in','id',$member_ids ]);
+            }else{
+                $dataProvider->query->andFilterWhere(['not in','id',$member_ids ]);
+            }
+
         }
 
         $dataProvider->query
@@ -66,6 +95,7 @@ class MemberController extends BaseController
         return $this->render('member', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
+
         ]);
     }
 

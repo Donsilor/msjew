@@ -36,10 +36,11 @@ class BookController extends OnAuthController
         $searchModel = $this->modelClass::find()->alias('b')
             ->leftJoin(Member::tableName().' m','m.id = b.member_id')
             ->where(['m.email'=>$username])
-            ->select(['b.title','from_unixtime(b.created_at,"%Y-%m-%d")  created_at','b.content','m.email'])
+            ->select(['b.title','from_unixtime(b.created_at,"%Y.%m.%d")  created_at','b.content','m.email'])
             ->orderby('b.created_at desc');
         if($page == null){
             $model = $searchModel->asArray()->all();
+             if(empty($model)) return ResultHelper::api(201, '没有数据');
             return ['list'=>$model];
         }
         $startPage = ($page-1) * $pageSize; //开始页数
@@ -51,7 +52,7 @@ class BookController extends OnAuthController
             ->asArray()
             ->all();
 
-
+        if(empty($model)) return ResultHelper::api(201, '没有数据');
         return ['totalPage'=>$totalPage ,'list'=>$model];
     }
 

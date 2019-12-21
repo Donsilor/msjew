@@ -11,7 +11,6 @@ use yii\grid\GridView;
 $this->title = Yii::t('goods_attribute', '产品规格管理');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
@@ -25,11 +24,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
             <div class="box-body table-responsive">
+    <?php echo Html::batchButtons(false)?>        
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'table table-hover'],
-        'showFooter' => true,//显示footer行
+        'showFooter' => false,//显示footer行
         'id'=>'grid',
         'columns' => [
             [
@@ -40,8 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class'=>'yii\grid\CheckboxColumn',
                 'name'=>'id',  //设置每行数据的复选框属性
                 'headerOptions' => ['width'=>'30'],
-                'footer'=> Html::batchButtons(),//['search_export','status_disabled']
-                'footerOptions' => ['colspan' => 3],  //设置删除按钮垮列显示                        
             ],
             [
                 'attribute'=>'attr_id',
@@ -49,16 +47,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' =>'attr_id',
                 'filter' => Html::activeTextInput($searchModel, 'attr_id', [
                         'class' => 'form-control',
-                        'style' =>'width:50px'
                 ]),
+                'headerOptions' => ['width'=>'80'],
             ],
             [
                 'attribute'=>'attr_name',
                 'value' =>'attr.attr_name',
                 'filter' => Html::activeTextInput($searchModel, 'attr_name', [
                         'class' => 'form-control',
-                        'style' =>'width:100px'
+                        //'style' =>'width:100px'
                 ]),
+                'headerOptions' => ['class' => 'col-md-1'],
             ],
             [
                 'attribute'=>'attr_values',
@@ -129,10 +128,10 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'sort',
                 'format' => 'raw',
-                'headerOptions' =>  ['class' => 'col-md-1'],
                 'value' => function ($model, $key, $index, $column){
                     return  Html::sort($model->sort,['data-url'=>Url::to(['ajax-update'])]);
                 },
+                'headerOptions' => ['width' => '80'],
             ],            
             [
                 'class' => 'yii\grid\ActionColumn',

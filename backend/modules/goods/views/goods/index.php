@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </li>
             </ul>
             <div class="box-body table-responsive">
+    <?php echo Html::batchButtons(false)?>         
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'tableOptions' => ['class' => 'table table-hover'],

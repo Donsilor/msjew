@@ -23,11 +23,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
             <div class="box-body table-responsive">
+    <?php echo Html::batchButtons(false)?>         
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'table table-hover'],
-        'showFooter' => true,//显示footer行
         'id'=>'grid',
         'columns' => [
             [
@@ -38,19 +38,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class'=>'yii\grid\CheckboxColumn',
                 'name'=>'id',  //设置每行数据的复选框属性
                 'headerOptions' => ['width'=>'30'],
-                'footer'=> Html::batchButtons(['status_enabled','status_disabled','batch_delete']),//['search_export','status_disabled']
-                'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
             ],
-
-
             [
                 'attribute' => 'id',
                 'value' => 'id',
                 'filter' => Html::activeTextInput($searchModel, 'id', [
                     'class' => 'form-control',
-                    'style' =>'width:50px'
                 ]),
                 'format' => 'raw',
+                'headerOptions' => ['width'=>'80'],
             ],
             [
                 'attribute' => 'goods_image',
@@ -59,6 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => false,
                 'format' => 'raw',
+                'headerOptions' => ['width'=>'80'],
             ],
             [
                 'attribute' => 'lang.goods_name',
@@ -69,7 +66,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]),
                 'format' => 'raw',
             ],
-
             [
                 'attribute' => 'goods_sn',
                 'value' => 'goods_sn',

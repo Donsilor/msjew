@@ -333,7 +333,7 @@ Css
      */
     public static function batchButtons($options = [])
     {
-        if($options == false) return '';
+        if($options === false) return '';
         
         $listBut = [
                 'status_enabled' => self::tag('span', '批量启用',

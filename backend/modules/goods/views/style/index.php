@@ -26,6 +26,7 @@ $type_id = Yii::$app->request->get('type_id',0);
                 </li>
             </ul>
             <div class="box-body table-responsive">
+    <?php echo Html::batchButtons(false)?>         
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -41,15 +42,12 @@ $type_id = Yii::$app->request->get('type_id',0);
                 'class'=>'yii\grid\CheckboxColumn',
                 'name'=>'id',  //设置每行数据的复选框属性
                 'headerOptions' => ['width'=>'30'],
-                'footer'=> Html::batchButtons(['status_enabled','status_disabled']),//
-                'footerOptions' => ['colspan' => 4],  //设置删除按钮垮列显示
             ],
             [
                 'attribute' => 'id',
                 'filter' => true,
                 'format' => 'raw',
-                'headerOptions' => ['width'=>'50'],
-            
+                'headerOptions' => ['width'=>'80'],            
             ],
             [
                 'attribute' => 'lang.language',
@@ -69,12 +67,11 @@ $type_id = Yii::$app->request->get('type_id',0);
                 },
                 'filter' => false,
                 'format' => 'raw',
-                'headerOptions' => ['width'=>'80'],
-                
+                'headerOptions' => ['width'=>'80'],                
             ],
                 
             [
-                'headerOptions' => ['width'=>'200'],
+                //'headerOptions' => ['width'=>'200'],
                 'attribute' => 'lang.style_name',
                 'value' => 'lang.style_name',
                 'filter' => Html::activeTextInput($searchModel, 'style_name', [

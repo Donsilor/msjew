@@ -22,7 +22,8 @@ class LoginForm extends \common\models\forms\LoginForm
     public function rules()
     {
         return [
-            [['username', 'password', 'group'], 'required'],
+            //[['username', 'password', 'group'], 'required'],
+            [['username'], 'required'],
             ['password', 'validatePassword'],
             ['group', 'in', 'range' => AccessToken::$ruleGroupRnage]
         ];
@@ -69,8 +70,11 @@ class LoginForm extends \common\models\forms\LoginForm
             $user->email = $this->username;
         }
         if (!$user->save()) {
-            return ResultHelper::api(422, $this->getError($user));
+            return ResultHelper::api(422, '登陆失败');
         }
         return $user;
     }
+
+
+
 }

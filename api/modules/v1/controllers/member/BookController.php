@@ -2,12 +2,14 @@
 
 namespace api\modules\v1\controllers\member;
 
+use api\modules\v1\forms\BookForm;
 use api\modules\v1\forms\LoginForm;
 use common\helpers\ResultHelper;
 use common\models\member\Book;
 use common\models\member\Member;
 use Yii;
 use api\controllers\OnAuthController;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class ProvincesController
@@ -29,31 +31,20 @@ class BookController extends OnAuthController
      */
     public function actionIndex()
     {
-        $username = Yii::$app->request->get('username',null);
-        if($username == null) return ResultHelper::api(400, '缺省参数');
-        $page = Yii::$app->request->get('page',null);
-        $pageSize = Yii::$app->request->get('pageSize',5); //每页显示数
-        $searchModel = $this->modelClass::find()->alias('b')
+        $username = Yii::$app->request->get('username');
+        if(!$username){
+            return ResultHelper::api(400, '用户名不能为空');
+        }
+        $page = Yii::$app->request->get('page',1);
+        $page_size = Yii::$app->request->get('page_size',5); //每页显示数
+        $query = $this->modelClass::find()->alias('b')
             ->leftJoin(Member::tableName().' m','m.id = b.member_id')
             ->where(['m.email'=>$username])
             ->select(['b.title','from_unixtime(b.created_at,"%Y.%m.%d")  created_at','b.content','m.email'])
             ->orderby('b.created_at desc');
-        if($page == null){
-            $model = $searchModel->asArray()->all();
-             if(empty($model)) return ResultHelper::api(201, '没有数据');
-            return ['list'=>$model];
-        }
-        $startPage = ($page-1) * $pageSize; //开始页数
-        $total = $searchModel->count();
-        $totalPage = ceil($total / $pageSize); //总页数
-        $model = $searchModel
-            ->limit($pageSize)
-            ->offset($startPage)
-            ->asArray()
-            ->all();
 
-        if(empty($model)) return ResultHelper::api(201, '没有数据');
-        return ['totalPage'=>$totalPage ,'list'=>$model];
+        $result = $this->pagination($query,$page,$page_size);
+        return $result;
     }
 
     /**
@@ -64,22 +55,28 @@ class BookController extends OnAuthController
      */
     public function actionAdd()
     {
-        $username = Yii::$app->request->post('username',null);
-        $title = Yii::$app->request->post('title',null);
-        $content = Yii::$app->request->post('content',null);
-
-        if(!($username && $title && $content)) return ResultHelper::api(400, '缺省参数');
+        //登陆
         $loginFrom = new LoginForm();
-        $loginFrom->username = $username;
+        $loginFrom->attributes = Yii::$app->request->post();
+        if (!$loginFrom->validate()) {
+            return ResultHelper::api(422, $this->getError($loginFrom));
+        }
         $user = $loginFrom->login();
-        $model = new $this->modelClass;
-        $model->title = $title;
-        $model->content = $content;
+
+        //验证
+        $model = new BookForm();
         $model->member_id = $user->id;
-        if (!$model->save()) {
+        $model->attributes = Yii::$app->request->post();
+        if (!$model->validate()) {
             return ResultHelper::api(422, $this->getError($model));
         }
-        return $model;
+        //提交
+        $book = new $this->modelClass();
+        $book->attributes = ArrayHelper::toArray($model);
+        if (!$book->save()) {
+            return ResultHelper::api(422, $this->getError($book));
+        }
+        return $book;
 
     }
 

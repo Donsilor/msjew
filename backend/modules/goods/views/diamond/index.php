@@ -62,18 +62,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'lang.goods_name',
                 'filter' => Html::activeTextInput($searchModel, 'goods_name', [
                     'class' => 'form-control',
-                    'style' =>'width:200px'
                 ]),
                 'format' => 'raw',
+                'headerOptions' => ['width'=>'300'],
             ],
             [
                 'attribute' => 'goods_sn',
                 'value' => 'goods_sn',
                 'filter' => Html::activeTextInput($searchModel, 'goods_sn', [
                     'class' => 'form-control',
-                    'style' =>'width:100px'
                 ]),
                 'format' => 'raw',
+                'headerOptions' => ['width'=>'120'],
             ],
             //'goods_image',
             //'goods_num',

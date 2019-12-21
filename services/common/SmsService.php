@@ -117,15 +117,18 @@ class SmsService extends Service
             if (($smsLog = $this->findByMobile($mobile)) && $smsLog['created_at'] + 60 > time()) {
                 throw new NotFoundHttpException('请不要频繁发送短信');
             }
-
-            $easySms = new EasySms($this->config);
-            $result = $easySms->send($mobile, [
-                'template' => $templateID,
-                'data' => [
-                    'code' => $code,
-                ],
-            ]);
-
+            if($templateID){
+                $easySms = new EasySms($this->config);
+                $result = $easySms->send($mobile, [
+                    'template' => $templateID,
+                    'data' => [
+                        'code' => $code,
+                    ],
+                ]); 
+            } else {
+                $result = '测试：未设置模板';
+            }
+            
             $this->saveLog([
                 'mobile' => $mobile,
                 'code' => $code,

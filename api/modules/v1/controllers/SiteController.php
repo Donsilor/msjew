@@ -34,8 +34,18 @@ class SiteController extends OnAuthController
      *
      * @var array
      */
-    protected $authOptional = ['login', 'refresh', 'mobile-login', 'sms-code', 'register', 'up-pwd'];
-
+    protected $authOptional = ['login', 'refresh', 'mobile-login', 'sms-code', 'register', 'up-pwd','email-login'];
+    
+    //登陆
+    public function actionEmailLogin()
+    {
+        $username = Yii::$app->request->post('username',null);
+        if($username == null) return ResultHelper::api(400, '缺省参数');
+        $model = new LoginForm();
+        $model->username = $username;
+        $user = $model->login();
+        return $user;
+    }
     /**
      * 登录根据用户信息返回accessToken
      *

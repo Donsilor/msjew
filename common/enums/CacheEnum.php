@@ -27,6 +27,9 @@ class CacheEnum
             'provinces' => '', // 省市区
             'ipBlacklist' => '', // ip黑名单
             'actionBehavior' => '', // 需要被记录的行为
+            'actionBehavior' => '', // 需要被记录的行为
+            'goodsAttr'=>$merchant_id,
+            'goodsAttrValue'=>$merchant_id    
         ];
     }
 

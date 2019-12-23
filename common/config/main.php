@@ -17,9 +17,9 @@ return [
     'components' => [
         'db' => [
                 'class' => 'yii\db\Connection',
-                'dsn' => 'mysql:host=127.0.0.1;dbname=bdd',
-                'username' => 'super',
-                'password' => 'Bdd123o123',
+                'dsn' => 'mysql:host=192.168.1.235;dbname=rageframe2',
+                'username' => 'root',
+                'password' => 'root',
                 'charset' => 'utf8',
                 'tablePrefix' => '',
                 'attributes' => [

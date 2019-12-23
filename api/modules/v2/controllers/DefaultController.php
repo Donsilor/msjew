@@ -2,14 +2,14 @@
 
 namespace api\modules\v2\controllers;
 
-use Yii;
 use api\controllers\OnAuthController;
 
 /**
  * 默认控制器
  *
  * Class DefaultController
- * @package api\modules\v2\controllers
+ * @package api\modules\v1\controllers
+ * @property \yii\db\ActiveRecord $modelClass
  * @author jianyan74 <751393839@qq.com>
  */
 class DefaultController extends OnAuthController
@@ -23,13 +23,23 @@ class DefaultController extends OnAuthController
      *
      * @var array
      */
-    protected $authOptional = ['index'];
+    protected $authOptional = ['index', 'search'];
 
     /**
      * @return string|\yii\data\ActiveDataProvider
      */
     public function actionIndex()
     {
-        return 'v2 default index';
+        return 'index';
+    }
+
+    /**
+     * 测试查询方法
+     *
+     * @return string
+     */
+    public function actionSearch()
+    {
+        return '测试查询';
     }
 }

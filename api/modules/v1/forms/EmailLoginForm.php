@@ -3,18 +3,21 @@
 namespace api\modules\v1\forms;
 
 use common\enums\StatusEnum;
+use common\helpers\RegularHelper;
 use common\helpers\ResultHelper;
 use common\models\api\AccessToken;
 use common\models\member\Member;
+use PHPUnit\Util\RegularExpression;
+use yii\base\Model;
 
 /**
  * Class LoginForm
  * @package api\modules\v1\forms
  * @author jianyan74 <751393839@qq.com>
  */
-class LoginForm extends \common\models\forms\LoginForm
+class EmailLoginForm extends Model
 {
-    public $group;
+    public $username;
 
     /**
      * @inheritdoc
@@ -24,17 +27,14 @@ class LoginForm extends \common\models\forms\LoginForm
         return [
             //[['username', 'password', 'group'], 'required'],
             [['username'], 'required'],
-            ['password', 'validatePassword'],
-            ['group', 'in', 'range' => AccessToken::$ruleGroupRnage]
+            ['username', 'match', 'pattern' => RegularHelper::email(), 'message' => '请输入正确的邮箱'],
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'username' => '登录帐号',
-            'password' => '登录密码',
-            'group' => '组别',
+            'username' => '邮箱',
         ];
     }
 
@@ -58,6 +58,22 @@ class LoginForm extends \common\models\forms\LoginForm
     }
 
 
+    /**
+     * 用户登录
+     *
+     * @return mixed|null|static
+     */
+    public function login(){
+        $user = Member::findOne(['email' => $this->username]);
+        if(!$user){
+            $user = new Member();
+            $user->email = $this->username;
+        }
+        if (!$user->save()) {
+            return ResultHelper::api(422, '登陆失败');
+        }
+        return $user;
+    }
 
 
 

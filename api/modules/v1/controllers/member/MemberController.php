@@ -69,21 +69,4 @@ class MemberController extends OnAuthController
         }
     }
 
-    //登陆
-    public function actionLogin()
-    {
-        $model = new LoginForm();
-        $model->attributes = Yii::$app->request->post();
-        if (!$model->validate()) {
-            return ResultHelper::api(422, $this->getError($model));
-        }
-        $user = $model->login();
-        return $user;
-
-
-
-    }
-
-
-
 }

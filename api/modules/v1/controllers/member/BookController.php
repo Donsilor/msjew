@@ -3,7 +3,7 @@
 namespace api\modules\v1\controllers\member;
 
 use api\modules\v1\forms\BookForm;
-use api\modules\v1\forms\LoginForm;
+use api\modules\v1\forms\EmailLoginForm;
 use common\helpers\ResultHelper;
 use common\models\member\Book;
 use common\models\member\Member;
@@ -29,6 +29,9 @@ class BookController extends OnAuthController
      * @param int $pid
      * @return array|yii\data\ActiveDataProvider
      */
+
+
+
     public function actionIndex()
     {
         $username = Yii::$app->request->get('username');
@@ -53,10 +56,10 @@ class BookController extends OnAuthController
      * @param int $pid
      * @return array|yii\data\ActiveDataProvider
      */
-    public function actionAdd()
+    public function actionCreate()
     {
         //登陆
-        $loginFrom = new LoginForm();
+        $loginFrom = new EmailLoginForm();
         $loginFrom->attributes = Yii::$app->request->post();
         if (!$loginFrom->validate()) {
             return ResultHelper::api(422, $this->getError($loginFrom));

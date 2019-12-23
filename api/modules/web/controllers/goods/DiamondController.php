@@ -1,6 +1,6 @@
 <?php
 
-namespace api\modules\v2\controllers\goods;
+namespace api\modules\web\controllers\goods;
 
 use Yii;
 use api\controllers\OnAuthController;
@@ -15,7 +15,7 @@ use common\models\goods\AttributeIndex;
  * Class ProvincesController
  * @package api\modules\v1\controllers\member
  */
-class StyleController extends OnAuthController
+class DiamondController extends OnAuthController
 {
 
     /**
@@ -39,24 +39,24 @@ class StyleController extends OnAuthController
             "4_0"=>'s.rank asc',//权重
             "4_1"=>'s.rank desc',
         ];
-        
+
         $type_id = \Yii::$app->request->post("type_id");//产品线
         $keyword = \Yii::$app->request->post("keyword");//产品线
         $price_range   = \Yii::$app->request->post("price_range");//最低价格
         $attr_id  = \Yii::$app->request->post("attr_id");//属性
         $attr_value  = \Yii::$app->request->post("attr_value");//属性
-        
+
         $sort = \Yii::$app->request->post("sort",'4_1');//排序
         $page = \Yii::$app->request->post("page",1);//页码
         $page_size = \Yii::$app->request->post("page_size",20);//每页大小
-        
+
         $order = $sort_map[$sort] ?? '';
-        
+
         $fields = ['s.id','s.style_sn','lang.style_name','s.style_image','s.sale_price','s.goods_clicks'];
         $query = Style::find()->alias('s')->select($fields)
             ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
             ->orderby($order);
-        
+
         if($type_id) {
             $query->andWhere(['=','s.type_id',$type_id]);
         }
@@ -70,12 +70,12 @@ class StyleController extends OnAuthController
                 if(is_numeric($min_price)){
                     $query->andWhere(['>','s.sale_price',$min_price]);
                 }
-                
+
                 if(is_numeric($max_price) && $max_price>0){
                     $query->andWhere(['<=','s.sale_price',$max_price]);
                 }
-                
-            }            
+
+            }
         }
         //print_r($attr_value);exit;
         //属性，属性值查询
@@ -98,21 +98,21 @@ class StyleController extends OnAuthController
                         $subQuery->andWhere(['attr_id'=>$k,'attr_value'=>$v]);
                     }else if(count($arr)==2){
                         $subQuery->andWhere(['and',['=','attr_id',$k],['between','attr_value',$arr[0], $arr[1]]]);
-                    }                                      
+                    }
                 }
-            }            
+            }
             $query->andWhere(['in','s.id',$subQuery]);
         }
         //echo $query->createCommand()->getSql();exit;
         $result = $this->pagination($query,$page,$page_size);
-        
+
         foreach($result['data'] as & $val) {
-            $val['currency'] = '$'; 
+            $val['currency'] = '$';
             $val['style_image'] = ImageHelper::thumb($val['style_image']);
-        } 
-        
+        }
+
         return $result;
-        
+
     }
     /**
      * 款式商品详情
@@ -139,29 +139,29 @@ class StyleController extends OnAuthController
                 $attr_value = implode('/',$attr_value);
             }
             $attr_list[] = [
-                  'name'=>$attr['attr_name'],
-                  'value'=>$attr_value,
+                'name'=>$attr['attr_name'],
+                'value'=>$attr_value,
             ];
         }
         if($model->goods_images) {
             $goods_images = explode(",",$model->goods_images);
             $goods_images = [
-                    'big'=>ImageHelper::thumbs($goods_images),
-                    'thumb'=>ImageHelper::thumbs($goods_images),
+                'big'=>ImageHelper::thumbs($goods_images),
+                'thumb'=>ImageHelper::thumbs($goods_images),
             ];
         }else{
             $goods_images = [];
         }
         $info = [
-                'id' =>$model->id,
-                'type_id'=>$model->type_id,
-                'style_name'=>$model->lang->style_name,
-                'style_moq'=>1,
-                'sale_price'=>$model->sale_price,
-                'currency'=>'$',
-                'goods_images'=>$goods_images,
-                'goods_3ds'=>$model->style_3ds,
-                'style_attrs' =>$attr_list,                
+            'id' =>$model->id,
+            'type_id'=>$model->type_id,
+            'style_name'=>$model->lang->style_name,
+            'style_moq'=>1,
+            'sale_price'=>$model->sale_price,
+            'currency'=>'$',
+            'goods_images'=>$goods_images,
+            'goods_3ds'=>$model->style_3ds,
+            'style_attrs' =>$attr_list,
         ];
         $model->goods_clicks = new Expression("goods_clicks+1");
         $model->virtual_clicks = new Expression("virtual_clicks+1");
@@ -184,18 +184,18 @@ class StyleController extends OnAuthController
         $type_id = $model->type_id;
         $fields = ['s.id','s.style_sn','lang.style_name','s.style_image','s.sale_price','s.goods_clicks'];
         $query = Style::find()->alias('s')->select($fields)
-                    ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
-                    ->andWhere(['s.type_id'=>$type_id])
-                    ->andWhere(['<>','s.id',$style_id])
-                    ->orderby("s.goods_clicks desc");
+            ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
+            ->andWhere(['s.type_id'=>$type_id])
+            ->andWhere(['<>','s.id',$style_id])
+            ->orderby("s.goods_clicks desc");
         $models = $query->limit(10)->asArray()->all();
         foreach ($models as &$model){
             $model['style_image'] = ImageHelper::thumb($model['style_image']);
             $model['currency'] = '$';
         }
-        return $models;        
+        return $models;
     }
-    
-    
-    
+
+
+
 }

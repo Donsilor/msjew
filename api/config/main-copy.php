@@ -19,6 +19,18 @@ return [
             'class' => 'api\modules\v2\Module',
         ],
     ],
+    'as cors' =>[
+        'class' => '\yii\filters\Cors',
+        'cors' => [
+            'Origin' => ['*'],
+            'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+            'Access-Control-Request-Headers' => ['*'],
+            'Access-Control-Allow-Credentials' => false,
+            'Access-Control-Max-Age' => 86400,
+            'Access-Control-Expose-Headers' => [],
+        ],
+
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-api',

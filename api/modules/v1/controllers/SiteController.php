@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use api\modules\v1\forms\EmailLoginForm;
 use Yii;
 use yii\web\NotFoundHttpException;
 use common\helpers\ResultHelper;
@@ -39,10 +40,11 @@ class SiteController extends OnAuthController
     //登陆
     public function actionEmailLogin()
     {
-        $username = Yii::$app->request->post('username',null);
-        if($username == null) return ResultHelper::api(400, '缺省参数');
-        $model = new LoginForm();
-        $model->username = $username;
+        $model = new EmailLoginForm();
+        $model->attributes = Yii::$app->request->post();
+        if (!$model->validate()) {
+            return ResultHelper::api(422, $this->getError($model));
+        }
         $user = $model->login();
         return $user;
     }

@@ -82,7 +82,7 @@ class ImageHelper
     public static function thumb($image ,$tag = '')
     {   
           if(empty($image)) {
-              $image = \Yii::$app->params['default_image'];
+              $image = \Yii::$app->params['defaultImage'];
           }          
           
           return $image;

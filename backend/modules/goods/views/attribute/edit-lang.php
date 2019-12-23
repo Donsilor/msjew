@@ -37,7 +37,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'remark'=>['type'=>'textArea','options'=>[]]                            
                                 ]]);
                 	    ?>
-                	    <?= $form->field($model, 'use_type')->radioList(common\enums\AttrUseTypeEnum::getMap())?>
+                	    <?= $form->field($model, 'image')->widget(common\widgets\webuploader\Files::class, [
+                            'config' => [
+                                'pick' => [
+                                    'multiple' => false,
+                                ],
+                            ]
+                        ]); ?>
                         <?= $form->field($model, 'status')->radioList(common\enums\StatusEnum::getMap())?>
                         <?= $form->field($model, 'sort')->textInput() ?>                    
                     </div>  
@@ -77,9 +83,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'visible' => false,
             ],
             'id',
-            /* [
-                    'attribute'=>'attr_value_code',
-            ], */
+            [
+                'attribute' => 'image',
+                'value' => function ($model) {
+                     return common\helpers\ImageHelper::fancyBox($model->image);
+                 },
+                'filter' => false,
+                'format' => 'raw',
+                'headerOptions' => ['width'=>'80'],
+            ],
             [
                 'attribute'=>'lang.attr_value_name',
             ], 

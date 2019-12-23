@@ -38,7 +38,8 @@ class Attribute extends BaseModel
         return [
             [['status','use_type'], 'required'],
             [['id','status', 'sort','created_at', 'updated_at'], 'integer'],
-            [['attr_name','language','remark'], 'safe'],            
+            //[['image'], 'string','max'=>100],
+            [['attr_name','language','remark','image'], 'safe'],            
         ];
     }
 
@@ -48,15 +49,15 @@ class Attribute extends BaseModel
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('goods_attribute', 'ID'),            
-            'status' => Yii::t('goods_attribute', '状态'),
-            'sort' => Yii::t('goods_attribute', '排序'),
-            'input_type' => Yii::t('goods_attribute', '显示类型'),
-            'use_type' => Yii::t('goods_attribute', '使用类型'),
-            'created_at' => Yii::t('goods_attribute', '创建时间'),
-            'updated_at' => Yii::t('goods_attribute', '更新时间'),
-            'attr_name'=>Yii::t('goods_attribute', '属性名称'),
-            'remark'=>Yii::t('goods_attribute', '备注'),
+            'id' => Yii::t('common', 'ID'),     
+            'code' => Yii::t('common', '标识'),
+            'image' => Yii::t('common', '图标'),
+            'attr_name'=>Yii::t('attribute', '属性名称'),
+            'status' => Yii::t('common', '状态'),
+            'sort' => Yii::t('common', '排序'),    
+            'remark'=>Yii::t('common', '备注'),
+            'created_at' => Yii::t('common', '创建时间'),
+            'updated_at' => Yii::t('common', '更新时间'),
         ];
     }
     

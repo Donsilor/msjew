@@ -33,18 +33,19 @@ class AttributeValue extends BaseModel
         return [
             [['status'], 'required'],
             [['attr_id', 'sort', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['attr_value_code'], 'string','max'=>15],
-            [['id'],'defaultAttrValueCode'],
-            [['attr_value_code'],'unique', 'targetAttribute'=>['attr_value_code','attr_id'],
-                   'comboNotUnique' => '属性编码重复' //错误信息
+            [['code'], 'string','max'=>15],
+            [['image'], 'string','max'=>100],
+            //[['id'],'defaultAttrValueCode'],
+            [['code'],'unique', 'targetAttribute'=>['code','attr_id'],
+                   'comboNotUnique' => '属性标识重复' //错误信息
             ],
         ];
     }
-    public function defaultAttrValueCode(){
+    /* public function defaultAttrValueCode(){
         if(!$this->attr_value_code) {
             $this->attr_value_code = $this->id;
         }
-    }
+    } */
 
     /**
      * {@inheritdoc}
@@ -54,7 +55,8 @@ class AttributeValue extends BaseModel
         return [
             'id' => Yii::t('goods_attribute', 'ID'),
             'attr_id' => Yii::t('goods_attribute', 'Attr ID'),
-            'attr_value_code'=>Yii::t('goods_attribute', '属性值编码'),
+            'code' => Yii::t('goods_attribute', '标识'),
+            'image' => Yii::t('goods_attribute', '图标'),
             'sort' => Yii::t('common', '排序'),
             'status' => Yii::t('common', '状态'),
             'created_at' => Yii::t('common', '创建时间'),

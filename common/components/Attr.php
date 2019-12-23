@@ -7,6 +7,7 @@ use common\enums\CacheEnum;
 use common\models\goods\AttributeValue;
 use common\models\goods\AttributeValueLang;
 use common\enums\StatusEnum;
+use common\models\goods\AttributeLang;
 
 /**
  * Class Attribute
@@ -28,7 +29,7 @@ class Attr
             $language = \Yii::$app->params['language'];
         }
         $result = $this->getAttr($attr_id , $noCache);
-        return $result['info'][$language]['attr_name']??'';
+        return $result['info'][$language]['name']??'';
     }
     /**
      * 属性值列表
@@ -43,7 +44,7 @@ class Attr
             $language = \Yii::$app->params['language'];
         }
         $result = $this->getAttr($attr_id , $noCache);
-        return $result['value_list'][$language]??[];
+        return $result['items'][$language]??[];
     }   
     
     /**
@@ -59,7 +60,7 @@ class Attr
             $language = \Yii::$app->params['language'];
         }
         $result = $this->getAttrValue($value_id,$noCache);
-        return $result[$language]['value_name']??'';
+        return $result[$language]['name']??'';
     }
     /**
      * 查询属性及其属性值
@@ -70,22 +71,21 @@ class Attr
     public function getAttr($attr_id , $noCache = false , $merchant_id = '')
     {
         $cacheKey = CacheEnum::getPrefix('goodsAttr',$merchant_id).':'.$attr_id;
-        if (!($info = Yii::$app->cache->get($cacheKey)) || $noCache == true) {
-            $info = ['info','value_list'];
-            $models = AttributeValueLang::find()
+        if (true || !($info = Yii::$app->cache->get($cacheKey)) || $noCache == true) {
+            $models = AttributeLang::find()
                 ->select(['master_id','language','attr_name'])
                 ->where(['master_id'=>$attr_id])
                 ->asArray()->all();
-            
+            $info['info'] = [];
             foreach ($models as $row) {
                 $info['info'][$row['language']] = [
-                        'attr_id'=>$row['master_id'],
-                        'attr_name'=>$row['attr_name']
+                        'id'=>$row['master_id'],
+                        'name'=>$row['attr_name']
                 ];
             }
             $models = AttributeValue::find()->alias("val")
                 ->leftJoin(AttributeValueLang::tableName()." lang","val.id=lang.master_id")
-                ->select(['val.id',"lang.attr_value_name"])
+                ->select(['val.id',"lang.attr_value_name",'lang.language'])
                 ->where(['val.attr_id'=>$attr_id,'val.status'=>StatusEnum::ENABLED])
                 ->orderBy('val.sort asc,val.id asc')
                 ->asArray()->all();
@@ -93,12 +93,12 @@ class Attr
             $value_list = [];
             foreach ($models as $row) {
                 $value_list[$row['language']][] = [
-                    'value_id'=>$row['id'],
-                    'value_name'=>$row['attr_value_name'],
+                    'id'=>$row['id'],
+                    'name'=>$row['attr_value_name'],
                 ];
             }
-            $info['value_list'] = $value_list;
-            
+            $info['items'] = $value_list;
+
             $duration = (int) rand(3600*24,3600*24+3600);//防止缓存穿透
             // 设置缓存
             Yii::$app->cache->set($cacheKey, $info,$duration);
@@ -114,7 +114,7 @@ class Attr
     public function getAttrValue($value_id , $noCache = false , $merchant_id = '')
     {
         $cacheKey = CacheEnum::getPrefix('goodsAttrValue',$merchant_id).':'.$value_id;
-        if (!($info = Yii::$app->cache->get($cacheKey)) || $noCache == true) {            
+        if (true || !($info = Yii::$app->cache->get($cacheKey)) || $noCache == true) {            
             
             $models = AttributeValue::find()->alias("val")
                 ->leftJoin(AttributeValueLang::tableName()." lang","val.id=lang.master_id")
@@ -125,8 +125,8 @@ class Attr
             $info = [];
             foreach ($models as $row) {
                 $info[$row['language']] = [
-                        'attr_value_id'=>$row['id'],
-                        'attr_value_name'=>$row['attr_value_name'],
+                        'id'=>$row['id'],
+                        'name'=>$row['attr_value_name'],
                 ];
             }
             $duration = (int) rand(3600*24,3600*24+3600);//防止缓存穿透

@@ -1,6 +1,5 @@
 <?php
-return [    
-  
+return [
     'adminEmail' => 'admin@example.com',
     'supportEmail' => 'support@example.com',
     'user.passwordResetTokenExpire' => 3600,
@@ -17,6 +16,7 @@ return [
     ],
     'language'=>'zh-CN',//默认语言
     'currency' =>'¥',//默认货币
+    'cachePrefix'=>'common',//缓存前缀
     
     // 是否在模块内
     'inAddon' => false,

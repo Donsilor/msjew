@@ -22,7 +22,7 @@ class StyleController extends OnAuthController
      * @var Provinces
      */
     public $modelClass = Style::class;
-    protected $authOptional = ['search','detail','guess-list'];
+    protected $authOptional = ['search','detail','guess-list','test'];
     /**
      * 款式商品搜索
      * @return array
@@ -116,7 +116,7 @@ class StyleController extends OnAuthController
     }
     /**
      * 款式商品详情
-     * @return mixed|NULL|number[]|string[]|NULL[]|array[]|NULL[][]|unknown[][][]|string[][][]|mixed[][][]|\common\helpers\unknown[][][]
+     * @return mixed
      */
     public function actionDetail()
     {
@@ -194,6 +194,17 @@ class StyleController extends OnAuthController
             $model['currency'] = '$';
         }
         return $models;        
+    }
+    
+    public function actionTest()
+    {
+        echo "<pre/>";
+        $attr_name = \Yii::$app->attr->attrName(2);
+        $value_list = \Yii::$app->attr->valueList(2);
+        $value_name = \Yii::$app->attr->valueName(6);
+        print_r($attr_name);
+        print_r($value_list);
+        echo $value_name;
     }
     
     

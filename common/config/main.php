@@ -30,16 +30,9 @@ return [
                 // 'schemaCacheDuration' => 3600, // 缓存时间
                 // 'schemaCache' => 'cache', // 缓存名称
         ],
-        /** ------ 缓存 ------ **/
         'cache' => [
-            'class' => 'yii\caching\FileCache',
-            /**
-             * 文件缓存一定要有，不然有可能会导致缓存数据获取失败的情况
-             *
-             * 注意如果要改成非文件缓存请删除，否则会报错
-             */
-            'cachePath' => '@backend/runtime/cache'
-        ],
+             'class' => 'yii\redis\Cache',
+        ],        
         /** ------ 格式化时间 ------ **/
         'formatter' => [
             'dateFormat' => 'yyyy-MM-dd',
@@ -62,6 +55,9 @@ return [
         /** ------ 网站碎片管理 ------ **/
         'debris' => [
             'class' => 'common\components\Debris',
+        ],
+        'attr' => [
+            'class' => 'common\components\Attr',
         ],
         /** ------ 访问设备信息 ------ **/
         'mobileDetect' => [

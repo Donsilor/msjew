@@ -83,9 +83,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'visible' => false,
             ],
             'id',
-            /* [
-                    'attribute'=>'attr_value_code',
-            ], */
+            [
+                'attribute' => 'image',
+                'value' => function ($model) {
+                     return common\helpers\ImageHelper::fancyBox($model->image);
+                 },
+                'filter' => false,
+                'format' => 'raw',
+                'headerOptions' => ['width'=>'80'],
+            ],
             [
                 'attribute'=>'lang.attr_value_name',
             ], 

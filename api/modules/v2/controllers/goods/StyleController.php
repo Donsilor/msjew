@@ -24,6 +24,13 @@ class StyleController extends OnAuthController
     public $modelClass = Style::class;
     protected $authOptional = ['search','detail','guess-list'];
     /**
+     * 搜索条件
+     */
+    public function actionSearchForm()
+    {
+        
+    }
+    /**
      * 款式商品搜索
      * @return array
      */

@@ -5,6 +5,7 @@ use common\helpers\Url;
 use common\enums\StatusEnum;
 use common\enums\SettingEnum;
 use common\helpers\Html;
+
 if(!isset($model->adv_type)){
     $model->adv_type = 1;
 }
@@ -50,6 +51,16 @@ $form = ActiveForm::begin([
                     ]]);
             ?>
         </div>
+
+
+        <?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
+            'data' => $type,
+            'options' => ['placeholder' => '请选择'],
+            'pluginOptions' => [
+                'allowClear' => true,
+                'width'=>'200'
+            ],
+        ]);?>
 
         <?= $form->field($model, 'adv_type')->radioList(SettingEnum::$advTypeAction) ?>
         <?= $form->field($model, 'show_type')->radioList(SettingEnum::$showTypeAction) ?>

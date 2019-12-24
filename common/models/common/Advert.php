@@ -2,6 +2,7 @@
 
 namespace common\models\common;
 
+use common\models\goods\Type;
 use Yii;
 
 /**
@@ -39,7 +40,7 @@ class Advert extends \common\models\base\BaseModel
             [['adv_type', 'adv_height', 'adv_width', 'show_type', 'open_type', 'status', 'created_at', 'updated_at'], 'integer'],
             [['adv_name'], 'string', 'max' => 100],
             [['remark'], 'string', 'max' => 500],
-            [['adv_name'], 'safe'],
+            [['adv_name','type_id'], 'safe'],
         ];
     }
 
@@ -56,6 +57,7 @@ class Advert extends \common\models\base\BaseModel
             'adv_name' => '名称',
             'show_type' => '展示方式',
             'open_type' => '新窗口',
+            'type_id' => '产品线',
             'remark' => '广告位描述',
             'status' => '是否启用',
             'created_at' => '创建时间',
@@ -87,6 +89,17 @@ class Advert extends \common\models\base\BaseModel
     {
         $query = $this->hasOne(AdvertLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->params['language']]);
         return $query;
+    }
+
+
+    /**
+     * 关联产品线
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTypes()
+    {
+        return $this->hasOne(Type::class, ['id' => 'type_id']);
     }
 
 }

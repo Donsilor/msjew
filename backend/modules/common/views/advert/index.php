@@ -16,7 +16,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li><a href="<?= Url::to(['advert-images/index']) ?>"> 广告位图片</a></li>
-                <li><a href="<?= Url::to(['advert-images/banner']) ?>">banner图片</a></li>
                 <li class="active"><a href="<?= Url::to(['advert/index']) ?>"> 广告位位置</a></li>
                 <li class="pull-right">
                     <?= Html::create(['ajax-edit-lang'], '创建', [
@@ -56,6 +55,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     'prompt' => '全部',
                     'class' => 'form-control'
                 ]),
+            ],
+
+            [
+                'attribute' => 'type_id',
+                'value' => 'types.lang.type_name',
+                'filter' => Html::activeDropDownList($searchModel, 'type_id', $type, [
+                        'prompt' => '全部',
+                        'class' => 'form-control'
+                    ]
+                )
             ],
             [
                 'attribute'=>'尺寸',

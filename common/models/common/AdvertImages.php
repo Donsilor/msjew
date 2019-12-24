@@ -97,14 +97,4 @@ class AdvertImages extends \common\models\base\BaseModel
     }
 
 
-
-    /**
-     * 关联产品线
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTypes()
-    {
-        return $this->hasOne(Type::class, ['id' => 'adv_id']);
-    }
 }

@@ -15,8 +15,8 @@ return [
         'v1' => [ // 版本1
             'class' => 'api\modules\v1\Module',
         ],
-        'v2' => [ // 版本2
-            'class' => 'api\modules\v2\Module',
+        'web' => [ // 版本2
+            'class' => 'api\modules\web\Module',
         ],
     ],
     'as cors' =>[
@@ -67,16 +67,16 @@ return [
                 'enableStrictParsing' => true,
                 'showScriptName' => false,                    
                 'rules' => [
-                    ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/*'],
+                    ['class' => 'yii\rest\UrlRule', 'controller' => 'web/*'],
                     'POST v1/<module>/<action>' => 'v1/<module>/<action>',
                     'GET v1/<module>/<action>' => 'v1/<module>/<action>',
                     'POST v1/<module>/<controller>/<action>' => 'v1/<module>/<controller>/<action>',
                     'GET v1/<module>/<controller>/<action>' => 'v1/<module>/<controller>/<action>',
 
-                    'POST web/<module>/<action>' => 'v2/<module>/<action>',
-                    'GET web/<module>/<action>' => 'v1/<module>/<action>',
-                    'POST web/<module>/<controller>/<action>' => 'v2/<module>/<controller>/<action>',
-                    'GET web/<module>/<controller>/<action>' => 'v2/<module>/<controller>/<action>',
+                    'POST web/<module>/<action>' => 'web/<module>/<action>',
+                    'GET web/<module>/<action>' => 'web/<module>/<action>',
+                    'POST web/<module>/<controller>/<action>' => 'web/<module>/<controller>/<action>',
+                    'GET web/<module>/<controller>/<action>' => 'web/<module>/<controller>/<action>',
                 ],
         ],        
     ],

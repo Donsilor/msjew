@@ -1,6 +1,6 @@
 <?php
 
-namespace api\modules\v2\controllers\common;
+namespace api\modules\web\controllers\common;
 
 use Yii;
 use api\controllers\OnAuthController;

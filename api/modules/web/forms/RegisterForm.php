@@ -1,6 +1,6 @@
 <?php
 
-namespace api\modules\v2\forms;
+namespace api\modules\web\forms;
 
 use yii\base\Model;
 use common\helpers\RegularHelper;

@@ -57,15 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]),
             ],
 
-            [
-                'attribute' => 'type_id',
-                'value' => 'types.lang.type_name',
-                'filter' => Html::activeDropDownList($searchModel, 'type_id', $type, [
-                        'prompt' => '全部',
-                        'class' => 'form-control'
-                    ]
-                )
-            ],
+
             [
                 'attribute'=>'尺寸',
                 'format' => 'raw',
@@ -96,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{edit}  {status} {delete}',
+                'template' => '{edit}  {status}',
                 'buttons' => [
                     'edit' => function ($url, $model, $key) {
                         return Html::edit(['ajax-edit-lang','id' => $model->id], '编辑',

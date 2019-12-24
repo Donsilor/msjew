@@ -4,6 +4,7 @@ namespace api\modules\web\controllers\goods;
 
 use api\modules\web\forms\AttrSpecForm;
 use common\models\goods\Diamond;
+use common\models\goods\DiamondLang;
 use Yii;
 use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
@@ -30,7 +31,85 @@ class DiamondController extends OnAuthController
      * @return array
      */
 
-    public function actionSearch()
+    public function actionSearch(){
+        $sort_map = [
+            "price"=>'d.sale_price',//价格
+            "carat"=>'d.carat',//石重
+            "clarity"=>'d.clarity',//净度
+            "cut"=>'d.cut',//切割
+            "color"=>'d.color',//颜色
+        ];
+        $params_map = [
+            'shape'=>'d.shape',//形状
+            'sale_price'=>'d.sale_price',//销售价
+            'carat'=>'d.carat',//石重
+            'cut'=>'d.cut',//切工
+            'color'=>'d.color',//颜色
+            'clarity'=>'d.clarity',//净度
+            'polish'=>'d.polish',//光澤--抛光
+            'symmetry'=>'d.symmetry',//对称
+            'card'=>'d.cert_type',//证书类型
+            'depth'=>'d.depth_lv',//深度
+            'table'=>'d.table_lv',//石面--台宽
+            'fluorescence'=>'d.fluorescence',//荧光
+        ];
+
+        $language = Yii::$app->params['language'];
+        $language = \Yii::$app->request->get("language" , $language);//语言
+        $type_id = \Yii::$app->request->get("categoryId");//产品线ID
+        $page = \Yii::$app->request->get("currPage",1);//页码
+        $page_size = \Yii::$app->request->get("pageSize",20);//每页大小
+        $order_param = \Yii::$app->request->get("orderParam");//排序参数
+        $order_type = \Yii::$app->request->get("orderType", 1);//排序方式 1-升序；2-降序;
+
+        //排序
+        $order = '';
+        if(!empty($order_param)){
+          $order_type = $order_type == 1? "asc": "desc";
+          $order = $sort_map[$order_param]. " ".$order_type;
+        }
+
+        $fields = ['d.id','d.goods_sn','lang.goods_name','d.goods_image','d.sale_price'];
+        $query = Diamond::find()->alias('d')->select($fields)
+            ->leftJoin(DiamondLang::tableName().' lang',"d.id=lang.master_id and lang.language='".$language."'")
+            ->orderby($order);
+
+        $params = \Yii::$app->request->get("params");  //属性帅选
+        $params = json_decode($params);
+        if(!empty($params)){
+            foreach ($params as $param){
+                $value_type = $param->valueType;
+                $param_name = $param->paramName;
+                if($value_type == 1){
+                    $config_values = $param->configValues;
+                    $query->andWhere(['in',$params_map[$param_name], $config_values]);
+                }else if($value_type == 2){
+                    $begin_value = $param->beginValue;
+                    $end_value = $param->endValue;
+                    $query->andWhere(['between',$params_map[$param_name], $begin_value, $end_value]);
+                }
+            }
+        }
+
+        $result = $this->pagination($query,$page,$page_size);
+        foreach($result['data'] as & $val) {
+            $val['categoryId'] = $type_id;
+            $val['coinType'] = 'CNY';
+            $val['goodsName'] = $val['goods_name'];
+            $val['isJoin'] = null;
+            $val['salePrice'] = $val['sale_price'];
+            $val['goodsImages'] = ImageHelper::thumb($val['goods_image']);
+            $val['specsModels'] = '';
+        }
+        return $result;
+
+
+    }
+
+
+
+
+    public function actionSearch1()
     {
         $sort_map = [
             "1_0"=>'s.sale_price asc',//销售价

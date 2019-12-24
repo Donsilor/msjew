@@ -58,20 +58,29 @@ class AdvertImagesController extends BaseController
 
 
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams,['title','start_end']);
-        $dataProvider->query->andWhere(['type'=>1]);
+            ->search(Yii::$app->request->queryParams,['title','start_end','adv_type']);
         $dataProvider->query->joinWith(['lang']);
         $dataProvider->query->andFilterWhere(['like', 'lang.title',$searchModel->title]) ;
-        $dataProvider->query->andWhere(['>','status',-1]);
+        $dataProvider->query->andWhere(['>','common_advert_images.status',-1]);
+
+        $dataProvider->query->joinWith(['cate']);
+        $adv_type = $searchModel->adv_type;
+        if(!empty($adv_type)){
+            $dataProvider->query->andWhere(['=','adv_type',$searchModel->adv_type]);
+        }
 
         $AdvertService = new AdvertService();
         //获取广告位
         $advert = $AdvertService->getDropDown(Yii::$app->language);
 
+        //获取产品线
+        $type = Type::getDropDown();
+
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'adv_id' => $this->adv_id,
             'advert' =>$advert,
+            'type' =>$type,
             'searchModel' => $searchModel,
 
         ]);
@@ -140,12 +149,15 @@ class AdvertImagesController extends BaseController
                 return $this->message($this->getError($model), $this->redirect(['advert-images/index']), 'error');
             }
         }
+        //获取产品线
+        $type = Type::getDropDown();
 
         $AdvertService = new AdvertService();
         $advert = $AdvertService->getDropDown(Yii::$app->language);
         return $this->renderAjax($this->action->id, [
             'model' => $model,
             'advert' =>$advert,
+            'type' =>$type,
         ]);
     }
 

@@ -24,70 +24,76 @@ use common\behaviors\MerchantBehavior;
  * @property string $created_at 创建时间
  * @property string $updated_at 修改时间
  */
-class SmsLog extends \common\models\base\BaseModel
+class EmailLog extends \common\models\base\BaseModel
 {
     use MerchantBehavior;
-
+    
     const USAGE_LOGIN = 'login';
     const USAGE_REGISTER = 'register';
     const USAGE_UP_PWD = 'up-pwd';
-
+    
     /**
      * @var array
      */
     public static $usageExplain = [
-        self::USAGE_LOGIN => '登录',
-        self::USAGE_REGISTER => '注册',
-        self::USAGE_UP_PWD => '重置密码',
+            self::USAGE_LOGIN => '登录验证码',
+            self::USAGE_REGISTER => '注册验证码',
+            self::USAGE_UP_PWD => '重置密码验证码',
     ];
-
+    public static $usageTemplates = [
+            self::USAGE_LOGIN => 'loginToken',
+            self::USAGE_REGISTER => 'registerCode',
+            self::USAGE_UP_PWD => 'passwordResetToken',
+    ];
+    
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%common_sms_log}}';
+        return '{{%common_email_log}}';
     }
-
+    
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['merchant_id', 'member_id', 'error_code', 'used', 'mobile', 'code', 'use_time', 'ip', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['error_data'], 'string'],
-            [['usage'], 'string', 'max' => 20],
-            [['content'], 'string', 'max' => 500],
-            [['error_msg'], 'string', 'max' => 200],
+                [['merchant_id', 'member_id', 'error_code', 'used', 'email', 'code', 'use_time', 'ip', 'status', 'created_at', 'updated_at'], 'integer'],
+                [['error_data'], 'string'],
+                [['usage'], 'string', 'max' => 20],
+                [['content'], 'string', 'max' => 500],
+                [['title','error_msg'], 'string', 'max' => 300],
         ];
     }
-
+    
     /**
      * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'merchant_id' => '商户',
-            'member_id' => '用户',
-            'email' => '手机号码',
-            'code' => '验证码',
-            'content' => '内容',
-            'error_code' => '状态Code',
-            'error_msg' => '状态说明',
-            'error_data' => '具体信息',
-            'usage' => '用途',
-            'used' => '是否使用',
-            'use_time' => '使用时间',
-            'ip' => 'ip',
-            'status' => '状态',
-            'created_at' => '创建时间',
-            'updated_at' => '修改时间',
+                'id' => 'ID',
+                'merchant_id' => '商户',
+                'member_id' => '用户',
+                'email' => '手机号码',
+                'code' => '验证码',
+                'title' => '标题',
+                'content' => '内容',
+                'error_code' => '状态Code',
+                'error_msg' => '状态说明',
+                'error_data' => '具体信息',
+                'usage' => '用途',
+                'used' => '是否使用',
+                'use_time' => '使用时间',
+                'ip' => 'ip',
+                'status' => '状态',
+                'created_at' => '创建时间',
+                'updated_at' => '修改时间',
         ];
     }
-
+    
     /**
      * @param bool $insert
      * @return bool
@@ -97,7 +103,7 @@ class SmsLog extends \common\models\base\BaseModel
         if ($this->isNewRecord) {
             $this->ip = ip2long(Yii::$app->request->userIP);
         }
-
+        
         return parent::beforeSave($insert);
     }
 }

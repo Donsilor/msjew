@@ -20,7 +20,7 @@ class UpPwdForm extends \common\models\forms\LoginForm
     public $password;
     public $password_repetition;
     public $code;
-    public $group;
+    //public $group;
 
     /**
      * @inheritdoc
@@ -33,7 +33,7 @@ class UpPwdForm extends \common\models\forms\LoginForm
             ['code', SmsCodeValidator::class, 'usage' => SmsLog::USAGE_UP_PWD],
             ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号码'],
             [['password_repetition'], 'compare', 'compareAttribute' => 'password'],// 验证新密码和重复密码是否相等
-            ['group', 'in', 'range' => AccessToken::$ruleGroupRnage],
+            //['group', 'in', 'range' => AccessToken::$ruleGroupRnage],
             ['password', 'validateMobile'],
         ];
     }
@@ -44,7 +44,7 @@ class UpPwdForm extends \common\models\forms\LoginForm
             'mobile' => '手机号码',
             'password' => '密码',
             'password_repetition' => '重复密码',
-            'group' => '类型',
+            //'group' => '类型',
             'code' => '验证码',
         ];
     }

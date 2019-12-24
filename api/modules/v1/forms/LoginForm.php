@@ -14,7 +14,7 @@ use common\models\member\Member;
  */
 class LoginForm extends \common\models\forms\LoginForm
 {
-    public $group;
+    public $group = 'front';
 
     /**
      * @inheritdoc
@@ -22,7 +22,6 @@ class LoginForm extends \common\models\forms\LoginForm
     public function rules()
     {
         return [
-            //[['username', 'password', 'group'], 'required'],
             [['username'], 'required'],
             ['password', 'validatePassword'],
             ['group', 'in', 'range' => AccessToken::$ruleGroupRnage]

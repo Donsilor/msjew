@@ -15,6 +15,9 @@ use api\modules\v1\forms\RefreshForm;
 use api\modules\v1\forms\MobileLogin;
 use api\modules\v1\forms\SmsCodeForm;
 use api\modules\v1\forms\RegisterForm;
+use api\modules\web\forms\EmailCodeForm;
+use api\modules\web\forms\MobileRegisterForm;
+use api\modules\web\forms\EmailRegisterForm;
 
 /**
  * 登录接口
@@ -35,19 +38,8 @@ class SiteController extends OnAuthController
      *
      * @var array
      */
-    protected $authOptional = ['login', 'refresh', 'mobile-login', 'sms-code', 'register', 'up-pwd','email-login'];
+    protected $authOptional = ['login', 'refresh', 'mobile-login', 'sms-code','email-code', 'mobile-register','email-register', 'up-pwd'];
     
-    //登陆
-    public function actionEmailLogin()
-    {
-        $model = new EmailLoginForm();
-        $model->attributes = Yii::$app->request->post();
-        if (!$model->validate()) {
-            return ResultHelper::api(422, $this->getError($model));
-        }
-        $user = $model->login();
-        return $user;
-    }
     /**
      * 登录根据用户信息返回accessToken
      *
@@ -134,16 +126,33 @@ class SiteController extends OnAuthController
 
         return $model->send();
     }
+    
+    /**
+     * 获取邮箱验证码
+     *
+     * @return int|mixed
+     * @throws \yii\web\UnprocessableEntityHttpException
+     */
+    public function actionEmailCode()
+    {
+        $model = new EmailCodeForm();
+        $model->attributes = Yii::$app->request->post();
+        if (!$model->validate()) {
+            return ResultHelper::api(422, $this->getError($model));
+        }
+        
+        return $model->send();
+    }
 
     /**
-     * 注册
+     * 手机注册
      *
      * @return array|mixed
      * @throws \yii\base\Exception
      */
-    public function actionRegister()
+    public function actionMobileRegister()
     {
-        $model = new RegisterForm();
+        $model = new MobileRegisterForm();
         $model->attributes = Yii::$app->request->post();
         if (!$model->validate()) {
             return ResultHelper::api(422, $this->getError($model));
@@ -152,10 +161,39 @@ class SiteController extends OnAuthController
         $member = new Member();
         $member->attributes = ArrayHelper::toArray($model);
         $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
+        $member->username = $model->mobile;
+        $member->realname = $model->lastname.''.$model->firstname;
+
         if (!$member->save()) {
             return ResultHelper::api(422, $this->getError($member));
         }
 
+        return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);
+    }
+    
+    /**
+     * 邮箱注册
+     *
+     * @return array|mixed
+     * @throws \yii\base\Exception
+     */
+    public function actionEmailRegister()
+    {
+        $model = new EmailRegisterForm();
+        $model->attributes = Yii::$app->request->post();
+        if (!$model->validate()) {
+            return ResultHelper::api(422, $this->getError($model));
+        }
+
+        $member = new Member();
+        $member->attributes = ArrayHelper::toArray($model);
+        $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
+        $member->username = $model->email;
+
+        if (!$member->save()) {
+            return ResultHelper::api(422, $this->getError($member));
+        }
+        
         return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);
     }
 
@@ -178,7 +216,7 @@ class SiteController extends OnAuthController
         if (!$member->save()) {
             return ResultHelper::api(422, $this->getError($member));
         }
-
+        
         return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);
     }
 

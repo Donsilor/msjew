@@ -35,13 +35,14 @@ class AccessToken extends RateLimit
     const GROUP_MINI_PROGRAM = 'miniProgram'; // 小程序
     const GROUP_APP = 'app'; // app
     const GROUP_WECHAT = 'wechat'; // 微信
-
+    const GROUP_GOOGLE = 'google'; // Google
+    const GROUP_FACEBOOK = 'facebook'; // Google
     /**
      * 给其他表单验证的数据
      *
      * @var array
      */
-    public static $ruleGroupRnage = ['miniProgram', 'app', 'wechat','front'];
+    public static $ruleGroupRnage = ['miniProgram', 'app', 'wechat','front','facebook'];
 
     /**
      * {@inheritdoc}

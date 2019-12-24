@@ -52,6 +52,7 @@ class ActiveController extends \yii\rest\ActiveController
         //更改默认语言
         $lang = \Yii::$app->request->get("lang");
         if($lang) {
+            $lang = str_replace($lang, '_', '-');
             \Yii::$app->language = $lang;
             \Yii::$app->params['language'] = $lang;
         }

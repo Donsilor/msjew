@@ -6,6 +6,8 @@ use Yii;
 use yii\base\InvalidConfigException;
 use common\components\Service;
 use common\queues\MailerJob;
+use common\models\common\EmailLog;
+use yii\helpers\Json;
 
 /**
  * Class MailerService
@@ -38,20 +40,27 @@ class MailerService extends Service
      * @param string $template 对应邮件模板
      * @throws \yii\base\InvalidConfigException
      */
-    public function send($user, $email, $subject, $template)
+    public function send($email,$usage,$params = [])
     {
+        $usageExplains = EmailLog::$usageExplain;        
+        $usageTemplates = EmailLog::$usageTemplates;
+        
+        $subject  = $usageExplains[$usage]??'';
+        $template = $usageTemplates[$usage]??'';
+        
         if ($this->queueSwitch == true) {
-            $messageId = Yii::$app->queue->push(new MailerJob([
-                'user' => $user,
-                'email' => $email,
-                'subject' => $subject,
-                'template' => $template,
-            ]));
+            $_params = array_merge($params,[
+                    'email' => $email,
+                    'subject' => $subject,
+                    'template' => $template,
+                    'usage'=>$usage
+            ]);
+            $messageId = Yii::$app->queue->push(new MailerJob($_params));
 
             return $messageId;
         }
 
-        return $this->realSend($user, $email, $subject, $template);
+        return $this->realSend($email, $subject , $template , $usage , $params);
     }
 
     /**
@@ -64,20 +73,32 @@ class MailerService extends Service
      * @return bool
      * @throws \yii\base\InvalidConfigException
      */
-    public function realSend($user, $email, $subject, $template)
+    public function realSend($email, $subject, $template, $usage, $params = [])
     {
         try {
+            $template = $usage;
             $this->setConfig();
-            $result = Yii::$app->mailer
-                ->compose($template, ['user' => $user])
+            /* $result = Yii::$app->mailer
+                ->compose($template, $params)
                 ->setFrom([$this->config['smtp_username'] => $this->config['smtp_name']])
                 ->setTo($email)
                 ->setSubject($subject)
-                ->send();
+                ->send(); */
 
-            Yii::info($result);
-
-            return $result;
+            //Yii::info($result);
+            
+            $result = '测试:未设置模板';
+            $this->saveLog([
+                    'title'=>$subject,
+                    'email' => $email,
+                    'code' => $params['code']??null,
+                    'member_id' => $params['member_id']??0,
+                    'usage' => $usage,
+                    'error_code' => 200,
+                    'error_msg' => 'ok',
+                    'error_data' => Json::encode($result),
+            ]);
+            return $params;
         } catch (InvalidConfigException $e) {
             Yii::error($e->getMessage());
         }
@@ -104,5 +125,31 @@ class MailerService extends Service
                 'encryption' => empty($this->config['smtp_encryption']) ? 'tls' : 'ssl',
             ],
         ]);
+    }
+    
+    /**
+     * @param $mobile
+     * @return array|\yii\db\ActiveRecord|null
+     */
+    public function findByEmail($email)
+    {
+        return EmailLog::find()
+            ->where(['email' => $email])
+            ->orderBy('id desc')
+            ->asArray()
+            ->one();
+    }
+    
+    /**
+     * @param array $data
+     * @return SmsLog
+     */
+    protected function saveLog($data = [])
+    {
+        $log = new EmailLog();
+        $log = $log->loadDefaultValues();
+        $log->attributes = $data;
+        $log->save(false);
+        return $log;
     }
 }

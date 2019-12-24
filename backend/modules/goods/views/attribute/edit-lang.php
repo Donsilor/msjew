@@ -21,7 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h3 class="box-title">基本信息</h3>
             </div>                
             <div class="box-body">
-
                 <?php $form = ActiveForm::begin([
                     'fieldConfig' => [
                         //'template' => "<div class='col-sm-2 text-right'>{label}</div><div class='col-sm-10'>{input}\n{hint}\n{error}</div>",

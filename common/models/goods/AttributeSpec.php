@@ -38,7 +38,7 @@ class AttributeSpec extends BaseModel
     {
         return [
             [['type_id', 'attr_id', 'attr_type', 'input_type', 'is_require', 'status'], 'required'],
-            [['type_id', 'attr_id', 'attr_type', 'input_type', 'is_require', 'status', 'sort', 'created_at', 'updated_at'], 'integer'],
+            [['type_id', 'attr_id', 'attr_type', 'input_type', 'is_require','is_show' ,'status', 'sort', 'created_at', 'updated_at'], 'integer'],
             //[['attr_values'], 'string', 'max' => 500],
             [['attr_id'],'unique', 'targetAttribute'=>['type_id','attr_id'],
               //'targetClass' => '\models\Dishes', // 模型，缺省时默认当前模型。
@@ -62,6 +62,7 @@ class AttributeSpec extends BaseModel
             'attr_values' => Yii::t('goods_attribute', '属性值'),
             'input_type' => Yii::t('goods_attribute', '显示类型'),
             'is_require' => Yii::t('goods_attribute', '必填'),
+            'is_show' => Yii::t('goods_attribute', '前端显示'),
             'status' => Yii::t('goods_attribute', '状态'),
             'sort' => Yii::t('goods_attribute', '排序'),
             'created_at' => Yii::t('goods_attribute', '创建时间'),

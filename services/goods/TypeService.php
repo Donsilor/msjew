@@ -7,6 +7,7 @@ use common\components\Service;
 use common\enums\StatusEnum;
 use common\helpers\ArrayHelper;
 use common\models\goods\Type;
+use common\models\goods\TypeLang;
 
 
 /**
@@ -94,7 +95,7 @@ class TypeService extends Service
             $query->andWhere(['=','a.status',$status]);
         }
         $query->andWhere(['or',['a.id'=>$id],['a.pid'=>$id]]);      
-        $models =$query->leftJoin('{{%goods_type_lang}} b', 'b.master_id = a.id and b.language = "'.$language.'"')
+        $models =$query->leftJoin(TypeLang::tableName().' b', 'b.master_id = a.id and b.language = "'.$language.'"')
                         ->select(['a.id' , 'a.pid', 'b.type_name'])
                         ->orderBy('sort asc,created_at asc')
                         ->asArray()

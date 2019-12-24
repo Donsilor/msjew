@@ -2,9 +2,10 @@
 
 namespace api\modules\web\controllers\goods;
 
+use api\modules\web\forms\AttrSpecForm;
+use common\models\goods\Diamond;
 use Yii;
 use api\controllers\OnAuthController;
-use common\models\goods\Style;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
 use common\helpers\ImageHelper;
@@ -13,7 +14,7 @@ use common\models\goods\AttributeIndex;
 
 /**
  * Class ProvincesController
- * @package api\modules\v1\controllers\member
+ * @package api\modules\web\controllers\goods
  */
 class DiamondController extends OnAuthController
 {
@@ -21,12 +22,14 @@ class DiamondController extends OnAuthController
     /**
      * @var Provinces
      */
-    public $modelClass = Style::class;
+    public $modelClass = Diamond::class;
     protected $authOptional = ['search','detail','guess-list'];
+
     /**
      * 款式商品搜索
      * @return array
      */
+
     public function actionSearch()
     {
         $sort_map = [

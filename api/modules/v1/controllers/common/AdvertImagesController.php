@@ -55,14 +55,20 @@ class AdvertImagesController extends OnAuthController
      */
     public function actionBanner()
     {
-        $type_id = Yii::$app->request->get('type_id',null);
-        if($type_id == null) return ResultHelper::api(400, '产品线不能为空');
+        $type_id = Yii::$app->request->get('type_id');
+        $adv_id = Yii::$app->request->get('adv_id');
+        if($type_id == null) {
+            return ResultHelper::api(400, '产品线不能为空');
+        }
+        if($adv_id == null) {
+            return ResultHelper::api(400, '广告位置ID不能为空');
+        }
         $language = Yii::$app->params['language'];
         $time = date('Y-m-d H:i:s', time());
         $model = Advert::find()->alias('ad')
             ->leftJoin(AdvertImages::tableName().' ad_img', 'ad.id = ad_img.adv_id')
-            ->where(['ad_img.status' => StatusEnum::ENABLED, 'ad.type_id'=>$type_id])
-            ->andWhere(['and',['<=','ad_img.start_time',$time], ['>=','ad_img.end_time',$time]])
+            ->where(['ad.type_id'=>$type_id, 'ad.id'=>$adv_id])
+            ->andWhere(['and',['<=','ad_img.start_time',$time],['=','ad_img.status',StatusEnum::ENABLED], ['>=','ad_img.end_time',$time]])
             ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = ad_img.id and lang.language =  "'.$language.'"')
             ->select(['lang.title as title','lang.adv_image','adv_url'])
             ->orderby('ad_img.sort desc, ad_img.created_at desc')

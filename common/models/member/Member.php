@@ -22,6 +22,8 @@ use common\helpers\RegularHelper;
  * @property int $type 类别[1:普通会员;10管理员]
  * @property string $nickname 昵称
  * @property string $realname 真实姓名
+ * @property string $firtname 真实姓名
+ * @property string $lastname 真实姓名
  * @property string $head_portrait 头像
  * @property int $gender 性别[0:未知;1:男;2:女]
  * @property string $qq qq
@@ -66,7 +68,7 @@ class Member extends User
             [['password_hash', 'password_reset_token', 'head_portrait'], 'string', 'max' => 150],
             [['auth_key'], 'string', 'max' => 32],
             [['nickname', 'realname'], 'string', 'max' => 50],
-            [['email'], 'string', 'max' => 60],
+            [['email','firstname','lastname'], 'string', 'max' => 60],
             [['last_ip'], 'string', 'max' => 16],
             ['mobile', 'match', 'pattern' => RegularHelper::mobile(),'message' => '不是一个有效的手机号码'],
         ];
@@ -87,6 +89,8 @@ class Member extends User
             'type' => '类型',
             'nickname' => '昵称',
             'realname' => '真实姓名',
+            'lastname' => '姓氏',
+            'firstname' => '名子',
             'head_portrait' => '头像',
             'gender' => '性别',
             'qq' => 'QQ',

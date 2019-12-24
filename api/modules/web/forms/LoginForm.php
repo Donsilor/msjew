@@ -3,7 +3,6 @@
 namespace api\modules\web\forms;
 
 use common\enums\StatusEnum;
-use common\helpers\ResultHelper;
 use common\models\api\AccessToken;
 use common\models\member\Member;
 
@@ -14,7 +13,7 @@ use common\models\member\Member;
  */
 class LoginForm extends \common\models\forms\LoginForm
 {
-    public $group;
+    public $group = 'front';
 
     /**
      * @inheritdoc
@@ -22,8 +21,7 @@ class LoginForm extends \common\models\forms\LoginForm
     public function rules()
     {
         return [
-            //[['username', 'password', 'group'], 'required'],
-            [['username'], 'required'],
+            [['username', 'password', 'group'], 'required'],
             ['password', 'validatePassword'],
             ['group', 'in', 'range' => AccessToken::$ruleGroupRnage]
         ];

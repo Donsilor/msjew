@@ -162,6 +162,8 @@ class SiteController extends OnAuthController
         $member->attributes = ArrayHelper::toArray($model);
         $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
         $member->username = $model->mobile;
+        $member->realname = $model->lastname.''.$model->firstname;
+
         if (!$member->save()) {
             return ResultHelper::api(422, $this->getError($member));
         }

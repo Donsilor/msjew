@@ -22,14 +22,15 @@ class EmailRegisterForm extends Model
     public $code;
     public $group = 'front';
     public $realname;
-    
+    public $firstname;
+    public $lastname;
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-                [['email', 'code', 'password', 'password_repetition', 'realname'], 'required'],
+                [['email', 'code', 'password', 'password_repetition'], 'required'],
                 [['realname'], 'string'],
                 [['password'], 'string', 'min' => 6],
                 [
@@ -43,6 +44,7 @@ class EmailRegisterForm extends Model
                 ['code', EmailCodeValidator::class, 'usage' => EmailLog::USAGE_REGISTER],
                 [['password_repetition'], 'compare', 'compareAttribute' => 'password','message' => '重复密码错误'],// 验证新密码和重复密码是否相等
                 ['group', 'in', 'range' => AccessToken::$ruleGroupRnage],
+                [['firstname','lastname'], 'string', 'max' => 60],
         ];
     }
     

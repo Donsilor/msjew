@@ -22,6 +22,8 @@ class MobileRegisterForm extends Model
     public $code;
     public $group = 'front';
     public $realname;
+    public $firstname;
+    public $lastname;
     
     /**
      * @inheritdoc
@@ -29,7 +31,7 @@ class MobileRegisterForm extends Model
     public function rules()
     {
         return [
-                [['mobile', 'code', 'password', 'password_repetition', 'realname'], 'required'],
+                [['mobile', 'code', 'password', 'password_repetition'], 'required'],
                 [['realname'], 'string'],
                 [['password'], 'string', 'min' => 6],
                 [
@@ -43,6 +45,7 @@ class MobileRegisterForm extends Model
                 ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号码'],
                 [['password_repetition'], 'compare', 'compareAttribute' => 'password','message' => '重复密码错误'],// 验证新密码和重复密码是否相等
                 ['group', 'in', 'range' => AccessToken::$ruleGroupRnage],
+                [['firstname','lastname'], 'string', 'max' => 60],
         ];
     }
     
@@ -55,6 +58,8 @@ class MobileRegisterForm extends Model
                 'password_repetition' => '重复密码',
                 'group' => '类型',
                 'code' => '验证码',
+                'firstname' => '名字',
+                'lastname' => '姓氏',
         ];
     }
 }

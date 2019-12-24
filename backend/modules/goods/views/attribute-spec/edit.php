@@ -22,7 +22,7 @@ $model->attr_values = $model->attr_values?explode(",",$model->attr_values):[];
             <div class="box-header with-border">
                 <h3 class="box-title">基本信息</h3>
             </div>                
-            <div class="box-body">
+            <div class="box-body" style="margin-left:30px">
                 <?php                 
                 $form = ActiveForm::begin([
                         'fieldConfig' => [
@@ -119,7 +119,7 @@ $model->attr_values = $model->attr_values?explode(",",$model->attr_values):[];
                 },
                 'visible'=>true
             ],
-            [
+            /* [
                 'attribute' => 'sort',
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
@@ -134,7 +134,7 @@ $model->attr_values = $model->attr_values?explode(",",$model->attr_values):[];
                 'value' => function ($searchModel){
                     return \common\enums\StatusEnum::getValue($searchModel->status);
                 }
-            ],            
+            ],       */      
             [
                 'attribute'=>'updated_at',
                  'value' => function ($searchModel) {

@@ -135,7 +135,7 @@ class AttributeSpecController extends BaseController
         AttributeSpecValue::deleteAll(['and',['spec_id'=>$spec_id],['not in','attr_value_id',$attr_values]]);
         foreach ($attr_values as $val_id){
             $model = AttributeSpecValue::find()->where(['spec_id'=>$spec_id,'attr_value_id'=>$val_id])->one();
-            if(!$model->id) {                
+            if(!$model) {                
                 $model = new AttributeSpecValue();
                 $model->spec_id = $spec_id;
                 $model->attr_id = $attr_id;

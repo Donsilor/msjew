@@ -39,14 +39,14 @@ use yii\widgets\ActiveForm;
             ],
 
             'id',
-            [
-                'attribute'=>'title',
-                'value' =>'lang.title',
-                'filter' => Html::activeTextInput($searchModel, 'title', [
-                    'class' => 'form-control',
-                    'style' =>'width:100px'
-                ]),
-            ],
+//            [
+//                'attribute'=>'title',
+//                'value' =>'lang.title',
+//                'filter' => Html::activeTextInput($searchModel, 'title', [
+//                    'class' => 'form-control',
+//                    'style' =>'width:100px'
+//                ]),
+//            ],
 
             [
                 'label' => '图片',
@@ -55,15 +55,61 @@ use yii\widgets\ActiveForm;
                     return Html::img($model->lang->adv_image,["width"=>"100",]);
                  },
              ],
-
-
+            [
+                'attribute' => 'adv_id',
+                'value' => 'cate.lang.adv_name',
+                'headerOptions' => ['width'=>'150'],
+                'filter' => Html::activeDropDownList($searchModel, 'adv_id', $advert, [
+                        'prompt' => '全部',
+                        'class' => 'form-control'
+                    ]
+                )
+            ],
+            [
+                'attribute' => 'type_id',
+                'value' => 'types.lang.type_name',
+                'headerOptions' => ['width'=>'120'],
+                'filter' => Html::activeDropDownList($searchModel, 'type_id', $type, [
+                        'prompt' => '全部',
+                        'class' => 'form-control'
+                    ]
+                )
+            ],
+            [
+                'attribute'=>'cate.adv_type',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\SettingEnum::$showTypeActionSimple[$model->cate->adv_type];
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'adv_type',\common\enums\SettingEnum::$advTypeAction, [
+                    'prompt' => '全部',
+                    'class' => 'form-control'
+                ]),
+            ],
+            [
+                'attribute' => 'sort',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model, $key, $index, $column){
+                    return  Html::sort($model->sort);
+                }
+            ],
             [
                 'label' => '有效期',
                 'format'=>'raw',
                 'value' => function ($model) {
-                     $str = "开始时间：".date('Y-m-d', strtotime($model->start_time));
+                     $str = '';
+                     $start_time = $model->start_time;
+                     if(!empty($start_time)){
+                         $str .= "开始时间：".date('Y-m-d', strtotime($model->start_time));
+                     }
                      $str .= "<br/>";
-                     $str .= "结束时间：".date('Y-m-d', strtotime($model->end_time));
+                     $end_time = $model->end_time;
+                     if(!empty($end_time)){
+                        $str .= "结束时间：".date('Y-m-d', strtotime($model->end_time));
+                     }
+
                     return $str;
                 },
 
@@ -94,6 +140,8 @@ use yii\widgets\ActiveForm;
                 'label'=>'当前状态',
                 'format'=>'html',
                 'value'=>function($model){
+                    $end_time = $model->end_time;
+                    if(empty($end_time)) return "<span class='label label-primary'>永久</span>";
                     return Html::timeStatus(strtotime($model->start_time), strtotime($model->end_time));
                 }
             ],
@@ -101,23 +149,8 @@ use yii\widgets\ActiveForm;
 //            'start_time:date',
 //            'end_time:date',
 //            'updated_at:date',
-            [
-                'attribute' => 'adv_id',
-                'value' => 'cate.lang.adv_name',
-                'filter' => Html::activeDropDownList($searchModel, 'adv_id', $advert, [
-                        'prompt' => '全部',
-                        'class' => 'form-control'
-                    ]
-                )
-            ],
-            [
-                'attribute' => 'sort',
-                'format' => 'raw',
-                'headerOptions' => ['class' => 'col-md-1'],
-                'value' => function ($model, $key, $index, $column){
-                    return  Html::sort($model->sort);
-                }
-            ],
+
+
 //            [
 //                'attribute' => 'status',
 //                'format' => 'raw',

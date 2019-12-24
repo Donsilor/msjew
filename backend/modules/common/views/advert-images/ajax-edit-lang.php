@@ -54,6 +54,16 @@ $form = ActiveForm::begin([
                     ]]);
             ?>
         </div>
+        <?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
+            'data' => $type,
+            'options' => ['placeholder' => '请选择'],
+            'pluginOptions' => [
+                'allowClear' => true,
+                'width'=>'200'
+            ],
+        ]);?>
+
+
 
 
         <?= $form->field($model, 'adv_url')->textInput(['maxlength' => true]) ?>

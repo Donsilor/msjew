@@ -15,10 +15,10 @@ $form = ActiveForm::begin([
 $model->attr_values = $model->attr_values?explode(",",$model->attr_values):[];
 ?>
 
-<div class="modal-header">
+    <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
         <h4 class="modal-title">基本信息</h4>
-</div>
+    </div>
     <div class="modal-body">
  			<?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
  			        'data' => Yii::$app->services->goodsType->getGrpDropDown(),
@@ -34,10 +34,15 @@ $model->attr_values = $model->attr_values?explode(",",$model->attr_values):[];
                         'allowClear' => true
                     ],
             ]);?>
-			<div id="box-attributespec-attr_values" style="<?php echo empty($attrValues)?'display:none':''?>">
-				<?= $form->field($model, 'attr_values')->checkboxList($attrValues,['prompt'=>'请选择']);?>
+            <?php 
+                $attr_values = [];
+                if ($model->attr_id){
+                    $attr_values = \Yii::$app->services->goodsAttribute->getValuesByAttrId($model->attr_id);
+                }
+            ?>
+			<div id="box-attributespec-attr_values" style="<?php echo empty($attr_values)?'display:none':''?>">
+				<?= $form->field($model, 'attr_values')->checkboxList($attr_values,['prompt'=>'请选择']);?>
 			</div>
-			
 			<?= $form->field($model, 'attr_type')->widget(kartik\select2\Select2::class, [
 			        'data' => common\enums\AttrTypeEnum::getRemarkMap(),
                     'options' => [],

@@ -106,7 +106,7 @@ class SiteController extends OnAuthController
      * @return array|mixed
      * @throws \yii\base\Exception
      */
-    private function actionMobileLogin()
+    public function actionMobileLogin()
     {
         $model = new MobileLogin();
         $model->attributes = Yii::$app->request->post();
@@ -141,7 +141,7 @@ class SiteController extends OnAuthController
      * @return array|mixed
      * @throws \yii\base\Exception
      */
-    private function actionRegister()
+    public function actionRegister()
     {
         $model = new RegisterForm();
         $model->attributes = Yii::$app->request->post();
@@ -165,7 +165,7 @@ class SiteController extends OnAuthController
      * @return array|mixed
      * @throws \yii\base\Exception
      */
-    private function actionUpPwd()
+    public function actionUpPwd()
     {
         $model = new UpPwdForm();
         $model->attributes = Yii::$app->request->post();

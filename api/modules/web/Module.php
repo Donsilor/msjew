@@ -1,6 +1,6 @@
 <?php
 
-namespace api\modules\v2;
+namespace api\modules\web;
 
 /**
  * v2 module definition class
@@ -10,7 +10,7 @@ class Module extends \yii\base\Module
     /**
      * {@inheritdoc}
      */
-    public $controllerNamespace = 'api\modules\v2\controllers';
+    public $controllerNamespace = 'api\modules\web\controllers';
 
     /**
      * {@inheritdoc}

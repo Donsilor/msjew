@@ -97,16 +97,20 @@ $model->attr_values = $model->attr_values?explode(",",$model->attr_values):[];
                 'visible' => false,
             ],
             [
-                'attribute'=>'attr_id',
-                'value'=>function($searchModel){
-                    return $searchModel->attr_id.":".\Yii::$app->attr->attrName($searchModel->attr_id);
-                }
+                'label'=>'ID',    
+                'attribute'=>'attr_value_id',                
             ],
             [
                 'attribute'=>'attr_value_id',
                 'value'=>function($searchModel){
-                    return $searchModel->attr_value_id.":".\Yii::$app->attr->valueName($searchModel->attr_value_id);                
+                    return \Yii::$app->attr->valueName($searchModel->attr_value_id);                
                  }
+            ],
+            [
+                'attribute'=>'attr_id',
+                'value'=>function($searchModel){
+                    return \Yii::$app->attr->attrName($searchModel->attr_id);
+                }
             ],
             [
                 'attribute'=>'URL',

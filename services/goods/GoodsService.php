@@ -10,6 +10,7 @@ use common\models\goods\GoodsLang;
 use common\enums\StatusEnum;
 use common\models\goods\AttributeIndex;
 use common\enums\AttrTypeEnum;
+use common\models\goods\StyleLang;
 
 
 /**
@@ -121,7 +122,7 @@ class GoodsService extends Service
     * @param string $language 语言
     * @return array[]|string[][]|unknown[][]|\common\helpers\unknown[][]|unknown[]
     */
-    public function formatStyleAttrs($styleModel,$is_attrindex = false,$language = null)
+    public function formatStyleAttrs($styleModel, $is_attrindex= false , $language= null)
     {
         $type_id = $styleModel->type_id;
         $style_attr = json_decode($styleModel->style_attr,true);
@@ -159,7 +160,7 @@ class GoodsService extends Service
                     if(!$is_text){
                         $attr['value_id'] = $spec[$attr_id];//属性值ID列表
                         $attr['value'] = \Yii::$app->services->goodsAttribute->getValuesByValueIds($attr['value_id'],$language);
-                        $attr['all'] = \Yii::$app->services->goodsAttribute->getValuesByAttrId($attr_id,1,$language);
+                        $attr['all'] = \Yii::$app->services->goodsAttribute->getValuesByAttrId($attr_id,StatusEnum::ENABLED,$language);
                     }
                     $format_data[$key][$attr['id']] = $attr;
                 }
@@ -256,6 +257,92 @@ class GoodsService extends Service
         
         return $index_list;
     }
-   
+    /**
+     * 查询商品详情
+     * @param unknown $goods_id
+     * @param number $goods_type
+     */
+    public function getGoodsInfo($goods_id , $goods_type = 0, $language= null)
+    {
+        if(!$language) {
+            $language = \Yii::$app->params['language'];
+        }
+        
+        $query = Goods::find()->alias('g')
+                ->innerJoin(Style::tableName()." s","g.style_id=s.id")
+                ->innerJoin(StyleLang::tableName()." sl","s.id=sl.master_id and sl.language='{$language}'")
+                ->select(['g.*','sl.style_name as goods_name','sl.language','s.style_attr as goods_attr'])
+                ->where(['g.id'=>$goods_id]);
+        
+       $model = $query->asArray()->one();
+       
+       $this->formatGoodsAttr($model, $language);
+       
+       return $model;
+    }
+    /**
+     * 格式化商品属性数据
+     * @param unknown $goods
+     * @param unknown $language
+     * @return unknown
+     */
+    public function formatGoodsAttr(& $goods, $language = null)
+    {
+        if(empty($goods)) {
+           return false;
+        }
+        $goods_attr = $goods['goods_attr']??[];
+        $goods_type = $goods['type_id'] ??0;        
+        
+        if(!is_array($goods_attr)) {
+            $goods_attr = json_decode($goods_attr,true);
+        }        
+        
+        $attr_ids = array_keys($goods_attr);
+        $attr_list = \Yii::$app->services->goodsAttribute->getSpecAttrList($attr_ids,$goods_type,StatusEnum::ENABLED,$language);
+        
+        $attr_data = [];
+        foreach ($attr_list as $attr){
+            $attr_id = $attr['id'];
+            $value = $goods_attr[$attr_id];
+            if($value == ""){
+                continue;
+            }
+            $is_text = InputTypeEnum::isText($attr['input_type']);
+            $is_single = InputTypeEnum::isSingle($attr['input_type']);
+            
+            if(!$is_text){
+                if(is_array($value)) {
+                    foreach ($value as $value_id) {
+                        $attr['value'][$value_id] = \Yii::$app->attr->valueName($value_id ,$language);
+                    }
+                }else {
+                    $attr['value'][$value] = \Yii::$app->attr->valueName($value ,$language);
+                }
+            } else {
+                $attr['value'] = [$attr_id=>$value];
+            }
+            $attr_data[$attr_id] = $attr;
+        }
+        $goods['goods_attr'] = $attr_data;  
+                
+        $goods_spec = $goods['goods_spec']??[];
+        if(!is_array($goods_spec)) {
+            $goods_spec = json_decode($goods_spec,true);
+        }  
+        
+        $spec_data = [];
+        foreach ($goods_spec as $attr_id=>$value_id){
+            $attr_name = \Yii::$app->attr->attrName($attr_id ,$language);
+            $value_name = \Yii::$app->attr->valueName($value_id ,$language);
+            $spec_data[] = [
+                    'attr_name'=>$attr_name,
+                    'attr_value'=>$value_name,
+            ];
+        }         
+        $goods['goods_spec'] = $spec_data;
+        
+        return true;
+    }   
 
 }

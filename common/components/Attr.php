@@ -135,6 +135,6 @@ class Attr
         }
        
         return $info;
-    }  
+    }
     
 }

@@ -138,12 +138,18 @@ class ActiveController extends \yii\rest\ActiveController
         parent::beforeAction($action);
 
         // 权限方法检查，如果用了rbac，请注释掉
-        //$this->checkAccess($action->id, $this->modelClass, Yii::$app->request->get());
+        $this->checkAccess($action->id, $this->modelClass, Yii::$app->request->get());
 
+        if(\Yii::$app->user->identity) {
+            $identity = \Yii::$app->user->identity;
+            $this->member_id = $identity->member_id;
+            $this->merchant_id = $identity->merchant_id;
+        }
         // 每页数量
         $this->page = Yii::$app->request->get('page', 1);
         $this->pageSize = Yii::$app->request->get('page_size', 10);
        
         return true;
     }
+
 }

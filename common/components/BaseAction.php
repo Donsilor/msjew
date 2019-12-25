@@ -15,7 +15,7 @@ use yii\base\Exception;
 trait BaseAction
 {
     protected $merchant_id;
-
+    protected $member_id;
     /**
      * 默认分页
      *
@@ -68,7 +68,7 @@ trait BaseAction
         }
 
         return $this->merchant_id;
-    }
+    }    
 
     /**
      * @param Model $model

@@ -1,6 +1,5 @@
 <?php
 
-use common\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */

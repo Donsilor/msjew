@@ -22,7 +22,29 @@ trait BaseAction
      * @var int
      */
     protected $pageSize = 10;
-
+    
+    protected $language;
+    
+    protected $currency;
+    
+    /**
+     * 初始化通用参数
+     */
+    public function initParams()
+    {
+        $language = \Yii::$app->request->get("language");
+        if($language) {
+            $language = str_replace($language, '_', '-');
+            \Yii::$app->language = $language;
+            \Yii::$app->params['language'] = $language;
+        }
+        $currency = \Yii::$app->request->get("currency");
+        if($currency) {
+            \Yii::$app->params['currency'] = $currency;
+        }        
+        $this->language = \Yii::$app->params['language'];
+        $this->currency = \Yii::$app->params['currency'];
+    }
     /**
      * 商户id
      *

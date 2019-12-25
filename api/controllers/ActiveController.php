@@ -49,17 +49,8 @@ class ActiveController extends \yii\rest\ActiveController
      */
     public function behaviors()
     {
-        //更改默认语言
-        $language = \Yii::$app->request->get("language");
-        if($language) {
-            $language = str_replace($language, '_', '-');
-            \Yii::$app->language = $language;
-            \Yii::$app->params['language'] = $language;
-        }
-        $currency = \Yii::$app->request->get("currency");
-        if($currency) {
-            \Yii::$app->params['currency'] = $currency;
-        }
+        //更改货币和语言       
+        $this->initParams();
         
         $behaviors = parent::behaviors();
         // 跨域支持

@@ -60,11 +60,21 @@ $model->attr_values = $model->attr_values?explode(",",$model->attr_values):[];
                         'pluginOptions' => [
                             'allowClear' => false
                         ],
-                ]);?>             
-                <?= $form->field($model, 'input_type')->radioList(common\enums\InputTypeEnum::getMap()) ?>
-                <?= $form->field($model, 'is_require')->radioList(common\enums\ConfirmEnum::getMap())?>
+                ]);?> 
+                <div class="row">
+                    <div class="col-lg-3">
+                        <?= $form->field($model, 'input_type')->radioList(common\enums\InputTypeEnum::getMap()) ?>
+                    </div>
+                    <div class="col-lg-3">
+                        <?= $form->field($model, 'is_require')->radioList(common\enums\ConfirmEnum::getMap())?>
+                    </div>
+                    <div class="col-lg-3">
+                         <?= $form->field($model, 'is_show')->radioList(common\enums\ConfirmEnum::getMap())?>
+                    </div>
+
+                </div>
                 <?= $form->field($model, 'status')->radioList(common\enums\StatusEnum::getMap())?>
-                <?= $form->field($model, 'sort')->textInput() ?> 
+                <?= $form->field($model, 'sort')->textInput() ?>
                 <div class="form-group">
                     <div class="col-sm-12 text-center">
                         <button class="btn btn-primary" type="submit">保存</button>

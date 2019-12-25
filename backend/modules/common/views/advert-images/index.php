@@ -80,7 +80,7 @@ use yii\widgets\ActiveForm;
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
-                    return \common\enums\SettingEnum::$showTypeActionSimple[$model->cate->adv_type];
+                    return \common\enums\SettingEnum::$advTypeAction[$model->cate->adv_type];
                 },
                 'filter' => Html::activeDropDownList($searchModel, 'adv_type',\common\enums\SettingEnum::$advTypeAction, [
                     'prompt' => '全部',

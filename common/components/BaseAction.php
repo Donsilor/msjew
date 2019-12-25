@@ -21,10 +21,12 @@ trait BaseAction
      *
      * @var int
      */
-    protected $pageSize = 10;
+    protected $page = 1;
+    protected $pageSize = 10;    
     
+    //当前语言
     protected $language;
-    
+    //当前货币
     protected $currency;
     
     /**

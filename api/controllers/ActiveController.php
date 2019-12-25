@@ -51,7 +51,7 @@ class ActiveController extends \yii\rest\ActiveController
     {
         //更改货币和语言       
         $this->initParams();
-        
+
         $behaviors = parent::behaviors();
         // 跨域支持
         $behaviors['corsFilter'] = [
@@ -138,12 +138,12 @@ class ActiveController extends \yii\rest\ActiveController
         parent::beforeAction($action);
 
         // 权限方法检查，如果用了rbac，请注释掉
-        $this->checkAccess($action->id, $this->modelClass, Yii::$app->request->get());
+        //$this->checkAccess($action->id, $this->modelClass, Yii::$app->request->get());
 
         // 每页数量
-        $this->pageSize = Yii::$app->request->get('per-page', 10);
-        $this->pageSize > 50 && $this->pageSize = 50;
-
+        $this->page = Yii::$app->request->get('page', 1);
+        $this->pageSize = Yii::$app->request->get('page_size', 10);
+       
         return true;
     }
 }

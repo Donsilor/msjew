@@ -2,8 +2,6 @@
 
 namespace api\modules\v1\controllers\member;
 
-use api\modules\v1\forms\LoginForm;
-use common\helpers\ResultHelper;
 use Yii;
 use yii\web\NotFoundHttpException;
 use api\controllers\OnAuthController;
@@ -24,7 +22,7 @@ class MemberController extends OnAuthController
      * @var Member
      */
     public $modelClass = Member::class;
-    protected $authOptional = ['login'];
+    protected $authOptional = [];
 
     /**
      * 单个显示

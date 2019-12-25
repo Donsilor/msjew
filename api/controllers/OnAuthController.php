@@ -59,7 +59,7 @@ class OnAuthController extends ActiveController
      */
     public function actionIndex()
     {
-        return new ActiveDataProvider([
+        /* return new ActiveDataProvider([
             'query' => $this->modelClass::find()
                 ->where(['status' => StatusEnum::ENABLED])
                 ->andFilterWhere(['merchant_id' => $this->getMerchantId()])
@@ -69,7 +69,7 @@ class OnAuthController extends ActiveController
                 'pageSize' => $this->pageSize,
                 'validatePage' => false,// 超出分页不返回data
             ],
-        ]);
+        ]); */
     }
 
     /**

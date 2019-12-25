@@ -22,28 +22,28 @@ class CartController extends OnAuthController
     /**
      * 购物车列表
      */
-    public function index()
+    public function actionIndex()
     {
-        print_r(\Yii::$app->user);        
+        return \Yii::$app->user;
     }
     /**
      * 添加购物车商品
      */
-    public function create()
+    public function actionCreate()
     {
         
     }
     /**
      * 删除购物车商品
      */
-    public function delete()
+    public function actionDelete($id)
     {
         
     }
     /**
      * 清空购物车
      */
-    public function clear()
+    public function actionClear()
     {
         
     }

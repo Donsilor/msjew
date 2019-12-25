@@ -52,7 +52,7 @@ class CartController extends OnAuthController
     /**
      * 添加购物车商品
      */
-    public function actionCreate()
+    public function actionAdd()
     {
         $model = new CartForm();
         $model->attributes = \Yii::$app->request->post();

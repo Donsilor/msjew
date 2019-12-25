@@ -45,96 +45,13 @@ class OnAuthController extends ActiveController
     {
         parent::beforeAction($action);
 
-        if ($action == 'update' && Yii::$app->user->identity->member_id != Yii::$app->request->get('id', null)) {
+        if (in_array($action, ['create','update','delete','view'])) {
             throw new NotFoundHttpException('权限不足.');
         }
         
+        
         return true;
     }
-
-    /**
-     * 首页
-     *
-     * @return ActiveDataProvider
-     */
-    public function actionIndex()
-    {
-        /* return new ActiveDataProvider([
-            'query' => $this->modelClass::find()
-                ->where(['status' => StatusEnum::ENABLED])
-                ->andFilterWhere(['merchant_id' => $this->getMerchantId()])
-                ->orderBy('id desc')
-                ->asArray(),
-            'pagination' => [
-                'pageSize' => $this->pageSize,
-                'validatePage' => false,// 超出分页不返回data
-            ],
-        ]); */
-    }
-
-    /**
-     * 创建
-     *
-     * @return mixed|\yii\db\ActiveRecord
-     */
-    public function actionCreate()
-    {
-        /* @var $model \yii\db\ActiveRecord */
-        $model = new $this->modelClass();
-        $model->attributes = Yii::$app->request->post();
-        $model->member_id = Yii::$app->user->identity->member_id;
-        if (!$model->save()) {
-            return ResultHelper::api(422, $this->getError($model));
-        }
-
-        return $model;
-    }
-
-    /**
-     * 更新
-     *
-     * @param $id
-     * @return mixed|\yii\db\ActiveRecord
-     * @throws NotFoundHttpException
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-        $model->attributes = Yii::$app->request->post();
-        if (!$model->save()) {
-            return ResultHelper::api(422, $this->getError($model));
-        }
-
-        return $model;
-    }
-
-    /**
-     * 删除
-     *
-     * @param $id
-     * @return bool
-     * @throws NotFoundHttpException
-     */
-    public function actionDelete($id)
-    {
-        $model = $this->findModel($id);
-        $model->status = StatusEnum::DELETE;
-
-        return $model->save();
-    }
-
-    /**
-     * 单个显示
-     *
-     * @param $id
-     * @return \yii\db\ActiveRecord
-     * @throws NotFoundHttpException
-     */
-    public function actionView($id)
-    {
-        return $this->findModel($id);
-    }
-
     /**
      * @param $id
      * @return \yii\db\ActiveRecord

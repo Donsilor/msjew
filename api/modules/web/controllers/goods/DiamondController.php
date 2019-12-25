@@ -3,6 +3,7 @@
 namespace api\modules\web\controllers\goods;
 
 use api\modules\web\forms\AttrSpecForm;
+use common\enums\StatusEnum;
 use common\models\goods\Diamond;
 use common\models\goods\DiamondLang;
 use Yii;
@@ -55,8 +56,9 @@ class DiamondController extends OnAuthController
         ];
 
         $type_id = \Yii::$app->request->get("type_id");//产品线ID
-//        $page = \Yii::$app->request->get("page",1);//页码
-//        $page_size = \Yii::$app->request->get("page_size",14);//每页大小
+        if(!$type_id){
+            return ResultHelper::api(422, '产品线不能为空');
+        }
         $order_param = \Yii::$app->request->get("order_param");//排序参数
         $order_type = \Yii::$app->request->get("order_type", 1);//排序方式 1-升序；2-降序;
 
@@ -73,7 +75,7 @@ class DiamondController extends OnAuthController
                     ,'m.cut','m.fluorescence','m.polish','m.shape','m.symmetry'];
         $query = Diamond::find()->alias('m')->select($fields)
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->orderby($order);
+            ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
 
         $params = \Yii::$app->request->get("params");  //属性帅选
         $params = json_decode($params);
@@ -108,6 +110,29 @@ class DiamondController extends OnAuthController
         return $result;
 
     }
+
+
+    //商品推荐
+    public function actionRecommend(){
+        $type_id = \Yii::$app->request->get("type_id",1);//产品线ID
+        if(!$type_id){
+            return ResultHelper::api(422, '产品线不能为空');
+        }
+        $recommend_type = \Yii::$app->request->get("recommend_type",2);//产品线ID
+        $limit = \Yii::$app->request->get("limit",4);//查询数量
+        $fields = ['m.id', 'm.goods_image', 'lang.goods_name','m.sale_price'];
+        $result = Diamond::find()->alias('m')->select($fields)
+            ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
+            ->where(['and',['like','m.recommend_type',$recommend_type],['m.status'=>StatusEnum::ENABLED]])
+            ->limit($limit)->asArray()->all();
+        foreach($result as & $val) {
+            $val['type_id'] = $type_id;
+            $val['currency'] = $this->currency;
+        }
+        return $result;
+
+    }
+
 
 
 

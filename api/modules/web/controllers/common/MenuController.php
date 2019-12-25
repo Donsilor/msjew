@@ -6,7 +6,7 @@ use Yii;
 use api\controllers\OnAuthController;
 use common\models\common\Menu;
 use common\helpers\ArrayHelper;
-//use api\controllers\ActiveController;
+
 
 /**
  * Class ProvincesController
@@ -20,7 +20,7 @@ class MenuController extends OnAuthController
     public $modelClass = Menu::class;
     protected $authOptional = ['index'];
     /**
-     * 获取省市区
+     * 前台菜单
      *
      * @param int $pid
      * @return array|yii\data\ActiveDataProvider

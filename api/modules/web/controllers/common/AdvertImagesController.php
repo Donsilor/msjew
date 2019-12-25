@@ -2,17 +2,17 @@
 
 namespace api\modules\web\controllers\common;
 
+use Yii;
 use common\enums\StatusEnum;
 use common\helpers\ResultHelper;
 use common\models\common\AdvertImages;
 use common\models\common\AdvertImagesLang;
-use Yii;
 use api\controllers\OnAuthController;
 
 /**
+ * 广告位
  * Class ProvincesController
  * @package api\modules\v1\controllers\member
- * @author jianyan74 <751393839@qq.com>
  */
 class AdvertImagesController extends OnAuthController
 {
@@ -29,15 +29,17 @@ class AdvertImagesController extends OnAuthController
      */
     public function actionIndex()
     {
-        $adv_id = Yii::$app->request->get('adv_id',null);
-        if($adv_id == null) return ResultHelper::api(400, '缺省参数');
-        $language = Yii::$app->params['language'];
+        $adv_id = Yii::$app->request->get('adv_id');
+        if(!$adv_id) {
+            return ResultHelper::api(422, 'adv_id不能为空');
+        }
+
         $time = date('Y-m-d H:i:s', time());
         $model = $this->modelClass::find()->alias('m')
             ->where(['m.status' => StatusEnum::ENABLED, 'm.adv_id'=>$adv_id, 'type'=>1])
             ->andWhere(['and',['<=','start_time',$time], ['>=','end_time',$time]])
-            ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
-            ->select(['lang.title as title','lang.adv_image','adv_url'])
+            ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$this->language.'"')
+            ->select(['lang.title','lang.adv_image','adv_url'])
             ->orderby('m.sort desc, m.created_at desc')
             ->asArray()
             ->all();
@@ -54,15 +56,17 @@ class AdvertImagesController extends OnAuthController
      */
     public function actionBanner()
     {
-        $adv_id = Yii::$app->request->get('adv_id',null);
-        if($adv_id == null) return ResultHelper::api(400, '缺省参数');
-        $language = Yii::$app->params['language'];
+        $adv_id = Yii::$app->request->get('adv_id');
+        if(!$adv_id) {
+            return ResultHelper::api(400, 'adv_id不能为空');
+        }
+
         $time = date('Y-m-d H:i:s', time());
         $model = $this->modelClass::find()->alias('m')
             ->where(['m.status' => StatusEnum::ENABLED, 'm.adv_id'=>$adv_id, 'type'=>2])
             ->andWhere(['and',['<=','start_time',$time], ['>=','end_time',$time]])
-            ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
-            ->select(['lang.title as title','lang.adv_image','adv_url'])
+            ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$this->language.'"')
+            ->select(['lang.title','lang.adv_image','adv_url'])
             ->orderby('m.sort desc, m.created_at desc')
             ->asArray()
             ->all();

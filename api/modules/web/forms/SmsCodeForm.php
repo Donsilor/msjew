@@ -53,6 +53,6 @@ class SmsCodeForm extends Model
     public function send()
     {
         $code = rand(1000, 9999);
-        return Yii::$app->services->sms->send($this->mobile, $code, $this->usage);
+        return Yii::$app->services->sms->send($this->mobile, $this->usage, ['code'=>$code]);
     }
 }

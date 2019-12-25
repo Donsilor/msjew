@@ -22,9 +22,9 @@ class CartController extends OnAuthController
     /**
      * 购物车列表
      */
-    public function list()
+    public function index()
     {
-        
+        print_r(\Yii::$app->user);        
     }
     /**
      * 添加购物车商品

@@ -126,7 +126,7 @@ class GoodsService extends Service
         $type_id = $styleModel->type_id;
         $style_attr = json_decode($styleModel->style_attr,true);
         $style_spec = json_decode($styleModel->style_spec,true);
-
+        $spec_array = array();
         if(!empty($style_attr)) {
             $spec_array['style_attr'] = $style_attr;
         }

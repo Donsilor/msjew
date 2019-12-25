@@ -2,19 +2,17 @@
 
 namespace api\modules\web\controllers;
 
-use api\modules\v1\forms\EmailLoginForm;
 use Yii;
 use yii\web\NotFoundHttpException;
+use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
 use common\helpers\ArrayHelper;
 use common\models\member\Member;
-use api\modules\v1\forms\UpPwdForm;
-use api\controllers\OnAuthController;
-use api\modules\v1\forms\LoginForm;
-use api\modules\v1\forms\RefreshForm;
-use api\modules\v1\forms\MobileLogin;
-use api\modules\v1\forms\SmsCodeForm;
-use api\modules\v1\forms\RegisterForm;
+use api\modules\web\forms\UpPwdForm;
+use api\modules\web\forms\LoginForm;
+use api\modules\web\forms\RefreshForm;
+use api\modules\web\forms\MobileLogin;
+use api\modules\web\forms\SmsCodeForm;
 use api\modules\web\forms\EmailCodeForm;
 use api\modules\web\forms\MobileRegisterForm;
 use api\modules\web\forms\EmailRegisterForm;

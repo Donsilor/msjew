@@ -68,7 +68,12 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
             			?>
         			</div>
     		    </div>
-                <?= $form->field($model, 'status')->radioList(\common\enums\FrameEnum::getMap()) ?>
+                <div class="row">
+                    <div class="col-lg-3"><?= $form->field($model, 'status')->radioList(\common\enums\FrameEnum::getMap()) ?></div>
+                    <?php $model->recommend_type = !empty($model->recommend_type)?explode(',', $model->recommend_type):null;?>
+                    <div class="col-lg-3"><?= $form->field($model, 'recommend_type')->checkboxList(\common\enums\RecommendEnum::getMap()) ?></div>
+                </div>
+
     		    <!-- ./nav-tabs-custom -->
             </div>
         <!-- ./box-body -->

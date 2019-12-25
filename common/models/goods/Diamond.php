@@ -65,6 +65,7 @@ class Diamond extends \yii\db\ActiveRecord
             [['cert_id'], 'unique'],
             [['parame_images'],'parseParameImages'],
             [['sale_services'],'parseSaleServices'],
+            [['recommend_type'],'parseRecommendType'],
             [['goods_name','language'],'safe'],
             [['cert_type', 'cert_id'], 'unique', 'targetAttribute' => ['cert_type', 'cert_id']],
         ];
@@ -90,6 +91,18 @@ class Diamond extends \yii\db\ActiveRecord
             $this->sale_services = implode(',',$this->sale_services);
         }
         return $this->sale_services;
+    }
+
+
+    /**
+     * 推荐位置
+     */
+    public function parseRecommendType()
+    {
+        if(is_array($this->recommend_type)){
+            $this->recommend_type = implode(',',$this->recommend_type);
+        }
+        return $this->recommend_type;
     }
 
     /**
@@ -129,6 +142,7 @@ class Diamond extends \yii\db\ActiveRecord
             'source_id' => '货品来源 ',
             'source_discount' => '来源折扣',
             'is_stock' => '库存类型',
+            'recommend_type' => '推荐位置',
             'status' => '上架状态',
             'created_at' => Yii::t('common', '创建时间'),
             'updated_at' => Yii::t('common', '更新时间'),

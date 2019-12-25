@@ -23,104 +23,119 @@ class StyleController extends OnAuthController
      */
     public $modelClass = Style::class;
     protected $authOptional = ['search','detail','guess-list'];
-    /**
-     * 搜索条件
-     */
-    public function actionSearchForm()
-    {
-        
-    }
+
+
     /**
      * 款式商品搜索
      * @return array
      */
-    public function actionSearch()
-    {
+    public function actionSearch(){
         $sort_map = [
-            "1_0"=>'s.sale_price asc',//销售价
-            "1_1"=>'s.sale_price desc',
-            "2_0"=>'s.goods_clicks asc',//浏览量
-            "2_1"=>'s.goods_clicks desc',
-            "3_0"=>'s.onsale_time asc',//上架时间
-            "3_1"=>'s.onsale_time desc',
-            "4_0"=>'s.rank asc',//权重
-            "4_1"=>'s.rank desc',
+            "price"=>'m.sale_price',//价格
+            "carat"=>'m.carat',//石重
+            "clarity"=>'m.clarity',//净度
+            "cut"=>'m.cut',//切割
+            "color"=>'m.color',//颜色
+            "sale_volume"=>'m.sale_volume',//销量
         ];
-        
-        $type_id = \Yii::$app->request->post("type_id");//产品线
-        $keyword = \Yii::$app->request->post("keyword");//产品线
-        $price_range   = \Yii::$app->request->post("price_range");//最低价格
-        $attr_id  = \Yii::$app->request->post("attr_id");//属性
-        $attr_value  = \Yii::$app->request->post("attr_value");//属性
-        
-        $sort = \Yii::$app->request->post("sort",'4_1');//排序
-        $page = \Yii::$app->request->post("page",1);//页码
-        $page_size = \Yii::$app->request->post("page_size",20);//每页大小
-        
-        $order = $sort_map[$sort] ?? '';
-        
-        $fields = ['s.id','s.style_sn','lang.style_name','s.style_image','s.sale_price','s.goods_clicks'];
-        $query = Style::find()->alias('s')->select($fields)
-            ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
+
+
+        $type_id = \Yii::$app->request->get("type_id");//产品线ID
+//        $page = \Yii::$app->request->get("page",1);//页码
+//        $page_size = \Yii::$app->request->get("page_size",14);//每页大小
+        $order_param = \Yii::$app->request->get("order_param");//排序参数
+        $order_type = \Yii::$app->request->get("order_type", 1);//排序方式 1-升序；2-降序;
+
+        //排序
+        $order = '';
+        if(!empty($order_param)){
+            $order_type = $order_type == 1? "asc": "desc";
+            $order = $sort_map[$order_param]. " ".$order_type;
+        }
+
+        $fields = ['m.id','lang.style_name','m.goods_images','m.sale_price'];
+        $query = Style::find()->alias('m')->select($fields)
+            ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->orderby($order);
-        
-        if($type_id) {
-            $query->andWhere(['=','s.type_id',$type_id]);
-        }
-        if($keyword) {
-            $query->andWhere(['or',['like','lang.style_name',$keyword],['=','s.style_sn',$keyword]]);
-        }
-        if($price_range){
-            $arr = explode('-',$price_range);
-            if(count($arr) == 2 ){
-                list($min_price,$max_price) = $arr;
-                if(is_numeric($min_price)){
-                    $query->andWhere(['>','s.sale_price',$min_price]);
-                }
-                
-                if(is_numeric($max_price) && $max_price>0){
-                    $query->andWhere(['<=','s.sale_price',$max_price]);
-                }
-                
-            }            
-        }
-        //print_r($attr_value);exit;
-        //属性，属性值查询
-        if($attr_id || $attr_value){
-            $subQuery = AttributeIndex::find()->select(['style_id'])->distinct("style_id");
+
+        $params = \Yii::$app->request->get("params");  //属性帅选
+        $params = json_decode($params);
+        if(!empty($params)){
+
+            $subQuery = AttributeIndex::find()->alias('a')->select(['a.style_id'])->distinct("a.style_id");
             if($type_id) {
-                $subQuery->where(['type_id'=>$type_id]);
+                $subQuery->where(['a.type_id'=>$type_id]);
             }
-            if($attr_id) {
-                if(!is_array($attr_id)){
-                    $attr_id = explode(',',$attr_id);
+
+            $k = 0;
+            foreach ($params as $param){
+                $value_type = $param->valueType;
+                $param_name = $param->paramName;
+                $attr_id = $param->paramId;
+
+                //价格不是属性,直接查询主表
+                if($param_name == 'sale_price'){
+                    $min_price = $param->beginValue;
+                    $max_price = $param->endValue;
+                    if(is_numeric($min_price)){
+                        $query->andWhere(['>','m.sale_price',$min_price]);
+                    }
+                    if(is_numeric($max_price) && $max_price>0){
+                        $query->andWhere(['<=','m.sale_price',$max_price]);
+                    }
+                    continue;
                 }
-                $subQuery->andWhere(['attr_value_id'=>$attr_id]);
+                if(is_numeric($attr_id)){
+                    $k++;
+                    $alias = "a".$k; //别名
+                    $on = "{$alias}.style_id = a.style_id and {$alias}.attr_id = $attr_id ";
+                }else{
+                    continue;
+                }
+
+
+                if($value_type == 1){
+                    $config_values = $param->configValues;
+                    $config_values_str = join(',',$config_values);
+                    $subQuery->innerJoin(AttributeIndex::tableName().' '.$alias, $on." and {$alias}.attr_value_id in ({$config_values_str})");
+                }else if($value_type == 2){
+                    $begin_value = $param->beginValue;
+                    $end_value = $param->endValue;
+                    $subQuery->innerJoin(AttributeIndex::tableName().' '.$alias, $on." and {$alias}.attr_value > {$begin_value} and {$alias}.attr_value <= {$end_value}");
+                }
             }
-            if($attr_value && $attr_value = explode("|", $attr_value)){
-                foreach ($attr_value as $k=>$val){
-                    list($k,$v) = explode("@",$val);
-                    $arr = explode("-",$v);
-                    if(count($arr) ==1) {
-                        $subQuery->andWhere(['attr_id'=>$k,'attr_value'=>$v]);
-                    }else if(count($arr)==2){
-                        $subQuery->andWhere(['and',['=','attr_id',$k],['between','attr_value',$arr[0], $arr[1]]]);
-                    }                                      
-                }
-            }            
-            $query->andWhere(['in','s.id',$subQuery]);
+//            echo $subQuery->createCommand()->getSql();exit;
+//            return $subQuery->asArray()->all();
+            $query->andWhere(['in','m.id',$subQuery]);
+
         }
-        //echo $query->createCommand()->getSql();exit;
-        $result = $this->pagination($query,$page,$page_size);
-        
+//        echo $query->createCommand()->getSql();exit;
+        $result = $this->pagination($query,$this->page, $this->pageSize);
         foreach($result['data'] as & $val) {
-            $val['currency'] = '$'; 
-            $val['style_image'] = ImageHelper::thumb($val['style_image']);
-        } 
-        
+            $val['type_id'] = $type_id;
+            $val['currency'] = $this->currency;
+        }
         return $result;
-        
+
     }
+
+
+    //获取推荐图
+    public function actionRecommend(){
+        $type_id = \Yii::$app->request->get("type_id");//产品线ID
+        $limit = \Yii::$app->request->get("limit",4);//查询数量
+        $fields = ['m.id', 'm.goods_images', 'lang.style_name','m.sale_price'];
+        Style::find()->alias('m')->select($fields)
+            ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
+            ->where(['m.type_id'=>$type_id])
+            ->limit($limit)
+            ->all();
+
+
+    }
+
+
+
     /**
      * 款式商品详情
      * @return mixed|NULL|number[]|string[]|NULL[]|array[]|NULL[][]|unknown[][][]|string[][][]|mixed[][][]|\common\helpers\unknown[][][]

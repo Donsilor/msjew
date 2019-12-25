@@ -36,8 +36,8 @@ class AdvertImagesController extends OnAuthController
         $language = Yii::$app->params['language'];
         $time = date('Y-m-d H:i:s', time());
         $model = $this->modelClass::find()->alias('m')
-            ->where(['m.status' => StatusEnum::ENABLED, 'm.adv_id'=>$adv_id, 'type'=>1])
-            ->andWhere(['and',['<=','start_time',$time], ['>=','end_time',$time]])
+            ->where(['m.status' => StatusEnum::ENABLED, 'm.adv_id'=>$adv_id])
+            ->andWhere(['or',['and',['<=','m.start_time',$time], ['>=','m.end_time',$time]],['m.end_time'=>null]])
             ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
             ->select(['lang.title as title','lang.adv_image','adv_url'])
             ->orderby('m.sort desc, m.created_at desc')

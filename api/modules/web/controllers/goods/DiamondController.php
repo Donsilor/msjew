@@ -33,34 +33,32 @@ class DiamondController extends OnAuthController
 
     public function actionSearch(){
         $sort_map = [
-            "price"=>'d.sale_price',//价格
-            "carat"=>'d.carat',//石重
-            "clarity"=>'d.clarity',//净度
-            "cut"=>'d.cut',//切割
-            "color"=>'d.color',//颜色
+            "price"=>'m.sale_price',//价格
+            "carat"=>'m.carat',//石重
+            "clarity"=>'m.clarity',//净度
+            "cut"=>'m.cut',//切割
+            "color"=>'m.color',//颜色
         ];
         $params_map = [
-            'shape'=>'d.shape',//形状
-            'sale_price'=>'d.sale_price',//销售价
-            'carat'=>'d.carat',//石重
-            'cut'=>'d.cut',//切工
-            'color'=>'d.color',//颜色
-            'clarity'=>'d.clarity',//净度
-            'polish'=>'d.polish',//光澤--抛光
-            'symmetry'=>'d.symmetry',//对称
-            'card'=>'d.cert_type',//证书类型
-            'depth'=>'d.depth_lv',//深度
-            'table'=>'d.table_lv',//石面--台宽
-            'fluorescence'=>'d.fluorescence',//荧光
+            'shape'=>'m.shape',//形状
+            'sale_price'=>'m.sale_price',//销售价
+            'carat'=>'m.carat',//石重
+            'cut'=>'m.cut',//切工
+            'color'=>'m.color',//颜色
+            'clarity'=>'m.clarity',//净度
+            'polish'=>'m.polish',//光澤--抛光
+            'symmetry'=>'m.symmetry',//对称
+            'card'=>'m.cert_type',//证书类型
+            'depth'=>'m.depth_lv',//深度
+            'table'=>'m.table_lv',//石面--台宽
+            'fluorescence'=>'m.fluorescence',//荧光
         ];
 
-        $language = Yii::$app->params['language'];
-        $language = \Yii::$app->request->get("language" , $language);//语言
-        $type_id = \Yii::$app->request->get("categoryId");//产品线ID
-        $page = \Yii::$app->request->get("currPage",1);//页码
-        $page_size = \Yii::$app->request->get("pageSize",20);//每页大小
-        $order_param = \Yii::$app->request->get("orderParam");//排序参数
-        $order_type = \Yii::$app->request->get("orderType", 1);//排序方式 1-升序；2-降序;
+        $type_id = \Yii::$app->request->get("type_id");//产品线ID
+//        $page = \Yii::$app->request->get("page",1);//页码
+//        $page_size = \Yii::$app->request->get("page_size",14);//每页大小
+        $order_param = \Yii::$app->request->get("order_param");//排序参数
+        $order_type = \Yii::$app->request->get("order_type", 1);//排序方式 1-升序；2-降序;
 
         //排序
         $order = '';
@@ -69,9 +67,12 @@ class DiamondController extends OnAuthController
           $order = $sort_map[$order_param]. " ".$order_type;
         }
 
-        $fields = ['d.id','d.goods_sn','lang.goods_name','d.goods_image','d.sale_price'];
-        $query = Diamond::find()->alias('d')->select($fields)
-            ->leftJoin(DiamondLang::tableName().' lang',"d.id=lang.master_id and lang.language='".$language."'")
+
+        $fields = ['m.id','m.goods_id','m.goods_sn','lang.goods_name','m.goods_image','m.sale_price','m.goods_sn'
+                    ,'m.carat','m.cert_id','m.depth_lv','m.table_lv','m.clarity','m.cert_type','m.color'
+                    ,'m.cut','m.fluorescence','m.polish','m.shape','m.symmetry'];
+        $query = Diamond::find()->alias('m')->select($fields)
+            ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->orderby($order);
 
         $params = \Yii::$app->request->get("params");  //属性帅选
@@ -90,112 +91,26 @@ class DiamondController extends OnAuthController
                 }
             }
         }
-
-        $result = $this->pagination($query,$page,$page_size);
+        $result = $this->pagination($query,$this->page,$this->pageSize);
         foreach($result['data'] as & $val) {
-            $val['categoryId'] = $type_id;
-            $val['coinType'] = 'CNY';
-            $val['goodsName'] = $val['goods_name'];
-            $val['isJoin'] = null;
-            $val['salePrice'] = $val['sale_price'];
-            $val['goodsImages'] = ImageHelper::thumb($val['goods_image']);
-            $val['specsModels'] = '';
+            $val['type_id'] = $type_id;
+            $val['currency'] = $this->currency;
+            $val['clarity'] = \Yii::$app->attr->valueName($val['clarity']);
+            $val['cert_type'] = \Yii::$app->attr->valueName($val['cert_type']);
+            $val['color'] = \Yii::$app->attr->valueName($val['color']);
+            $val['cut'] = \Yii::$app->attr->valueName($val['cut']);
+            $val['fluorescence'] = \Yii::$app->attr->valueName($val['fluorescence']);
+            $val['polish'] = \Yii::$app->attr->valueName($val['polish']);
+            $val['shape'] = \Yii::$app->attr->valueName($val['shape']);
+            $val['symmetry'] = \Yii::$app->attr->valueName($val['symmetry']);
+
         }
         return $result;
 
-
     }
 
 
 
-
-    public function actionSearch1()
-    {
-        $sort_map = [
-            "1_0"=>'s.sale_price asc',//销售价
-            "1_1"=>'s.sale_price desc',
-            "2_0"=>'s.goods_clicks asc',//浏览量
-            "2_1"=>'s.goods_clicks desc',
-            "3_0"=>'s.onsale_time asc',//上架时间
-            "3_1"=>'s.onsale_time desc',
-            "4_0"=>'s.rank asc',//权重
-            "4_1"=>'s.rank desc',
-        ];
-
-        $type_id = \Yii::$app->request->post("type_id");//产品线
-        $keyword = \Yii::$app->request->post("keyword");//产品线
-        $price_range   = \Yii::$app->request->post("price_range");//最低价格
-        $attr_id  = \Yii::$app->request->post("attr_id");//属性
-        $attr_value  = \Yii::$app->request->post("attr_value");//属性
-
-        $sort = \Yii::$app->request->post("sort",'4_1');//排序
-        $page = \Yii::$app->request->post("page",1);//页码
-        $page_size = \Yii::$app->request->post("page_size",20);//每页大小
-
-        $order = $sort_map[$sort] ?? '';
-
-        $fields = ['s.id','s.style_sn','lang.style_name','s.style_image','s.sale_price','s.goods_clicks'];
-        $query = Style::find()->alias('s')->select($fields)
-            ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
-            ->orderby($order);
-
-        if($type_id) {
-            $query->andWhere(['=','s.type_id',$type_id]);
-        }
-        if($keyword) {
-            $query->andWhere(['or',['like','lang.style_name',$keyword],['=','s.style_sn',$keyword]]);
-        }
-        if($price_range){
-            $arr = explode('-',$price_range);
-            if(count($arr) == 2 ){
-                list($min_price,$max_price) = $arr;
-                if(is_numeric($min_price)){
-                    $query->andWhere(['>','s.sale_price',$min_price]);
-                }
-
-                if(is_numeric($max_price) && $max_price>0){
-                    $query->andWhere(['<=','s.sale_price',$max_price]);
-                }
-
-            }
-        }
-        //print_r($attr_value);exit;
-        //属性，属性值查询
-        if($attr_id || $attr_value){
-            $subQuery = AttributeIndex::find()->select(['style_id'])->distinct("style_id");
-            if($type_id) {
-                $subQuery->where(['type_id'=>$type_id]);
-            }
-            if($attr_id) {
-                if(!is_array($attr_id)){
-                    $attr_id = explode(',',$attr_id);
-                }
-                $subQuery->andWhere(['attr_value_id'=>$attr_id]);
-            }
-            if($attr_value && $attr_value = explode("|", $attr_value)){
-                foreach ($attr_value as $k=>$val){
-                    list($k,$v) = explode("@",$val);
-                    $arr = explode("-",$v);
-                    if(count($arr) ==1) {
-                        $subQuery->andWhere(['attr_id'=>$k,'attr_value'=>$v]);
-                    }else if(count($arr)==2){
-                        $subQuery->andWhere(['and',['=','attr_id',$k],['between','attr_value',$arr[0], $arr[1]]]);
-                    }
-                }
-            }
-            $query->andWhere(['in','s.id',$subQuery]);
-        }
-        //echo $query->createCommand()->getSql();exit;
-        $result = $this->pagination($query,$page,$page_size);
-
-        foreach($result['data'] as & $val) {
-            $val['currency'] = '$';
-            $val['style_image'] = ImageHelper::thumb($val['style_image']);
-        }
-
-        return $result;
-
-    }
     /**
      * 款式商品详情
      * @return mixed|NULL|number[]|string[]|NULL[]|array[]|NULL[][]|unknown[][][]|string[][][]|mixed[][][]|\common\helpers\unknown[][][]

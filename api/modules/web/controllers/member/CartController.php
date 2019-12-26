@@ -2,10 +2,10 @@
 
 namespace api\modules\web\controllers\member;
 
-use api\controllers\OnAuthController;
 use common\models\order\Cart;
 use api\modules\web\forms\CartForm;
 use common\helpers\ResultHelper;
+use api\controllers\UserAuthController;
 
 
 /**
@@ -14,7 +14,7 @@ use common\helpers\ResultHelper;
  * Class SiteController
  * @package api\modules\v1\controllers
  */
-class CartController extends OnAuthController
+class CartController extends UserAuthController
 {
     
     public $modelClass = Cart::class;
@@ -43,7 +43,9 @@ class CartController extends OnAuthController
             $cart['goods_name'] = $goods['goods_name'];
             $cart['goods_price'] = $goods['sale_price'];
             $cart['currency']   = $this->currency;
-            $cart['goods_num'] = $model->goods_num;           
+            $cart['goods_num'] = $model->goods_num;
+            $cart['group_type'] = $model->group_type;
+            $cart['group_id'] = $model->group_id;
             $cart['goods_spec'] = $goods['goods_spec'];            
             $cart_list[] = $cart;
         }
@@ -66,7 +68,7 @@ class CartController extends OnAuthController
             return ResultHelper::api(423,"添加失败，商品不是售卖状态");
         }
 
-        $cart = Cart::find()->where(['goods_id'=>$model->goods_id,'goods_type'=>$goods['type_id']])->one();
+        $cart = $this->modelClass::find()->where(['goods_id'=>$model->goods_id,'goods_type'=>$goods['type_id']])->one();
         if($cart) {
             $cart->goods_num = $cart->goods_num + $model->goods_num;
         }else {
@@ -84,6 +86,15 @@ class CartController extends OnAuthController
         }        
         return $cart;        
     }
+    /**
+     * 编辑购物车
+     * @return mixed|NULL
+     */
+    public function actionEdit()
+    {
+        return $this->edit(['goods_num'])->toArray(['id','goods_num']);
+    }   
+    
     /**
      * 删除购物车商品
      */
@@ -104,27 +115,6 @@ class CartController extends OnAuthController
         }
         return ['num'=>$num];
     } 
-    /**
-     * 编辑购物车
-     * @return mixed|NULL
-     */
-    public function actionEdit()
-    {
-        $id = \Yii::$app->request->post("id");
-        if(!$id) {
-            return ResultHelper::api(422, "id不能为空");
-        }
-        
-        $model = Cart::findOne($id);
-        if(!$model) {
-            return ResultHelper::api(422, "编辑对象不存在");
-        }
-        $model->attributes = \Yii::$app->request->post();
-        if (!$model->save(true,['goods_num'])) {
-            return ResultHelper::api(422, $this->getError($model));
-        }
-        
-        return $model->toArray(['goods_id','goods_num']);
-    }    
+     
     
 }

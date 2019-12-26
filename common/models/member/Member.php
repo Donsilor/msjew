@@ -62,12 +62,13 @@ class Member extends User
             [['username', 'password_hash'], 'required', 'on' => ['backendCreate']],
             [['password_hash'], 'string', 'min' => 6, 'on' => ['backendCreate']],
             [['username'], 'unique', 'on' => ['backendCreate']],
-            [['merchant_id', 'type', 'gender','visit_count', 'role', 'last_time', 'province_id', 'city_id', 'area_id', 'pid', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['marriage','merchant_id', 'type', 'gender','visit_count', 'role', 'last_time', 'province_id', 'city_id', 'area_id', 'pid', 'status', 'created_at', 'updated_at'], 'integer'],
             [['birthday','created_at','is_book'], 'safe'],
             [['username', 'qq', 'home_phone', 'mobile'], 'string', 'max' => 20],
             [['password_hash', 'password_reset_token', 'head_portrait'], 'string', 'max' => 150],
             [['auth_key'], 'string', 'max' => 32],
             [['nickname', 'realname'], 'string', 'max' => 50],
+            [['google_account', 'facebook_account'], 'string', 'max' => 100],
             [['email','firstname','lastname'], 'string', 'max' => 60],
             [['last_ip'], 'string', 'max' => 16],
             ['mobile', 'match', 'pattern' => RegularHelper::mobile(),'message' => '不是一个有效的手机号码'],
@@ -100,7 +101,7 @@ class Member extends User
             'home_phone' => '家庭号码',
             'mobile' => '手机号码',
             'role' => '权限',
-            'last_time' => '最后一次登录时间',
+            'last_time' => '最后一次登录时间',                
             'last_ip' => '最后一次登录ip',
             'province_id' => 'Province ID',
             'city_id' => 'City ID',
@@ -109,6 +110,9 @@ class Member extends User
             'status' => '状态',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
+            'marriage' => '婚姻',
+            'google_account' => 'Google账户',
+            'facebook_account' => 'Facebook账户',
         ];
     }
 

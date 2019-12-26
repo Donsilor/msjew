@@ -1,12 +1,13 @@
 <?php
 
-namespace api\modules\v1\controllers\member;
+namespace api\modules\web\controllers\member;
 
 use Yii;
 use yii\web\NotFoundHttpException;
 use api\controllers\OnAuthController;
 use common\enums\StatusEnum;
 use common\models\member\Member;
+use common\helpers\ResultHelper;
 
 /**
  * 会员接口
@@ -25,31 +26,45 @@ class MemberController extends OnAuthController
     protected $authOptional = [];
 
     /**
-     * 单个显示
-     *
-     * @param $id
-     * @return mixed
+     * 用户登录基本信息
      * @throws NotFoundHttpException
+     * @return \yii\db\ActiveRecord|array|NULL
      */
-    public function actionView($id)
+    public function actionMe()
     {
-        $model = $this->modelClass::find()
-            ->where(['id' => $id, 'status' => StatusEnum::ENABLED])
-            ->select([
-                'id', 'username', 'nickname',
-                'realname', 'head_portrait', 'gender',
-                'qq', 'email', 'birthday',
-                'user_money', 'user_integral', 'status',
-                'created_at'
-            ])
-            ->asArray()
-            ->one();
+        $fields = [
+                'member.id', 'username','firstname','lastname','realname', 'nickname','google_account',
+                'facebook_account','head_portrait', 'gender','marriage','qq', 'email', 'birthday','status','created_at'
+        ];
+        $model = Member::find()->select($fields)
+                        ->joinWith("account")
+                        ->where(['member.id' => $this->member_id, 'status' => StatusEnum::ENABLED])
+                        ->asArray()->one();
 
         if (!$model) {
-            throw new NotFoundHttpException('请求的数据不存在或您的权限不足.');
+            return ResultHelper::api(401, "请求的数据不存在或您的权限不足");
         }
 
         return $model;
+    }
+    /**
+     * 编辑用户基本信息
+     * @return mixed|NULL|array
+     */
+    public function actionEdit()
+    {    
+        $member = Member::find()->where(['id' => $this->member_id])->one();
+        if (!$member) {
+            return ResultHelper::api(401, "请求的数据不存在或您的权限不足");
+        }
+        $member->attributes = \Yii::$app->request->post();
+        
+        $allows = ['firstname','lastname','gender','marriage','google_account','facebook_account'];
+        if (false === $member->save(true,$allows)) {
+            return ResultHelper::api(422, $this->getError($member));
+        }
+        
+        return $member->toArray(array_merge(['id'],$allows));        
     }
     /**
      * 权限验证

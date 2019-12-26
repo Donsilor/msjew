@@ -75,7 +75,6 @@ class Style extends BaseModel
     
                 [['style_spec'],'parseStyleSpec'],
                 [['goods_images'],'parseGoodsImages'],
-                [['recommend_type'],'parseRecommendType'],
                 [['style_sn'],'unique'],
                 
                 [['attr_require'], 'required','isEmpty'=>function($value){
@@ -140,16 +139,6 @@ class Style extends BaseModel
         return $this->goods_images;
     }
 
-    /**
-     * 推荐位置
-     */
-    public function parseRecommendType()
-    {
-        if(is_array($this->recommend_type)){
-            $this->recommend_type = implode(',',$this->recommend_type);
-        }
-        return $this->recommend_type;
-    }
 
     /**
      * {@inheritdoc}
@@ -188,7 +177,6 @@ class Style extends BaseModel
             'onsale_time' => Yii::t('goods', '上架时间'),
             'created_at' => Yii::t('goods', '创建时间'),
             'updated_at' => Yii::t('goods', '更新时间'),
-            'recommend_type' =>Yii::t('goods',  '推荐位置'),
             //自定义属性    
             'attr_require' => Yii::t('goods', '当前属性'),
             'attr_custom' => Yii::t('goods', '当前属性'),

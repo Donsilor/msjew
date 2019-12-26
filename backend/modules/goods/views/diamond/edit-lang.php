@@ -69,12 +69,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="row">
                     <div class="col-lg-3"><?= $form->field($model, 'status')->radioList(\common\enums\FrameEnum::getMap()) ?></div>
                     <div class="col-lg-3"><?= $form->field($model, 'is_stock')->radioList(\common\enums\IsStockEnum::getMap()) ?></div>
-                    <?php
-                    $model->recommend_type = !empty($model->recommend_type)?explode(',', $model->recommend_type):null;
-                    $recommend_type = \common\enums\RecommendEnum::getMap();
-                    unset($recommend_type[\common\enums\RecommendEnum::RECOMMEND_HOME]); //去掉首页选项
-                    ?>
-                    <div class="col-lg-3"><?= $form->field($model, 'recommend_type')->checkboxList($recommend_type) ?></div>
                 </div>
                 <div class="nav-tabs-custom ">
                     <?php echo Html::langTab("tab1")?>

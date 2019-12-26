@@ -39,22 +39,10 @@ class RingController extends OnAuthController
             "price"=>'m.sale_price',//价格
             "sale_volume"=>'m.sale_volume',//销量
         ];
-        $params_map = [
-            'shape'=>'m.shape',//形状
-            'sale_price'=>'m.sale_price',//销售价
-            'carat'=>'m.carat',//石重
-            'cut'=>'m.cut',//切工
-            'color'=>'m.color',//颜色
-            'clarity'=>'m.clarity',//净度
-            'polish'=>'m.polish',//光澤--抛光
-            'symmetry'=>'m.symmetry',//对称
-            'card'=>'m.cert_type',//证书类型
-            'depth'=>'m.depth_lv',//深度
-            'table'=>'m.table_lv',//石面--台宽
-            'fluorescence'=>'m.fluorescence',//荧光
-        ];
-
         $type_id = \Yii::$app->request->get("type_id");//产品线ID
+        $ring_style = \Yii::$app->request->get("ring_style");//对戒款式
+        $begin_price = \Yii::$app->request->get("begin_price");//开始价格
+        $end_price = \Yii::$app->request->get("end_price");//开始价格
         if(!$type_id){
             return ResultHelper::api(422, '产品线不能为空');
         }

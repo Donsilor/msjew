@@ -45,7 +45,6 @@ class Ring extends BaseModel
             [['ring_sn'],'string', 'max' => 100],
             [['qr_code'], 'string', 'max' => 200],
             [['ring_images'],'parseRingImages'],
-            [['recommend_type'],'parseRecommendType'],
             [['ring_name','language','ring_images'], 'safe'],
         ];
     }
@@ -69,7 +68,6 @@ class Ring extends BaseModel
             'cost_price' => Yii::t('goods', '成本价')."({$currency})",
             'status' => '上架状态',
             'ring_3ds' => '360°主图',
-            'recommend_type' => '推荐位置',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
         ];
@@ -86,16 +84,7 @@ class Ring extends BaseModel
         return $this->ring_images;
     }
 
-    /**
-     * 推荐位置
-     */
-    public function parseRecommendType()
-    {
-        if(is_array($this->recommend_type)){
-            $this->recommend_type = implode(',',$this->recommend_type);
-        }
-        return $this->recommend_type;
-    }
+
     /**
      * 语言扩展表
      * @return \common\models\goods\AttributeLang

@@ -55,7 +55,7 @@ class StyleController extends OnAuthController
         
         $fields = ['s.id','s.style_sn','lang.style_name','s.style_image','s.sale_price','s.goods_clicks'];
         $query = Style::find()->alias('s')->select($fields)
-            ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
+            ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".$this->language."'")
             ->where(['s.status'=>StatusEnum::ENABLED])
             ->orderby($order);
         
@@ -186,8 +186,8 @@ class StyleController extends OnAuthController
         $type_id = $model->type_id;
         $fields = ['s.id','s.style_sn','lang.style_name','s.style_image','s.sale_price','s.goods_clicks'];
         $query = Style::find()->alias('s')->select($fields)
-                    ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
-                    ->andWhere(['s.type_id'=>$type_id])
+                    ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".$this->language."'")
+                    ->andWhere(['s.type_id'=>$type_id,'s.status'=>StatusEnum::ENABLED])
                     ->andWhere(['<>','s.id',$style_id])
                     ->orderby("s.goods_clicks desc");
         $models = $query->limit(10)->asArray()->all();

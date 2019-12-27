@@ -40,6 +40,7 @@ use common\components\Service;
  * @property \services\common\ConfigService $config 基础配置
  * @property \services\common\ConfigCateService $configCate 基础配置分类
  * @property \services\common\ProvincesService $provinces ip黑名单
+ * @property \services\common\AreaService $area 国际地区
  * @property \services\common\IpBlacklistService $ipBlacklist 省市区
  * @property \services\oauth2\ServerService $oauth2Server oauth2服务
  * @property \services\oauth2\ClientService $oauth2Client oauth2客户端
@@ -91,6 +92,7 @@ class Application extends Service
         'actionBehavior' => 'services\common\ActionBehaviorService',
         'ipBlacklist' => 'services\common\IpBlacklistService',
         'provinces' => 'services\common\ProvincesService',
+        'area' => 'services\common\AreaService',
         'attachment' => 'services\common\AttachmentService',
         'addons' => 'services\common\AddonsService',
         'addonsConfig' => 'services\common\AddonsConfigService',

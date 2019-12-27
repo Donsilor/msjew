@@ -45,12 +45,14 @@ class Address extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['province_id', 'city_id', 'area_id', 'address_details', 'realname', 'mobile'], 'required'],
+            [['province_id', 'city_id',  'address_details', 'mobile'], 'required'],
             ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '不是一个有效的手机号码'],
-            [['merchant_id', 'member_id', 'province_id', 'city_id', 'area_id', 'is_default', 'zip_code', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['merchant_id', 'member_id','country_id', 'province_id', 'city_id', 'area_id', 'is_default', 'zip_code', 'status', 'created_at', 'updated_at'], 'integer'],
             [['address_name', 'address_details'], 'string', 'max' => 200],
             [['realname'], 'string', 'max' => 100],
+            [['firstname','lastname'], 'string', 'max' => 60],
             [['home_phone', 'mobile'], 'string', 'max' => 20],
+            [['mobile_code'], 'string', 'max' => 10],
         ];
     }
 
@@ -63,6 +65,7 @@ class Address extends \common\models\base\BaseModel
             'id' => 'ID',
             'merchant_id' => '商户',
             'member_id' => '用户',
+            'country_id' => '国家',
             'province_id' => '省',
             'city_id' => '市',
             'area_id' => '区',
@@ -73,6 +76,7 @@ class Address extends \common\models\base\BaseModel
             'realname' => '真实姓名',
             'home_phone' => '电话',
             'mobile' => '手机号码',
+            'mobile_code' => '手机区号',
             'status' => '状态',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
@@ -95,11 +99,10 @@ class Address extends \common\models\base\BaseModel
      */
     public function beforeSave($insert)
     {
-        $this->address_name = Yii::$app->services->provinces->getCityListName([$this->province_id, $this->city_id, $this->area_id]);
+        $this->address_name = Yii::$app->services->area->getAreaListName([$this->country_id,$this->province_id,$this->city_id]);
         if ($this->is_default == StatusEnum::ENABLED) {
             self::updateAll(['is_default' => StatusEnum::DISABLED], ['member_id' => $this->member_id, 'is_default' => StatusEnum::ENABLED]);
         }
-
         return parent::beforeSave($insert);
     }
 }

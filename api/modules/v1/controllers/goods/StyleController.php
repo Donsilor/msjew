@@ -127,7 +127,7 @@ class StyleController extends OnAuthController
                 $seo['meta_desc']  = $typeModel->meta_desc;
             }
         }
-        $result['seo'] = $seo;
+        $result['data']['seo'] = $seo;
         return $result;
         
     }

@@ -10,6 +10,9 @@ use common\models\goods\StyleLang;
 use common\helpers\ImageHelper;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
+use common\enums\StatusEnum;
+use common\models\goods\Type;
+use common\models\goods\TypeLang;
 
 /**
  * Class ProvincesController
@@ -54,7 +57,8 @@ class StyleController extends OnAuthController
         
         $fields = ['s.id','s.style_sn','lang.style_name','s.style_image','s.sale_price','s.goods_clicks'];
         $query = Style::find()->alias('s')->select($fields)
-            ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
+            ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".$this->language."'")
+            ->where(['s.status'=>StatusEnum::ENABLED])
             ->orderby($order);
         
         if($type_id) {
@@ -107,10 +111,23 @@ class StyleController extends OnAuthController
         $result = $this->pagination($query,$page,$page_size);
         
         foreach($result['data'] as & $val) {
-            $val['currency'] = '$'; 
+            $val['currency'] = $this->currency; 
             $val['style_image'] = ImageHelper::thumb($val['style_image']);
         } 
-        
+        $seo = [
+             'meta_title'=>'',
+             'meta_word'=>'',
+             'meta_desc'=>'',
+        ];
+        if($type_id) {
+            $typeModel = TypeLang::find()->where(['master_id'=>$type_id,'language'=>$this->language])->one();
+            if($typeModel) {
+                $seo['meta_title'] = $typeModel->meta_title;
+                $seo['meta_word']  = $typeModel->meta_word;
+                $seo['meta_desc']  = $typeModel->meta_desc;
+            }
+        }
+        $result['data']['seo'] = $seo;
         return $result;
         
     }
@@ -156,12 +173,12 @@ class StyleController extends OnAuthController
                 'id' =>$model->id,
                 'type_id'=>$model->type_id,
                 'style_name'=>$model->lang->style_name,
-                'style_moq'=>1,
+                'style_moq'=>$model->goods_storage,
                 'sale_price'=>$model->sale_price,
-                'currency'=>'$',
+                'currency'=> $this->currency,
                 'goods_images'=>$goods_images,
                 'goods_3ds'=>$model->style_3ds,
-                'style_attrs' =>$attr_list,                
+                'style_attrs' =>$attr_list, 
         ];
         $model->goods_clicks = new Expression("goods_clicks+1");
         $model->virtual_clicks = new Expression("virtual_clicks+1");
@@ -184,8 +201,8 @@ class StyleController extends OnAuthController
         $type_id = $model->type_id;
         $fields = ['s.id','s.style_sn','lang.style_name','s.style_image','s.sale_price','s.goods_clicks'];
         $query = Style::find()->alias('s')->select($fields)
-                    ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
-                    ->andWhere(['s.type_id'=>$type_id])
+                    ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".$this->language."'")
+                    ->andWhere(['s.type_id'=>$type_id,'s.status'=>StatusEnum::ENABLED])
                     ->andWhere(['<>','s.id',$style_id])
                     ->orderby("s.goods_clicks desc");
         $models = $query->limit(10)->asArray()->all();

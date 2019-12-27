@@ -20,41 +20,36 @@ use common\enums\StatusEnum;
 class UserAuthController extends OnAuthController
 {
     /**
-     * 首页
-     *
-     * @return ActiveDataProvider
-     */
-    public function actionIndex()
-    {
-        return new ActiveDataProvider([
-            'query' => $this->modelClass::find()
-                ->where(['status' => StatusEnum::ENABLED, 'member_id' => Yii::$app->user->identity->member_id])
-                ->andFilterWhere(['merchant_id' => $this->getMerchantId()])
-                ->orderBy('id desc')
-                ->asArray(),
-            'pagination' => [
-                'pageSize' => $this->pageSize,
-                'validatePage' => false,// 超出分页不返回data
-            ],
-        ]);
-    }
-
-    /**
      * @param $id
      * @return \yii\db\ActiveRecord
      * @throws NotFoundHttpException
      */
-    protected function findModel($id)
+    protected function findModel($id,$fields = null)
     {
         /* @var $model \yii\db\ActiveRecord */
-        if (empty($id) || !($model = $this->modelClass::find()->where([
-                'id' => $id,
-                'status' => StatusEnum::ENABLED,
-                'member_id' => Yii::$app->user->identity->member_id,
-            ])->andFilterWhere(['merchant_id' => $this->getMerchantId()])->one())) {
-            throw new NotFoundHttpException('请求的数据不存在或您的权限不足.');
+        if (empty($id) || !($model = $this->modelClass::find()->select($fields)->where([
+                'id' => $id,'member_id'=>$this->member_id
+        ])->one())) {
+            throw new NotFoundHttpException('请求的数据不存在');
         }
-
+        
         return $model;
+    }
+    /**
+     * 查询列表
+     * @param array $fields
+     * @throws NotFoundHttpException
+     * @return unknown
+     */
+    protected function findModels($fields = [])
+    {
+        /* @var $model \yii\db\ActiveRecord */
+        if (!($models = $this->modelClass::find()->select($fields)->where([
+                'member_id'=>$this->member_id
+        ])->all())) {
+            throw new NotFoundHttpException('请求的数据不存在');
+        }
+        
+        return $models;
     }
 }

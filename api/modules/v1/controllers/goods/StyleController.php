@@ -114,7 +114,7 @@ class StyleController extends OnAuthController
             $val['currency'] = $this->currency; 
             $val['style_image'] = ImageHelper::thumb($val['style_image']);
         } 
-        $result['seo'] = [
+        $seo = [
              'meta_title'=>'',
              'meta_word'=>'',
              'meta_desc'=>'',
@@ -122,11 +122,12 @@ class StyleController extends OnAuthController
         if($type_id) {
             $typeModel = TypeLang::find()->where(['master_id'=>$type_id,'language'=>$this->language])->one();
             if($typeModel) {
-                $result['meta_title'] = $typeModel->meta_title;
-                $result['meta_word']  = $typeModel->meta_word;
-                $result['meta_desc']  = $typeModel->meta_desc;
+                $seo['meta_title'] = $typeModel->meta_title;
+                $seo['meta_word']  = $typeModel->meta_word;
+                $seo['meta_desc']  = $typeModel->meta_desc;
             }
         }
+        $result['seo'] = $seo;
         return $result;
         
     }

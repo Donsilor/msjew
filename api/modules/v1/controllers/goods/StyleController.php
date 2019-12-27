@@ -118,6 +118,8 @@ class StyleController extends OnAuthController
              'meta_title'=>'',
              'meta_word'=>'',
              'meta_desc'=>'',
+             'title'=>'',
+             'description'=>'',   
         ];
         if($type_id) {
             $typeModel = TypeLang::find()->where(['master_id'=>$type_id,'language'=>$this->language])->one();
@@ -125,9 +127,11 @@ class StyleController extends OnAuthController
                 $seo['meta_title'] = $typeModel->meta_title;
                 $seo['meta_word']  = $typeModel->meta_word;
                 $seo['meta_desc']  = $typeModel->meta_desc;
+                $seo['title']  = $typeModel->type_title;
+                $seo['description']  = $typeModel->type_desc;
             }
         }
-        $result['data']['seo'] = $seo;
+        $result['seo'] = $seo;
         return $result;
         
     }

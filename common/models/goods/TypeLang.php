@@ -36,8 +36,8 @@ class TypeLang extends \yii\db\ActiveRecord
             [['master_id'], 'integer'],
             [['language'], 'string', 'max' => 5],
             [['type_name'], 'string', 'max' => 30],
-            [['meta_title'], 'string', 'max' => 200],
-            [['meta_desc', 'meta_word'], 'string', 'max' => 500],
+            [['meta_title','title'], 'string', 'max' => 200],
+            [['meta_desc', 'meta_word','type_desc'], 'string', 'max' => 500],
         ];
     }
 
@@ -54,6 +54,8 @@ class TypeLang extends \yii\db\ActiveRecord
             'meta_title' => Yii::t('common', 'SEO标题'),
             'meta_desc' => Yii::t('common', 'SEO描述'),
             'meta_word' => Yii::t('common', 'SEO关键词'),
+            'type_title' => Yii::t('common', '标题'),
+            'type_desc' => Yii::t('common', '描述'),
         ];
     }
 }

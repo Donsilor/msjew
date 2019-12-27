@@ -38,7 +38,7 @@ $form = ActiveForm::begin([
                     [
                         'type_name'=>['type'=>'textInput'],
                         'type_title'=> ['type'=>'textInput'],
-                        'type_desc'=> ['type'=>'textArea','options'=>['rows'=>'3'],
+                        'type_desc'=> ['type'=>'textArea','options'=>['rows'=>'3']],
                         'meta_title'=>['type'=>'textInput'],
                         'meta_word'=>['type'=>'textInput'],
                         'meta_desc'=>['type'=>'textArea','options'=>['rows'=>'3']]

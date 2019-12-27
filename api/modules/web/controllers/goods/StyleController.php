@@ -9,6 +9,7 @@ use common\models\goods\Style;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
 use common\helpers\ImageHelper;
+use yii\db\Exception;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
 
@@ -155,45 +156,40 @@ class StyleController extends OnAuthController
         if(empty($model)) {
             return ResultHelper::api(422,"商品信息不存在");
         }
-        $attr_data = \Yii::$app->services->goods->formatStyleAttrs($model);
-        $attr_list = [];
-        foreach ($attr_data['style_attr'] as $attr){
-            $attr_value = $attr['value'];
-            if(empty($attr_value)) {
-                continue;
+        try{
+            $style = \Yii::$app->services->goods->formatStyleGoodsById($id, $this->language);
+            $recommend_style = Style::find()->alias('m')
+                ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
+                ->where(['and',['m.status'=>StatusEnum::ENABLED],['<>','m.id',$id],['=','m.type_id',$model->type_id]])
+                ->orderBy('m.goods_clicks desc')
+                ->select(['m.id','m.goods_images','m.sale_price','lang.style_name'])
+                ->limit(4)->all();
+
+            foreach ($recommend_style as $val){
+                $recommend = array();
+                $recommend['id'] = $val->id;
+                $recommend['goodsName'] = $val->lang->style_name;
+                $recommend['categoryId'] = $model->type_id;
+                $recommend['salePrice'] = $val->sale_price;
+                $recommend['goodsImages'] = $val->goods_images;
+                $recommend['isJoin'] = null;
+                $recommend['specsModels'] = null;
+                $recommend['coinType'] = $this->currency;
+                $style['recommends'][] = $recommend;
             }
-            if(is_array($attr_value)){
-                $attr_value = implode('/',$attr_value);
-            }
-            $attr_list[] = [
-                  'name'=>$attr['attr_name'],
-                  'value'=>$attr_value,
-            ];
+
+
+            $model->goods_clicks = new Expression("goods_clicks+1");
+            $model->virtual_clicks = new Expression("virtual_clicks+1");
+            $model->save(false);//更新浏览量
+            return $style;
+
+
+        }catch (Exception $e){
+            $error = $e->getMessage();
+            return ResultHelper::api(422, $error);
         }
-        if($model->goods_images) {
-            $goods_images = explode(",",$model->goods_images);
-            $goods_images = [
-                    'big'=>ImageHelper::thumbs($goods_images),
-                    'thumb'=>ImageHelper::thumbs($goods_images),
-            ];
-        }else{
-            $goods_images = [];
-        }
-        $info = [
-                'id' =>$model->id,
-                'type_id'=>$model->type_id,
-                'style_name'=>$model->lang->style_name,
-                'style_moq'=>1,
-                'sale_price'=>$model->sale_price,
-                'currency'=>'$',
-                'goods_images'=>$goods_images,
-                'goods_3ds'=>$model->style_3ds,
-                'style_attrs' =>$attr_list,                
-        ];
-        $model->goods_clicks = new Expression("goods_clicks+1");
-        $model->virtual_clicks = new Expression("virtual_clicks+1");
-        $model->save(false);//更新浏览量
-        return $info;
+
     }
     /**
      * 猜你喜欢推荐列表

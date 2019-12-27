@@ -146,49 +146,98 @@ class DiamondController extends OnAuthController
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
-        $model = Style::find()->where(['id'=>$id])->one();
+        $query = Diamond::find()->alias('m')
+            ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
+            ->select(['m.*','lang.goods_name', 'lang.meta_title','lang.meta_word','lang.meta_desc'])
+            ->where(['m.id'=>$id]);
+        $model = $query->one();
+        $diamond_array = $query->asArray()->one();
         if(empty($model)) {
-            return ResultHelper::api(422,"商品信息不存在");
+            return ResultHelper::api(422,"裸钻信息不存在");
         }
-        $attr_data = \Yii::$app->services->goods->formatStyleAttrs($model);
-        $attr_list = [];
-        foreach ($attr_data['style_attr'] as $attr){
-            $attr_value = $attr['value'];
-            if(empty($attr_value)) {
-                continue;
-            }
-            if(is_array($attr_value)){
-                $attr_value = implode('/',$attr_value);
-            }
-            $attr_list[] = [
-                'name'=>$attr['attr_name'],
-                'value'=>$attr_value,
-            ];
-        }
-        if($model->goods_images) {
-            $goods_images = explode(",",$model->goods_images);
-            $goods_images = [
-                'big'=>ImageHelper::thumbs($goods_images),
-                'thumb'=>ImageHelper::thumbs($goods_images),
-            ];
+
+        $diamond = array();
+        $diamond['id'] = $model->id;
+        $diamond['categoryId'] = 1;
+        $diamond['coinType'] = $this->currency;
+        $diamond['goodsName'] = $model->lang->goods_name;
+        $diamond['goodsCode'] = $model->goods_sn;
+        $diamond['salePrice'] = $model->sale_price;
+        $diamond['goods3ds'] = $model->goods_3ds;
+        $diamond['goodsGiaImage'] = $model->goods_gia_image;
+        $diamond['goodsImages'] = $model->goods_image.",".$model->parame_images;
+        $diamond['goodsDesc'] = $model->lang->goods_desc;
+        $diamond['goodsMod'] = 2;
+        $diamond['goodsServices'] = $model->sale_services;
+        $sale_services = explode(',',$model->sale_services);
+        if(!empty($sale_services)){
+            $goodsServicesJsons = \Yii::$app->services->goodsAttribute->getAttrValuesByValueIds($sale_services);
         }else{
-            $goods_images = [];
+            $goodsServicesJsons = [];
         }
-        $info = [
-            'id' =>$model->id,
-            'type_id'=>$model->type_id,
-            'style_name'=>$model->lang->style_name,
-            'style_moq'=>1,
-            'sale_price'=>$model->sale_price,
-            'currency'=>'$',
-            'goods_images'=>$goods_images,
-            'goods_3ds'=>$model->style_3ds,
-            'style_attrs' =>$attr_list,
-        ];
+        $diamond['goodsServicesJsons'] = $goodsServicesJsons;
+        $diamond['goodsStatus'] = $model->status == 1 ? 2 : 1;
+        $diamond['htmlUrl'] = '';
+        $diamond['qrCode'] = '';
+        $diamond['materials'] = null;
+        $diamond['recommends'] = null;
+        $diamond['sizes'] = null;
+        $diamond['templateId'] = null;
+        $diamond['metaDesc'] = $model->lang->meta_desc;
+        $diamond['metaTitle'] = $model->lang->meta_title;
+        $diamond['metaWord'] = $model->lang->meta_word;
+
+        $type_id = 1;
+        $diamond_attr = array(
+            '5'=>'carat',
+            '2'=>'clarity',
+            '4'=>'cut',
+            '7'=>'color',
+            '6'=>'shape',
+            '28'=>'polish',
+            '29'=>'symmetry',
+            '8'=>'fluorescence',
+            '48'=>'cert_type',
+            '31'=>'cert_id',
+            '32'=>'depth_lv',
+            '36'=>'table_lv',
+            '34'=>'length',
+            '35'=>'width'
+        );
+        $diamond_attr_keys = array_keys($diamond_attr);
+        $specs = array();
+        $goods_attribute_spec = \Yii::$app->services->goodsAttribute->getAttrListByTypeId($type_id,1, $this->language);
+        $goods_attribute_spec =  $goods_attribute_spec[1]; //基础属性
+
+//        return $diamond_array;
+        foreach ($goods_attribute_spec as $value){
+            if(in_array($value['id'],$diamond_attr_keys)){
+                if($value['input_type'] == 1){
+                    $configAttrId = null;
+                    $configAttrVal = $diamond_array[$diamond_attr[$value['id']]];
+                }else{
+                    $configAttrId = $diamond_array[$diamond_attr[$value['id']]];
+                    $configAttrVal = \Yii::$app->attr->valueName($configAttrId);
+                }
+                $specs[] = [
+                    'categoryId'=>$type_id,
+                    'configAttrId'=>$configAttrId,
+                    'configAttrVal'=>$configAttrVal,
+                    'configId'=>$value['id'],
+                    //'configInputType'=>1,
+                    'configName'=>$value['attr_name'],
+                    'queryColumn'=>$diamond_attr[$value['id']],
+                    'goodsId'=>$model->id,
+                ];
+            }
+
+        }
+        $diamond['specs'] = $specs;
+
         $model->goods_clicks = new Expression("goods_clicks+1");
         $model->virtual_clicks = new Expression("virtual_clicks+1");
         $model->save(false);//更新浏览量
-        return $info;
+        return $diamond;
     }
     /**
      * 猜你喜欢推荐列表

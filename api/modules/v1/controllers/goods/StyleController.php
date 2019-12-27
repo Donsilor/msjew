@@ -156,7 +156,7 @@ class StyleController extends OnAuthController
                 'id' =>$model->id,
                 'type_id'=>$model->type_id,
                 'style_name'=>$model->lang->style_name,
-                'style_moq'=>$model->lang->goods_storage,
+                'style_moq'=>$model->goods_storage,
                 'sale_price'=>$model->sale_price,
                 'currency'=> $this->currency,
                 'goods_images'=>$goods_images,

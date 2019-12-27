@@ -59,7 +59,7 @@ class MemberController extends OnAuthController
         }
         $member->attributes = \Yii::$app->request->post();
         
-        $allows = ['firstname','lastname','gender','marriage','google_account','facebook_account'];
+        $allows = ['firstname','lastname','gender','birthday','marriage','google_account','facebook_account'];
         if (false === $member->save(true,$allows)) {
             return ResultHelper::api(422, $this->getError($member));
         }

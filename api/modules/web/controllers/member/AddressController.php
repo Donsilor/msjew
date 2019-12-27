@@ -23,7 +23,25 @@ class AddressController extends UserAuthController
 
     public function actionIndex()
     {
-        return $this->findModels();
+        
+        $models = $this->findModels([
+                "id",
+                "firstname",
+                "lastname",
+                "address_name",
+                "address_details",                
+                "country_id",
+                "province_id",
+                "city_id", 
+                "member_id",
+                "email",
+                "mobile",
+                "mobile_code",
+                "zip_code",                
+                "is_default",
+        ]);
+        return $models;      
+        
     }
     /**
      * 详情
@@ -55,7 +73,8 @@ class AddressController extends UserAuthController
      */
     public function actionDel()
     {
-        return $this->del();
+        $num = $this->del();
+        return ['num'=>$num];
     }
     
 }

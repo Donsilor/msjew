@@ -123,8 +123,7 @@ class OnAuthController extends ActiveController
         if(!is_array($ids)) {
             $ids = explode(",",$ids);
         }
-        $num = $this->modelClass::deleteAll(['member_id'=>$this->member_id,'id'=>$ids]);
-        return ['num'=> $num];
+        return $this->modelClass::deleteAll(['member_id'=>$this->member_id,'id'=>$ids]);
     }
     
     /**

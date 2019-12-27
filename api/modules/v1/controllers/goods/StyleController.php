@@ -107,7 +107,7 @@ class StyleController extends OnAuthController
         $result = $this->pagination($query,$page,$page_size);
         
         foreach($result['data'] as & $val) {
-            $val['currency'] = '$'; 
+            $val['currency'] = $this->currency; 
             $val['style_image'] = ImageHelper::thumb($val['style_image']);
         } 
         
@@ -156,9 +156,9 @@ class StyleController extends OnAuthController
                 'id' =>$model->id,
                 'type_id'=>$model->type_id,
                 'style_name'=>$model->lang->style_name,
-                'style_moq'=>1,
+                'style_moq'=>$model->lang->goods_storage,
                 'sale_price'=>$model->sale_price,
-                'currency'=>'$',
+                'currency'=> $this->currency,
                 'goods_images'=>$goods_images,
                 'goods_3ds'=>$model->style_3ds,
                 'style_attrs' =>$attr_list,                

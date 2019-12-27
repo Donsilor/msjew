@@ -40,7 +40,7 @@ class AdvertImagesController extends OnAuthController
             ->andWhere(['or',['and',['<=','m.start_time',$time], ['>=','m.end_time',$time]],['m.end_time'=>null]])
             ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
             ->select(['lang.title as title','lang.adv_image','adv_url'])
-            ->orderby('m.sort desc, m.created_at desc')
+            ->orderby('m.sort asc, m.created_at asc')
             ->asArray()
             ->all();
         return $model;
@@ -77,7 +77,7 @@ class AdvertImagesController extends OnAuthController
             ->andWhere(['or',['and',['<=','m.start_time',$time], ['>=','m.end_time',$time]],['m.end_time'=>null]])
             ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
             ->select(['lang.title as title','lang.adv_image','adv_url'])
-            ->orderby('m.sort desc, m.created_at desc');
+            ->orderby('m.sort asc, m.created_at asc');
 
         if($type_id == 0){
             // 如果父父级没有，则直接获取位置图片

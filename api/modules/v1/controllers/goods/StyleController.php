@@ -11,6 +11,8 @@ use common\helpers\ImageHelper;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
 use common\enums\StatusEnum;
+use common\models\goods\Type;
+use common\models\goods\TypeLang;
 
 /**
  * Class ProvincesController
@@ -112,7 +114,19 @@ class StyleController extends OnAuthController
             $val['currency'] = $this->currency; 
             $val['style_image'] = ImageHelper::thumb($val['style_image']);
         } 
-        
+        $result['seo'] = [
+             'meta_title'=>'',
+             'meta_word'=>'',
+             'meta_desc'=>'',
+        ];
+        if($type_id) {
+            $typeModel = TypeLang::find()->where(['master_id'=>$type_id,'language'=>$this->language])->one();
+            if($typeModel) {
+                $result['meta_title'] = $typeModel->meta_title;
+                $result['meta_word']  = $typeModel->meta_word;
+                $result['meta_desc']  = $typeModel->meta_desc;
+            }
+        }
         return $result;
         
     }

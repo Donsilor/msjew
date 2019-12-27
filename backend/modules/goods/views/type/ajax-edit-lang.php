@@ -36,10 +36,10 @@ $form = ActiveForm::begin([
             echo common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
                 'fields'=>
                     [
-                        'type_name'=>['type'=>'textInput']
-//                        'meta_title'=>['type'=>'textInput'],
-//                        'meta_word'=>['type'=>'textInput'],
-//                        'meta_desc'=>['type'=>'textArea','options'=>['rows'=>'3']]
+                        'type_name'=>['type'=>'textInput'],
+                        'meta_title'=>['type'=>'textInput'],
+                        'meta_word'=>['type'=>'textInput'],
+                        'meta_desc'=>['type'=>'textArea','options'=>['rows'=>'3']]
                     ]]);
             ?>
         </div>

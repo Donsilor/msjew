@@ -36,7 +36,8 @@ class TypeLang extends \yii\db\ActiveRecord
             [['master_id'], 'integer'],
             [['language'], 'string', 'max' => 5],
             [['type_name'], 'string', 'max' => 30],
-            [['meta_title', 'meta_desc', 'meta_word'], 'string', 'max' => 200],
+            [['meta_title'], 'string', 'max' => 200],
+            [['meta_desc', 'meta_word'], 'string', 'max' => 500],
         ];
     }
 

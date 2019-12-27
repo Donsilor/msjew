@@ -100,7 +100,7 @@ return [
             },
         ],
             /** ------ i18n 国际化 ------ **/
-            'i18n' => [
+            /* 'i18n' => [
             		'translations' => [
             				'*' => [
             						'class' => 'yii\i18n\PhpMessageSource',
@@ -111,7 +111,7 @@ return [
             						],
             				],
             		],
-            ],
+            ], */
     ],
     'container' => [
         'definitions' => [

@@ -10,6 +10,7 @@ use common\models\goods\StyleLang;
 use common\helpers\ImageHelper;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
+use common\enums\StatusEnum;
 
 /**
  * Class ProvincesController
@@ -55,6 +56,7 @@ class StyleController extends OnAuthController
         $fields = ['s.id','s.style_sn','lang.style_name','s.style_image','s.sale_price','s.goods_clicks'];
         $query = Style::find()->alias('s')->select($fields)
             ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
+            ->where(['s.status'=>StatusEnum::ENABLED])
             ->orderby($order);
         
         if($type_id) {
@@ -161,7 +163,7 @@ class StyleController extends OnAuthController
                 'currency'=> $this->currency,
                 'goods_images'=>$goods_images,
                 'goods_3ds'=>$model->style_3ds,
-                'style_attrs' =>$attr_list,                
+                'style_attrs' =>$attr_list, 
         ];
         $model->goods_clicks = new Expression("goods_clicks+1");
         $model->virtual_clicks = new Expression("virtual_clicks+1");

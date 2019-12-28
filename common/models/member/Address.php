@@ -51,6 +51,7 @@ class Address extends \common\models\base\BaseModel
             [['address_name', 'address_details'], 'string', 'max' => 200],
             [['realname'], 'string', 'max' => 100],
             [['firstname','lastname'], 'string', 'max' => 60],
+            [['country_name','province_name','city_name','area_name'], 'string', 'max' => 60],
             [['home_phone', 'mobile'], 'string', 'max' => 20],
             [['mobile_code'], 'string', 'max' => 10],
         ];
@@ -70,6 +71,10 @@ class Address extends \common\models\base\BaseModel
             'city_id' => '市',
             'area_id' => '区',
             'address_name' => '地址',
+            'country_name' => '国家',
+            'province_name' => '省份',
+            'city_name' => '城市',
+            'area_name' => '县级',
             'address_details' => '详细地址',
             'is_default' => '默认地址',
             'zip_code' => '邮编',
@@ -99,7 +104,15 @@ class Address extends \common\models\base\BaseModel
      */
     public function beforeSave($insert)
     {
-        $this->address_name = Yii::$app->services->area->getAreaListName([$this->country_id,$this->province_id,$this->city_id]);
+        //更新地区名称
+        $country = Yii::$app->services->area->getArea($this->country_id);
+        $province = Yii::$app->services->area->getArea($this->province_id);
+        $city = Yii::$app->services->area->getArea($this->city_id);
+
+        $this->country_name = $country['name']?? '';
+        $this->province_name = $province['name']?? '';
+        $this->city_name = $city['name']?? '';
+        
         if ($this->is_default == StatusEnum::ENABLED) {
             self::updateAll(['is_default' => StatusEnum::DISABLED], ['member_id' => $this->member_id, 'is_default' => StatusEnum::ENABLED]);
         }

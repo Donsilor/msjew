@@ -145,6 +145,7 @@ class ActiveController extends \yii\rest\ActiveController
             $this->member_id = $identity->member_id;
             $this->merchant_id = $identity->merchant_id;
         }
+        
         // 每页数量
         $this->page = Yii::$app->request->get('page', 1);
         $this->pageSize = Yii::$app->request->get('page_size', 10);

@@ -115,11 +115,11 @@ class StyleController extends OnAuthController
             $val['style_image'] = ImageHelper::thumb($val['style_image']);
         } 
         $seo = [
-             'meta_title'=>'',
-             'meta_word'=>'',
-             'meta_desc'=>'',
-             'title'=>'',
-             'description'=>'',   
+             'meta_title'=>'Quality gold,silver jewelry wholesale at factory price',
+             'meta_word'=>'jewelry factory, jewelry supplier, jewelry manufacturer,China jewelry wholesale,gold jewelry, silver jewelry, brass jewelry,best jewelry, fashion jewelry',
+             'meta_desc'=>'KADArt design, manufacture and wholesale gold,silver,brass and alloy jewelry with diamond,ruby,sapphire,zircon,crystal and rhinestone at very good price.',
+             'title'=>'Quality gold,silver jewelry wholesale at factory price',
+             'description'=>'KADArt design, manufacture and wholesale gold,silver,brass and alloy jewelry with diamond,ruby,sapphire,zircon,crystal and rhinestone at very good price.',   
         ];
         if($type_id) {
             $typeModel = TypeLang::find()->where(['master_id'=>$type_id,'language'=>$this->language])->one();

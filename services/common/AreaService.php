@@ -27,16 +27,22 @@ class AreaService extends Service
             $language = \Yii::$app->params['language'];
         }
         $name ="name_".strtolower(str_replace('-','_',$language)); 
-        $areas = Area::find()->select(['id',$name." as name"])->where(['in', 'id', $ids])->orderBy('id asc')->asArray()->all();
-        if ($areas) {
-            $address = '';            
-            foreach ($areas as $area) {
-                $address .= $area['name'] . ' ';
-            }            
-            return $address;
+        return Area::find()->select(['id',$name." as name"])->where(['in', 'id', $ids])->orderBy('id asc')->asArray()->all();
+    }
+    /**
+     * 根据id获取区域
+     * @param unknown $id
+     * @param unknown $language
+     * @return \yii\db\ActiveRecord|array|NULL
+     */
+    public function getArea($id, $language = null)
+    {
+        if($language == null) {
+            $language = \Yii::$app->params['language'];
         }
-        
-        return false;
+        $name ="name_".strtolower(str_replace('-','_',$language));
+        $model = Area::find()->select(['id',$name." as name"])->where(['id' => $id])->asArray()->one();
+        return $model;
     }
     
 }

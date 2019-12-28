@@ -36,8 +36,8 @@ class SmsLog extends \common\models\base\BaseModel
      * @var array
      */
     public static $usageExplain = [
-        self::USAGE_LOGIN => '登录',
-        self::USAGE_REGISTER => '注册',
+        self::USAGE_LOGIN => '登录验证码',
+        self::USAGE_REGISTER => '注册验证码',
         self::USAGE_UP_PWD => '重置密码',
     ];
 

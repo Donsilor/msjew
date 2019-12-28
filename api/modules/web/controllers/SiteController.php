@@ -16,6 +16,7 @@ use api\modules\web\forms\SmsCodeForm;
 use api\modules\web\forms\EmailCodeForm;
 use api\modules\web\forms\MobileRegisterForm;
 use api\modules\web\forms\EmailRegisterForm;
+use api\modules\web\forms\EmailUpPwdForm;
 
 /**
  * 登录接口
@@ -91,7 +92,7 @@ class SiteController extends OnAuthController
     }
 
     /**
-     * 手机验证码登录Demo
+     * 手机验证码登录
      *
      * @return array|mixed
      * @throws \yii\base\Exception
@@ -187,7 +188,6 @@ class SiteController extends OnAuthController
         $member->attributes = ArrayHelper::toArray($model);
         $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
         $member->username = $model->email;
-
         if (!$member->save()) {
             return ResultHelper::api(422, $this->getError($member));
         }
@@ -201,9 +201,9 @@ class SiteController extends OnAuthController
      * @return array|mixed
      * @throws \yii\base\Exception
      */
-    public function actionUpPwd()
+    public function actionEmailUpPwd()
     {
-        $model = new UpPwdForm();
+        $model = new EmailUpPwdForm();
         $model->attributes = Yii::$app->request->post();
         if (!$model->validate()) {
             return ResultHelper::api(422, $this->getError($model));

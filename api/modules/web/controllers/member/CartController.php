@@ -26,7 +26,14 @@ class CartController extends UserAuthController
      */
     public function actionIndex()
     {
-        $models = Cart::find()->where(['member_id'=>$this->member_id])->all();
+        $id = \Yii::$app->request->get('id');
+        
+        $query = $this->modelClass::find()->where(['member_id'=>$this->member_id]);
+        
+        if(!empty($id) && $cart_id = explode(',',$id)) {
+            $query->andWhere(['id'=>$id]);
+        }
+        $models = $query->all();
         $cart_list = array();
         foreach ($models as $model) {
             
@@ -106,12 +113,12 @@ class CartController extends UserAuthController
         }        
         if($id == -1) {
             //清空购物车
-            $num = Cart::deleteAll(['member_id'=>$this->member_id]);
+            $num = $this->modelClass::deleteAll(['member_id'=>$this->member_id]);
         }else {  
             if(!is_array($id)) {
                 $id = explode(',', $id);
             }
-            $num = Cart::deleteAll(['member_id'=>$this->member_id,'id'=>$id]);
+            $num = $this->modelClass::deleteAll(['member_id'=>$this->member_id,'id'=>$id]);
         }
         return ['num'=>$num];
     } 

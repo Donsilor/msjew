@@ -38,7 +38,7 @@ class SiteController extends OnAuthController
      *
      * @var array
      */
-    protected $authOptional = ['login', 'refresh', 'mobile-login', 'sms-code','email-code', 'mobile-register','email-register', 'up-pwd'];
+    protected $authOptional = ['login', 'refresh', 'mobile-login', 'sms-code','email-code', 'mobile-register','email-register', 'mobile-up-pwd','email-up-pwd'];
     
     /**
      * 登录根据用户信息返回accessToken

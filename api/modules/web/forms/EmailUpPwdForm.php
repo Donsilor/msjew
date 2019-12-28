@@ -31,7 +31,7 @@ class EmailUpPwdForm extends \common\models\forms\LoginForm
                 [['email', 'group', 'code', 'password', 'password_repetition'], 'required'],
                 [['password'], 'string', 'min' => 6],
                 ['code', EmailCodeValidator::class, 'usage' => EmailLog::USAGE_UP_PWD],
-                ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的邮箱地址'],
+                ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => '请输入正确的邮箱地址'],
                 [['password_repetition'], 'compare', 'compareAttribute' => 'password'],// 验证新密码和重复密码是否相等
                 ['group', 'in', 'range' => AccessToken::$ruleGroupRnage],
                 ['password', 'validateEmail'],
@@ -43,7 +43,7 @@ class EmailUpPwdForm extends \common\models\forms\LoginForm
         return [
                 'email' => '邮箱地址',
                 'password' => '密码',
-                'password_repetition' => '重复密码',
+                'password_repetition' => '确认密码',
                 'group' => '类型',
                 'code' => '验证码',
         ];

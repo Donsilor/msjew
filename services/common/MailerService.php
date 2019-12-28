@@ -76,18 +76,17 @@ class MailerService extends Service
     public function realSend($email, $subject, $template, $usage, $params = [])
     {
         try {
-            $template = $usage;
-            $this->setConfig();
-            /* $result = Yii::$app->mailer
+
+             $this->setConfig();
+             $result = Yii::$app->mailer
                 ->compose($template, $params)
                 ->setFrom([$this->config['smtp_username'] => $this->config['smtp_name']])
                 ->setTo($email)
                 ->setSubject($subject)
-                ->send(); */
+                ->send(); 
 
             //Yii::info($result);
-            
-            $result = '测试:未设置模板';
+
             $this->saveLog([
                     'title'=>$subject,
                     'email' => $email,

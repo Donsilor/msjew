@@ -37,7 +37,7 @@ class EmailRegisterForm extends Model
                         ['email'],
                         'unique',
                         'targetClass' => Member::class,
-                        'targetAttribute' => 'mobile',
+                        'targetAttribute' => 'email',
                         'message' => '邮箱已存在。'
                 ],                
                 ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => '请输入正确的邮箱'],

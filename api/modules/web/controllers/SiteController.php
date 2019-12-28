@@ -16,6 +16,8 @@ use api\modules\web\forms\SmsCodeForm;
 use api\modules\web\forms\EmailCodeForm;
 use api\modules\web\forms\MobileRegisterForm;
 use api\modules\web\forms\EmailRegisterForm;
+use api\modules\web\forms\EmailUpPwdForm;
+use api\modules\web\forms\MobileUpPwdForm;
 
 /**
  * 登录接口
@@ -36,7 +38,7 @@ class SiteController extends OnAuthController
      *
      * @var array
      */
-    protected $authOptional = ['login', 'refresh', 'mobile-login', 'sms-code','email-code', 'mobile-register','email-register', 'up-pwd'];
+    protected $authOptional = ['login', 'refresh', 'mobile-login', 'sms-code','email-code', 'mobile-register','email-register', 'mobile-up-pwd','email-up-pwd'];
     
     /**
      * 登录根据用户信息返回accessToken
@@ -91,7 +93,7 @@ class SiteController extends OnAuthController
     }
 
     /**
-     * 手机验证码登录Demo
+     * 手机验证码登录
      *
      * @return array|mixed
      * @throws \yii\base\Exception
@@ -170,6 +172,29 @@ class SiteController extends OnAuthController
     }
     
     /**
+     * 手机重置密码
+     *
+     * @return array|mixed
+     * @throws \yii\base\Exception
+     */
+    public function actionMobileUpPwd()
+    {
+        $model = new MobileUpPwdForm();
+        $model->attributes = Yii::$app->request->post();
+        if (!$model->validate()) {
+            return ResultHelper::api(422, $this->getError($model));
+        }
+        
+        $member = $model->getUser();
+        $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
+        if (!$member->save()) {
+            return ResultHelper::api(422, $this->getError($member));
+        }
+        
+        return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);
+    }
+    
+    /**
      * 邮箱注册
      *
      * @return array|mixed
@@ -187,7 +212,6 @@ class SiteController extends OnAuthController
         $member->attributes = ArrayHelper::toArray($model);
         $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
         $member->username = $model->email;
-
         if (!$member->save()) {
             return ResultHelper::api(422, $this->getError($member));
         }
@@ -196,14 +220,14 @@ class SiteController extends OnAuthController
     }
 
     /**
-     * 密码重置
+     * 邮箱重置密码
      *
      * @return array|mixed
      * @throws \yii\base\Exception
      */
-    public function actionUpPwd()
+    public function actionEmailUpPwd()
     {
-        $model = new UpPwdForm();
+        $model = new EmailUpPwdForm();
         $model->attributes = Yii::$app->request->post();
         if (!$model->validate()) {
             return ResultHelper::api(422, $this->getError($model));

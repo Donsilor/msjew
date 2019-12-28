@@ -8,6 +8,7 @@ use api\controllers\OnAuthController;
 use common\enums\StatusEnum;
 use common\models\member\Member;
 use common\helpers\ResultHelper;
+use api\modules\web\forms\UpPwdForm;
 
 /**
  * 会员接口
@@ -66,6 +67,32 @@ class MemberController extends OnAuthController
         
         return $member->toArray(array_merge(['id'],$allows));        
     }
+    /**
+     * 修改密码
+     *
+     * @return array|bool
+     * @throws NotFoundHttpException
+     * @throws \yii\base\Exception
+     */
+    public function actionUpPwd()
+    {
+        $model = new UpPwdForm();
+        $model->attributes = Yii::$app->request->post();
+        $model->member_id = $this->member_id;
+        if (!$model->validate()) {
+            return ResultHelper::api(422, $this->getError($model));
+        }
+        $member = $model->getUser();
+        $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
+        
+        if (!$member->save()) {
+            return ResultHelper::api(422, $this->getError($member));
+        }
+        
+        return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);
+        
+    }
+    
     /**
      * 权限验证
      *

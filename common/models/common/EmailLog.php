@@ -41,9 +41,9 @@ class EmailLog extends \common\models\base\BaseModel
             self::USAGE_UP_PWD => '重置密码验证码',
     ];
     public static $usageTemplates = [
-            self::USAGE_LOGIN => 'loginToken',
+            self::USAGE_LOGIN => 'loginCode',
             self::USAGE_REGISTER => 'registerCode',
-            self::USAGE_UP_PWD => 'passwordResetToken',
+            self::USAGE_UP_PWD => 'passwordResetCode',
     ];
     
     /**

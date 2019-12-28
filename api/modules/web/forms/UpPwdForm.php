@@ -3,10 +3,7 @@
 namespace api\modules\web\forms;
 
 use common\enums\StatusEnum;
-use common\helpers\RegularHelper;
-use common\models\common\SmsLog;
 use common\models\member\Member;
-use common\models\validators\SmsCodeValidator;
 use common\models\api\AccessToken;
 
 /**
@@ -16,11 +13,11 @@ use common\models\api\AccessToken;
  */
 class UpPwdForm extends \common\models\forms\LoginForm
 {
-    public $mobile;
+    public $member_id;
+    public $original_password;
     public $password;
     public $password_repetition;
-    public $code;
-    public $group;
+    public $group = 'front';
 
     /**
      * @inheritdoc
@@ -28,44 +25,47 @@ class UpPwdForm extends \common\models\forms\LoginForm
     public function rules()
     {
         return [
-            [['mobile', 'group', 'code', 'password', 'password_repetition'], 'required'],
+            [['member_id','original_password', 'password', 'password_repetition'], 'required'],
             [['password'], 'string', 'min' => 6],
-            ['code', SmsCodeValidator::class, 'usage' => SmsLog::USAGE_UP_PWD],
-            ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号码'],
             [['password_repetition'], 'compare', 'compareAttribute' => 'password'],// 验证新密码和重复密码是否相等
             ['group', 'in', 'range' => AccessToken::$ruleGroupRnage],
-            ['password', 'validateMobile'],
+            ['original_password', 'validateOriginalPassword'],
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'mobile' => '手机号码',
-            'password' => '密码',
-            'password_repetition' => '重复密码',
+            'member_id' => '会员ID',
+            'original_password' => '原始密码',
+            'password' => '新密码',
+            'password_repetition' => '确认新密码',
             'group' => '类型',
             'code' => '验证码',
         ];
     }
-
     /**
+     * 原始密码验证
+     *
      * @param $attribute
      */
-    public function validateMobile($attribute)
+    public function validateOriginalPassword($attribute)
     {
-        if (!$this->getUser()) {
-            $this->addError($attribute, '找不到用户');
+        if (!$this->hasErrors()) {
+            /* @var $user \common\models\base\User */
+            $user = $this->getUser();
+            if (!$user || !$user->validatePassword($this->original_password)) {
+                $this->addError($attribute, '原始密码错误');
+            }
         }
     }
-
     /**
      * @return Member|mixed|null
      */
     public function getUser()
     {
         if ($this->_user == false) {
-            $this->_user = Member::findOne(['mobile' => $this->mobile, 'status' => StatusEnum::ENABLED]);
+            $this->_user = Member::findOne(['id' => $this->member_id, 'status' => StatusEnum::ENABLED]);
         }
 
         return $this->_user;

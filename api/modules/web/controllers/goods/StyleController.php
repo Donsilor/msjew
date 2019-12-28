@@ -36,14 +36,12 @@ class StyleController extends OnAuthController
             "price"=>'m.sale_price',//价格
             "sale_volume"=>'m.sale_volume',//销量
         ];
-
-
-        $type_id = \Yii::$app->request->get("type_id");//产品线ID
+        $type_id = \Yii::$app->request->post("categoryId");//产品线ID
         if(!$type_id){
             return ResultHelper::api(422, '产品线不能为空');
         }
-        $order_param = \Yii::$app->request->get("order_param");//排序参数
-        $order_type = \Yii::$app->request->get("order_type", 1);//排序方式 1-升序；2-降序;
+        $order_param = \Yii::$app->request->post("orderParam");//排序参数
+        $order_type = \Yii::$app->request->post("orderType", 1);//排序方式 1-升序；2-降序;
 
         //排序
         $order = '';
@@ -57,8 +55,9 @@ class StyleController extends OnAuthController
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
 
-        $params = \Yii::$app->request->get("params");  //属性帅选
-        $params = json_decode($params);
+        $params = \Yii::$app->request->post("params");  //属性帅选
+
+//        $params = json_decode($params);
         if(!empty($params)){
 
             $subQuery = AttributeIndex::find()->alias('a')->select(['a.style_id'])->distinct("a.style_id");
@@ -68,14 +67,13 @@ class StyleController extends OnAuthController
 
             $k = 0;
             foreach ($params as $param){
-                $value_type = $param->valueType;
-                $param_name = $param->paramName;
-                $attr_id = $param->paramId;
+                $value_type = $param['valueType'];
 
+                $param_name = $param['paramName'];
                 //价格不是属性,直接查询主表
                 if($param_name == 'sale_price'){
-                    $min_price = $param->beginValue;
-                    $max_price = $param->endValue;
+                    $min_price = $param['beginValue'];
+                    $max_price = $param['endValue'];
                     if(is_numeric($min_price)){
                         $query->andWhere(['>','m.sale_price',$min_price]);
                     }
@@ -84,7 +82,8 @@ class StyleController extends OnAuthController
                     }
                     continue;
                 }
-                if(is_numeric($attr_id)){
+                if(isset($param['paramId']) && is_numeric($param['paramId'])){
+                    $attr_id = $param['paramId'];
                     $k++;
                     $alias = "a".$k; //别名
                     $on = "{$alias}.style_id = a.style_id and {$alias}.attr_id = $attr_id ";
@@ -94,12 +93,12 @@ class StyleController extends OnAuthController
 
 
                 if($value_type == 1){
-                    $config_values = $param->configValues;
+                    $config_values = $param['configValues'];
                     $config_values_str = join(',',$config_values);
                     $subQuery->innerJoin(AttributeIndex::tableName().' '.$alias, $on." and {$alias}.attr_value_id in ({$config_values_str})");
                 }else if($value_type == 2){
-                    $begin_value = $param->beginValue;
-                    $end_value = $param->endValue;
+                    $begin_value = $param['beginValue'];
+                    $end_value = $param['endValue'];
                     $subQuery->innerJoin(AttributeIndex::tableName().' '.$alias, $on." and {$alias}.attr_value > {$begin_value} and {$alias}.attr_value <= {$end_value}");
                 }
             }
@@ -110,9 +109,18 @@ class StyleController extends OnAuthController
         }
 //        echo $query->createCommand()->getSql();exit;
         $result = $this->pagination($query,$this->page, $this->pageSize);
+
         foreach($result['data'] as & $val) {
-            $val['type_id'] = $type_id;
-            $val['currency'] = $this->currency;
+            $arr = array();
+            $arr['id'] = $val['id'];
+            $arr['categoryId'] = $type_id;
+            $arr['coinType'] = $this->currency;
+            $arr['goodsImages'] = $val['goods_images'];
+            $arr['salePrice'] = $val['sale_price'];
+            $arr['goodsName'] = $val['style_name'];
+            $arr['isJoin'] = null;
+            $arr['specsModels'] = null;
+            $val = $arr;
         }
         return $result;
 

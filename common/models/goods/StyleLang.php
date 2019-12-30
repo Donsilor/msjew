@@ -40,7 +40,7 @@ class StyleLang extends \yii\db\ActiveRecord
             [['style_name'], 'required'],
             [['style_attr', 'style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['language'], 'string', 'max' => 5],
-            [['style_name'], 'string', 'max' => 50],
+            [['style_name'], 'string', 'max' => 300],
             [['style_desc'], 'string', 'max' => 1000],
             [['meta_title', 'meta_word'], 'string', 'max' => 255],
             [['meta_desc'], 'string', 'max' => 500],

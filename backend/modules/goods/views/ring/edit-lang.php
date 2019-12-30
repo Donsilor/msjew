@@ -256,7 +256,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         } else {
                             console.log(data.data.count);
                             if(data.data.count > 0){
-                                rfError('ID：' + data.data.style_ids + "已经被其他对戒添加");
+                                rfError(data.data.strs + "已经被其他对戒添加");
                                 e.preventDefault();
                                 return
                             }
@@ -373,7 +373,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         var data = data.data
 
                         var hav = true;
-                        $("#style_table input[name='RingRelation[style_id][]]'").each(function(){
+
+                        $("input[name*='RingRelation[style_id][]']").each(function(){
                             if($(this).val() == data.id){
                                 hav = false;
                             }

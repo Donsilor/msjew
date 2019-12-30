@@ -250,12 +250,18 @@ class RingController extends BaseController
             $style_ids = $post['style_ids'];
             $ring_id = $post['ring_id'];
 
-            $list = RingRelation::find()
-                ->where(['in','style_id',$style_ids])
-                ->andWhere(['<>','ring_id',$ring_id])
+            $list = RingRelation::find()->alias('r')
+                ->leftJoin(Style::tableName()." s", 's.id=r.style_id')
+                ->where(['in','r.style_id',$style_ids])
+                ->andWhere(['<>','r.ring_id',$ring_id])
                 ->asArray()
+                ->select(['s.id','s.style_sn'])
                 ->all();
-            $data['style_ids'] = array_column($list,'style_id');
+            $strs = '';
+            foreach ($list as $value){
+                $strs .= "款号:".$value['style_sn']." + ID:".$value['id']."; ";
+            }
+            $data['strs'] = $strs;
             $data['count'] = count($list);
 
             return ResultHelper::json(200, 'ok',$data);

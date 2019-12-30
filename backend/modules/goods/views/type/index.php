@@ -86,7 +86,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                         [
                             'header' => "操作",
                             'class' => 'yii\grid\ActionColumn',
-                            'template'=> '{edit} {status} {delete}',
+                            'template'=> '{edit} {status}',
                             'buttons' => [
                                 'edit' => function ($url, $model, $key) {
                                     return Html::edit(['ajax-edit-lang','id' => $model->id], '编辑', [

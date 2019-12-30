@@ -8,3 +8,5 @@
 /.idea
 /web/.htaccess
 /web/favicon.ico
+/web/backend/favicon.ico
+/web/api/favicon.ico

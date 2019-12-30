@@ -58,7 +58,7 @@ use yii\widgets\ActiveForm;
             [
                 'attribute' => 'adv_id',
                 'value' => 'cate.lang.adv_name',
-                'headerOptions' => ['width'=>'150'],
+                'headerOptions' => ['width'=>'200'],
                 'filter' => Html::activeDropDownList($searchModel, 'adv_id', $advert, [
                         'prompt' => '全部',
                         'class' => 'form-control'

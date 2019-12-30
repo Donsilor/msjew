@@ -153,8 +153,7 @@ class Type extends \common\models\base\BaseModel
      */
     public function getLang()
     {
-        $query = $this->hasOne(TypeLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->params['language']]);
-        return $query?$query:$this->langModel();
+        return $this->hasOne(TypeLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->params['language']]);
     }
 
 

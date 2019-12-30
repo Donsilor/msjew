@@ -343,6 +343,141 @@ class GoodsService extends Service
         $goods['goods_spec'] = $spec_data;
         
         return true;
-    }   
+    }
+
+
+
+
+
+
+
+    //获取款和对应的商品
+    public function formatStyleGoodsById($style_id, $language){
+        $style_spec_array = [
+            '10' =>'materials',//成色
+             '38'=>'sizes',  // 尺寸
+        ];
+        $query = Style::find()->alias('m')
+            ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
+            ->where(['m.id'=>$style_id]);
+        $style_model =  $query->one();
+        $format_style_attrs = $this->formatStyleAttrs($style_model);
+//        return $format_style_attrs;
+        $model = $query ->select(['m.id','m.style_sn','m.status','m.goods_images','m.type_id','m.style_3ds','m.style_image','sale_price','lang.goods_body','lang.style_name','lang.meta_title','lang.meta_word','lang.meta_desc'])
+            ->asArray()->one();
+
+        //规格属性
+        $style = array();
+        $style['id'] = $model['id'];
+        $style['goodsName'] = $model['style_name'];
+        $style['goodsCode'] = $model['style_sn'];
+        $style['goodsImages'] = $model['goods_images'];
+        $style['salePrice'] = $model['sale_price'];
+        $style['coinType'] = \Yii::$app->params['currency'];
+        $style['goods3ds'] = $model['style_3ds'];
+        $style['goodsDesc'] = $model['goods_body'];
+        $style['categoryId'] = $model['type_id'];
+        $style['goodsGiaImage'] = null;
+        $style['goodsMod'] = 2;
+        $style['goodsStatus'] = $model['status']== 1? 2:1;
+        $style['htmlUrl'] = null;
+        $style['metaDesc'] = $model['meta_desc'];
+        $style['metaTitle'] = $model['meta_title'];
+        $style['metaWord'] = $model['meta_word'];
+        $style['qrCode'] = '';
+        $style['recommends'] = null;
+        $style['templateId'] = null;
+
+        if(isset($format_style_attrs['style_spec_a'])){
+            $format_style_spec = $format_style_attrs['style_spec_a'];
+            foreach ($format_style_spec as $key=>$val){
+                foreach ($val['value'] as $k=>$v){
+                    $attr = array();
+                    $attr['id'] = $k;
+                    $attr['name'] = $v;
+                    $style[$style_spec_array[$key]][] = $attr;
+                }
+
+            }
+        }
+
+        //基础属性
+        if(isset($format_style_attrs['style_attr'])){
+            $style_attr = $format_style_attrs['style_attr'];
+            foreach ($style_attr as $attr){
+                //对售後服務特殊处理
+                if($attr['id'] == 52){
+                    $style['goodsServices'] = join(',', $attr['value_id']);
+                    $style['goodsServicesJsons'] = \Yii::$app->services->goodsAttribute->getAttrValuesByValueIds($attr['value_id']);
+                    continue;
+                }
+
+                $attr_value = $attr['value'];
+                $attr_value_id = $attr['value_id'];
+                if(empty($attr_value)) {
+                    continue;
+                }
+                if(is_array($attr_value)){
+                    $attr_value = implode('|',$attr_value);
+                }
+                if(is_array($attr_value_id)){
+                    $attr_value_id = implode('|',$attr_value_id);
+                }
+                $style['specs'][] = [
+                    'categoryId'=>$attr['attr_type'],
+                    'configAttrId'=>$attr_value_id,
+                    'configId'=>$attr['id'],
+                    //'configInputType'=>$attr['input_type'],
+                    'configName'=>$attr['attr_name'],
+                    'configAttrVal'=>$attr_value,
+                    'goodsId'=>$style_id,
+                   // 'configRequired'=>$attr['is_require'],
+                   //'queryColumn'=>null,
+                   //'id'=>'',
+                   //'sort'=>null
+                ];
+            }
+        }
+
+        //商品
+        $goods_array = Goods::find()
+            ->where(['style_id'=>$style_id])
+            ->select(['id','type_id','goods_sn','sale_price','goods_storage','warehouse','goods_spec'])
+            ->asArray()
+            ->all();
+        $details = array();
+        foreach ($goods_array  as $key => $val){
+            $goods_spec = json_decode($val['goods_spec']);
+            if(!empty($goods_spec)){
+                foreach ($goods_spec as $k=>$v){
+                    $details[$key][$style_spec_array[$k]] = $v;
+                }
+            }
+
+            $details[$key]['barCode'] = null;
+            $details[$key]['productNumber'] = null;
+            $details[$key]['stock'] = $val['goods_storage'];;
+            $details[$key]['warehouse'] = $val['warehouse'];;
+            $details[$key]['categoryId'] = $model['type_id'];
+            $details[$key]['goodsDetailsCode'] = $val['goods_sn'];
+            $details[$key]['retailMallPrice'] = $val['sale_price'];
+            $details[$key]['retailPrice'] = null;
+            $details[$key]['goodsId'] = $style_id;
+            $details[$key]['id'] = $val['id'];
+            $details[$key]['categoryId'] = $model['type_id'];
+
+        }
+
+        $style['details'] = $details;
+
+        return $style;
+
+    }
+
+
+
+
+
+
 
 }

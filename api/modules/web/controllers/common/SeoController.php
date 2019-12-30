@@ -8,6 +8,7 @@ use common\models\common\AdvertImages;
 use common\models\common\AdvertImagesLang;
 use common\models\common\WebSeo;
 use common\models\common\WebSeoLang;
+use wsl\ip2location\Ip2Location;
 use Yii;
 use api\controllers\OnAuthController;
 
@@ -22,7 +23,7 @@ class SeoController extends OnAuthController
      * @var Provinces
      */
     public $modelClass = WebSeo::class;
-    protected $authOptional = ['index'];
+    protected $authOptional = ['index','area'];
     /**
      * 根据分类ID获取广告图
      *
@@ -41,6 +42,17 @@ class SeoController extends OnAuthController
             ->asArray()
             ->one();
         return $model;
+    }
+
+
+    public function actionArea(){
+        $ipLocation = new Ip2Location();
+//        $locationModel = $ipLocation->getLocation('8.8.8.8');
+//        $ip = Yii::$app->request->getUserIP();
+//        $ip = Yii::$app->request->userIP;
+        $ip = '122.9.255.255';
+        $locationModel = $ipLocation->getLocation($ip);
+        print_r($locationModel->toArray());
     }
 
 

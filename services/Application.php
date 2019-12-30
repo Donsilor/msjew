@@ -55,6 +55,7 @@ use common\components\Service;
  * @property \services\goods\DiamondSourceService $diamondSource 裸钻来源
  * @property \services\goods\GoodsService $goods 商品
  * @property \services\goods\StyleService $goodsStyle 款式
+ *  @property \services\common\AdvertService $advert 广告位
  */
 class Application extends Service
 {
@@ -131,6 +132,7 @@ class Application extends Service
         
         'diamond' => 'services\goods\DiamondService',
         'diamondSource' => 'services\goods\DiamondSourceService',
+        'advert' => 'services\common\AdvertService',
 
     ];
 }

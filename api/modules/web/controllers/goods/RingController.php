@@ -6,13 +6,17 @@ use api\modules\web\forms\AttrSpecForm;
 use common\enums\StatusEnum;
 use common\models\goods\Diamond;
 use common\models\goods\DiamondLang;
+use common\models\goods\Goods;
 use common\models\goods\Ring;
 use common\models\goods\RingLang;
+use common\models\goods\RingRelation;
+use common\models\goods\Style;
 use Yii;
 use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
 use common\helpers\ImageHelper;
+use yii\base\Exception;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
 
@@ -39,13 +43,7 @@ class RingController extends OnAuthController
             "price"=>'m.sale_price',//价格
             "sale_volume"=>'m.sale_volume',//销量
         ];
-        $type_id = \Yii::$app->request->get("type_id");//产品线ID
-        $ring_style = \Yii::$app->request->get("ring_style");//对戒款式
-        $begin_price = \Yii::$app->request->get("begin_price");//开始价格
-        $end_price = \Yii::$app->request->get("end_price");//开始价格
-        if(!$type_id){
-            return ResultHelper::api(422, '产品线不能为空');
-        }
+        //$type_id = \Yii::$app->request->get("type_id", 12);//产品线ID
         $order_param = \Yii::$app->request->get("order_param");//排序参数
         $order_type = \Yii::$app->request->get("order_type", 1);//排序方式 1-升序；2-降序;
 
@@ -57,42 +55,23 @@ class RingController extends OnAuthController
         }
 
 
-        $fields = ['m.id','m.goods_id','m.goods_sn','lang.goods_name','m.goods_image','m.sale_price','m.goods_sn'
-                    ,'m.carat','m.cert_id','m.depth_lv','m.table_lv','m.clarity','m.cert_type','m.color'
-                    ,'m.cut','m.fluorescence','m.polish','m.shape','m.symmetry'];
-        $query = Diamond::find()->alias('m')->select($fields)
-            ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
+        $fields = ['m.id','m.ring_sn','lang.ring_name','m.ring_images','m.sale_price'];
+        $query = Ring::find()->alias('m')->select($fields)
+            ->leftJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->orderby($order);
 
-        $params = \Yii::$app->request->get("params");  //属性帅选
-        $params = json_decode($params);
-        if(!empty($params)){
-            foreach ($params as $param){
-                $value_type = $param->valueType;
-                $param_name = $param->paramName;
-                if($value_type == 1){
-                    $config_values = $param->configValues;
-                    $query->andWhere(['in',$params_map[$param_name], $config_values]);
-                }else if($value_type == 2){
-                    $begin_value = $param->beginValue;
-                    $end_value = $param->endValue;
-                    $query->andWhere(['between',$params_map[$param_name], $begin_value, $end_value]);
-                }
-            }
+
+        //筛选条件
+        $ring_style = \Yii::$app->request->get("ring_style", 1);//对戒款式
+        $begin_price = \Yii::$app->request->get("begin_price",0);//开始价格
+        $end_price = \Yii::$app->request->get("end_price");//结束价格
+        $query->andWhere(['=','m.ring_style', $ring_style]);
+        if($begin_price && $end_price){
+            $query->andWhere(['between','m.sale_price', $begin_price, $end_price]);
         }
         $result = $this->pagination($query,$this->page,$this->pageSize);
         foreach($result['data'] as & $val) {
-            $val['type_id'] = $type_id;
             $val['currency'] = $this->currency;
-            $val['clarity'] = \Yii::$app->attr->valueName($val['clarity']);
-            $val['cert_type'] = \Yii::$app->attr->valueName($val['cert_type']);
-            $val['color'] = \Yii::$app->attr->valueName($val['color']);
-            $val['cut'] = \Yii::$app->attr->valueName($val['cut']);
-            $val['fluorescence'] = \Yii::$app->attr->valueName($val['fluorescence']);
-            $val['polish'] = \Yii::$app->attr->valueName($val['polish']);
-            $val['shape'] = \Yii::$app->attr->valueName($val['shape']);
-            $val['symmetry'] = \Yii::$app->attr->valueName($val['symmetry']);
-
         }
         return $result;
 
@@ -132,49 +111,60 @@ class RingController extends OnAuthController
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
-        $model = Style::find()->where(['id'=>$id])->one();
+        $field = ['m.id','m.status','m.ring_sn','lang.ring_name','lang.ring_body','lang.meta_title','lang.meta_desc','lang.meta_word','m.ring_sn',
+            'm.ring_images','m.sale_price','m.ring_style'];
+        $model = $result = Ring::find()->alias('m')->select($field)
+            ->leftJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
+            ->where(['m.status'=>StatusEnum::ENABLED])
+            ->one();
         if(empty($model)) {
-            return ResultHelper::api(422,"商品信息不存在");
+            return ResultHelper::api(422,"对戒信息不存在");
         }
-        $attr_data = \Yii::$app->services->goods->formatStyleAttrs($model);
-        $attr_list = [];
-        foreach ($attr_data['style_attr'] as $attr){
-            $attr_value = $attr['value'];
-            if(empty($attr_value)) {
-                continue;
+        $ring = array();
+        $ring['id'] = $model->id;
+        $ring['name'] = $model->lang->ring_name;
+        $ring['ringImg'] = $model->ring_images;
+        $ring['ringCode'] = $model->ring_sn;
+        $ring['salePrice'] = $model->sale_price;
+        $ring['coinType'] = $this->currency;
+        $ring['status'] = $model->lang->meta_desc;
+        $ring['metaDesc'] = $model->lang->meta_desc;
+        $ring['metaTitle'] = $model->lang->meta_title;
+        $ring['metaWord'] = $model->lang->meta_word;
+        $ring['ringStyle'] = $model->ring_style;
+        try{
+            $goodsModels = array();
+            $searchGoodsModels = array();
+
+            $style_ids = RingRelation::find()
+                ->where(['ring_id'=>$id])->asArray()->select(['style_id'])->all();
+            foreach ($style_ids as $style_id){
+                $style = \Yii::$app->services->goods->formatStyleGoodsById($style_id, $this->language);
+                $goodsModels[] = $style;
+                $searchGoods = array();
+                $searchGoods['categoryId'] = $style['categoryId'];
+                $searchGoods['coinType'] = $style['coinType'];
+                $searchGoods['goodsImages'] = $style['goodsImages'];
+                $searchGoods['goodsName'] = $style['goodsName'];
+                $searchGoods['id'] = $style['id'];
+                $searchGoods['isJoin'] = null;
+                $searchGoods['salePrice'] = $style['salePrice'];
+                $searchGoods['specsModels'] = null;
+                $searchGoodsModels[] = $searchGoods;
             }
-            if(is_array($attr_value)){
-                $attr_value = implode('/',$attr_value);
-            }
-            $attr_list[] = [
-                'name'=>$attr['attr_name'],
-                'value'=>$attr_value,
-            ];
+
+
+            $ring['goodsModels'] = $goodsModels;
+            $ring['searchGoodsModels'] = $searchGoodsModels;
+            $model->goods_clicks = new Expression("goods_clicks+1");
+            $model->virtual_clicks = new Expression("virtual_clicks+1");
+            $model->save(false);//更新浏览量
+            return $ring;
+        }catch (Exception $e){
+            $error = $e->getMessage();
+            return ResultHelper::api(422, $error);
         }
-        if($model->goods_images) {
-            $goods_images = explode(",",$model->goods_images);
-            $goods_images = [
-                'big'=>ImageHelper::thumbs($goods_images),
-                'thumb'=>ImageHelper::thumbs($goods_images),
-            ];
-        }else{
-            $goods_images = [];
-        }
-        $info = [
-            'id' =>$model->id,
-            'type_id'=>$model->type_id,
-            'style_name'=>$model->lang->style_name,
-            'style_moq'=>1,
-            'sale_price'=>$model->sale_price,
-            'currency'=>'$',
-            'goods_images'=>$goods_images,
-            'goods_3ds'=>$model->style_3ds,
-            'style_attrs' =>$attr_list,
-        ];
-        $model->goods_clicks = new Expression("goods_clicks+1");
-        $model->virtual_clicks = new Expression("virtual_clicks+1");
-        $model->save(false);//更新浏览量
-        return $info;
+
     }
     /**
      * 猜你喜欢推荐列表

@@ -156,7 +156,7 @@ class StyleController extends OnAuthController
      */
     public function actionDetail()
     {
-        $id = \Yii::$app->request->get("id");
+        $id = \Yii::$app->request->get("goodsId");
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }

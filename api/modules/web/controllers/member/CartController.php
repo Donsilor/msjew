@@ -42,6 +42,7 @@ class CartController extends UserAuthController
             if(empty($goods)) {
                 continue;
             }
+            $sale_price = $this->exchangeAmount($goods['sale_price']);
             $cart = array();
             $cart['id'] = $model->id;
             $cart['userId'] = $this->member_id;
@@ -65,8 +66,8 @@ class CartController extends UserAuthController
                     "goodsImages"=>$goods['goods_image'],
                     "goodsStatus"=>$goods['status']==1?2:0,
                     "totalStock"=>$goods['goods_storage'],
-                    "salePrice"=>$goods['sale_price'],
-                    "coinType"=>$this->currency,
+                    "salePrice"=>$sale_price,
+                    "coinType"=>$this->currencySign,
                     'detailConfig'=>[],
                     'baseConfig'=>[]
             ];
@@ -102,9 +103,9 @@ class CartController extends UserAuthController
                     "goodsId"=>$goods['style_id'],
                     "goodsDetailsCode"=>$goods["goods_sn"],
                     "stock"=>$goods["goods_storage"],
-                    "retailPrice"=>$goods["sale_price"],
-                    "retailMallPrice"=>$goods["sale_price"],
-                    "coinType"=>$this->currency,
+                    "retailPrice"=>$sale_price,
+                    "retailMallPrice"=>$sale_price,
+                    "coinType"=>$this->currencySign,
             ];            
             $cart['simpleGoodsEntity'] = $simpleGoodsEntity;
          

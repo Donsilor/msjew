@@ -25,11 +25,13 @@ class CacheEnum
             'wechatFansStat' => $merchant_id, // 粉丝统计缓存
             'addons' => '', // 插件
             'provinces' => '', // 省市区
+            'area'=>'', //国家地区
             'ipBlacklist' => '', // ip黑名单
             'actionBehavior' => '', // 需要被记录的行为
             'actionBehavior' => '', // 需要被记录的行为
-            'goodsAttr'=>$merchant_id,
-            'goodsAttrValue'=>$merchant_id    
+            'goodsAttr'=>$merchant_id,//商品属性
+            'goodsAttrValue'=>$merchant_id,//商品属性值            
+            'currency'=>$merchant_id, //货币汇率
         ];
     }
 
@@ -44,6 +46,6 @@ class CacheEnum
             $prefix = static::getMap()[$key] ?? '';
         }
         $cachePrefix = \Yii::$app->params['cachePrefix'];  
-        return $cachePrefix.$prefix . $key;
+        return $cachePrefix . $prefix . $key;
     }
 }

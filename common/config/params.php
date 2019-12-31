@@ -9,13 +9,9 @@ return [
         'zh-TW'=>'繁体中文',
         'en-US'=>'English',
     ],
-    'currencies'=>[
-        '$'=>'美元',
-        'HK$'=>'港元',
-        '¥'=>'人民币',
-    ],
     'language'=>'zh-CN',//默认语言
-    'currency' =>'HK$',//默认货币
+    'currency' =>'HKD',//默认货币
+    'currencySign' =>'HK$',//默认货币
     'cachePrefix'=>'common',//缓存前缀
     
     // 是否在模块内

@@ -29,6 +29,8 @@ trait BaseAction
     //当前货币
     protected $currency;
     
+    protected $currencySign;
+    
     /**
      * 初始化通用参数
      */
@@ -47,13 +49,14 @@ trait BaseAction
         }
         $currency = \Yii::$app->request->get("currency");
         if(!$currency) {
-            $language = \Yii::$app->request->headers->get("x-api-currency");
+            $currency = \Yii::$app->request->headers->get("x-api-currency");
         }
         if($currency) {
             \Yii::$app->params['currency'] = $currency;
         }        
         $this->language = \Yii::$app->params['language'];
         $this->currency = \Yii::$app->params['currency'];
+        $this->currencySign = \Yii::$app->services->currency->currencySign($this->currency);
     }
     /**
      * 商户id
@@ -161,7 +164,7 @@ trait BaseAction
      * @param unknown $model
      * @param string $is_ajax
      */
-    public function editLang(& $model,$is_ajax = false){
+    protected function editLang(& $model,$is_ajax = false){
         
         $langModel = $model->langModel();
         $langClassName = substr(strrchr($langModel->className(), '\\'), 1);
@@ -193,8 +196,13 @@ trait BaseAction
         return true;
     }
     
-    public function substr($message,$length = 900)
+    protected function substr($message,$length = 900)
     {
         return \yii\helpers\StringHelper::truncate($message, $length);
+    }
+    
+    protected function exchangeAmount($amount , $format = 2, $currency = null)
+    {
+        return \Yii::$app->services->currency->exchangeAmount($amount,$format,$currency);
     }
 }

@@ -55,7 +55,8 @@ use common\components\Service;
  * @property \services\goods\DiamondSourceService $diamondSource 裸钻来源
  * @property \services\goods\GoodsService $goods 商品
  * @property \services\goods\StyleService $goodsStyle 款式
- *  @property \services\common\AdvertService $advert 广告位
+ * @property \services\common\AdvertService $advert 广告位
+ * @property \services\common\CurrencyService $currency 货币汇率
  */
 class Application extends Service
 {
@@ -85,6 +86,7 @@ class Application extends Service
             'timeout' => 720, // 缓存过期时间，单位秒
         ],
         /** ------ 公用部分 ------ **/
+        'currency'=>'\services\common\CurrencyService', 
         'menu' => 'services\common\MenuService',
         'menuCate' => 'services\common\MenuCateService',
         'config' => 'services\common\ConfigService',
@@ -132,7 +134,7 @@ class Application extends Service
         
         'diamond' => 'services\goods\DiamondService',
         'diamondSource' => 'services\goods\DiamondSourceService',
-        'advert' => 'services\common\AdvertService',
+        'advert' => 'services\common\AdvertService',           
 
     ];
 }

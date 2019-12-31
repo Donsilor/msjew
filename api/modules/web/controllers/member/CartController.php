@@ -6,7 +6,8 @@ use common\models\order\Cart;
 use api\modules\web\forms\CartForm;
 use common\helpers\ResultHelper;
 use api\controllers\UserAuthController;
-
+use yii\base\Exception;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * 购物车
@@ -22,7 +23,7 @@ class CartController extends UserAuthController
     protected $authOptional = [];
 
     /**
-     * 购物车列表
+     * 购物车列表     
      */
     public function actionIndex()
     {
@@ -30,7 +31,7 @@ class CartController extends UserAuthController
         
         $query = $this->modelClass::find()->where(['member_id'=>$this->member_id]);
         
-        if(!empty($id) && $cart_id = explode(',',$id)) {
+        if(!empty($id) && $id = explode(',',$id)) {
             $query->andWhere(['id'=>$id]);
         }
         $models = $query->all();
@@ -43,17 +44,70 @@ class CartController extends UserAuthController
             }
             $cart = array();
             $cart['id'] = $model->id;
-            $cart['goods_id'] = $model->goods_id;
-            $cart['goods_sn'] = $goods['goods_sn'];
-            $cart['goods_type'] = $model->goods_type;
-            $cart['goods_image'] = $goods['goods_image'];
-            $cart['goods_name'] = $goods['goods_name'];
-            $cart['goods_price'] = $goods['sale_price'];
-            $cart['currency']   = $this->currency;
-            $cart['goods_num'] = $model->goods_num;
-            $cart['group_type'] = $model->group_type;
-            $cart['group_id'] = $model->group_id;
-            $cart['goods_spec'] = $goods['goods_spec'];            
+            $cart['userId'] = $this->member_id;
+            $cart['goodsId'] = $goods['style_id'];
+            $cart['goodsDetailsId'] = $model->goods_id;
+            $cart['goodsCount'] = $model->goods_num;
+            $cart['createTime'] = $model->created_at;
+            $cart['collectionId'] = null;
+            $cart['collectionStatus'] = null;
+            $cart['localSn'] = null;
+            if($cart['groupType']){
+                $cart['groupType'] = $model->group_type;
+                $cart['groupId'] = $model->group_id;
+            }
+            $simpleGoodsEntity = [
+                    "goodId"=>$goods['style_id'],
+                    "goodsDetailsId"=>$model->goods_id,
+                    "categoryId"=>$model->goods_type,
+                    "goodsName"=>$goods['goods_name'],
+                    "goodsCode"=>$goods['goods_sn'],
+                    "goodsImages"=>$goods['goods_image'],
+                    "goodsStatus"=>$goods['status']==1?2:0,
+                    "totalStock"=>$goods['goods_storage'],
+                    "salePrice"=>$goods['sale_price'],
+                    "coinType"=>$this->currency,
+                    'detailConfig'=>[],
+                    'baseConfig'=>[]
+            ];
+            //return $goods['goods_attr'];
+            if(!empty($goods['goods_attr'])) {
+                $baseConfig = [];
+                foreach ($goods['goods_attr'] as $vo){                    
+                    $baseConfig[] = [
+                            'configId' =>$vo['id'],
+                            'configAttrId' =>0,
+                            'configVal' =>$vo['attr_name'],
+                            'configAttrIVal' =>implode('/',$vo['value']),
+                    ];                    
+                }
+                $simpleGoodsEntity['baseConfig'] = $baseConfig;
+            }
+            if(!empty($goods['goods_spec'])) {
+                $detailConfig = [];
+                foreach ($goods['goods_spec'] as $vo){
+                    
+                    $detailConfig[] = [
+                            'configId' =>$vo['attr_id'],
+                            'configAttrId' =>$vo['value_id'],
+                            'configVal' =>$vo['attr_name'],
+                            'configAttrIVal' =>$vo['attr_value'],
+                    ];
+                    
+                }
+                $simpleGoodsEntity['detailConfig'] = $detailConfig;
+            }            
+            $simpleGoodsEntity['simpleGoodsDetails'] = [
+                    "id"=>$model->id,
+                    "goodsId"=>$goods['style_id'],
+                    "goodsDetailsCode"=>$goods["goods_sn"],
+                    "stock"=>$goods["goods_storage"],
+                    "retailPrice"=>$goods["sale_price"],
+                    "retailMallPrice"=>$goods["sale_price"],
+                    "coinType"=>$this->currency,
+            ];            
+            $cart['simpleGoodsEntity'] = $simpleGoodsEntity;
+         
             $cart_list[] = $cart;
         }
         return $cart_list;
@@ -63,35 +117,53 @@ class CartController extends UserAuthController
      */
     public function actionAdd()
     {
-        $model = new CartForm();
-        $model->attributes = \Yii::$app->request->post();
-        if (!$model->validate()) {
-            // 返回数据验证失败
-            return ResultHelper::api(422, $this->getError($model));
+        $addType = \Yii::$app->request->post("addType");
+        $goodsCartList = \Yii::$app->request->post('goodsCartList');
+        if(empty($goodsCartList)){
+            return ResultHelper::api(422,"goodsCartList不能为空");
         }
-        
-        $goods = \Yii::$app->services->goods->getGoodsInfo($model->goods_id,$model->goods_type);
-        if(!$goods || empty($goods['status'])) {
-            return ResultHelper::api(423,"添加失败，商品不是售卖状态");
+        try{
+            $trans = \Yii::$app->db->beginTransaction();
+            $cart_list = [];
+            foreach ($goodsCartList as  $cartGoods){
+                $cartGoods['add_type'] = $addType;
+                $model = new CartForm();
+                $model->attributes = $cartGoods;
+                if (!$model->validate()) {
+                    // 返回数据验证失败
+                    throw new UnprocessableEntityHttpException($this->getError($model));
+                }
+                
+                $goods = \Yii::$app->services->goods->getGoodsInfo($model->goods_id,$model->goods_type);
+                if(!$goods ||$goods['status']!= 1) {
+                    throw new UnprocessableEntityHttpException("添加失败，商品不是售卖状态");
+                }
+    
+                $cart = new Cart();
+                $cart->attributes = $model->toArray();
+                $cart->merchant_id = $this->merchant_id;
+                $cart->member_id = $this->member_id;
+    
+                $cart->goods_type = $goods['type_id'];
+                $cart->goods_price = $goods['sale_price'];
+                $cart->goods_spec = json_encode($goods['goods_spec']);//商品规格
+                
+                if (!$cart->save()) {
+                    throw new UnprocessableEntityHttpException($this->getError($cart));
+                } 
+                $cart_list[] = $cart->toArray();
+                
+            }
+            $trans->commit();
+            
+            return $cart_list;
+        } catch (Exception $e){
+            
+            $trans->rollBack();
+            
+            throw $e;
         }
-
-        $cart = $this->modelClass::find()->where(['goods_id'=>$model->goods_id,'goods_type'=>$goods['type_id']])->one();
-        if($cart) {
-            $cart->goods_num = $cart->goods_num + $model->goods_num;
-        }else {
-            $cart = new Cart();
-            $cart->attributes = $model->toArray();
-            $cart->merchant_id = $this->merchant_id;
-            $cart->member_id = $this->member_id;
-        }
-        $cart->goods_type = $goods['type_id'];
-        $cart->goods_price = $goods['sale_price'];
-        $cart->goods_spec = json_encode($goods['goods_spec']);//商品规格
-        
-        if (!$cart->save()) {
-            return ResultHelper::api(422, $this->getError($model));
-        }        
-        return $cart;        
+       
     }
     /**
      * 编辑购物车

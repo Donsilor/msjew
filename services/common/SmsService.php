@@ -112,9 +112,9 @@ class SmsService extends Service
        // print_r($template);exit;
         !empty($template) && $template = ArrayHelper::map(json_decode($template,true), 'group', 'template');
         
-        $usage = SmsLog::$usageExplain[$usage]??$usage; 
+        $group = SmsLog::$usageExplain[$usage]??$usage; 
         
-        $templateID = $template[$usage] ?? '';
+        $templateID = $template[$group] ?? '';
         $code  = $params['code']??null;
         $member_id = $params['member_id']??0;
         

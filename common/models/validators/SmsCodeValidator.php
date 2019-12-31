@@ -57,16 +57,15 @@ class SmsCodeValidator extends Validator
 
         /** @var $smsLog SmsLog */
         $time = time();
-        if (
-            is_null($smsLog) ||
-            ($smsLog->code != $model->$attribute) ||
-            ($smsLog->created_at > $time || $time > ($smsLog->created_at + $this->expireTime) )
-        ) {
-            $this->addError($model, $attribute, '验证码错误');
-        } else {
+        if (empty($smsLog) ||($smsLog->code != $model->$attribute)) {
+            $this->addError($model, $attribute, '验证码错误'.$smsLog->code."|".$model->$attribute);
+        } else if($smsLog->created_at > $time || $time > ($smsLog->created_at + $this->expireTime)){
+            $this->addError($model, $attribute, '验证码已过期');
+        }else {
             $smsLog->used = StatusEnum::ENABLED;
             $smsLog->use_time = $time;
             $smsLog->save();
         }
     }
 }
+

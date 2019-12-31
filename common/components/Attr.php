@@ -71,7 +71,7 @@ class Attr
     public function getAttr($attr_id , $noCache = false , $merchant_id = '')
     {
         $cacheKey = CacheEnum::getPrefix('goodsAttr',$merchant_id).':'.$attr_id;
-        if (true || !($info = Yii::$app->cache->get($cacheKey)) || $noCache == true) {
+        if (!($info = Yii::$app->cache->get($cacheKey)) || $noCache == true) {
             $models = AttributeLang::find()
                 ->select(['master_id','language','attr_name'])
                 ->where(['master_id'=>$attr_id])
@@ -114,7 +114,7 @@ class Attr
     public function getAttrValue($value_id , $noCache = false , $merchant_id = '')
     {
         $cacheKey = CacheEnum::getPrefix('goodsAttrValue',$merchant_id).':'.$value_id;
-        if (true || !($info = Yii::$app->cache->get($cacheKey)) || $noCache == true) {            
+        if (!($info = Yii::$app->cache->get($cacheKey)) || $noCache == true) {            
             
             $models = AttributeValue::find()->alias("val")
                 ->leftJoin(AttributeValueLang::tableName()." lang","val.id=lang.master_id")

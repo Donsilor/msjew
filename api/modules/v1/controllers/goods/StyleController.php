@@ -145,13 +145,14 @@ class StyleController extends OnAuthController
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
-        $model = Style::find()->where(['id'=>$id])->one();
+        $model = Style::find()->where(['id'=>$id,'status'=>StatusEnum::ENABLED])->one();
         if(empty($model)) {
             return ResultHelper::api(422,"商品信息不存在");
         }
         $attr_data = \Yii::$app->services->goods->formatStyleAttrs($model);
         $attr_list = [];
-        foreach ($attr_data['style_attr'] as $attr){
+        $style_attr =  $attr_data['style_attr']??[];
+        foreach ($style_attr as $attr){
             $attr_value = $attr['value'];
             if(empty($attr_value)) {
                 continue;

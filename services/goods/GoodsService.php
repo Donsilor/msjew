@@ -142,6 +142,7 @@ class GoodsService extends Service
         }
         $format_data = [];
         foreach ($spec_array as $key =>$spec){
+            
             if($key == 'style_spec_b' || $key == 'style_spec_c'){
                 $format_data[$key] = $spec;
                 continue;

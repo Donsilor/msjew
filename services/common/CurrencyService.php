@@ -63,7 +63,7 @@ class CurrencyService extends Service
             $list = [];
             foreach ($models as $row) {
                 $list[$row['code']] = [
-                        'name'=>$row['id'],
+                        'name'=>$row['name'],
                         'code'=>strtoupper($row['code']),
                         'sign'=>$row['sign'],
                         'rate'=>$row['rate'],

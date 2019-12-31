@@ -15,7 +15,7 @@ return [
         '¥'=>'人民币',
     ],
     'language'=>'zh-CN',//默认语言
-    'currency' =>'¥',//默认货币
+    'currency' =>'HK$',//默认货币
     'cachePrefix'=>'common',//缓存前缀
     
     // 是否在模块内

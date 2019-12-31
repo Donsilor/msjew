@@ -337,6 +337,8 @@ class GoodsService extends Service
             $attr_name = \Yii::$app->attr->attrName($attr_id ,$language);
             $value_name = \Yii::$app->attr->valueName($value_id ,$language);
             $spec_data[] = [
+                    'attr_id'=>$attr_id,
+                    'value_id'=>$value_id,
                     'attr_name'=>$attr_name,
                     'attr_value'=>$value_name,
             ];

@@ -30,7 +30,7 @@ class IndexController extends OnAuthController
         $limit = 6;
         $language = $this->language;
         $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
-        $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit, $fields, $language);
+        $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit, $fields ,$language);
         $webSite = array();
         $webSite['moduleTitle'] = '最暢銷訂婚戒指';
         foreach ($style_list as $val){

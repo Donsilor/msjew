@@ -357,8 +357,14 @@ class GoodsService extends Service
     //获取款和对应的商品
     public function formatStyleGoodsById($style_id, $language){
         $style_spec_array = [
-            '10' =>'materials',//成色
-             '38'=>'sizes',  // 尺寸
+            '10' =>array(
+                 'attr_name'=>'materials',
+                 'key_name'=>'material',
+             ),//成色
+             '38'=>array(
+                 'attr_name'=>'sizes',
+                 'key_name'=>'size',
+             ),  // 尺寸
         ];
         $query = Style::find()->alias('m')
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
@@ -398,7 +404,7 @@ class GoodsService extends Service
                     $attr = array();
                     $attr['id'] = $k;
                     $attr['name'] = $v;
-                    $style[$style_spec_array[$key]][] = $attr;
+                    $style[$style_spec_array[$key]['attr_name']][] = $attr;
                 }
 
             }
@@ -444,7 +450,7 @@ class GoodsService extends Service
 
         //商品
         $goods_array = Goods::find()
-            ->where(['style_id'=>$style_id])
+            ->where(['style_id'=>$style_id ,'status'=>StatusEnum::ENABLED])
             ->select(['id','type_id','goods_sn','sale_price','goods_storage','warehouse','goods_spec'])
             ->asArray()
             ->all();
@@ -453,7 +459,7 @@ class GoodsService extends Service
             $goods_spec = json_decode($val['goods_spec']);
             if(!empty($goods_spec)){
                 foreach ($goods_spec as $k=>$v){
-                    $details[$key][$style_spec_array[$k]] = $v;
+                    $details[$key][$style_spec_array[$k]['key_name']] = (int)$v;
                 }
             }
 

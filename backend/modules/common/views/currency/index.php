@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
     <div class="col-sm-12">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="<?= Url::to(['config/index']) ?>"> 货币管理</a></li>
+                <li class="active"><a href="<?= Url::to(['currency/index']) ?>"> 货币管理</a></li>
                 <li class="pull-right">
                     <?= Html::create(['ajax-edit'], '创建', [
                         'data-toggle' => 'modal',

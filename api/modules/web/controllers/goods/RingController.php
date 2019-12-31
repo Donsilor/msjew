@@ -44,8 +44,8 @@ class RingController extends OnAuthController
             "sale_volume"=>'m.sale_volume',//销量
         ];
         //$type_id = \Yii::$app->request->get("type_id", 12);//产品线ID
-        $order_param = \Yii::$app->request->get("order_param");//排序参数
-        $order_type = \Yii::$app->request->get("order_type", 1);//排序方式 1-升序；2-降序;
+        $order_param = \Yii::$app->request->post("orderParam");//排序参数
+        $order_type = \Yii::$app->request->post("orderType", 1);//排序方式 1-升序；2-降序;
 
         //排序
         $order = '';
@@ -55,23 +55,44 @@ class RingController extends OnAuthController
         }
 
 
-        $fields = ['m.id','m.ring_sn','lang.ring_name','m.ring_images','m.sale_price'];
+        $fields = ['m.id','m.ring_sn','lang.ring_name','m.ring_images','m.sale_price','m.ring_style','m.status'];
         $query = Ring::find()->alias('m')->select($fields)
-            ->leftJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->orderby($order);
+            ->innerJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'");
+
 
 
         //筛选条件
-        $ring_style = \Yii::$app->request->get("ring_style", 1);//对戒款式
-        $begin_price = \Yii::$app->request->get("begin_price",0);//开始价格
-        $end_price = \Yii::$app->request->get("end_price");//结束价格
+        $ring_style = \Yii::$app->request->post("styleValue", 1);//对戒款式
+        $begin_price = \Yii::$app->request->post("beginPrice",0);//开始价格
+        $end_price = \Yii::$app->request->post("endPrice");//结束价格
+        $material = \Yii::$app->request->post("materialValue");//成色Id
         $query->andWhere(['=','m.ring_style', $ring_style]);
         if($begin_price && $end_price){
             $query->andWhere(['between','m.sale_price', $begin_price, $end_price]);
         }
+
+        if(is_numeric($material) && $material > 0){
+            $query->innerJoin(RingRelation::tableName()." r", 'r.ring_id = m.id')
+                ->innerJoin(AttributeIndex::tableName().' at','at.style_id=r.style_id')
+                ->andWhere(['at.attr_value_id'=>$material,'m.status'=>StatusEnum::ENABLED]);
+        }
+
+        //排序
+        if($order != '')  $query->orderby($order);
+        $query->distinct('m.id');
+
         $result = $this->pagination($query,$this->page,$this->pageSize);
+
         foreach($result['data'] as & $val) {
-            $val['currency'] = $this->currency;
+            $arr = array();
+            $arr['coinType'] = $this->currencySign;
+            $arr['id'] = $val['id'];
+            $arr['ringCode'] = $val['ring_sn'];
+            $arr['ringImg'] = $val['ring_images'];
+            $arr['ringStyle'] = $val['ring_style'];
+            $arr['salePrice'] = $val['sale_price'];
+            $arr['status'] = $val['status'];
+            $val = $arr;
         }
         return $result;
 
@@ -94,7 +115,7 @@ class RingController extends OnAuthController
             ->limit($limit)->asArray()->all();
         foreach($result as & $val) {
             $val['type_id'] = $type_id;
-            $val['currency'] = $this->currency;
+            $val['coinType'] = $this->currencySign;
         }
         return $result;
 
@@ -115,7 +136,7 @@ class RingController extends OnAuthController
             'm.ring_images','m.sale_price','m.ring_style'];
         $model = $result = Ring::find()->alias('m')->select($field)
             ->leftJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->where(['m.status'=>StatusEnum::ENABLED])
+            ->where(['m.id'=>$id,'m.status'=>StatusEnum::ENABLED])
             ->one();
         if(empty($model)) {
             return ResultHelper::api(422,"对戒信息不存在");
@@ -126,8 +147,8 @@ class RingController extends OnAuthController
         $ring['ringImg'] = $model->ring_images;
         $ring['ringCode'] = $model->ring_sn;
         $ring['salePrice'] = $model->sale_price;
-        $ring['coinType'] = $this->currency;
-        $ring['status'] = $model->lang->meta_desc;
+        $ring['coinType'] = $this->currencySign;
+        $ring['status'] = $model->status;
         $ring['metaDesc'] = $model->lang->meta_desc;
         $ring['metaTitle'] = $model->lang->meta_title;
         $ring['metaWord'] = $model->lang->meta_word;
@@ -153,7 +174,6 @@ class RingController extends OnAuthController
                 $searchGoodsModels[] = $searchGoods;
             }
 
-
             $ring['goodsModels'] = $goodsModels;
             $ring['searchGoodsModels'] = $searchGoodsModels;
             $model->goods_clicks = new Expression("goods_clicks+1");
@@ -166,33 +186,7 @@ class RingController extends OnAuthController
         }
 
     }
-    /**
-     * 猜你喜欢推荐列表
-     */
-    public function actionGuessList()
-    {
-        $style_id= \Yii::$app->request->get("style_id");
-        if(empty($style_id)) {
-            return ResultHelper::api(422,"style_id不能为空");
-        }
-        $model = Style::find()->where(['id'=>$style_id])->one();
-        if(empty($model)) {
-            return [];
-        }
-        $type_id = $model->type_id;
-        $fields = ['s.id','s.style_sn','lang.style_name','s.style_image','s.sale_price','s.goods_clicks'];
-        $query = Style::find()->alias('s')->select($fields)
-            ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
-            ->andWhere(['s.type_id'=>$type_id])
-            ->andWhere(['<>','s.id',$style_id])
-            ->orderby("s.goods_clicks desc");
-        $models = $query->limit(10)->asArray()->all();
-        foreach ($models as &$model){
-            $model['style_image'] = ImageHelper::thumb($model['style_image']);
-            $model['currency'] = '$';
-        }
-        return $models;
-    }
+
 
 
 

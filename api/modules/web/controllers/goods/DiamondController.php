@@ -55,12 +55,12 @@ class DiamondController extends OnAuthController
             'fluorescence'=>'m.fluorescence',//荧光
         ];
 
-        $type_id = \Yii::$app->request->get("type_id");//产品线ID
+        $type_id = \Yii::$app->request->post("categoryId");//产品线ID
         if(!$type_id){
             return ResultHelper::api(422, '产品线不能为空');
         }
-        $order_param = \Yii::$app->request->get("order_param");//排序参数
-        $order_type = \Yii::$app->request->get("order_type", 1);//排序方式 1-升序；2-降序;
+        $order_param = \Yii::$app->request->post("orderParam");//排序参数
+        $order_type = \Yii::$app->request->post("orderType", 1);//排序方式 1-升序；2-降序;
 
         //排序
         $order = '';
@@ -70,68 +70,60 @@ class DiamondController extends OnAuthController
         }
 
 
-        $fields = ['m.id','m.goods_id','m.goods_sn','lang.goods_name','m.goods_image','m.sale_price','m.goods_sn'
+        $fields = ['m.id','m.goods_id','m.goods_sn','lang.goods_name','m.goods_image','m.sale_price'
                     ,'m.carat','m.cert_id','m.depth_lv','m.table_lv','m.clarity','m.cert_type','m.color'
                     ,'m.cut','m.fluorescence','m.polish','m.shape','m.symmetry'];
         $query = Diamond::find()->alias('m')->select($fields)
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
 
-        $params = \Yii::$app->request->get("params");  //属性帅选
-        $params = json_decode($params);
+        $params = \Yii::$app->request->post("params");  //属性帅选
         if(!empty($params)){
             foreach ($params as $param){
-                $value_type = $param->valueType;
-                $param_name = $param->paramName;
+                $value_type = $param['valueType'];
+                $param_name = $param['paramName'];
                 if($value_type == 1){
-                    $config_values = $param->configValues;
+                    $config_values = $param['configValues'];
                     $query->andWhere(['in',$params_map[$param_name], $config_values]);
                 }else if($value_type == 2){
-                    $begin_value = $param->beginValue;
-                    $end_value = $param->endValue;
+                    $begin_value = $param['beginValue'];
+                    $end_value = $param['endValue'];
                     $query->andWhere(['between',$params_map[$param_name], $begin_value, $end_value]);
                 }
             }
         }
         $result = $this->pagination($query,$this->page,$this->pageSize);
         foreach($result['data'] as & $val) {
-            $val['type_id'] = $type_id;
-            $val['currency'] = $this->currency;
-            $val['clarity'] = \Yii::$app->attr->valueName($val['clarity']);
-            $val['cert_type'] = \Yii::$app->attr->valueName($val['cert_type']);
-            $val['color'] = \Yii::$app->attr->valueName($val['color']);
-            $val['cut'] = \Yii::$app->attr->valueName($val['cut']);
-            $val['fluorescence'] = \Yii::$app->attr->valueName($val['fluorescence']);
-            $val['polish'] = \Yii::$app->attr->valueName($val['polish']);
-            $val['shape'] = \Yii::$app->attr->valueName($val['shape']);
-            $val['symmetry'] = \Yii::$app->attr->valueName($val['symmetry']);
+            $specsModels = array();
+            $arr = array();
+            $arr['categoryId'] = $type_id;
+            $arr['coinType'] = $this->currencySign;
+            $arr['id'] = $val['id'];
+            $arr['goodsImages'] = $val['goods_image'];
+            $arr['goodsName'] = $val['goods_name'];
+            $arr['salePrice'] = $val['sale_price'];
+            $arr['isJoin'] = null;
+            $specsModels['SKU'] = $val['goods_sn'];
+            $specsModels['clarity'] = \Yii::$app->attr->valueName($val['clarity']);
+            $specsModels['carat'] = $val['carat'];
+            $specsModels['card'] = \Yii::$app->attr->valueName($val['cert_type']);
+            $specsModels['cardNo'] = $val['cert_id'];
+            $specsModels['depth'] = $val['depth_lv'];
+            $specsModels['table'] = $val['table_lv'];
+            $specsModels['color'] = \Yii::$app->attr->valueName($val['color']);
+            $specsModels['cut'] = \Yii::$app->attr->valueName($val['cut']);
+            $specsModels['fluorescence'] = \Yii::$app->attr->valueName($val['fluorescence']);
+            $specsModels['polish'] = \Yii::$app->attr->valueName($val['polish']);
+            $specsModels['shape'] = \Yii::$app->attr->valueName($val['shape']);
+            $specsModels['symmetry'] = \Yii::$app->attr->valueName($val['symmetry']);
+            $arr['specsModels'] = $specsModels;
+            $val = $arr;
 
         }
         return $result;
 
     }
 
-
-    //商品推荐
-    public function actionRecommend(){
-        $type_id = \Yii::$app->request->get("type_id",1);//产品线ID
-        if(!$type_id){
-            return ResultHelper::api(422, '产品线不能为空');
-        }
-        $recommend_type = \Yii::$app->request->get("recommend_type",2);//产品线ID
-        $limit = \Yii::$app->request->get("limit",4);//查询数量
-        $fields = ['m.id', 'm.goods_image', 'lang.goods_name','m.sale_price'];
-        $result = Diamond::find()->alias('m')->select($fields)
-            ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->where(['and',['like','m.recommend_type',$recommend_type],['m.status'=>StatusEnum::ENABLED]])
-            ->limit($limit)->asArray()->all();
-        foreach($result as & $val) {
-            $val['type_id'] = $type_id;
-            $val['currency'] = $this->currency;
-        }
-        return $result;
-
-    }
 
 
 
@@ -142,7 +134,7 @@ class DiamondController extends OnAuthController
      */
     public function actionDetail()
     {
-        $id = \Yii::$app->request->get("id");
+        $id = \Yii::$app->request->get("goodsId");
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
@@ -159,7 +151,7 @@ class DiamondController extends OnAuthController
         $diamond = array();
         $diamond['id'] = $model->id;
         $diamond['categoryId'] = 1;
-        $diamond['coinType'] = $this->currency;
+        $diamond['coinType'] = $this->currencySign;
         $diamond['goodsName'] = $model->lang->goods_name;
         $diamond['goodsCode'] = $model->goods_sn;
         $diamond['salePrice'] = $model->sale_price;
@@ -239,33 +231,7 @@ class DiamondController extends OnAuthController
         $model->save(false);//更新浏览量
         return $diamond;
     }
-    /**
-     * 猜你喜欢推荐列表
-     */
-    public function actionGuessList()
-    {
-        $style_id= \Yii::$app->request->get("style_id");
-        if(empty($style_id)) {
-            return ResultHelper::api(422,"style_id不能为空");
-        }
-        $model = Style::find()->where(['id'=>$style_id])->one();
-        if(empty($model)) {
-            return [];
-        }
-        $type_id = $model->type_id;
-        $fields = ['s.id','s.style_sn','lang.style_name','s.style_image','s.sale_price','s.goods_clicks'];
-        $query = Style::find()->alias('s')->select($fields)
-            ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
-            ->andWhere(['s.type_id'=>$type_id])
-            ->andWhere(['<>','s.id',$style_id])
-            ->orderby("s.goods_clicks desc");
-        $models = $query->limit(10)->asArray()->all();
-        foreach ($models as &$model){
-            $model['style_image'] = ImageHelper::thumb($model['style_image']);
-            $model['currency'] = '$';
-        }
-        return $models;
-    }
+
 
 
 

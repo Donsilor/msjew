@@ -29,8 +29,6 @@ use yii\widgets\ActiveForm;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'table table-hover'],
-        'layout'=> '{items}',
-        'showFooter' => true,//显示footer行
         'id'=>'grid',
         'columns' => [
             [

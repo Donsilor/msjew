@@ -59,7 +59,7 @@ class StyleService extends Service
     //获取
     public function getStyleList($type_id=null, $limit=null, $fields=['*'],$language=null ){
         if(empty($language)){
-            $language = Yii::$app->language;
+            $language = Yii::$app->params['language'];
         }
         $query = Style::find()->alias('m')
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")

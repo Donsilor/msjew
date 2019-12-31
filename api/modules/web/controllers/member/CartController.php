@@ -135,7 +135,7 @@ class CartController extends UserAuthController
                 }
                 
                 $goods = \Yii::$app->services->goods->getGoodsInfo($model->goods_id,$model->goods_type);
-                if(!$goods ||$goods['status']!= 1) {
+                if(!$goods || $goods['status'] != 1) {
                     throw new UnprocessableEntityHttpException("添加失败，商品不是售卖状态");
                 }
     
@@ -164,6 +164,13 @@ class CartController extends UserAuthController
             throw $e;
         }
        
+    }
+    /**
+     * 购物车商品数量
+     */
+    public function actionCount()
+    {
+        return $this->modelClass::find()->where(['member_id'=>$this->member_id])->count();
     }
     /**
      * 编辑购物车

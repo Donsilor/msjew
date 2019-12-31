@@ -58,7 +58,7 @@ class Goods extends \common\models\base\BaseModel
     public function attributeLabels()
     {
         return [
-            'id' => '订单商品表索引id',
+            'id' => 'ID',
             'merchant_id' => '商户ID',
             'order_id' => '订单id',
             'goods_id' => '--商品id',
@@ -77,5 +77,10 @@ class Goods extends \common\models\base\BaseModel
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
         ];
+    }
+    
+    public function langModel()
+    {
+        return new GoodsLang();
     }
 }

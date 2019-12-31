@@ -111,6 +111,9 @@ class SmsService extends Service
         $template = Yii::$app->debris->config('sms_aliyun_template');
        // print_r($template);exit;
         !empty($template) && $template = ArrayHelper::map(json_decode($template,true), 'group', 'template');
+        
+        $usage = SmsLog::$usageExplain[$usage]??$usage; 
+        
         $templateID = $template[$usage] ?? '';
         $code  = $params['code']??null;
         $member_id = $params['member_id']??0;
@@ -129,7 +132,7 @@ class SmsService extends Service
                     ],
                 ]); 
             } else {
-                $result = '测试：未设置模板';
+                $result = '测试：未设置模板'.$usage;
             }
             
             $this->saveLog([

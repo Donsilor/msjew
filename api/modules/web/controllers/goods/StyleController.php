@@ -94,6 +94,8 @@ class StyleController extends OnAuthController
 
                 if($value_type == 1){
                     $config_values = $param['configValues'];
+                    $config_values = array_merge(array_diff($config_values, array(-1)));
+                    if(empty($config_values)) continue;
                     $config_values_str = join(',',$config_values);
                     $subQuery->innerJoin(AttributeIndex::tableName().' '.$alias, $on." and {$alias}.attr_value_id in ({$config_values_str})");
                 }else if($value_type == 2){

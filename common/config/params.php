@@ -10,8 +10,8 @@ return [
         'en-US'=>'English',
     ],
     'language'=>'zh-CN',//默认语言
-    'currency' =>'HKD',//默认货币代号
-    'currencySign' =>'HK$',//默认货币符号
+    'currency' =>'CNY',//默认货币代号
+    'currencySign' =>'CNY',//默认货币符号
     'cachePrefix'=>'common',//缓存前缀
     
     // 是否在模块内

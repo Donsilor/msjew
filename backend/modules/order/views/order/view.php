@@ -17,7 +17,14 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('order', 'view'), 'url' => [
 $this->params['breadcrumbs'][] = $this->title;
 //
 ?>
-
+<?php $form = ActiveForm::begin([
+    'id' => $model->formName(),
+    'enableAjaxValidation' => true,
+    'validationUrl' => Url::to(['ajax-edit', 'id' => $model['id']]),
+    'fieldConfig' => [
+        'template' => "<div class='col-sm-3 text-right'>{label}</div><div class='col-sm-9'>{input}\n{hint}\n{error}</div>",
+    ]
+]); ?>
 <div class="box-body nav-tabs-custom">
     <h2 class="page-header">订单预览</h2>
     <?php $tab_list = [0 => '全部', 1 => '基础信息', 2 => '商品明细', 3 => '图文信息', 4 => 'SEO优化']; ?>
@@ -35,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-lg-4">test</div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-4"></div>
+                    <div class="col-lg-4"><?= $form->field($model->account, 'discount_amount')->textInput() ?></div>
                     <div class="col-lg-4"></div>
                 </div>
                 <div class="row">
@@ -117,3 +124,4 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+<?php ActiveForm::end(); ?>

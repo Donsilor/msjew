@@ -2,7 +2,7 @@
 
 namespace api\modules\web\controllers\member;
 
-use common\models\order\Cart;
+use common\models\order\OrderCart;
 use api\modules\web\forms\CartForm;
 use common\helpers\ResultHelper;
 use api\controllers\UserAuthController;
@@ -18,7 +18,7 @@ use yii\web\UnprocessableEntityHttpException;
 class CartController extends UserAuthController
 {
     
-    public $modelClass = Cart::class;
+    public $modelClass = OrderCart::class;
     
     protected $authOptional = [];
 
@@ -140,7 +140,7 @@ class CartController extends UserAuthController
                     throw new UnprocessableEntityHttpException("添加失败，商品不是售卖状态");
                 }
     
-                $cart = new Cart();
+                $cart = new OrderCart();
                 $cart->attributes = $model->toArray();
                 $cart->merchant_id = $this->merchant_id;
                 $cart->member_id = $this->member_id;

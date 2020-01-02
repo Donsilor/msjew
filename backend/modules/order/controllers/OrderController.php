@@ -45,6 +45,9 @@ class OrderController extends BaseController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['>=', 'status', StatusEnum::DISABLED]);
 
+        //多表连接
+        $dataProvider->query->joinWith(['account', 'address']);
+
         if ($orderStatus !== -1)
             $dataProvider->query->andWhere(['=', 'order_status', $orderStatus]);
 
@@ -62,7 +65,7 @@ class OrderController extends BaseController
         $model = $this->findModel($id);
 
         return $this->render($this->action->id, [
-            'models' => $model,
+            'model' => $model,
         ]);
     }
 }

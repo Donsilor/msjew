@@ -30,9 +30,13 @@ return [
             'class' => 'backend\modules\oauth2\Module',
         ],
         /** ------商品模块 ------ **/
-    	'goods' => [
-    		'class' => 'backend\modules\goods\Module',
-    	],
+        'goods' => [
+            'class' => 'backend\modules\goods\Module',
+        ],
+        /** ------订单模块 ------ **/
+        'order' => [
+            'class' => 'backend\modules\order\Module',
+        ],
 
         /** ------商城設置 ------ **/
         'setting' => [

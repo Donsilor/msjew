@@ -20,12 +20,12 @@ class OrderStatusEnum extends BaseEnum
      */
     public static function getMap(): array
     {
-        return [
-                self::ORDER_CANCEL => '已取消',
-                self::ORDER_UNPAID => '未付款',
+        return [                
+                self::ORDER_UNPAID => '待付款',
                 self::ORDER_PAID => '已付款',
                 self::ORDER_SEND => '已发货',
                 self::ORDER_FINISH => '已完成',
+                self::ORDER_CANCEL => '已取消',
         ];
     }
 }

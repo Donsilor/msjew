@@ -1,11 +1,10 @@
 <?php
 
-use common\enums\ConfigTypeEnum;
 use common\helpers\Url;
 use common\helpers\Html;
 use yii\grid\GridView;
 
-$this->title = '订单管理';
+$this->title = '订单列表';
 $this->params['breadcrumbs'][] = ['label' => $this->title];
 ?>
 
@@ -62,9 +61,9 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'label' => '时间',
                                 'filter' => false, //不显示搜索框
                                 'value' => function ($model) {
-                                    return "创建：" . $model->created_at . '<br>' .
-                                        "支付：" . Yii::$app->formatter->asDatetime($model->payment_time) . '<br>' .
-                                        "完成：" . $model->finished_time;
+                                    return "创建：" . Yii::$app->formatter->asDatetime($model->created_at) . '<br>' .
+                                        "支付：" . Yii::$app->formatter->asDatetime($model->payment_time). '<br>' .
+                                        "完成：" . Yii::$app->formatter->asDatetime($model->finished_time);
                                 },
                                 'format' => 'raw',
                             ],

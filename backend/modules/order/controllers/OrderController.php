@@ -45,13 +45,24 @@ class OrderController extends BaseController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['>=', 'status', StatusEnum::DISABLED]);
 
-        if($orderStatus!==-1)
+        if ($orderStatus !== -1)
             $dataProvider->query->andWhere(['=', 'order_status', $orderStatus]);
 
         return $this->render($this->action->id, [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
             'orderStatus' => OrderStatusEnum::getMap(),
+        ]);
+    }
+
+    public function actionView()
+    {
+        $id = Yii::$app->request->get('id', null);
+
+        $model = $this->findModel($id);
+
+        return $this->render($this->action->id, [
+            'models' => $model,
         ]);
     }
 }

@@ -90,4 +90,28 @@ class Order extends \common\models\base\BaseModel
             'updated_at' => '更新时间',
         ];
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAccount()
+    {
+        return $this->hasOne(Account::class, ['order_id'=>'id'])->alias('account');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAddress()
+    {
+        return $this->hasOne(Address::class, ['order_id'=>'id'])->alias('address');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGoods()
+    {
+        return $this->hasMany(Goods::class,['order_id'=>'id'])->alias('goods');
+    }
 }

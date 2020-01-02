@@ -58,7 +58,7 @@ class Currency extends BaseModel
             'sign' => '货币符号',
             'rate' => '设置汇率',
             'refer_rate' => '参考汇率',
-            'status' => '状态 1启用 0禁用 -1删除',
+            'status' => '状态',
             'created_at' => '添加时间',
             'updated_at' => '更新时间',
         ];

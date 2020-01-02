@@ -116,7 +116,7 @@ class StyleController extends OnAuthController
             $arr = array();
             $arr['id'] = $val['id'];
             $arr['categoryId'] = $type_id;
-            $arr['coinType'] = $this->currency;
+            $arr['coinType'] = $this->currencySign;
             $arr['goodsImages'] = $val['goods_images'];
             $arr['salePrice'] = $val['sale_price'];
             $arr['goodsName'] = $val['style_name'];
@@ -144,7 +144,7 @@ class StyleController extends OnAuthController
             ->limit($limit)->asArray()->all();
         foreach($result as & $val) {
             $val['type_id'] = $type_id;
-            $val['currency'] = $this->currency;
+            $val['coinType'] = $this->currencySign;
         }
         return $result;
 
@@ -184,7 +184,7 @@ class StyleController extends OnAuthController
                 $recommend['goodsImages'] = $val->goods_images;
                 $recommend['isJoin'] = null;
                 $recommend['specsModels'] = null;
-                $recommend['coinType'] = $this->currency;
+                $recommend['coinType'] = $this->currencySign;
                 $style['recommends'][] = $recommend;
             }
 
@@ -201,33 +201,7 @@ class StyleController extends OnAuthController
         }
 
     }
-    /**
-     * 猜你喜欢推荐列表
-     */
-    public function actionGuessList()
-    {
-        $style_id= \Yii::$app->request->get("style_id");
-        if(empty($style_id)) {
-            return ResultHelper::api(422,"style_id不能为空");
-        }
-        $model = Style::find()->where(['id'=>$style_id])->one();
-        if(empty($model)) {
-            return [];
-        }
-        $type_id = $model->type_id;
-        $fields = ['s.id','s.style_sn','lang.style_name','s.style_image','s.sale_price','s.goods_clicks'];
-        $query = Style::find()->alias('s')->select($fields)
-                    ->leftJoin(StyleLang::tableName().' lang',"s.id=lang.master_id and lang.language='".\Yii::$app->language."'")
-                    ->andWhere(['s.type_id'=>$type_id])
-                    ->andWhere(['<>','s.id',$style_id])
-                    ->orderby("s.goods_clicks desc");
-        $models = $query->limit(10)->asArray()->all();
-        foreach ($models as &$model){
-            $model['style_image'] = ImageHelper::thumb($model['style_image']);
-            $model['currency'] = '$';
-        }
-        return $models;        
-    }
+
     
     
     

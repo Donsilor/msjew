@@ -34,23 +34,20 @@ class CurrencyController extends BaseController
             'model' => $this->modelClass,
             'scenario' => 'default',
             'partialMatchAttributes' => ['sign', 'code', 'name'], // 模糊查询
-//            'defaultOrder' => [
-//                'cate_id' => SORT_ASC,
-//                'sort' => SORT_ASC,
-//            ],
+            'defaultOrder' => [
+                'id' => SORT_ASC,
+            ],
             'pageSize' => $this->pageSize
         ]);
 
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
         $dataProvider->query
-//            ->andWhere(['app_id' => AppEnum::BACKEND])
             ->andWhere(['>=', 'status', StatusEnum::DISABLED]);
 
         return $this->render($this->action->id, [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
-            'cateDropDownList' => Yii::$app->services->configCate->getDropDown(AppEnum::BACKEND)
         ]);
     }
 }

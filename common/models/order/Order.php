@@ -96,7 +96,7 @@ class Order extends \common\models\base\BaseModel
      */
     public function getAccount()
     {
-        return $this->hasOne(Account::class, ['order_id'=>'id'])->alias('account');
+        return $this->hasOne(OrderAccount::class, ['order_id'=>'id'])->alias('account');
     }
 
     /**
@@ -104,7 +104,7 @@ class Order extends \common\models\base\BaseModel
      */
     public function getAddress()
     {
-        return $this->hasOne(Address::class, ['order_id'=>'id'])->alias('address');
+        return $this->hasOne(OrderAddress::class, ['order_id'=>'id'])->alias('address');
     }
 
     /**
@@ -112,6 +112,6 @@ class Order extends \common\models\base\BaseModel
      */
     public function getGoods()
     {
-        return $this->hasMany(Goods::class,['order_id'=>'id'])->alias('goods');
+        return $this->hasMany(OrderGoods::class,['order_id'=>'id'])->alias('goods');
     }
 }

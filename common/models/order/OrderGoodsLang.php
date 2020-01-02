@@ -15,7 +15,7 @@ use Yii;
  * @property string $goods_attr 商品属性
  * @property string $goods_body 商品详情
  */
-class GoodsLang extends \common\models\base\BaseModel
+class OrderGoodsLang extends \common\models\base\BaseModel
 {
     /**
      * {@inheritdoc}

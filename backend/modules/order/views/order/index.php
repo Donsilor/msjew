@@ -130,17 +130,14 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     ])
                             ],
                             [
-                                'label' => '订单号',
+                                'attribute' => 'order_sn',
                                 'filter' => Html::activeTextInput($searchModel, 'order_sn', [
                                     'class' => 'form-control',
                                 ]),
-                                'value' => function ($model) {
-                                    return $model->order_sn;
-                                },
                                 'format' => 'raw',
                             ],
                             [
-                                'label' => '客户姓名',
+                                'attribute' => 'member.realname',
                                 'filter' => Html::activeTextInput($searchModel, 'member.realname', [
                                     'class' => 'form-control',
                                 ]),
@@ -150,51 +147,39 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'format' => 'raw',
                             ],
                             [
-                                'label' => '联系方式',
+                                'attribute' => 'member.mobile',
                                 'filter' => Html::activeTextInput($searchModel, 'member.mobile', [
                                     'class' => 'form-control',
                                 ]),
-                                'value' => function ($model) {
-                                    return $model->member['mobile'];
-                                },
                                 'format' => 'raw',
                             ],
                             [
-                                'label' => '账号',
+                                'attribute' => 'member.username',
                                 'filter' => Html::activeTextInput($searchModel, 'member.username', [
                                     'class' => 'form-control',
                                 ]),
-                                'value' => function ($model) {
-                                    return $model->member['username'];
-                                },
+//                                'value' => function ($model) {
+//                                    return $model->member['username'];
+//                                },
                                 'format' => 'raw',
                             ],
                             [
-                                'label' => '订单金额',
+                                'attribute' => 'account.order_amount',
                                 'filter' => true, //不显示搜索框
-                                'value' => function ($model) {
-                                    return $model->account['order_amount'];
-                                },
                                 'format' => 'raw',
                             ],
                             [
-                                'label' => '所属国家',
+                                'attribute' => 'address.country_name',
                                 'headerOptions' => ['class' => 'col-md-1'],
                                 'filter' => Html::activeDropDownList($searchModel, 'address.country_id', \Yii::$app->services->area->getDropDown(0), [
                                             'prompt' => '全部',
                                             'class' => 'form-control',
                                 ]),
-                                'value' => function ($model) {
-                                    return $model->address->country_name;
-                                },
                                 'format' => 'raw',
                             ],
                             [
-                                'label' => '所属城市',
+                                'attribute' => 'address.city_name',
                                 'filter' => true, //不显示搜索框
-                                'value' => function ($model) {
-                                    return $model->address->city_name;
-                                },
                                 'format' => 'raw',
                             ],
                             [
@@ -209,7 +194,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'format' => 'raw',
                             ],
                             [
-                                'label' => '订单状态',
+                                'attribute' => 'order_status',
                                 'filter' => Html::activeDropDownList($searchModel, 'order_status', $orderStatus, [
                                     'prompt' => '全部',
                                     'class' => 'form-control',

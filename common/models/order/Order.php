@@ -14,7 +14,7 @@ use Yii;
  * @property string $order_sn 订单编号
  * @property string $pay_sn 支付单号
  * @property int $member_id 买家id
- * @property string $payment_code 支付方式名称代码
+ * @property string $payment_type 支付方式名称代码
  * @property int $payment_time 支付(付款)时间
  * @property int $finished_time 订单完成时间
  * @property int $evaluation_status 评价状态 0未评价，1已评价，2已过期未评价
@@ -51,7 +51,8 @@ class Order extends \common\models\base\BaseModel
             [['merchant_id', 'member_id', 'payment_time', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at'], 'integer'],
             [['order_sn', 'pay_sn', 'member_id'], 'required'],
             [['language'], 'string', 'max' => 5],
-            [['payment_code'], 'string', 'max' => 10],
+//            [['language'], 'safe'],
+            [['payment_type'], 'string', 'max' => 10],
             [['order_sn','pay_sn'], 'string', 'max' => 20],
             [['express_no', 'trade_no'], 'string', 'max' => 50],
             [['buyer_remark', 'seller_remark'], 'string', 'max' => 500],
@@ -71,7 +72,7 @@ class Order extends \common\models\base\BaseModel
             'order_sn' => '订单编号',
             'pay_sn' => '支付单号',
             'member_id' => '买家id',
-            'payment_code' => '支付方式名称代码',
+            'payment_type' => '支付方式',
             'payment_time' => '支付(付款)时间',
             'finished_time' => '订单完成时间',
             'evaluation_status' => '评价状态',

@@ -35,7 +35,7 @@ class OrderController extends BaseController
         $searchModel = new SearchModel([
             'model' => $this->modelClass,
             'scenario' => 'default',
-            'partialMatchAttributes' => ['sign', 'code', 'name'], // 模糊查询
+            'partialMatchAttributes' => [], // 模糊查询
             'defaultOrder' => [
                 'id' => SORT_ASC,
             ],
@@ -46,7 +46,6 @@ class OrderController extends BaseController
                 'member' => ['username', 'realname', 'mobile', 'email']
             ]
         ]);
-
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         //订单状态

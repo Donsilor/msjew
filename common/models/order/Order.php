@@ -89,40 +89,51 @@ class Order extends \common\models\base\BaseModel
             'status' => '状态',
             'created_at' => '订单生成时间',
             'updated_at' => '更新时间',
-
-            'memberss' => 'test',
         ];
     }
 
     /**
+     * 对应订单付款信息模型
      * @return \yii\db\ActiveQuery
      */
     public function getAccount()
     {
-        return $this->hasOne(OrderAccount::class, ['order_id'=>'id'])->alias('account');
+        return $this->hasOne(OrderAccount::class, ['order_id'=>'id']);
     }
 
     /**
+     * 对应订单地址模型
      * @return \yii\db\ActiveQuery
      */
     public function getAddress()
     {
-        return $this->hasOne(OrderAddress::class, ['order_id'=>'id'])->alias('address');
+        return $this->hasOne(OrderAddress::class, ['order_id'=>'id']);
     }
 
     /**
+     * 对应买家模型
      * @return \yii\db\ActiveQuery
      */
     public function getMember()
     {
-        return $this->hasOne(Member::class, ['id'=>'member_id'])->alias('member');
+        return $this->hasOne(Member::class, ['id'=>'member_id']);
     }
 
     /**
+     * 对应跟进人（管理员）模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFollower()
+    {
+        return $this->hasOne(\common\models\backend\Member::class, ['id'=>'follower_id']);
+    }
+
+    /**
+     * 对应订单商品信息模型
      * @return \yii\db\ActiveQuery
      */
     public function getGoods()
     {
-        return $this->hasMany(OrderGoods::class,['order_id'=>'id'])->alias('goods');
+        return $this->hasMany(OrderGoods::class,['order_id'=>'id']);
     }
 }

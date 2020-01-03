@@ -4,9 +4,9 @@ namespace backend\modules\order\controllers;
 
 use backend\controllers\BaseController;
 use common\enums\OrderStatusEnum;
+use common\models\order\OrderGoods;
 use Yii;
 use common\components\Curd;
-use common\enums\AppEnum;
 use common\enums\StatusEnum;
 use common\models\base\SearchModel;
 use common\models\order\Order;
@@ -31,8 +31,6 @@ class OrderController extends BaseController
      */
     public function actionIndex()
     {
-
-
         $orderStatus = Yii::$app->request->get('order_status', -1);
         $searchModel = new SearchModel([
             'model' => $this->modelClass,
@@ -44,7 +42,7 @@ class OrderController extends BaseController
             'pageSize' => $this->pageSize,
             'relations' => [
                 'account' => [''],
-                'address' => [''],
+                'address' => ['country_name', 'city_name'],
                 'member' => ['username', 'realname', 'mobile', 'email']
             ]
         ]);
@@ -71,8 +69,29 @@ class OrderController extends BaseController
 
         $model = $this->findModel($id);
 
+        $dataProvider = null;
+        if (!is_null($id)) {
+            $searchModel = new SearchModel([
+                'model' => OrderGoods::class,
+                'scenario' => 'default',
+                'partialMatchAttributes' => [], // 模糊查询
+                'defaultOrder' => [
+                    'id' => SORT_DESC
+                ],
+                'pageSize' => $this->pageSize,
+            ]);
+
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+//            $dataProvider->query->with(['lang']);
+//            $dataProvider->query->andWhere(['>', 'status', -1]);
+
+            $dataProvider->setSort(false);
+        }
+
         return $this->render($this->action->id, [
             'model' => $model,
+            'dataProvider' => $dataProvider,
         ]);
     }
 }

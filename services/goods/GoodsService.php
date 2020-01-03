@@ -289,6 +289,9 @@ class GoodsService extends Service
      */
     public function formatGoodsAttr(& $goods, $language = null)
     {
+        if(!$language) {
+            $language = \Yii::$app->params['language'];
+        }
         if(empty($goods)) {
            return false;
         }
@@ -355,7 +358,10 @@ class GoodsService extends Service
 
 
     //获取款和对应的商品
-    public function formatStyleGoodsById($style_id, $language){
+    public function formatStyleGoodsById($style_id, $language=null){
+        if(empty($language)){
+            $language = \Yii::$app->params['language'];
+        }
         $style_spec_array = [
             '10' =>array(
                  'attr_name'=>'materials',
@@ -387,7 +393,7 @@ class GoodsService extends Service
         $style['goodsDesc'] = $model['goods_body'];
         $style['categoryId'] = $model['type_id'];
         $style['goodsGiaImage'] = null;
-        $style['goodsMod'] = 2;
+        $style['goodsMod'] = $model['type_id'] == 12 ? 1: 2;
         $style['goodsStatus'] = $model['status']== 1? 2:1;
         $style['htmlUrl'] = null;
         $style['metaDesc'] = $model['meta_desc'];
@@ -399,14 +405,17 @@ class GoodsService extends Service
 
         if(isset($format_style_attrs['style_spec_a'])){
             $format_style_spec = $format_style_attrs['style_spec_a'];
-            foreach ($format_style_spec as $key=>$val){
-                foreach ($val['value'] as $k=>$v){
-                    $attr = array();
-                    $attr['id'] = $k;
-                    $attr['name'] = $v;
-                    $style[$style_spec_array[$key]['attr_name']][] = $attr;
+            foreach ($style_spec_array as $key => $val){
+                if(isset($format_style_spec[$key]['value'])){
+                    foreach ($format_style_spec[$key]['value'] as $k => $v){
+                        $attr = array();
+                        $attr['id'] = $k;
+                        $attr['name'] = $v;
+                        $style[$val['attr_name']][] = $attr;
+                    }
+                }else{
+                    $style[$val['attr_name']] = null;
                 }
-
             }
         }
 
@@ -457,11 +466,21 @@ class GoodsService extends Service
         $details = array();
         foreach ($goods_array  as $key => $val){
             $goods_spec = json_decode($val['goods_spec']);
-            if(!empty($goods_spec)){
-                foreach ($goods_spec as $k=>$v){
-                    $details[$key][$style_spec_array[$k]['key_name']] = (int)$v;
+            $goods_spec = (array)$goods_spec;
+            foreach ($style_spec_array as $k => $v){
+                if(isset($goods_spec[$k])){
+                    $details[$key][$v['key_name']] = (int)$goods_spec[$k];
+                }else{
+                    $details[$key][$v['key_name'] ]= null;
                 }
             }
+
+
+//            if(!empty($goods_spec)){
+//                foreach ($goods_spec as $k=>$v){
+//                    $details[$key][$style_spec_array[$k]['key_name']] = (int)$v;
+//                }
+//            }
 
             $details[$key]['barCode'] = null;
             $details[$key]['productNumber'] = null;

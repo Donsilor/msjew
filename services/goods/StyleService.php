@@ -56,8 +56,8 @@ class StyleService extends Service
 
 
 
-    //获取
-    public function getStyleList($type_id=null, $limit=null, $fields=['*'],$language=null ){
+    //获取商品信息
+    public function getStyleList($type_id=null, $limit=null, $order=null, $fields=['*'],$language=null ){
         if(empty($language)){
             $language = Yii::$app->params['language'];
         }
@@ -69,6 +69,9 @@ class StyleService extends Service
         }
         if(!empty($limit)){
             $query->limit($limit);
+        }
+        if($order){
+            $query->orderBy($order);
         }
         $result = $query->asArray()->select($fields)->all();
         return $result;

@@ -29,8 +29,9 @@ class IndexController extends OnAuthController
         $type_id = 12;
         $limit = 6;
         $language = $this->language;
+        $order = 'sale_volume desc';
         $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
-        $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit, $fields ,$language);
+        $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit,$order, $fields ,$language);
         $webSite = array();
         $webSite['moduleTitle'] = '最暢銷訂婚戒指';
         foreach ($style_list as $val){
@@ -41,7 +42,7 @@ class IndexController extends OnAuthController
             $moduleGoods['goodsCode'] = $val['style_sn'];
             $moduleGoods['goodsImages'] = $val['goods_images'];
             $moduleGoods['goodsName'] = $val['style_name'];
-            $moduleGoods['salePrice'] = $val['sale_price'];
+            $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $webSite['moduleGoods'][] = $moduleGoods;
         }
 

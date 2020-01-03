@@ -31,7 +31,7 @@ class RingController extends OnAuthController
      * @var Provinces
      */
     public $modelClass = Ring::class;
-    protected $authOptional = ['search','recommend','detail','guess-list'];
+    protected $authOptional = ['search','web-site','detail','guess-list'];
 
     /**
      * 款式商品搜索
@@ -90,7 +90,7 @@ class RingController extends OnAuthController
             $arr['ringCode'] = $val['ring_sn'];
             $arr['ringImg'] = $val['ring_images'];
             $arr['ringStyle'] = $val['ring_style'];
-            $arr['salePrice'] = $val['sale_price'];
+            $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $arr['status'] = $val['status'];
             $val = $arr;
         }
@@ -100,23 +100,66 @@ class RingController extends OnAuthController
 
 
 
-    //商品推荐
-    public function actionRecommend(){
-        $type_id = \Yii::$app->request->get("type_id",12);//产品线ID
-        if(!$type_id){
-            return ResultHelper::api(422, '产品线不能为空');
+    //訂婚戒指--活动页
+    public function actionWebSite(){
+        //对戒
+        $type_id = 2;
+        $limit = 4;
+        $language = $this->language;
+        $order = 'goods_clicks desc';
+        $fields = ['m.id', 'm.ring_images', 'm.ring_sn','lang.ring_name','m.sale_price'];
+        $query = Ring::find()->alias('m')
+            ->leftJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
+            ->where(['m.status'=>StatusEnum::ENABLED]);
+
+        if(!empty($limit)){
+            $query->limit($limit);
         }
-        $recommend_type = \Yii::$app->request->get("recommend_type",2);//产品线ID
-        $limit = \Yii::$app->request->get("limit",4);//查询数量
-        $fields = ['m.id', 'm.ring_images', 'lang.ring_name','m.sale_price'];
-        $result = Ring::find()->alias('m')->select($fields)
-            ->leftJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->where(['and',['like','m.recommend_type',$recommend_type],['m.status'=>StatusEnum::ENABLED]])
-            ->limit($limit)->asArray()->all();
-        foreach($result as & $val) {
-            $val['type_id'] = $type_id;
-            $val['coinType'] = $this->currencySign;
+        if($order){
+            $query->orderBy($order);
         }
+        $style_list = $query->asArray()->select($fields)->all();
+        $ring_web_site = array();
+        $ring_web_site['moduleTitle'] = '最暢銷訂婚戒指';
+        $ring_web_site['id'] = $type_id;
+        foreach ($style_list as $val){
+            $moduleGoods = array();
+            $moduleGoods['id'] = $val['id'];
+            $moduleGoods['categoryId'] = $type_id;
+            $moduleGoods['coinType'] = $this->currency;
+            $moduleGoods['ringCode'] = $val['ring_sn'];
+            $moduleGoods['ringImg'] = $val['ring_images'];
+            $moduleGoods['name'] = $val['ring_name'];
+            $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
+            $ring_web_site['moduleGoods'][] = $moduleGoods;
+        }
+
+
+        $where = ['a.attr_id'=>26, 'a.attr_value_id'=>41];
+        $man_web_site = $this->getAdvertStyle($where);
+        $man_web_site['moduleTitle'] = '自由搭配 愛我所愛';
+        $man_web_site['title'] = '男士結婚戒指';
+        $man_web_site['id'] = $type_id;
+
+        $where = ['a.attr_id'=>26, 'a.attr_value_id'=>42];
+        $woman_web_site = $this->getAdvertStyle($where);
+        $woman_web_site['moduleTitle'] = '自由搭配 愛我所愛';
+        $woman_web_site['title'] = '女士結婚戒指';
+        $woman_web_site['id'] = $type_id;
+
+
+        $result = array();
+        $result['webSite'][0] = $ring_web_site;
+        $result['webSite'][1] = $woman_web_site;
+        $result['webSite'][2] = $man_web_site;
+        $result['advert'] = array(
+            'dsDesc' => '訂婚戒指——banner全屏',
+            'dsImg' => '/adt/image1566979883784.png',
+            'dsName' => '訂婚戒指——banner全屏',
+            'dsShowType' => 1,
+            'tdOpenType' => 1,
+            'tdStatus' => 1,
+        );
         return $result;
 
     }
@@ -128,7 +171,7 @@ class RingController extends OnAuthController
      */
     public function actionDetail()
     {
-        $id = \Yii::$app->request->get("id");
+        $id = \Yii::$app->request->post("id");
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
@@ -146,7 +189,7 @@ class RingController extends OnAuthController
         $ring['name'] = $model->lang->ring_name;
         $ring['ringImg'] = $model->ring_images;
         $ring['ringCode'] = $model->ring_sn;
-        $ring['salePrice'] = $model->sale_price;
+        $ring['salePrice'] = $this->exchangeAmount($model->sale_price);
         $ring['coinType'] = $this->currencySign;
         $ring['status'] = $model->status;
         $ring['metaDesc'] = $model->lang->meta_desc;
@@ -186,6 +229,39 @@ class RingController extends OnAuthController
         }
 
     }
+
+
+    //获取商品信息
+    public function getAdvertStyle($where=null){
+        $type_id = 2;
+        $limit = 3;
+        $order = 'goods_clicks desc';
+        $fields =  ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
+        $language = $this->language;
+        $query = Style::find()->alias('m')
+            ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
+            ->leftJoin(AttributeIndex::tableName().' a','a.style_id=m.id')
+            ->where(['m.status'=>StatusEnum::ENABLED,'m.type_id'=>$type_id]);
+
+        if($where){
+            $query->andWhere($where);
+        }
+        $style_list = $query->limit($limit)->orderBy($order)->asArray()->select($fields)->all();
+        $result = array();
+        foreach ($style_list as $val){
+            $moduleGoods = array();
+            $moduleGoods['id'] = $val['id'];
+            $moduleGoods['categoryId'] = $type_id;
+            $moduleGoods['coinType'] = $this->currency;
+            $moduleGoods['goodsCode'] = $val['style_sn'];
+            $moduleGoods['goodsImages'] = $val['goods_images'];
+            $moduleGoods['goodsName'] = $val['style_name'];
+            $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
+            $result['moduleGoods'][] = $moduleGoods;
+        }
+        return $result;
+    }
+
 
 
 

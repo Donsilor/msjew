@@ -25,7 +25,7 @@ class DiamondController extends OnAuthController
      * @var Provinces
      */
     public $modelClass = Diamond::class;
-    protected $authOptional = ['search','detail','guess-list'];
+    protected $authOptional = ['search','detail','web-site'];
 
     /**
      * 款式商品搜索
@@ -101,7 +101,7 @@ class DiamondController extends OnAuthController
             $arr['id'] = $val['id'];
             $arr['goodsImages'] = $val['goods_image'];
             $arr['goodsName'] = $val['goods_name'];
-            $arr['salePrice'] = $val['sale_price'];
+            $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $arr['isJoin'] = null;
             $specsModels['SKU'] = $val['goods_sn'];
             $specsModels['clarity'] = \Yii::$app->attr->valueName($val['clarity']);
@@ -134,7 +134,8 @@ class DiamondController extends OnAuthController
      */
     public function actionDetail()
     {
-        $id = \Yii::$app->request->get("goodsId");
+        $type_id = 15;
+        $id = \Yii::$app->request->post("goodsId");
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
@@ -154,7 +155,7 @@ class DiamondController extends OnAuthController
         $diamond['coinType'] = $this->currencySign;
         $diamond['goodsName'] = $model->lang->goods_name;
         $diamond['goodsCode'] = $model->goods_sn;
-        $diamond['salePrice'] = $model->sale_price;
+        $diamond['salePrice'] = $this->exchangeAmount($model->sale_price);
         $diamond['goods3ds'] = $model->goods_3ds;
         $diamond['goodsGiaImage'] = $model->goods_gia_image;
         $diamond['goodsImages'] = $model->goods_image.",".$model->parame_images;
@@ -178,8 +179,25 @@ class DiamondController extends OnAuthController
         $diamond['metaDesc'] = $model->lang->meta_desc;
         $diamond['metaTitle'] = $model->lang->meta_title;
         $diamond['metaWord'] = $model->lang->meta_word;
+        $diamond['details'] = array(
+          [
+              'id' => $model->id,
+              'barCode' => null,
+              'categoryId' => $type_id,
+              'goodsDetailsCode' => $model->goods_sn,
+              'goodsId' => $model->id,
+              'stock' => $model->goods_num,
+              'retailMallPrice' => $this->exchangeAmount($model->sale_price),
+              'productNumber' => null,
+              'warehouse' => null,
+              'material' => null,
+              'size' => null,
 
-        $type_id = 1;
+
+          ]
+        );
+
+
         $diamond_attr = array(
             '5'=>'carat',
             '2'=>'clarity',
@@ -203,19 +221,20 @@ class DiamondController extends OnAuthController
 
 //        return $diamond_array;
         foreach ($goods_attribute_spec as $value){
-            if(in_array($value['id'],$diamond_attr_keys)){
+            $arrt_id = $value['id'];
+            if(in_array($arrt_id,$diamond_attr_keys)){
                 if($value['input_type'] == 1){
                     $configAttrId = null;
-                    $configAttrVal = $diamond_array[$diamond_attr[$value['id']]];
+                    $configAttrVal = $diamond_array[$diamond_attr[$arrt_id]];
                 }else{
-                    $configAttrId = $diamond_array[$diamond_attr[$value['id']]];
+                    $configAttrId = $diamond_array[$diamond_attr[$arrt_id]];
                     $configAttrVal = \Yii::$app->attr->valueName($configAttrId);
                 }
                 $specs[] = [
                     'categoryId'=>$type_id,
                     'configAttrId'=>$configAttrId,
                     'configAttrVal'=>$configAttrVal,
-                    'configId'=>$value['id'],
+                    'configId'=>$arrt_id,
                     //'configInputType'=>1,
                     'configName'=>$value['attr_name'],
                     'queryColumn'=>$diamond_attr[$value['id']],
@@ -232,6 +251,42 @@ class DiamondController extends OnAuthController
         return $diamond;
     }
 
+
+    //訂婚戒指--活动页
+    public function actionWebSite(){
+        $type_id = 12;
+        $limit = 5;
+        $language = $this->language;
+        $order = 'virtual_clicks desc';
+        $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
+        $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit,$order, $fields ,$language);
+        $webSite = array();
+        $webSite['moduleTitle'] = '最暢銷訂婚戒指';
+        $webSite['type'] = $type_id;
+        foreach ($style_list as $val){
+            $moduleGoods = array();
+            $moduleGoods['id'] = $val['id'];
+            $moduleGoods['categoryId'] = $type_id;
+            $moduleGoods['coinType'] = $this->currency;
+            $moduleGoods['goodsCode'] = $val['style_sn'];
+            $moduleGoods['goodsImages'] = $val['goods_images'];
+            $moduleGoods['goodsName'] = $val['style_name'];
+            $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
+            $webSite['moduleGoods'][] = $moduleGoods;
+        }
+        $result = array();
+        $result['webSite'] = $webSite;
+        $result['advert'] = array(
+            'dsDesc' => '鑽石——banner全屏',
+            'dsImg' => '/adt/image1566005633802.png',
+            'dsName' => '鑽石——banner全屏',
+            'dsShowType' => 1,
+            'tdOpenType' => 1,
+            'tdStatus' => 1,
+        );
+        return $result;
+
+    }
 
 
 

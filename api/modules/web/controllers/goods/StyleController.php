@@ -24,7 +24,7 @@ class StyleController extends OnAuthController
      * @var Provinces
      */
     public $modelClass = Style::class;
-    protected $authOptional = ['search','recommend','detail','guess-list'];
+    protected $authOptional = ['search','web-site','detail','guess-list'];
 
 
     /**
@@ -33,7 +33,7 @@ class StyleController extends OnAuthController
      */
     public function actionSearch(){
         $sort_map = [
-            "price"=>'m.sale_price',//价格
+            "sale_price"=>'m.sale_price',//价格
             "sale_volume"=>'m.sale_volume',//销量
         ];
         $type_id = \Yii::$app->request->post("categoryId");//产品线ID
@@ -62,7 +62,7 @@ class StyleController extends OnAuthController
 
             $subQuery = AttributeIndex::find()->alias('a')->select(['a.style_id'])->distinct("a.style_id");
             if($type_id) {
-                $subQuery->where(['a.type_id'=>$type_id]);
+                $query ->andWhere(['m.type_id'=>$type_id]);
             }
 
             $k = 0;
@@ -118,9 +118,10 @@ class StyleController extends OnAuthController
             $arr['categoryId'] = $type_id;
             $arr['coinType'] = $this->currencySign;
             $arr['goodsImages'] = $val['goods_images'];
-            $arr['salePrice'] = $val['sale_price'];
+            $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $arr['goodsName'] = $val['style_name'];
             $arr['isJoin'] = null;
+            $arr['showType'] = 2;
             $arr['specsModels'] = null;
             $val = $arr;
         }
@@ -129,23 +130,37 @@ class StyleController extends OnAuthController
     }
 
 
-    //商品推荐
-    public function actionRecommend(){
-        $type_id = \Yii::$app->request->get("type_id");//产品线ID
-        if(!$type_id){
-            return ResultHelper::api(422, '产品线不能为空');
+    //訂婚戒指--活动页
+    public function actionWebSite(){
+        $type_id = 12;
+        $limit = 6;
+        $language = $this->language;
+        $order = 'sale_volume desc';
+        $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
+        $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit,$order, $fields ,$language);
+        $webSite = array();
+        $webSite['moduleTitle'] = '最暢銷訂婚戒指';
+        foreach ($style_list as $val){
+            $moduleGoods = array();
+            $moduleGoods['id'] = $val['id'];
+            $moduleGoods['categoryId'] = $type_id;
+            $moduleGoods['coinType'] = $this->currency;
+            $moduleGoods['goodsCode'] = $val['style_sn'];
+            $moduleGoods['goodsImages'] = $val['goods_images'];
+            $moduleGoods['goodsName'] = $val['style_name'];
+            $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
+            $webSite['moduleGoods'][] = $moduleGoods;
         }
-        $recommend_type = \Yii::$app->request->get("recommend_type",2);//产品线ID
-        $limit = \Yii::$app->request->get("limit",4);//查询数量
-        $fields = ['m.id', 'm.goods_images', 'lang.style_name','m.sale_price'];
-        $result = Style::find()->alias('m')->select($fields)
-            ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->where(['and',['m.type_id'=>$type_id],['like','m.recommend_type',$recommend_type],['m.status'=>StatusEnum::ENABLED]])
-            ->limit($limit)->asArray()->all();
-        foreach($result as & $val) {
-            $val['type_id'] = $type_id;
-            $val['coinType'] = $this->currencySign;
-        }
+        $result = array();
+        $result['webSite'] = $webSite;
+        $result['advert'] = array(
+            'dsDesc' => '訂婚戒指——banner全屏',
+            'dsImg' => '/adt/image1566979840127.png',
+            'dsName' => '訂婚戒指——banner全屏',
+            'dsShowType' => 1,
+            'tdOpenType' => 1,
+            'tdStatus' => 1,
+        );
         return $result;
 
     }
@@ -158,7 +173,7 @@ class StyleController extends OnAuthController
      */
     public function actionDetail()
     {
-        $id = \Yii::$app->request->get("goodsId");
+        $id = \Yii::$app->request->post("goodsId");
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
@@ -180,7 +195,7 @@ class StyleController extends OnAuthController
                 $recommend['id'] = $val->id;
                 $recommend['goodsName'] = $val->lang->style_name;
                 $recommend['categoryId'] = $model->type_id;
-                $recommend['salePrice'] = $val->sale_price;
+                $recommend['salePrice'] = $this->exchangeAmount($val->sale_price);
                 $recommend['goodsImages'] = $val->goods_images;
                 $recommend['isJoin'] = null;
                 $recommend['specsModels'] = null;

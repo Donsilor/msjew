@@ -2,6 +2,7 @@
 
 namespace common\models\order;
 
+use common\models\member\Member;
 use Yii;
 
 /**
@@ -64,7 +65,7 @@ class Order extends \common\models\base\BaseModel
     public function attributeLabels()
     {
         return [
-            'id' => '订单索引id',
+            'id' => 'ID',
             'merchant_id' => '商户ID',
             'language' => '下单时语言',
             'order_sn' => '订单编号',
@@ -88,6 +89,8 @@ class Order extends \common\models\base\BaseModel
             'status' => '状态',
             'created_at' => '订单生成时间',
             'updated_at' => '更新时间',
+
+            'memberss' => 'test',
         ];
     }
 
@@ -105,6 +108,14 @@ class Order extends \common\models\base\BaseModel
     public function getAddress()
     {
         return $this->hasOne(OrderAddress::class, ['order_id'=>'id'])->alias('address');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMember()
+    {
+        return $this->hasOne(Member::class, ['id'=>'member_id'])->alias('member');
     }
 
     /**

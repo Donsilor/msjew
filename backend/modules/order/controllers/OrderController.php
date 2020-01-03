@@ -31,6 +31,8 @@ class OrderController extends BaseController
      */
     public function actionIndex()
     {
+
+
         $orderStatus = Yii::$app->request->get('order_status', -1);
         $searchModel = new SearchModel([
             'model' => $this->modelClass,
@@ -39,17 +41,22 @@ class OrderController extends BaseController
             'defaultOrder' => [
                 'id' => SORT_ASC,
             ],
-            'pageSize' => $this->pageSize
+            'pageSize' => $this->pageSize,
+            'relations' => [
+                'account' => [''],
+                'address' => [''],
+                'member' => ['username', 'realname', 'mobile', 'email']
+            ]
         ]);
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->andWhere(['>=', 'status', StatusEnum::DISABLED]);
 
-        //多表连接
-        $dataProvider->query->joinWith(['account', 'address']);
-
+        //订单状态
         if ($orderStatus !== -1)
             $dataProvider->query->andWhere(['=', 'order_status', $orderStatus]);
+
+        // 数据状态
+        $dataProvider->query->andWhere(['>=', 'order.status', StatusEnum::DISABLED]);
 
         return $this->render($this->action->id, [
             'dataProvider' => $dataProvider,

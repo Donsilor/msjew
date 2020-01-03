@@ -19,7 +19,7 @@ use Yii;
  * @property string $safe_fee 保险费
  * @property string $other_fee 附加费
  */
-class Account extends \common\models\base\BaseModel
+class OrderAccount extends \common\models\base\BaseModel
 {
     /**
      * {@inheritdoc}

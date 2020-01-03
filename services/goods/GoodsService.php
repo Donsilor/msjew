@@ -272,14 +272,14 @@ class GoodsService extends Service
         $query = Goods::find()->alias('g')
                 ->innerJoin(Style::tableName()." s","g.style_id=s.id")
                 ->innerJoin(StyleLang::tableName()." sl","s.id=sl.master_id and sl.language='{$language}'")
-                ->select(['g.*','sl.style_name as goods_name','sl.language','s.style_attr as goods_attr'])
+                ->select(['g.*','s.style_sn','sl.style_name as goods_name','sl.language','s.style_attr as goods_attr'])
                 ->where(['g.id'=>$goods_id]);
         
-       $model = $query->asArray()->one();
+       $goods = $query->asArray()->one();
        
-       $this->formatGoodsAttr($model, $language);
+       $this->formatGoodsAttr($goods, $language);
        
-       return $model;
+       return $goods;
     }
     /**
      * 格式化商品属性数据

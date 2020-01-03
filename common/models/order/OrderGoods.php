@@ -26,7 +26,7 @@ use Yii;
  * @property int $created_at 创建时间
  * @property int $updated_at 更新时间
  */
-class Goods extends \common\models\base\BaseModel
+class OrderGoods extends \common\models\base\BaseModel
 {
     /**
      * {@inheritdoc}
@@ -81,6 +81,6 @@ class Goods extends \common\models\base\BaseModel
     
     public function langModel()
     {
-        return new GoodsLang();
+        return new OrderGoodsLang();
     }
 }

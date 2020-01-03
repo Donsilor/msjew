@@ -58,7 +58,8 @@
         "overtrue/wechat": "~4.2.2",
         "mingyoung/dingtalk": "2.0",
         "kartik-v/yii2-checkbox-x": "@dev",
-        "myweishanli/yii2-ip2location": "^1.0"
+        "myweishanli/yii2-ip2location": "^1.0",
+		"paypal/rest-api-sdk-php":"*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

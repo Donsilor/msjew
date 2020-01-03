@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use common\helpers\RegularHelper;
 use common\models\common\SmsLog;
+use common\models\member\Member;
 
 /**
  * Class SmsCodeForm
@@ -33,6 +34,7 @@ class SmsCodeForm extends Model
             [['mobile', 'usage'], 'required'],
             [['usage'], 'in', 'range' => array_keys(SmsLog::$usageExplain)],
             ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号'],
+            ['mobile', 'validateMobile'],
         ];
     }
 
@@ -46,7 +48,27 @@ class SmsCodeForm extends Model
             'usage' => '用途',
         ];
     }
-
+    /**
+     * 验证手机号码
+     * @param unknown $attribute
+     * @return boolean
+     */
+    public function validateMobile($attribute)
+    {
+        $count = Member::find()->where(['mobile'=>$this->attributes])->count();
+        if($this->usage == SmsLog::USAGE_UP_PWD || $this->usage == SmsLog::USAGE_LOGIN) {
+             if(!$count){
+                 $this->addError($attribute,"手机号码未绑定账号");
+                 return false;
+             }
+        }else if($this->usage == SmsLog::USAGE_REGISTER){
+            if($count){
+                $this->addError($attribute,"手机号码已绑定过账号");
+                return false;
+            }
+        }
+        return true;
+    }
     /**
      * @throws \yii\web\UnprocessableEntityHttpException
      */

@@ -22,7 +22,7 @@ use common\models\base\BaseModel;
  * @property int $created_at 创建时间
  * @property int $updated_at 更新时间
  */
-class Cart extends BaseModel
+class OrderCart extends BaseModel
 {
     /**
      * {@inheritdoc}

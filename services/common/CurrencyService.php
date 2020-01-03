@@ -56,13 +56,13 @@ class CurrencyService extends Service
             return $this->currencies;
         }
         
-        if (!($list = Yii::$app->cache->get($cacheKey)) || $noCache == true) {
+        if (!($currencies = Yii::$app->cache->get($cacheKey)) || $noCache == true) {
             
             $models = Currency::find()->select(['code','name','sign','rate','refer_rate'])->where(['status'=>StatusEnum::ENABLED])->asArray()->all();
             
-            $list = [];
+            $currencies = [];
             foreach ($models as $row) {
-                $list[$row['code']] = [
+                $currencies[$row['code']] = [
                         'name'=>$row['name'],
                         'code'=>strtoupper($row['code']),
                         'sign'=>$row['sign'],
@@ -71,12 +71,12 @@ class CurrencyService extends Service
             }
             $duration = (int) rand(3600,4000);//防止缓存穿透
             // 设置缓存
-            Yii::$app->cache->set($cacheKey, $list,$duration);
+            Yii::$app->cache->set($cacheKey, $currencies,$duration);
            
         }
-        $this->currencies = $list;
+        $this->currencies = $currencies;
         
-        return $list;
+        return $currencies;
     }
     /**
      * 货币金额转换
@@ -97,7 +97,7 @@ class CurrencyService extends Service
         }
         $rate = $info['rate'] ?? 1;
         $sign = $info['sign'] ?? $currency;
-        $amount = bcdiv($amount,$rate,$format);
+        $amount = bcmul($amount,$rate,$format);
         
         return $amount;
     }

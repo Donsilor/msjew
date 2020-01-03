@@ -21,6 +21,11 @@ use Yii;
  */
 class OrderAccount extends \common\models\base\BaseModel
 {
+    
+    public function behaviors()
+    {
+        return [];
+    }
     /**
      * {@inheritdoc}
      */

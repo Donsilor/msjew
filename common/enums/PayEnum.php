@@ -7,7 +7,7 @@ namespace common\enums;
  * @package common\enums
  * @author jianyan74 <751393839@qq.com>
  */
-class PayEnum
+class PayEnum extends BaseEnum
 {
     const ORDER_GROUP = 'default';
     const ORDER_GROUP_GOODS = 'goods';
@@ -32,7 +32,23 @@ class PayEnum
     const PAY_TYPE_USER_MONEY = 5;
     const PAY_TYPE_PAYPAL = 6;
     const PAY_TYPE_OFFLINE = 100;
-
+    
+    /**
+     * @return array
+     */
+    public static function getMap(): array
+    {
+        return [
+                self::PAY_TYPE_WECHAT => \Yii::t('common','微信'),
+                self::PAY_TYPE_ALI => '支付宝',
+                self::PAY_TYPE_UNION => '银联',
+                self::PAY_TYPE_PAYPAL => 'Paypal',
+                //self::PAY_TYPE_MINI_PROGRAM => '小程序',
+                // self::PAY_TYPE_USER_MONEY => '余额',
+                //self::PAY_TYPE_OFFLINE => '线下',
+                self::PAY_TYPE => '待支付',
+        ];
+    }
     /**
      * 支付类型
      *
@@ -43,9 +59,9 @@ class PayEnum
         self::PAY_TYPE_ALI => '支付宝',
         self::PAY_TYPE_UNION => '银联',
         self::PAY_TYPE_PAYPAL => 'Paypal',
-        //self::PAY_TYPE_MINI_PROGRAM => '小程序',
-       // self::PAY_TYPE_USER_MONEY => '余额',
-        //self::PAY_TYPE_OFFLINE => '线下',
+        self::PAY_TYPE_MINI_PROGRAM => '小程序',
+        self::PAY_TYPE_USER_MONEY => '余额',
+        self::PAY_TYPE_OFFLINE => '线下',
         self::PAY_TYPE => '待支付',
     ];    
     

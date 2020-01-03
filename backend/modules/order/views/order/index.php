@@ -8,6 +8,7 @@ use kartik\daterange\DateRangePicker;
 
 $this->title = '订单列表';
 $this->params['breadcrumbs'][] = ['label' => $this->title];
+
 ?>
 
 <div class="row">
@@ -33,7 +34,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     <?= Html::activeTextInput($searchModel, 'member.email', [
                                         'class' => 'form-control',
                                         'style' => 'width:200px',
-//                                        'value' => '',
                                     ]);
                                     ?>
                                 </div>
@@ -41,8 +41,11 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             <div class="col-sm-3">
                                 <div class="input-group m-b">
                                     支付方式：<br/>
-                                    <input type="text" class="form-control" name="SearchModel[title]"
-                                           placeholder="标题或者ID" value=""/>
+                                    <?= Html::activeDropDownList($searchModel, 'payment_type', \common\enums\PayEnum::getMap(), [
+                                        'prompt' => '全部',
+                                        'class' => 'form-control',
+                                    ]);
+                                    ?>
                                 </div>
                             </div>
                             <div class="col-sm-3">
@@ -114,9 +117,9 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     Html::activeTextInput($searchModel, 'member.email', [
                                         'class' => 'hidden',
                                     ]) .
-//                                    Html::activeTextInput($searchModel, 'title', [
-//                                        'class' => 'hidden',
-//                                    ]) .
+                                    Html::activeTextInput($searchModel, 'payment_type', [
+                                        'class' => 'hidden',
+                                    ]) .
                                     Html::activeTextInput($searchModel, 'created_at', [
                                         'class' => 'hidden',
                                     ]) .
@@ -197,7 +200,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                             [
                                 'label' => '支付状态',
-                                'filter' => Html::activeDropDownList($searchModel, 'language', ['1' => '是', '2' => '否'], [
+                                'filter' => Html::activeDropDownList($searchModel, 'order_sn', ['1' => '是', '2' => '否'], [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
                                 ]),
@@ -227,7 +230,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                             [
                                 'label' => '跟进状态',
-                                'filter' => Html::activeDropDownList($searchModel, 'language', ['1' => '是', '2' => '否'], [
+                                'filter' => Html::activeDropDownList($searchModel, 'order_sn', ['1' => '是', '2' => '否'], [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
                                 ]),

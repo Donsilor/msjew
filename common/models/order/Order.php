@@ -14,7 +14,7 @@ use Yii;
  * @property string $order_sn 订单编号
  * @property string $pay_sn 支付单号
  * @property int $member_id 买家id
- * @property string $payment_code 支付方式名称代码
+ * @property string $payment_type 支付方式名称代码
  * @property int $payment_time 支付(付款)时间
  * @property int $finished_time 订单完成时间
  * @property int $evaluation_status 评价状态 0未评价，1已评价，2已过期未评价
@@ -48,9 +48,9 @@ class Order extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id','payment_type', 'member_id', 'payment_time', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['merchant_id','payment_type', 'member_id', 'payment_time', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at','payment_type'], 'integer'],
             [['order_sn','member_id'], 'required'],
-            [['language'], 'string', 'max' => 5],
+            [['language'], 'safe'],
             [['order_sn','pay_sn'], 'string', 'max' => 20],
             [['express_no', 'trade_no'], 'string', 'max' => 50],
             [['buyer_remark', 'seller_remark'], 'string', 'max' => 500],
@@ -69,7 +69,7 @@ class Order extends \common\models\base\BaseModel
             'order_sn' => '订单编号',
             'pay_sn' => '支付单号',
             'member_id' => '买家id',
-            'payment_code' => '支付方式名称代码',
+            'payment_type' => '支付方式',
             'payment_time' => '支付(付款)时间',
             'finished_time' => '订单完成时间',
             'evaluation_status' => '评价状态',
@@ -87,40 +87,51 @@ class Order extends \common\models\base\BaseModel
             'status' => '状态',
             'created_at' => '订单生成时间',
             'updated_at' => '更新时间',
-
-            'memberss' => 'test',
         ];
     }
 
     /**
+     * 对应订单付款信息模型
      * @return \yii\db\ActiveQuery
      */
     public function getAccount()
     {
-        return $this->hasOne(OrderAccount::class, ['order_id'=>'id'])->alias('account');
+        return $this->hasOne(OrderAccount::class, ['order_id'=>'id']);
     }
 
     /**
+     * 对应订单地址模型
      * @return \yii\db\ActiveQuery
      */
     public function getAddress()
     {
-        return $this->hasOne(OrderAddress::class, ['order_id'=>'id'])->alias('address');
+        return $this->hasOne(OrderAddress::class, ['order_id'=>'id']);
     }
 
     /**
+     * 对应买家模型
      * @return \yii\db\ActiveQuery
      */
     public function getMember()
     {
-        return $this->hasOne(Member::class, ['id'=>'member_id'])->alias('member');
+        return $this->hasOne(Member::class, ['id'=>'member_id']);
     }
 
     /**
+     * 对应跟进人（管理员）模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFollower()
+    {
+        return $this->hasOne(\common\models\backend\Member::class, ['id'=>'follower_id']);
+    }
+
+    /**
+     * 对应订单商品信息模型
      * @return \yii\db\ActiveQuery
      */
     public function getGoods()
     {
-        return $this->hasMany(OrderGoods::class,['order_id'=>'id'])->alias('goods');
+        return $this->hasMany(OrderGoods::class,['order_id'=>'id']);
     }
 }

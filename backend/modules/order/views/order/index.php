@@ -26,36 +26,29 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
 
             <div class="tab-content">
                 <div class="box-body table-responsive top-form">
-                    <div class="row">
-                        <div class="col-sm-12">
+                    <div class="row col-sm-12">
                             <div class="col-sm-3">
-                                <div class="input-group m-b">
-                                    邮箱：<br/>
+                                   	  邮箱：<br/>
                                     <?= Html::activeTextInput($searchModel, 'member.email', [
-                                        'class' => 'form-control',
-                                        'style' => 'width:200px',
+                                        'class' => 'form-control',               
                                     ]);
                                     ?>
-                                </div>
                             </div>
                             <div class="col-sm-3">
-                                <div class="input-group m-b">
-                                    支付方式：<br/>
+                                   	 支付方式：<br/>
                                     <?= Html::activeDropDownList($searchModel, 'payment_type', \common\enums\PayEnum::getMap(), [
                                         'prompt' => '全部',
                                         'class' => 'form-control',
                                     ]);
                                     ?>
-                                </div>
                             </div>
                             <div class="col-sm-3">
-                                <div class="input-group m-b">
                                     下单时间：<br/>
                                     <?= DateRangePicker::widget([    // 日期组件
                                         'model' => $searchModel,
                                         'attribute' => 'created_at',
                                         'value' => '',
-                                        'options' => ['readonly' => true],
+                                        'options' => ['readonly' => true,'class' => 'form-control',],
                                         'pluginOptions' => [
                                             'format' => 'yyyy-mm-dd',
                                             'locale' => [
@@ -69,33 +62,15 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                         ],
                                     ])
                                     ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="col-sm-3">
-                                <div class="input-group m-b">
-                                    语言版本：<br/>
-                                    <?= Html::activeDropDownList($searchModel, 'language', \common\enums\LanguageEnum::getMap(), [
-                                        'prompt' => '全部',
-                                        'class' => 'form-control',
-                                    ]);
-                                    ?>
-                                </div>
                             </div>
                             <div class="col-sm-3">
-                                <div class="input-group m-b">
-                                    来源客户端：<br/>
+                                    	来源客户端：<br/>
                                     <?= Html::activeDropDownList($searchModel, 'order_from', \common\enums\AppEnum::getMap(), [
                                         'prompt' => '全部',
                                         'class' => 'form-control',
                                     ]);
                                     ?>
-                                </div>
                             </div>
-                        </div>
                     </div>
                 </div>
                 <div class="active tab-pane">

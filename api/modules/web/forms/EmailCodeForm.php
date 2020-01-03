@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use common\helpers\RegularHelper;
 use common\models\common\EmailLog;
+use common\models\member\Member;
 
 /**
  * Class SmsCodeForm
@@ -33,6 +34,7 @@ class EmailCodeForm extends Model
                 [['email', 'usage'], 'required'],
                 [['usage'], 'in', 'range' => array_keys(EmailLog::$usageExplain)],
                 ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => '请输入正确的邮箱地址'],
+                ['email', 'validateEmail'],
         ];
     }
     
@@ -45,6 +47,28 @@ class EmailCodeForm extends Model
                 'email' => '邮箱',
                 'usage' => '用途',
         ];
+    }
+    
+    /**
+     * 验证手机号码
+     * @param unknown $attribute
+     * @return boolean
+     */
+    public function validateEmail($attribute)
+    {
+        $count = Member::find()->where(['mobile'=>$this->attributes])->count();
+        if($this->usage == EmailLog::USAGE_UP_PWD || $this->usage == EmailLog::USAGE_LOGIN) {
+            if(!$count){
+                $this->addError($attribute,"邮箱地址未绑定账号");
+                return false;
+            }
+        }else if($this->usage == EmailLog::USAGE_REGISTER){
+            if($count){
+                $this->addError($attribute,"邮箱地址已绑定过账号");
+                return false;
+            }
+        }
+        return true;
     }
     
     /**

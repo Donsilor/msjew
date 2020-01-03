@@ -97,7 +97,7 @@ class CurrencyService extends Service
         }
         $rate = $info['rate'] ?? 1;
         $sign = $info['sign'] ?? $currency;
-        $amount = bcdiv($amount,$rate,$format);
+        $amount = bcmul($amount,$rate,$format);
         
         return $amount;
     }

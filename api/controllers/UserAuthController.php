@@ -42,14 +42,7 @@ class UserAuthController extends OnAuthController
      * @return unknown
      */
     protected function findModels($fields = [])
-    {
-        /* @var $model \yii\db\ActiveRecord */
-        if (!($models = $this->modelClass::find()->select($fields)->where([
-                'member_id'=>$this->member_id
-        ])->all())) {
-            throw new NotFoundHttpException('请求的数据不存在');
-        }
-        
-        return $models;
+    {        
+        return $this->modelClass::find()->select($fields)->where(['member_id'=>$this->member_id])->all();
     }
 }

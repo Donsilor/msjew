@@ -30,7 +30,7 @@ class CartController extends UserAuthController
         $id = \Yii::$app->request->get('id');
         
         $query = $this->modelClass::find()->where(['member_id'=>$this->member_id]);
-        
+
         if(!empty($id) && $id = explode(',',$id)) {
             $query->andWhere(['id'=>$id]);
         }
@@ -53,10 +53,9 @@ class CartController extends UserAuthController
             $cart['collectionId'] = null;
             $cart['collectionStatus'] = null;
             $cart['localSn'] = null;
-            if($cart['groupType']){
-                $cart['groupType'] = $model->group_type;
-                $cart['groupId'] = $model->group_id;
-            }
+            $cart['groupType'] = $model->group_type;
+            $cart['groupId'] = $model->group_id;
+
             $simpleGoodsEntity = [
                     "goodId"=>$goods['style_id'],
                     "goodsDetailsId"=>$model->goods_id,

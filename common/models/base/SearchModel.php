@@ -219,7 +219,7 @@ class SearchModel extends Model
      * @param array $params
      * @return ActiveDataProvider
      */
-    public function search($params,$ignores = [],$query=null)
+    public function search($params,$ignores = [],$query = null)
     {
         if($query == null)$query = call_user_func([$this->modelClassName, 'find']);
         $dataProvider = new ActiveDataProvider(

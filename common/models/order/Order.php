@@ -48,14 +48,12 @@ class Order extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id', 'member_id', 'payment_time', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['order_sn', 'pay_sn', 'member_id'], 'required'],
+            [['merchant_id','payment_type', 'member_id', 'payment_time', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['order_sn','member_id'], 'required'],
             [['language'], 'string', 'max' => 5],
-            [['payment_code'], 'string', 'max' => 10],
             [['order_sn','pay_sn'], 'string', 'max' => 20],
             [['express_no', 'trade_no'], 'string', 'max' => 50],
             [['buyer_remark', 'seller_remark'], 'string', 'max' => 500],
-            [['buyer_email'], 'string', 'max' => 60],
         ];
     }
 

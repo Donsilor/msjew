@@ -22,7 +22,7 @@ class OrderController extends UserAuthController
     protected $authOptional = [];
     
     
-    public function index()
+    public function actionIndex()
     {
         
     }
@@ -31,7 +31,7 @@ class OrderController extends UserAuthController
      * {@inheritDoc}
      * @see \api\controllers\OnAuthController::add()
      */
-    public function add()
+    public function actionAdd()
     {
         try{
             $trans = \Yii::$app->db->beginTransaction();
@@ -41,7 +41,7 @@ class OrderController extends UserAuthController
             if(!$model->validate()) {
                 return ResultHelper::api(422,$this->getError($model));
             }
-            $order = \Yii::$app->services->order->createOrder($model->cart_ids,$model->toArray(), $this->member_id, $model->buyer_address_id);
+            $order = \Yii::$app->services->order->createOrder($model->cart_ids, $this->member_id, $model->buyer_address_id,$model->toArray());
             $trans->commit();
             return $order;
         }catch(Exception $e) {
@@ -50,14 +50,37 @@ class OrderController extends UserAuthController
         }
     }
     
-    public function edit()
+    public function actionEdit()
     {
         return $this->edit();
     }
     
-    public function info()
+    public function actionInfo()
     {
         
+    }
+    
+    /**
+     * 订单金额税费信息
+     * @return array
+     */
+    public function actionTax()
+    {
+        $cartIds = \Yii::$app->request->get("cartIds");
+        $addressId = \Yii::$app->request->get("addressId");
+        if(empty($cartIds)) {
+            return ResultHelper::api(422,"cartIds不能为空");
+        }
+        $taxInfo = \Yii::$app->services->order->getOrderAccountTax($cartIds, $this->member_id, $addressId);        
+        return [
+                'logisticsFee' => $taxInfo['shipping_fee'],
+                'orderAmount'  => $taxInfo['order_amount'],                
+                'productAmount' => $taxInfo['goods_amount'],
+                'safeFee'=>$taxInfo['safe_fee'],
+                'taxFee'  =>$taxInfo['tax_fee'],
+                'planDays' =>$taxInfo['plan_days'],
+                'currency' =>$this->currencySign,
+        ];
     }
     
 }

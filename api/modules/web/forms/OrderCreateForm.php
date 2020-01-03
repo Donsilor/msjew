@@ -24,7 +24,6 @@ class OrderCreateForm extends Model
                 [['cart_ids','buyer_address_id','order_amount'], 'required'],
                 [['buyer_address_id'], 'integer'],
                 [['order_amount'], 'number'],                
-                [['buyer_email'], 'string','max'=>60],
                 [['buyer_remark'], 'string','max'=>500],
                 [['cart_ids'], 'validateIds'],
         ];

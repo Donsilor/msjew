@@ -133,7 +133,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'label' => '订单号',
                                 'filter' => Html::activeTextInput($searchModel, 'order_sn', [
                                     'class' => 'form-control',
-                                    'style' => 'width:200px'
                                 ]),
                                 'value' => function ($model) {
                                     return $model->order_sn;
@@ -144,7 +143,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'label' => '客户姓名',
                                 'filter' => Html::activeTextInput($searchModel, 'member.realname', [
                                     'class' => 'form-control',
-                                    'style' => 'width:200px'
                                 ]),
                                 'value' => function ($model) {
                                     return $model->member['realname'];
@@ -155,7 +153,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'label' => '联系方式',
                                 'filter' => Html::activeTextInput($searchModel, 'member.mobile', [
                                     'class' => 'form-control',
-                                    'style' => 'width:200px'
                                 ]),
                                 'value' => function ($model) {
                                     return $model->member['mobile'];
@@ -166,7 +163,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'label' => '账号',
                                 'filter' => Html::activeTextInput($searchModel, 'member.username', [
                                     'class' => 'form-control',
-                                    'style' => 'width:200px'
                                 ]),
                                 'value' => function ($model) {
                                     return $model->member['username'];
@@ -183,7 +179,11 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                             [
                                 'label' => '所属国家',
-                                'filter' => true, //不显示搜索框
+                                'headerOptions' => ['class' => 'col-md-1'],
+                                'filter' => Html::activeDropDownList($searchModel, 'address.country_id', \Yii::$app->services->area->getDropDown(0), [
+                                            'prompt' => '全部',
+                                            'class' => 'form-control',
+                                ]),
                                 'value' => function ($model) {
                                     return $model->address->country_name;
                                 },

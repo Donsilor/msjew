@@ -42,7 +42,7 @@ class OrderController extends BaseController
             'pageSize' => $this->pageSize,
             'relations' => [
 //                'account' => [''],
-                'address' => ['country_name', 'city_name'],
+                'address' => ['country_name', 'city_name','country_id'],
                 'member' => ['username', 'realname', 'mobile', 'email'],
                 'follower' => ['realname']
             ]

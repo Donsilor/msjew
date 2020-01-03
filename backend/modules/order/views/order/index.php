@@ -112,7 +112,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                             [
                                 'attribute' => 'id',
-                                'headerOptions' => ['class' => 'col-md-1'],
                                 'filter' =>
                                     Html::activeTextInput($searchModel, 'member.email', [
                                         'class' => 'hidden',
@@ -183,24 +182,24 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'format' => 'raw',
                             ],
                             [
-                                'label' => '所属区域',
+                                'label' => '所属国家',
                                 'filter' => true, //不显示搜索框
                                 'value' => function ($model) {
-                                    return "所属区域";
+                                    return $model->address->country_name;
                                 },
                                 'format' => 'raw',
                             ],
                             [
-                                'label' => '所属国家',
+                                'label' => '所属城市',
                                 'filter' => true, //不显示搜索框
                                 'value' => function ($model) {
-                                    return "所属国家";
+                                    return $model->address->city_name;
                                 },
                                 'format' => 'raw',
                             ],
                             [
                                 'label' => '支付状态',
-                                'filter' => Html::activeDropDownList($searchModel, 'order_sn', ['1' => '是', '2' => '否'], [
+                                'filter' => Html::activeDropDownList($searchModel, 'api_pay_time', ['1' => '是', '2' => '否'], [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
                                 ]),
@@ -222,15 +221,18 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                             [
                                 'label' => '跟进人',
-                                'filter' => true, //不显示搜索框
+                                'filter' => Html::activeTextInput($searchModel, 'follower.realname', [
+                                    'class' => 'form-control',
+                                    'style' => 'width:200px'
+                                ]),
                                 'value' => function ($model) {
-                                    return "跟进人";
+                                    return $model->follower->realname;
                                 },
                                 'format' => 'raw',
                             ],
                             [
                                 'label' => '跟进状态',
-                                'filter' => Html::activeDropDownList($searchModel, 'order_sn', ['1' => '是', '2' => '否'], [
+                                'filter' => Html::activeDropDownList($searchModel, 'api_pay_time', ['1' => '是', '2' => '否'], [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
                                 ]),

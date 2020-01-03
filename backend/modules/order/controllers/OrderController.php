@@ -41,9 +41,10 @@ class OrderController extends BaseController
             ],
             'pageSize' => $this->pageSize,
             'relations' => [
-                'account' => [''],
+//                'account' => [''],
                 'address' => ['country_name', 'city_name'],
-                'member' => ['username', 'realname', 'mobile', 'email']
+                'member' => ['username', 'realname', 'mobile', 'email'],
+                'follower' => ['realname']
             ]
         ]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

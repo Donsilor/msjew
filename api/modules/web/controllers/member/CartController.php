@@ -42,6 +42,9 @@ class CartController extends UserAuthController
             if(empty($goods)) {
                 continue;
             }
+            if($model->goods_type == \Yii::$app->params['goodsType.diamond']) {
+                $model->goods_type  = 1;//裸钻
+            }
             $sale_price = $this->exchangeAmount($goods['sale_price']);
             $cart = array();
             $cart['id'] = $model->id;
@@ -55,7 +58,6 @@ class CartController extends UserAuthController
             $cart['localSn'] = null;
             $cart['groupType'] = $model->group_type;
             $cart['groupId'] = $model->group_id;
-
             $simpleGoodsEntity = [
                     "goodId"=>$goods['style_id'],
                     "goodsDetailsId"=>$model->goods_id,
@@ -132,11 +134,10 @@ class CartController extends UserAuthController
                 if (!$model->validate()) {
                     // 返回数据验证失败
                     throw new UnprocessableEntityHttpException($this->getError($model));
-                }
-                
-                $goods = \Yii::$app->services->goods->getGoodsInfo($model->goods_id,$model->goods_type);
+                }                
+                $goods = \Yii::$app->services->goods->getGoodsInfo($model->goods_id,15);
                 if(!$goods || $goods['status'] != 1) {
-                    throw new UnprocessableEntityHttpException("添加失败，商品不是售卖状态");
+                    throw new UnprocessableEntityHttpException("商品不是售卖状态");
                 }
     
                 $cart = new OrderCart();

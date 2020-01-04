@@ -25,9 +25,9 @@ trait BaseAction
     protected $pageSize = 10;    
     
     //当前语言
-    protected $language;
+    protected $languageCode;
     //当前货币
-    protected $currency;
+    protected $currencyCode;
     
     protected $currencySign;
     
@@ -54,9 +54,11 @@ trait BaseAction
         if($currency) {
             \Yii::$app->params['currency'] = $currency;
         }        
-        $this->language = \Yii::$app->params['language'];
-        $this->currency = \Yii::$app->params['currency'];
-        $this->currencySign = \Yii::$app->services->currency->currencySign($this->currency);
+        $this->languageCode = \Yii::$app->params['language'];
+        $this->currencyCode = \Yii::$app->params['currency'];
+        if(!$this->currencySign) {
+            $this->currencySign = \Yii::$app->services->currency->currencySign($this->currencyCode);
+        }
     }
     /**
      * 商户id

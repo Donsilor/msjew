@@ -13,6 +13,7 @@ return [
     'currency' =>'CNY',//默认货币代号
     'currencySign' =>'CNY',//默认货币符号
     'cachePrefix'=>'common',//缓存前缀
+    'goodsType.diamond'=>15,//裸钻产品线
     
     // 是否在模块内
     'inAddon' => false,

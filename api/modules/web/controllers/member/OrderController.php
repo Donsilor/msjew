@@ -73,11 +73,11 @@ class OrderController extends UserAuthController
         }
         $taxInfo = \Yii::$app->services->order->getOrderAccountTax($cartIds, $this->member_id, $addressId);        
         return [
-                'logisticsFee' => $taxInfo['shipping_fee'],
-                'orderAmount'  => $taxInfo['order_amount'],                
-                'productAmount' => $taxInfo['goods_amount'],
-                'safeFee'=>$taxInfo['safe_fee'],
-                'taxFee'  =>$taxInfo['tax_fee'],
+                'logisticsFee' => $this->exchangeAmount($taxInfo['shipping_fee']),
+                'orderAmount'  => $this->exchangeAmount($taxInfo['order_amount']),                
+                'productAmount' => $this->exchangeAmount($taxInfo['goods_amount']),
+                'safeFee'=>$this->exchangeAmount($taxInfo['safe_fee']),
+                'taxFee'  =>$this->exchangeAmount($taxInfo['tax_fee']),
                 'planDays' =>$taxInfo['plan_days'],
                 'currency' =>$this->currencySign,
         ];

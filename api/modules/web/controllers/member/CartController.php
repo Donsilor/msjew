@@ -135,7 +135,7 @@ class CartController extends UserAuthController
                     // 返回数据验证失败
                     throw new UnprocessableEntityHttpException($this->getError($model));
                 }                
-                $goods = \Yii::$app->services->goods->getGoodsInfo($model->goods_id,15);
+                $goods = \Yii::$app->services->goods->getGoodsInfo($model->goods_id,$model->goods_type);
                 if(!$goods || $goods['status'] != 1) {
                     throw new UnprocessableEntityHttpException("商品不是售卖状态");
                 }

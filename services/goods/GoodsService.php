@@ -11,6 +11,9 @@ use common\enums\StatusEnum;
 use common\models\goods\AttributeIndex;
 use common\enums\AttrTypeEnum;
 use common\models\goods\StyleLang;
+use common\models\goods\Diamond;
+use common\models\goods\DiamondLang;
+use common\enums\DiamondEnum;
 
 
 /**
@@ -268,15 +271,29 @@ class GoodsService extends Service
         if(!$language) {
             $language = \Yii::$app->params['language'];
         }
-        
-        $query = Goods::find()->alias('g')
-                ->innerJoin(Style::tableName()." s","g.style_id=s.id")
-                ->innerJoin(StyleLang::tableName()." sl","s.id=sl.master_id and sl.language='{$language}'")
-                ->select(['g.*','s.style_sn','sl.style_name as goods_name','sl.language','s.style_attr as goods_attr'])
-                ->where(['g.id'=>$goods_id]);
-        
-       $goods = $query->asArray()->one();
-       
+        //如果是裸钻
+        if($goods_type == \Yii::$app->params['goodsType.diamond']) {
+            $goods = Diamond::find()->alias('g')
+                        ->where(['goods_id'=>$goods_id])
+                        ->innerJoin(DiamondLang::tableName().' lang','g.id=lang.master_id')
+                        ->select(['g.*','lang.goods_name','lang.language'])->asArray()->one();
+            $goods_spec = [
+                    DiamondEnum::CARAT=>$goods['carat'],
+                    DiamondEnum::COLOR=>$goods['color'],
+                    DiamondEnum::CLARITY=>$goods['clarity'],
+                    DiamondEnum::CUT=>$goods['cut']                                
+            ];
+            $goods['goods_attr'] = json_encode($goods_spec); 
+            
+        }else {
+            $query = Goods::find()->alias('g')
+                    ->innerJoin(Style::tableName()." s","g.style_id=s.id")
+                    ->innerJoin(StyleLang::tableName()." sl","s.id=sl.master_id and sl.language='{$language}'")
+                    ->select(['g.*','s.style_sn','sl.style_name as goods_name','sl.language','s.style_attr as goods_attr'])
+                    ->where(['g.id'=>$goods_id]);
+            
+            $goods = $query->asArray()->one();
+        } 
        $this->formatGoodsAttr($goods, $language);
        
        return $goods;
@@ -302,7 +319,7 @@ class GoodsService extends Service
             $goods_attr = json_decode($goods_attr,true);
         }        
         
-        $attr_ids = array_keys($goods_attr);
+        $attr_ids = array_keys($goods_attr);        
         $attr_list = \Yii::$app->services->goodsAttribute->getSpecAttrList($attr_ids,$goods_type,StatusEnum::ENABLED,$language);
         
         $attr_data = [];
@@ -334,11 +351,11 @@ class GoodsService extends Service
         if(!is_array($goods_spec)) {
             $goods_spec = json_decode($goods_spec,true);
         }  
-        
+        //print_r($goods);exit;
         $spec_data = [];
         foreach ($goods_spec as $attr_id=>$value_id){
             $attr_name = \Yii::$app->attr->attrName($attr_id ,$language);
-            $value_name = \Yii::$app->attr->valueName($value_id ,$language);
+            $value_name = \Yii::$app->attr->valueName($value_id ,$language);            
             $spec_data[] = [
                     'attr_id'=>$attr_id,
                     'value_id'=>$value_id,
@@ -347,7 +364,7 @@ class GoodsService extends Service
             ];
         }         
         $goods['goods_spec'] = $spec_data;
-        
+        //print_r($goods);exit;
         return true;
     }
 

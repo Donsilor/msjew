@@ -19,18 +19,28 @@ class CurrencyService extends Service
 {
     public $currencies ;
     /**
-     * 返回货币符号
-     *
+     * 货币符号
+     * 
      * @param string $name 字段名称
      * @param bool $noCache true 不从缓存读取 false 从缓存读取
      * @return bool|string
      */
-    public function currencySign($code = null,$noCache = false,$merchant_id = '')
+    public function currencySign($code = null, $noCache = false)
     {
-        $info = $this->getCurrency($code , $noCache ,$merchant_id );
-        return $info['sign']??'';
-    }  
-    
+        if($code === null) {
+            $code  = \Yii::$app->params['currency'];
+        }
+        $info = $this->getCurrency($code , $noCache);
+        return $info['sign'] ?? \Yii::$app->params['currencySign'];
+    }
+    /**
+     * 当前货币代号
+     * @return mixed
+     */
+    public function currencyCode()
+    {
+        return \Yii::$app->params['currency'];
+    }
     /**
      * 查询货币详情
      * @param unknown $attr_id
@@ -54,8 +64,7 @@ class CurrencyService extends Service
         $cacheKey = CacheEnum::getPrefix('currency',$merchant_id);
         if($this->currencies) {
             return $this->currencies;
-        }
-        
+        }        
         if (!($currencies = Yii::$app->cache->get($cacheKey)) || $noCache == true) {
             
             $models = Currency::find()->select(['code','name','sign','rate','refer_rate'])->where(['status'=>StatusEnum::ENABLED])->asArray()->all();

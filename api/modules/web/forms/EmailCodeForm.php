@@ -56,7 +56,7 @@ class EmailCodeForm extends Model
      */
     public function validateEmail($attribute)
     {
-        $count = Member::find()->where(['mobile'=>$this->attributes])->count();
+        $count = Member::find()->where(['email'=>$this->attributes])->count();
         if($this->usage == EmailLog::USAGE_UP_PWD || $this->usage == EmailLog::USAGE_LOGIN) {
             if(!$count){
                 $this->addError($attribute,"邮箱地址未绑定账号");

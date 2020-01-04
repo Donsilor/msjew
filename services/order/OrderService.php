@@ -20,6 +20,15 @@ use common\models\order\OrderAddress;
 class OrderService extends Service
 {
     /**
+     * 生成订单号
+     * @param unknown $order_id
+     * @param string $prefix
+     */
+    public function createOrderSn($order_id = 0,$prefix = 'BDD')
+    {
+        return $prefix.time();
+    }
+    /**
      * 创建订单
      * @param array $cart_ids
      * @param array $order_info
@@ -39,7 +48,7 @@ class OrderService extends Service
         $order->attributes = $order_info;
         $order->language   = \Yii::$app->params['language'];
         $order->member_id = $buyer_id;
-        $order->order_sn  = 'BDD'.time();
+        $order->order_sn  = $this->createOrderSn();
         if(false === $order->save()){
             throw new UnprocessableEntityHttpException($this->getError($order));
         }
@@ -53,7 +62,8 @@ class OrderService extends Service
             }
         }
         //金额校验
-        if($order_info['order_amount'] != $orderAccountTax['order_amount']) {
+        $_order_amount = $this->exchangeAmount($orderAccountTax['order_amount']);
+        if($order_info['order_amount'] != $_order_amount) {
             throw new UnprocessableEntityHttpException("订单金额校验失败：订单金额有变动，请刷新页面查看");
         }
                 
@@ -97,7 +107,8 @@ class OrderService extends Service
             
             $goods = \Yii::$app->services->goods->getGoodsInfo($cart->goods_id,$cart->goods_type);
             if(empty($goods) || $goods['status'] != 1) {
-                throw new UnprocessableEntityHttpException("当前选购商品已下架");
+                continue;
+                //throw new UnprocessableEntityHttpException("当前选购商品已下架");
             }            
             $goods_amount += $goods['sale_price'];
             $orderGoodsList[] = [

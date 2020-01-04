@@ -68,8 +68,8 @@ class OrderAccount extends \common\models\base\BaseModel
             'tax_fee' => \Yii::t('order','税费')."({$currencySign})",
             'safe_fee' => \Yii::t('order','保险费')."({$currencySign})",
             'other_fee' => \Yii::t('order','附加费')."({$currencySign})",
-            'currency_rate'=> \Yii::t('common','汇率'),
-            'currency_code'=> \Yii::t('common','货币'),
+            'exchange_rate'=> \Yii::t('common','汇率'),
+            'currency'=> \Yii::t('common','货币'),
         ];
     }
 }

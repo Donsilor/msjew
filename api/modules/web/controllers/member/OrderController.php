@@ -33,12 +33,15 @@ class OrderController extends UserAuthController
             $query->andWhere(['=','order_status',$orderStatus]);
         }
         $result = $this->pagination($query , $this->page,$this->pageSize);
+        
+        $order_list = $result['data'];
+        
+        
         return $result;
     }
     /**
      * 创建订单
      * {@inheritDoc}
-     * @see \api\controllers\OnAuthController::add()
      */
     public function actionCreate()
     {

@@ -6,7 +6,7 @@ use yii\grid\GridView;
 use common\enums\OrderStatusEnum;
 use kartik\daterange\DateRangePicker;
 
-$this->title = '订单列表';
+$this->title = Yii::t('order', '订单');
 $this->params['breadcrumbs'][] = ['label' => $this->title];
 
 ?>
@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
             <ul class="nav nav-tabs">
                 <li<?php if (Yii::$app->request->get('order_status', -1) == -1) echo ' class="active"' ?>><a
                             href="<?= Url::to(['order/index']) ?>"> 全部</a></li>
-                <? foreach ($orderStatus as $statusValue => $statusName) { ?>
+                <? foreach (OrderStatusEnum::getMap() as $statusValue => $statusName) { ?>
                     <li<?php if (Yii::$app->request->get('order_status', -1) == $statusValue) echo ' class="active"' ?>>
                         <a href="<?= Url::to(['order/index', 'order_status' => $statusValue]) ?>"><?= $statusName ?></a>
                     </li>
@@ -27,50 +27,50 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
             <div class="tab-content">
                 <div class="box-body table-responsive top-form">
                     <div class="row col-sm-12">
-                            <div class="col-sm-3">
-                                   	  邮箱：<br/>
-                                    <?= Html::activeTextInput($searchModel, 'member.email', [
-                                        'class' => 'form-control',               
-                                    ]);
-                                    ?>
-                            </div>
-                            <div class="col-sm-3">
-                                   	 支付方式：<br/>
-                                    <?= Html::activeDropDownList($searchModel, 'payment_type', \common\enums\PayEnum::getMap(), [
-                                        'prompt' => '全部',
-                                        'class' => 'form-control',
-                                    ]);
-                                    ?>
-                            </div>
-                            <div class="col-sm-3">
-                                    下单时间：<br/>
-                                    <?= DateRangePicker::widget([    // 日期组件
-                                        'model' => $searchModel,
-                                        'attribute' => 'created_at',
-                                        'value' => '',
-                                        'options' => ['readonly' => true,'class' => 'form-control',],
-                                        'pluginOptions' => [
-                                            'format' => 'yyyy-mm-dd',
-                                            'locale' => [
-                                                'separator' => '/',
-                                            ],
-                                            'endDate' => date('Y-m-d', time()),
-                                            'todayHighlight' => true,
-                                            'autoclose' => true,
-                                            'todayBtn' => 'linked',
-                                            'clearBtn' => true,
-                                        ],
-                                    ])
-                                    ?>
-                            </div>
-                            <div class="col-sm-3">
-                                    	来源客户端：<br/>
-                                    <?= Html::activeDropDownList($searchModel, 'order_from', \common\enums\AppEnum::getMap(), [
-                                        'prompt' => '全部',
-                                        'class' => 'form-control',
-                                    ]);
-                                    ?>
-                            </div>
+                        <div class="col-sm-3">
+                            <?= $searchModel->model->getAttributeLabel('member.email') ?>：<br/>
+                            <?= Html::activeTextInput($searchModel, 'member.email', [
+                                'class' => 'form-control',
+                            ]);
+                            ?>
+                        </div>
+                        <div class="col-sm-3">
+                            <?= $searchModel->model->getAttributeLabel('payment_type') ?>：<br/>
+                            <?= Html::activeDropDownList($searchModel, 'payment_type', \common\enums\PayEnum::getMap(), [
+                                'prompt' => '全部',
+                                'class' => 'form-control',
+                            ]);
+                            ?>
+                        </div>
+                        <div class="col-sm-3">
+                            <?= $searchModel->model->getAttributeLabel('created_at') ?>：<br/>
+                            <?= DateRangePicker::widget([    // 日期组件
+                                'model' => $searchModel,
+                                'attribute' => 'created_at',
+                                'value' => '',
+                                'options' => ['readonly' => true, 'class' => 'form-control',],
+                                'pluginOptions' => [
+                                    'format' => 'yyyy-mm-dd',
+                                    'locale' => [
+                                        'separator' => '/',
+                                    ],
+                                    'endDate' => date('Y-m-d', time()),
+                                    'todayHighlight' => true,
+                                    'autoclose' => true,
+                                    'todayBtn' => 'linked',
+                                    'clearBtn' => true,
+                                ],
+                            ])
+                            ?>
+                        </div>
+                        <div class="col-sm-3">
+                            <?= $searchModel->model->getAttributeLabel('order_from') ?>：<br/>
+                            <?= Html::activeDropDownList($searchModel, 'order_from', \common\enums\AppEnum::getMap(), [
+                                'prompt' => '全部',
+                                'class' => 'form-control',
+                            ]);
+                            ?>
+                        </div>
                     </div>
                 </div>
                 <div class="active tab-pane">
@@ -147,14 +147,17 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'attribute' => 'address.country_name',
                                 'headerOptions' => ['class' => 'col-md-1'],
                                 'filter' => Html::activeDropDownList($searchModel, 'address.country_id', \Yii::$app->services->area->getDropDown(0), [
-                                            'prompt' => '全部',
-                                            'class' => 'form-control',
+                                    'prompt' => '全部',
+                                    'class' => 'form-control',
                                 ]),
                                 'format' => 'raw',
                             ],
                             [
                                 'attribute' => 'address.city_name',
-                                'filter' => true, //不显示搜索框
+                                'filter' => Html::activeDropDownList($searchModel, 'address.city_id', \Yii::$app->services->area->getDropDown(Yii::$app->request->queryParams['SearchModel']['address.city_id'] ?: $model->address->country_id), [
+                                    'prompt' => '全部',
+                                    'class' => 'form-control',
+                                ]),
                                 'format' => 'raw',
                             ],
                             [
@@ -170,7 +173,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                             [
                                 'attribute' => 'order_status',
-                                'filter' => Html::activeDropDownList($searchModel, 'order_status', $orderStatus, [
+                                'filter' => Html::activeDropDownList($searchModel, 'order_status', OrderStatusEnum::getMap(), [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
                                 ]),
@@ -204,13 +207,16 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             [
                                 'header' => "操作",
                                 'class' => 'yii\grid\ActionColumn',
-                                'template' => ' {view} {view2}',
+                                'template' => ' {view} {follower}',
                                 'buttons' => [
                                     'view' => function ($url, $model, $key) {
-                                        return Html::a('预览', ['view', 'id' => $model->id], ['class' => 'btn btn-info btn-sm']);
+                                        return Html::a('详情', ['view', 'id' => $model->id], ['class' => 'btn btn-info btn-sm']);
                                     },
-                                    'view2' => function ($url, $model, $key) {
-                                        return Html::a('跟进', ['view', 'id' => $model->id], ['class' => 'btn btn-info btn-sm']);
+                                    'follower' => function ($url, $model, $key) {
+                                        return Html::edit(['edit-follower', 'id' => $model->id], '跟进', [
+                                            'data-toggle' => 'modal',
+                                            'data-target' => '#ajaxModal',
+                                        ]);
                                     },
                                 ],
                             ],
@@ -228,7 +234,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
 <script>
     (function ($) {
         $(".top-form input,select").change(function () {
-            $(".filters input[name='"+$(this).attr('name')+"']").val($(this).val()).trigger('change');
+            $(".filters input[name='" + $(this).attr('name') + "']").val($(this).val()).trigger('change');
         });
     })(window.jQuery);
 </script>

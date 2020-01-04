@@ -42,9 +42,9 @@ class OrderAccount extends \common\models\base\BaseModel
         return [
             [['order_id'], 'required'],
             [['order_id', 'merchant_id'], 'integer'],
-            [['order_amount', 'goods_amount', 'discount_amount', 'pay_amount', 'refund_amount', 'shipping_fee', 'tax_fee', 'safe_fee', 'other_fee','currency_rate'], 'number'],
+            [['order_amount', 'goods_amount', 'discount_amount', 'pay_amount', 'refund_amount', 'shipping_fee', 'tax_fee', 'safe_fee', 'other_fee','exchange_rate'], 'number'],
             [['order_id'], 'unique'],
-            [['currency_code'], 'string'],
+            [['currency'], 'string'],
         ];
     }
 

@@ -73,9 +73,9 @@ class CartController extends UserAuthController
                     'baseConfig'=>[]
             ];
             //return $goods['goods_attr'];
-            if(!empty($goods['goods_attr'])) {
+            if(!empty($goods['lang']['goods_attr'])) {
                 $baseConfig = [];
-                foreach ($goods['goods_attr'] as $vo){                    
+                foreach ($goods['lang']['goods_attr'] as $vo){                    
                     $baseConfig[] = [
                             'configId' =>$vo['id'],
                             'configAttrId' =>0,
@@ -85,9 +85,9 @@ class CartController extends UserAuthController
                 }
                 $simpleGoodsEntity['baseConfig'] = $baseConfig;
             }
-            if(!empty($goods['goods_spec'])) {
+            if(!empty($goods['lang']['goods_spec'])) {
                 $detailConfig = [];
-                foreach ($goods['goods_spec'] as $vo){
+                foreach ($goods['lang']['goods_spec'] as $vo){
                     
                     $detailConfig[] = [
                             'configId' =>$vo['attr_id'],

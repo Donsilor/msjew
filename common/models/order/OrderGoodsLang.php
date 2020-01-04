@@ -31,13 +31,13 @@ class OrderGoodsLang extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['master_id', 'goods_name'], 'required'],
+            [['master_id', 'language'], 'required'],
             [['master_id'], 'integer'],
             [['goods_attr'], 'string'],
             [['language'], 'string', 'max' => 5],
-            [['goods_name'], 'string', 'max' => 50],
+            [['goods_name',], 'safe', 'max' => 300],
             [['goods_spec'], 'string', 'max' => 1024],
-            [['goods_body'], 'string', 'max' => 255],
+            [['goods_body'], 'string'],
         ];
     }
 

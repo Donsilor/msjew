@@ -12,6 +12,7 @@ use common\enums\StatusEnum;
 use common\models\member\Address;
 use common\models\order\OrderAccount;
 use common\models\order\OrderAddress;
+use common\models\order\OrderGoodsLang;
 
 /**
  * Class OrderService
@@ -41,12 +42,13 @@ class OrderService extends Service
         if(empty($orderAccountTax['buyerAddress'])) {
             throw new UnprocessableEntityHttpException("收货地址不能为空");
         }
+        //$languages = $this->getLanguages();
         $buyerAddress = $orderAccountTax['buyerAddress'];
         $orderGoodsList   = $orderAccountTax['orderGoodsList'];
         //订单
         $order = new Order();
         $order->attributes = $order_info;
-        $order->language   = \Yii::$app->params['language'];
+        $order->language   = $this->getLanguage();
         $order->member_id = $buyer_id;
         $order->order_sn  = $this->createOrderSn();
         if(false === $order->save()){
@@ -56,10 +58,33 @@ class OrderService extends Service
         foreach ($orderGoodsList as $goods) {
             $orderGoods = new OrderGoods();
             $orderGoods->attributes = $goods;
-            $orderGoods->order_id = $order->id;           
+            $orderGoods->order_id = $order->id;            
             if(false === $orderGoods->save()){
                 throw new UnprocessableEntityHttpException($this->getError($orderGoods));
-            }
+            }            
+            /* //订单商品明细
+             foreach ($languages as $language){
+                $goods = \Yii::$app->services->goods->getGoodsInfo($orderGoods->goods_id,$orderGoods->goods_type,$language);
+                if(empty($goods) || $goods['status'] != 1) {
+                    continue;
+                } 
+                $langModel = new OrderGoodsLang();
+                $langModel->master_id = $orderGoods->id;
+                $langModel->language = $language;
+                $langModel->goods_name = $goods['goods_name'];
+                $langModel->goods_body = $goods['goods_body'];
+                if(!empty($goods['lang']['goods_spec'])) {
+                    $langModel->goods_spec = json_encode($goods['lang']['goods_spec']);
+                }
+                if(!empty($goods['lang']['goods_attr'])) {
+                    $langModel->goods_attr = json_encode($goods['lang']['goods_attr']);
+                    
+                }   
+                print_r($langModel->toArray());exit;
+                if(false === $langModel->save()){
+                    throw new UnprocessableEntityHttpException($this->getError($langModel));
+                }
+            }  */
         }
         //金额校验
         $_order_amount = $this->exchangeAmount($orderAccountTax['order_amount']);
@@ -105,7 +130,7 @@ class OrderService extends Service
         $orderGoodsList = [];
         foreach ($cart_list as $cart) {
             
-            $goods = \Yii::$app->services->goods->getGoodsInfo($cart->goods_id,$cart->goods_type);
+            $goods = \Yii::$app->services->goods->getGoodsInfo($cart->goods_id,$cart->goods_type,0);
             if(empty($goods) || $goods['status'] != 1) {
                 continue;
             }            
@@ -121,6 +146,8 @@ class OrderService extends Service
                     'goods_type' => $cart->goods_type,
                     'goods_image' => $goods['goods_image'],
                     'promotions_id' => 0,
+                    'goods_attr' =>$goods['goods_attr'],
+                    'goods_spec' =>$goods['goods_spec'],
             ];
         }
         //金额

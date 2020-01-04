@@ -63,8 +63,17 @@ trait BaseAction
      * 当前语言代号
      * @return mixed
      */
-    public function getLanguage(){
+    public function getLanguage()
+    {
         return \Yii::$app->params['language'];
+    }
+    /**
+     * 货币列表
+     * @return mixed
+     */
+    public function getLanguages()
+    {
+        return \Yii::$app->params['languages'];
     }
     /**
      * 当前货币代号

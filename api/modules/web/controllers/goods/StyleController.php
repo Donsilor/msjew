@@ -116,7 +116,7 @@ class StyleController extends OnAuthController
             $arr = array();
             $arr['id'] = $val['id'];
             $arr['categoryId'] = $type_id;
-            $arr['coinType'] = $this->currencySign;
+            $arr['coinType'] = $this->getCurrencySign();
             $arr['goodsImages'] = $val['goods_images'];
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $arr['goodsName'] = $val['style_name'];
@@ -144,7 +144,7 @@ class StyleController extends OnAuthController
             $moduleGoods = array();
             $moduleGoods['id'] = $val['id'];
             $moduleGoods['categoryId'] = $type_id;
-            $moduleGoods['coinType'] = $this->currency;
+            $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['goodsCode'] = $val['style_sn'];
             $moduleGoods['goodsImages'] = $val['goods_images'];
             $moduleGoods['goodsName'] = $val['style_name'];
@@ -199,7 +199,7 @@ class StyleController extends OnAuthController
                 $recommend['goodsImages'] = $val->goods_images;
                 $recommend['isJoin'] = null;
                 $recommend['specsModels'] = null;
-                $recommend['coinType'] = $this->currencySign;
+                $recommend['coinType'] = $this->getCurrencySign();
                 $style['recommends'][] = $recommend;
             }
 

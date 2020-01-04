@@ -85,7 +85,7 @@ class RingController extends OnAuthController
 
         foreach($result['data'] as & $val) {
             $arr = array();
-            $arr['coinType'] = $this->currencySign;
+            $arr['coinType'] = $this->getCurrencySign();
             $arr['id'] = $val['id'];
             $arr['ringCode'] = $val['ring_sn'];
             $arr['ringImg'] = $val['ring_images'];
@@ -126,7 +126,7 @@ class RingController extends OnAuthController
             $moduleGoods = array();
             $moduleGoods['id'] = $val['id'];
             $moduleGoods['categoryId'] = $type_id;
-            $moduleGoods['coinType'] = $this->currency;
+            $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['ringCode'] = $val['ring_sn'];
             $moduleGoods['ringImg'] = $val['ring_images'];
             $moduleGoods['name'] = $val['ring_name'];
@@ -190,7 +190,7 @@ class RingController extends OnAuthController
         $ring['ringImg'] = $model->ring_images;
         $ring['ringCode'] = $model->ring_sn;
         $ring['salePrice'] = $this->exchangeAmount($model->sale_price);
-        $ring['coinType'] = $this->currencySign;
+        $ring['coinType'] = $this->getCurrencySign();
         $ring['status'] = $model->status;
         $ring['metaDesc'] = $model->lang->meta_desc;
         $ring['metaTitle'] = $model->lang->meta_title;
@@ -207,7 +207,7 @@ class RingController extends OnAuthController
                 $goodsModels[] = $style;
                 $searchGoods = array();
                 $searchGoods['categoryId'] = $style['categoryId'];
-                $searchGoods['coinType'] = $style['coinType'];
+                $searchGoods['coinType'] = $this->getCurrencySign();
                 $searchGoods['goodsImages'] = $style['goodsImages'];
                 $searchGoods['goodsName'] = $style['goodsName'];
                 $searchGoods['id'] = $style['id'];
@@ -252,7 +252,7 @@ class RingController extends OnAuthController
             $moduleGoods = array();
             $moduleGoods['id'] = $val['id'];
             $moduleGoods['categoryId'] = $type_id;
-            $moduleGoods['coinType'] = $this->currency;
+            $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['goodsCode'] = $val['style_sn'];
             $moduleGoods['goodsImages'] = $val['goods_images'];
             $moduleGoods['goodsName'] = $val['style_name'];

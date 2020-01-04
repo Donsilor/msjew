@@ -34,7 +34,7 @@ class DiamondController extends OnAuthController
 
     public function actionSearch(){
         $sort_map = [
-            "price"=>'m.sale_price',//价格
+            "sale_price"=>'m.sale_price',//价格
             "carat"=>'m.carat',//石重
             "clarity"=>'m.clarity',//净度
             "cut"=>'m.cut',//切割
@@ -97,7 +97,7 @@ class DiamondController extends OnAuthController
             $specsModels = array();
             $arr = array();
             $arr['categoryId'] = $type_id;
-            $arr['coinType'] = $this->currencySign;
+            $arr['coinType'] = $this->getCurrencySign();
             $arr['id'] = $val['id'];
             $arr['goodsImages'] = $val['goods_image'];
             $arr['goodsName'] = $val['goods_name'];
@@ -152,7 +152,7 @@ class DiamondController extends OnAuthController
         $diamond = array();
         $diamond['id'] = $model->id;
         $diamond['categoryId'] = 1;
-        $diamond['coinType'] = $this->currencySign;
+        $diamond['coinType'] = $this->getCurrencySign();
         $diamond['goodsName'] = $model->lang->goods_name;
         $diamond['goodsCode'] = $model->goods_sn;
         $diamond['salePrice'] = $this->exchangeAmount($model->sale_price);
@@ -181,7 +181,7 @@ class DiamondController extends OnAuthController
         $diamond['metaWord'] = $model->lang->meta_word;
         $diamond['details'] = array(
           [
-              'id' => $model->id,
+              'id' => $model->goods_id,
               'barCode' => null,
               'categoryId' => $type_id,
               'goodsDetailsCode' => $model->goods_sn,
@@ -267,7 +267,7 @@ class DiamondController extends OnAuthController
             $moduleGoods = array();
             $moduleGoods['id'] = $val['id'];
             $moduleGoods['categoryId'] = $type_id;
-            $moduleGoods['coinType'] = $this->currency;
+            $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['goodsCode'] = $val['style_sn'];
             $moduleGoods['goodsImages'] = $val['goods_images'];
             $moduleGoods['goodsName'] = $val['style_name'];

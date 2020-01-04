@@ -405,7 +405,7 @@ class GoodsService extends Service
         $style['goodsCode'] = $model['style_sn'];
         $style['goodsImages'] = $model['goods_images'];
         $style['salePrice'] = $model['sale_price'];
-        $style['coinType'] = \Yii::$app->params['currency'];
+        $style['coinType'] = $this->getCurrencySign();
         $style['goods3ds'] = $model['style_3ds'];
         $style['goodsDesc'] = $model['goods_body'];
         $style['categoryId'] = $model['type_id'];

@@ -111,7 +111,7 @@ class StyleController extends OnAuthController
         $result = $this->pagination($query,$page,$page_size);
         
         foreach($result['data'] as & $val) {
-            $val['currency'] = $this->currency; 
+            $val['currency'] = $this->currencySign; 
             $val['style_image'] = ImageHelper::thumb($val['style_image']);
         } 
         $seo = [
@@ -180,10 +180,11 @@ class StyleController extends OnAuthController
                 'style_name'=>$model->lang->style_name,
                 'style_moq'=>$model->goods_storage,
                 'sale_price'=>$model->sale_price,
-                'currency'=> $this->currency,
+                'currency'=> $this->currencySign,
                 'goods_images'=>$goods_images,
                 'goods_3ds'=>$model->style_3ds,
-                'style_attrs' =>$attr_list, 
+                'style_attrs' =>$attr_list,
+                'goods_body'=>$model->lang->goods_body
         ];
         $model->goods_clicks = new Expression("goods_clicks+1");
         $model->virtual_clicks = new Expression("virtual_clicks+1");
@@ -213,7 +214,7 @@ class StyleController extends OnAuthController
         $models = $query->limit(10)->asArray()->all();
         foreach ($models as &$model){
             $model['style_image'] = ImageHelper::thumb($model['style_image']);
-            $model['currency'] = '$';
+            $model['currency'] = $this->currencySign;
         }
         return $models;        
     }

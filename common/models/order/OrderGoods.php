@@ -19,7 +19,6 @@ use Yii;
  * @property int $goods_num 商品数量
  * @property string $goods_image 商品图片
  * @property string $goods_pay_price 商品实际成交价
- * @property int $member_id 买家ID
  * @property int $promotions_id 促销活动ID（抢购ID/限时折扣ID/优惠套装ID）与goods_type搭配使用
  * @property string $goods_spec 商品规格
  * @property string $goods_attr
@@ -42,7 +41,7 @@ class OrderGoods extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id', 'order_id', 'goods_id', 'goods_type', 'goods_num', 'member_id', 'promotions_id', 'created_at', 'updated_at'], 'integer'],
+            [['merchant_id', 'order_id', 'goods_id', 'goods_type', 'goods_num', 'promotions_id', 'created_at', 'updated_at'], 'integer'],
             [['order_id', 'goods_id'], 'required'],
             [['goods_price', 'goods_pay_price'], 'number'],
             [['goods_attr'], 'string'],

@@ -7,6 +7,7 @@ use api\controllers\UserAuthController;
 use yii\base\Exception;
 use common\models\order\Order;
 use api\modules\web\forms\OrderCreateForm;
+use common\enums\OrderStatusEnum;
 
 /**
  * 用户订单
@@ -24,14 +25,22 @@ class OrderController extends UserAuthController
     
     public function actionIndex()
     {
+        $orderStatus = \Yii::$app->request->get('orderStatus');
         
+        $query = $this->modelClass::find()->select(["*"])->where(['member_id'=>$this->member_id]);
+        
+        if(in_array($orderStatus,OrderStatusEnum::getKeys())) {
+            $query->andWhere(['=','order_status',$orderStatus]);
+        }
+        $result = $this->pagination($query , $this->page,$this->pageSize);
+        return $result;
     }
     /**
      * 创建订单
      * {@inheritDoc}
      * @see \api\controllers\OnAuthController::add()
      */
-    public function actionAdd()
+    public function actionCreate()
     {
         try{
             $trans = \Yii::$app->db->beginTransaction();

@@ -58,7 +58,7 @@ class OrderService extends Service
         foreach ($orderGoodsList as $goods) {
             $orderGoods = new OrderGoods();
             $orderGoods->attributes = $goods;
-            $orderGoods->order_id = $order->id;            
+            $orderGoods->order_id = $order->id;
             if(false === $orderGoods->save()){
                 throw new UnprocessableEntityHttpException($this->getError($orderGoods));
             }            
@@ -130,7 +130,7 @@ class OrderService extends Service
         $orderGoodsList = [];
         foreach ($cart_list as $cart) {
             
-            $goods = \Yii::$app->services->goods->getGoodsInfo($cart->goods_id,$cart->goods_type,0);
+            $goods = \Yii::$app->services->goods->getGoodsInfo($cart->goods_id,$cart->goods_type,false);
             if(empty($goods) || $goods['status'] != 1) {
                 continue;
             }            

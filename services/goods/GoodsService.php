@@ -267,7 +267,7 @@ class GoodsService extends Service
      * @param unknown $goods_id
      * @param number $goods_type
      */
-    public function getGoodsInfo($goods_id , $goods_type = 0, $format = 1,$language= null)
+    public function getGoodsInfo($goods_id , $goods_type = 0, $format_attr = true, $language= null)
     {
         if(!$language) {
             $language = \Yii::$app->params['language'];

@@ -5,7 +5,7 @@ namespace common\components;
 use Yii;
 use yii\base\Model;
 use common\enums\AppEnum;
-use yii\base\Exception;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * trait BaseAction
@@ -88,6 +88,18 @@ trait BaseAction
     public function getExchangeRate()
     {
         return \Yii::$app->services->currency->getRate();
+    }
+    
+    /**
+     * 汇率金额计算
+     * @param unknown $amount
+     * @param number $format
+     * @param unknown $currency
+     * @return array
+     */ 
+    public function exchangeAmount($amount , $format = 2, $currency = null)
+    {
+        return \Yii::$app->services->currency->exchangeAmount($amount,$format,$currency);
     }
     /**
      * 商户id
@@ -185,7 +197,7 @@ trait BaseAction
             $msgType = 'success';
         }
         //$msgText = Yii::t('message',$msgText);
-        $msgText = $this->substr($msgText);
+        $msgText = \yii\helpers\StringHelper::truncate($msgText, 900);
         Yii::$app->getSession()->setFlash($msgType, $msgText);
         return $skipUrl;
     }
@@ -219,21 +231,12 @@ trait BaseAction
                 $langModel->master_id = $model->id;
                 $langModel->language = $lang_key;
                 if(false === $langModel->save()){
-                    throw new Exception($this->getError($langModel));
+                    throw new UnprocessableEntityHttpException($this->getError($langModel));
                 }
             }
         }
         
         return true;
     }
-    
-    protected function substr($message,$length = 900)
-    {
-        return \yii\helpers\StringHelper::truncate($message, $length);
-    }
-    
-    protected function exchangeAmount($amount , $format = 2, $currency = null)
-    {
-        return \Yii::$app->services->currency->exchangeAmount($amount,$format,$currency);
-    }
+
 }

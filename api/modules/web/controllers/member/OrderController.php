@@ -79,7 +79,8 @@ class OrderController extends UserAuthController
                 'safeFee'=>$this->exchangeAmount($taxInfo['safe_fee']),
                 'taxFee'  =>$this->exchangeAmount($taxInfo['tax_fee']),
                 'planDays' =>$taxInfo['plan_days'],
-                'currency' =>$this->currencySign,
+                'currency' =>$taxInfo['currency'],
+                'exchangeRate'=>$taxInfo['exchange_rate']
         ];
     }
     

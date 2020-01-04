@@ -94,8 +94,7 @@ class OrderController extends BaseController
 
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-//            $dataProvider->query->with(['lang']);
-//            $dataProvider->query->andWhere(['>', 'status', -1]);
+            $dataProvider->query->andWhere(['=', 'order_id', $id]);
 
             $dataProvider->setSort(false);
         }

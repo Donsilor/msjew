@@ -13,8 +13,8 @@ use yii\grid\GridView;
 /* @var $model common\models\order\order */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = Yii::t('order', 'view');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('order', 'view'), 'url' => ['index']];
+$this->title = Yii::t('order', '详情');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('order', '订单'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 //
 ?>
@@ -33,60 +33,74 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="tab-content">
             <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_1">
                 <ul class="nav nav-tabs pull-right">
-                    <li class="pull-left header"><i class="fa fa-th"></i> 订单信息 <span class="btn btn-success btn-sm"><?= \common\enums\OrderStatusEnum::getValue($model->order_status) ?></span></li>
+                    <li class="pull-left header"><i class="fa fa-th"></i> 订单信息 <span
+                                class="btn btn-success btn-sm"><?= \common\enums\OrderStatusEnum::getValue($model->order_status) ?></span>
+                    </li>
                 </ul>
                 <div class="box-body" style="margin-left:9px">
                     <div class="row">
-                        <div class="col-lg-1 text-right"><label>订单号：</label></div>
-                        <div class="col-lg-2"><?= $model->order_sn ?></div>
-                        <div class="col-lg-1 text-right"><label>语言版本：</label></div>
-                        <div class="col-lg-2"><?= \common\enums\LanguageEnum::getValue($model->language) ?></div>
-                        <div class="col-lg-1 text-right"><label>支付状态：</label></div>
-                        <div class="col-lg-2"><?= $model->order_sn ?></div>
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('order_sn') ?>
+                                ：</label><?= $model->order_sn ?></div>
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('language') ?>
+                                ：</label><?= \common\enums\LanguageEnum::getValue($model->language) ?></div>
+                        <div class="col-lg-3"><label class="col-lg-6 text-right">支付状态：</label><?= $model->order_sn ?>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-1 text-right"><label>客户姓名：</label></div>
-                        <div class="col-lg-2"><?= $model->member->realname ?></div>
-                        <div class="col-lg-1 text-right"><label>所属区域：</label></div>
-                        <div class="col-lg-2"><?= $model->order_sn ?></div>
-                        <div class="col-lg-1 text-right"><label>订单状态：</label></div>
-                        <div class="col-lg-2"><?= \common\enums\OrderStatusEnum::getValue($model->order_status) ?></div>
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.realname') ?>
+                                ：</label><?= $model->member->realname ?></div>
+                        <div class="col-lg-3"><label class="col-lg-6 text-right">IP：</label><?= $model->order_sn ?>
+                        </div>
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('order_status') ?>
+                                ：</label><?= \common\enums\OrderStatusEnum::getValue($model->order_status) ?></div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-1 text-right"><label>联系方式：</label></div>
-                        <div class="col-lg-2"><?= $model->member->mobile ?></div>
-                        <div class="col-lg-1 text-right"><label>支付方式：</label></div>
-                        <div class="col-lg-2"><?= \common\enums\PayEnum::getValue($model->payment_type) ?></div>
-                        <div class="col-lg-1 text-right"><label>跟进状态：</label></div>
-                        <div class="col-lg-2"><?= $model->order_sn ?></div>
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.mobile') ?>
+                                ：</label><?= $model->member->mobile ?></div>
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_type') ?>
+                                ：</label><?= \common\enums\PayEnum::getValue($model->payment_type) ?></div>
+                        <div class="col-lg-3"><label class="col-lg-6 text-right">跟进状态：</label><?= $model->order_sn ?>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-1 text-right"><label>账号：</label></div>
-                        <div class="col-lg-2"><?= $model->member->username ?></div>
-                        <div class="col-lg-1 text-right"><label>下单时间：</label></div>
-                        <div class="col-lg-2"><?= Yii::$app->formatter->asDatetime($model->created_at, 'Y-M-D H:i:s') ?></div>
-                        <div class="col-lg-1 text-right"><label>审核状态：</label></div>
-                        <div class="col-lg-2"><?= $model->order_sn ?></div>
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.username') ?>
+                                ：</label><?= $model->member->username ?></div>
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('created_at') ?>
+                                ：</label><?= Yii::$app->formatter->asDatetime($model->created_at, 'Y-M-D H:i:s') ?>
+                        </div>
+                        <div class="col-lg-3"><label class="col-lg-6 text-right">审核状态：</label><?= $model->order_sn ?>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-1 text-right"><label>所属国家：</label></div>
-                        <div class="col-lg-2"><?= $model->address->country_name ?></div>
-                        <div class="col-lg-1 text-right"><label>客户端：</label></div>
-                        <div class="col-lg-2"><?= \common\enums\AppEnum::getValue($model->order_from) ?></div>
-                        <div class="col-lg-1 text-right"><label>跟进人：</label></div>
-                        <div class="col-lg-2"><?= $model->follower->realname ?></div>
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.country_name') ?>
+                                ：</label><?= $model->address->country_name ?></div>
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('order_from') ?>
+                                ：</label><?= \common\enums\AppEnum::getValue($model->order_from) ?></div>
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('follower_id') ?>
+                                ：</label><?= $model->follower->realname ?></div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-1 text-right"><label>所属城市：</label></div>
-                        <div class="col-lg-2"><?= $model->address->country_name ?></div>
-                        <div class="col-lg-1 text-right"><label>IP：</label></div>
-                        <div class="col-lg-2"><?= $model->order_sn ?></div>
-                        <div class="col-lg-1 text-right"></div>
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.city_name') ?>
+                                ：</label><?= $model->address->city_name ?></div>
+                        <div class="col-lg-3"></div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-1 text-right"><label>备注：</label></div>
-                        <div class="col-lg-5"><?= Html::textarea('buyer_remark', $model->buyer_remark, ['class' => 'col-lg-12']) ?></div>
-                        <div class="col-lg-6"></div>
+                        <div class="col-lg-6"><label
+                                    class="col-lg-3 text-right"><?= $model->getAttributeLabel('buyer_remark') ?>
+                                ：</label><?= Html::textarea('buyer_remark', $model->buyer_remark, ['class' => 'col-lg-6']) ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,28 +121,31 @@ $this->params['breadcrumbs'][] = $this->title;
                                 [
                                     'label' => '商品清单',
                                     'value' => function ($model) {
-                                        return common\helpers\ImageHelper::fancyBox($model->goods_image);
+                                        $html = <<<DOM
+<div class="row">
+    <div class="col-lg-2">%s</div>
+    <div class="col-lg-8">%s<br/>sku：%s&nbsp;成色：&nbsp;适用人群：</div>
+</div>
+DOM;
+
+                                        return sprintf($html,
+                                            common\helpers\ImageHelper::fancyBox($model->goods_image),
+                                            $model->goods_name,
+                                            $model->goods_sn,
+                                            '未知字段'
+                                        );
                                     },
                                     'filter' => false,
                                     'format' => 'raw',
-                                    'headerOptions' => ['width'=>'80'],
+                                    'headerOptions' => ['width' => '500'],
                                 ],
-                                [
-                                    'label' => '单价',
-                                    'attribute'=>'goods_price',
-                                ],
+                                'goods_price',
 //                                [
 //                                    'label' => '优惠金额',
 //                                    'attribute'=>'goods_price',
 //                                ],
-                                [
-                                    'label' => '数量',
-                                    'attribute'=>'goods_num',
-                                ],
-                                [
-                                    'label' => '小计',
-                                    'attribute'=>'goods_pay_price',
-                                ],
+                                'goods_num',
+                                'goods_pay_price',
                             ]
                         ]); ?>
                     </div>
@@ -141,7 +158,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <div class="col-lg-9"></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-3 text-right"><label>物流单号：</label></div>
+                                <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_no') ?>
+                                        ：</label></div>
                                 <div class="col-lg-9"><?= $model->express_no ?></div>
                             </div>
                             <div class="row">
@@ -149,34 +167,41 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <div class="col-lg-9"></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-3 text-right"><label>备注：</label></div>
+                                <div class="col-lg-3 text-right">
+                                    <label><?= $model->getAttributeLabel('seller_remark') ?>：</label></div>
                                 <div class="col-lg-9"><?= Html::textarea('buyer_remark', $model->seller_remark, ['class' => 'col-lg-12']) ?></div>
                             </div>
                         </div>
                         <div class="col-lg-3">
                             <div class="row">
-                                <div class="col-lg-5"><label>小计：</label></div>
+                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.shipping_fee') ?>
+                                        ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->shipping_fee ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label>优惠码折扣：</label></div>
+                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.discount_amount') ?>
+                                        ：</label></div>
+                                <div class="col-lg-7"><?= $model->account->discount_amount ?></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.shipping_fee') ?>
+                                        ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->shipping_fee ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label>运费：</label></div>
-                                <div class="col-lg-7"><?= $model->account->shipping_fee ?></div>
+                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.tax_fee') ?>
+                                        ：</label></div>
+                                <div class="col-lg-7"><?= $model->account->tax_fee ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label>税费：</label></div>
-                                <div class="col-lg-7"><?= $model->account->shipping_fee ?></div>
+                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.safe_fee') ?>
+                                        ：</label></div>
+                                <div class="col-lg-7"><?= $model->account->safe_fee ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label>保险：</label></div>
-                                <div class="col-lg-7"><?= $model->account->shipping_fee ?></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5"><label>订单总计：</label></div>
-                                <div class="col-lg-7"><?= $model->account->shipping_fee ?></div>
+                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.order_amount') ?>
+                                        ：</label></div>
+                                <div class="col-lg-7"><?= $model->account->order_amount ?></div>
                             </div>
                         </div>
                     </div>

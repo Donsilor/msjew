@@ -42,12 +42,12 @@ class OrderController extends BaseController
             'pageSize' => $this->pageSize,
             'relations' => [
 //                'account' => [''],
-                'address' => ['country_name', 'city_name','country_id'],
+                'address' => ['country_name', 'city_name', 'country_id', 'city_id'],
                 'member' => ['username', 'realname', 'mobile', 'email'],
                 'follower' => ['realname']
             ]
         ]);
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, ['created_at']);
 
         //订单状态
         if ($orderStatus !== -1)
@@ -56,6 +56,12 @@ class OrderController extends BaseController
         // 数据状态
         $dataProvider->query->andWhere(['>=', 'order.status', StatusEnum::DISABLED]);
 
+        //创建时间过滤
+        if(!empty(Yii::$app->request->queryParams['SearchModel']['created_at'])) {
+            list($start_date, $end_date) = explode('/', Yii::$app->request->queryParams['SearchModel']['created_at']);
+            $dataProvider->query->andFilterWhere(['between','order.created_at',strtotime($start_date), strtotime($end_date)+86400]);
+        }
+
         return $this->render($this->action->id, [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
@@ -63,6 +69,11 @@ class OrderController extends BaseController
         ]);
     }
 
+    /**
+     * 详情展示页
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionView()
     {
         $id = Yii::$app->request->get('id', null);
@@ -92,6 +103,25 @@ class OrderController extends BaseController
         return $this->render($this->action->id, [
             'model' => $model,
             'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionEditFollower()
+    {
+        $id = Yii::$app->request->get('id', null);
+
+        $model = $this->findModel($id);
+
+        // ajax 校验
+        $this->activeFormValidate($model);
+        if ($model->load(Yii::$app->request->post())) {
+            return $model->save()
+                ? $this->redirect(['index'])
+                : $this->message($this->getError($model), $this->redirect(['index']), 'error');
+        }
+
+        return $this->renderAjax($this->action->id, [
+            'model' => $model,
         ]);
     }
 }

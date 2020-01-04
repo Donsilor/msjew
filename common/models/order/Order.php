@@ -48,7 +48,7 @@ class Order extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id','payment_type', 'member_id', 'payment_time', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at','payment_type'], 'integer'],
+            [['merchant_id','payment_type', 'member_id', 'payment_time', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at','payment_type', 'follower_id', 'followed_time'], 'integer'],
             [['language'], 'safe'],
             [['order_sn','pay_sn'], 'string', 'max' => 20],
             [['express_no', 'trade_no'], 'string', 'max' => 50],
@@ -83,6 +83,8 @@ class Order extends \common\models\base\BaseModel
             'buyer_email' => '售后邮箱',
             'buyer_remark' => '买家留言',
             'seller_remark' => '商家备注',
+            'follower_id' => '跟进人',
+            'followed_time' => '跟进时间',
             'status' => '状态',
             'created_at' => '订单生成时间',
             'updated_at' => '更新时间',

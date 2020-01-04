@@ -154,10 +154,14 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                             [
                                 'attribute' => 'address.city_name',
-                                'filter' => Html::activeDropDownList($searchModel, 'address.city_id', \Yii::$app->services->area->getDropDown(Yii::$app->request->queryParams['SearchModel']['address.city_id'] ?: $model->address->country_id), [
-                                    'prompt' => '全部',
-                                    'class' => 'form-control',
-                                ]),
+                                'filter' => Html::activeDropDownList($searchModel,
+                                    'address.city_id',
+                                    \Yii::$app->services->area->getDropDown(Yii::$app->request->queryParams['SearchModel']['address.country_id'] ?: $model->address->country_id),
+                                    [
+                                        'prompt' => '全部',
+                                        'class' => 'form-control',
+                                    ]
+                                ),
                                 'format' => 'raw',
                             ],
                             [

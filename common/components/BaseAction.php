@@ -25,7 +25,7 @@ trait BaseAction
     protected $pageSize = 10;    
     
     //当前语言
-    protected $languageCode;
+    protected $language;
     //当前货币
     protected $currencyCode;
     
@@ -54,7 +54,7 @@ trait BaseAction
         if($currency) {
             \Yii::$app->params['currency'] = $currency;
         }        
-        $this->languageCode = \Yii::$app->params['language'];
+        $this->language = \Yii::$app->params['language'];
         $this->currencyCode = \Yii::$app->params['currency'];
         if(!$this->currencySign) {
             $this->currencySign = \Yii::$app->services->currency->currencySign($this->currencyCode);

@@ -298,7 +298,7 @@ class GoodsService extends Service
             
        }  
        
-       if($format == 1) { 
+       if($format_attr == true) { 
            
            $goods['lang'] = [
                  'goods_attr' => $this->formatGoodsAttr($goods['goods_attr'],$goods['type_id'],$language),
@@ -323,7 +323,9 @@ class GoodsService extends Service
         if(!is_array($goods_attr)) {
             $goods_attr = json_decode($goods_attr,true);
         }
-        
+        if(!is_array($goods_attr)) {
+            return [];
+        }
         $attr_ids = array_keys($goods_attr);
         $attr_list = \Yii::$app->services->goodsAttribute->getSpecAttrList($attr_ids,$goods_type,StatusEnum::ENABLED,$language);
         
@@ -362,7 +364,9 @@ class GoodsService extends Service
         if(!is_array($goods_spec)) {
             $goods_spec = json_decode($goods_spec,true);
         }
-        //print_r($goods);exit;
+        if(!is_array($goods_spec)) {
+            return [];
+        }
         $spec_data = [];
         foreach ($goods_spec as $attr_id=>$value_id){
             $attr_name = \Yii::$app->attr->attrName($attr_id ,$language);

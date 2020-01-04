@@ -54,7 +54,7 @@ class OrderAccount extends \common\models\base\BaseModel
     public function attributeLabels()
     {
         
-        $currencySign = \Yii::$app->services->currency->currencySign();
+        $currencySign = \Yii::$app->services->currency->getSign();
         
         return [                
             'order_id' => '订单ID',

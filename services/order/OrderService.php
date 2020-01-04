@@ -108,7 +108,6 @@ class OrderService extends Service
             $goods = \Yii::$app->services->goods->getGoodsInfo($cart->goods_id,$cart->goods_type);
             if(empty($goods) || $goods['status'] != 1) {
                 continue;
-                //throw new UnprocessableEntityHttpException("当前选购商品已下架");
             }            
             $goods_amount += $goods['sale_price'];
             $orderGoodsList[] = [
@@ -141,6 +140,8 @@ class OrderService extends Service
                 'tax_fee'  =>$tax_fee,
                 'discount_amount'=>$discount_amount,
                 'plan_days' =>'1-12',
+                'currency' => $this->getCurrency(),
+                'exchange_rate'=>$this->getExchangeRate(),
                 'buyerAddress'=>$buyerAddress,
                 'orderGoodsList'=>$orderGoodsList,
         ];

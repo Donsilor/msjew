@@ -33,6 +33,20 @@ class CurrencyService extends Component
         return $info['sign'] ?? \Yii::$app->params['currencySign'];
     }
     /**
+     * 汇率
+     * @param unknown $code
+     * @param string $noCache
+     * @return mixed
+     */
+    public function getRate($code = null,$noCache = false)
+    {
+        if($code === null) {
+            $code  = \Yii::$app->params['currency'];
+        }
+        $info = $this->getCurrencyInfo($code , $noCache);
+        return $info['rate'] ?? 1;
+    }
+    /**
      * 查询货币详情
      * @param unknown $attr_id
      * @param string $noCache

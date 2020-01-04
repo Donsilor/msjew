@@ -78,9 +78,17 @@ trait BaseAction
      * 当前货币符号
      * @return mixed
      */
-    public function getCurrencySign(){
+    public function getCurrencySign()
+    {
         return \Yii::$app->services->currency->getSign();
-    }    
+    } 
+    /**
+     * 当前货币汇率
+     */
+    public function getExchangeRate()
+    {
+        return \Yii::$app->services->currency->getRate();
+    }
     /**
      * 商户id
      *

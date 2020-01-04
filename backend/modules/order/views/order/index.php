@@ -152,18 +152,18 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 ]),
                                 'format' => 'raw',
                             ],
-                            [
-                                'attribute' => 'address.city_name',
-                                'filter' => Html::activeDropDownList($searchModel,
-                                    'address.city_id',
-                                    \Yii::$app->services->area->getDropDown(Yii::$app->request->queryParams['SearchModel']['address.country_id'] ?: $model->address->country_id),
-                                    [
-                                        'prompt' => '全部',
-                                        'class' => 'form-control',
-                                    ]
-                                ),
-                                'format' => 'raw',
-                            ],
+//                            [
+//                                'attribute' => 'address.city_name',
+//                                'filter' => Html::activeDropDownList($searchModel,
+//                                    'address.city_id',
+//                                    \Yii::$app->services->area->getDropDown(Yii::$app->request->queryParams['SearchModel']['address.country_id'] ?: $model->address->country_id),
+//                                    [
+//                                        'prompt' => '全部',
+//                                        'class' => 'form-control',
+//                                    ]
+//                                ),
+//                                'format' => 'raw',
+//                            ],
                             [
                                 'label' => '支付状态',
                                 'filter' => Html::activeDropDownList($searchModel, 'api_pay_time', ['1' => '是', '2' => '否'], [

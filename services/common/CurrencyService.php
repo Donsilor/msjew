@@ -27,6 +27,9 @@ class CurrencyService extends Service
      */
     public function currencySign($code = null,$noCache = false,$merchant_id = '')
     {
+        if($code === null) {
+            $code  = \Yii::$app->params['currency'];
+        }
         $info = $this->getCurrency($code , $noCache ,$merchant_id );
         return $info['sign']??'';
     }  
@@ -54,8 +57,7 @@ class CurrencyService extends Service
         $cacheKey = CacheEnum::getPrefix('currency',$merchant_id);
         if($this->currencies) {
             return $this->currencies;
-        }
-        
+        }        
         if (!($currencies = Yii::$app->cache->get($cacheKey)) || $noCache == true) {
             
             $models = Currency::find()->select(['code','name','sign','rate','refer_rate'])->where(['status'=>StatusEnum::ENABLED])->asArray()->all();

@@ -26,8 +26,6 @@ trait BaseAction
     
     //当前语言
     protected $language;
-    //当前货币代号
-    protected $currencyCode;
     //当前货币符号
     protected $currencySign;
     
@@ -35,9 +33,7 @@ trait BaseAction
      * 初始化通用参数
      */
     public function initParams()
-    {    
-        
-
+    {  
         $language = \Yii::$app->request->get("language");
         if(!$language) {
             $language = \Yii::$app->request->headers->get("x-api-language");
@@ -55,15 +51,36 @@ trait BaseAction
         }
         if($currency) {
             \Yii::$app->params['currency'] = $currency;
-        }        
-        $this->currencyCode = \Yii::$app->params['currency'];
+        }
         //货币符号
         if(!$this->currencySign) {
-            \Yii::$app->params['currencySign'] = \Yii::$app->services->currency->currencySign($this->currencyCode);
+            \Yii::$app->params['currencySign'] = \Yii::$app->services->currency->getSign();
         }
         $this->currencySign = \Yii::$app->params['currencySign'];      
         
+    }    
+    /**
+     * 当前语言代号
+     * @return mixed
+     */
+    public function getLanguage(){
+        return \Yii::$app->params['language'];
     }
+    /**
+     * 当前货币代号
+     * @return mixed
+     */
+    public function getCurrency()
+    {
+        return \Yii::$app->params['currency'];
+    }
+    /**
+     * 当前货币符号
+     * @return mixed
+     */
+    public function getCurrencySign(){
+        return \Yii::$app->services->currency->getSign();
+    }    
     /**
      * 商户id
      *

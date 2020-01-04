@@ -3,43 +3,34 @@
 namespace services\common;
 
 use Yii;
-use common\components\Service;
 use common\enums\CacheEnum;
 use common\models\common\Currency;
 use common\enums\StatusEnum;
 use yii\web\UnprocessableEntityHttpException;
+use yii\base\Component;
 
 
 /**
  * Class LogService
  * @package services\common
- * @author jianyan74 <751393839@qq.com>
  */
-class CurrencyService extends Service
+class CurrencyService extends Component
 {
     public $currencies ;
     /**
-     * 货币符号
+     *  获取货币符号
      * 
      * @param string $name 字段名称
      * @param bool $noCache true 不从缓存读取 false 从缓存读取
      * @return bool|string
      */
-    public function currencySign($code = null, $noCache = false)
+    public function getSign($code = null, $noCache = false)
     {
         if($code === null) {
             $code  = \Yii::$app->params['currency'];
         }
-        $info = $this->getCurrency($code , $noCache);
+        $info = $this->getCurrencyInfo($code , $noCache);
         return $info['sign'] ?? \Yii::$app->params['currencySign'];
-    }
-    /**
-     * 当前货币代号
-     * @return mixed
-     */
-    public function currencyCode()
-    {
-        return \Yii::$app->params['currency'];
     }
     /**
      * 查询货币详情
@@ -47,7 +38,7 @@ class CurrencyService extends Service
      * @param string $noCache
      * @return array
      */
-    public function getCurrency($code , $noCache = false , $merchant_id = '')
+    public function getCurrencyInfo($code , $noCache = false , $merchant_id = '')
     {   
         $code = strtoupper($code);
         $currencies = $this->getCurrencyList($noCache , $merchant_id);
@@ -100,7 +91,7 @@ class CurrencyService extends Service
         if($currency == null) {
             $currency = \Yii::$app->params['currency'];
         }
-        $info = $this->getCurrency($currency);
+        $info = $this->getCurrencyInfo($currency);
         if(empty($info['rate']) || $info['rate'] <= 0) {
             throw new UnprocessableEntityHttpException("Currency rate is wrong!");
         }

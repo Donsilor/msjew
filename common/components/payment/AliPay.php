@@ -44,7 +44,8 @@ class AliPay
         $gateway->setNotifyUrl($this->config['notify_url']);
         !empty($this->config['return_url']) && $gateway->setReturnUrl($this->config['return_url']);
         $this->config['sandbox'] === true && $gateway->sandbox();
-
+print_r($this->config);
+file_get_contents($this->config['ali_public_key']);exit;
         return $gateway;
     }
 

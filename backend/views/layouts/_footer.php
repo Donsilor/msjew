@@ -138,6 +138,49 @@ $this->registerJs($script);
         autoFontColor()
     });
 
+    function batchAudit(obj) {
+        let $e = $(obj);
+        let url = $e.attr('href');
+        let text = $e.text();
+        let grid = $e.data('grid');
+        let id = $e.closest("tr").data("key");
+
+        let ids = [];
+        if(id) {
+            ids.push(id);
+        }
+        else if($("#"+grid).length>0) {
+            ids = $("#"+grid).yiiGridView("getSelectedRows");
+        }
+
+        if(ids.length===0) {
+            rfInfo('未选中数据！','');
+            return false;
+        }
+
+        appConfirm("确定要"+text+"吗?", '', function (code) {
+            if(code !== "defeat") {
+                return;
+            }
+
+            $.ajax({
+                type: "post",
+                url: url,
+                dataType: "json",
+                data: {
+                    ids: ids
+                },
+                success: function (data) {
+                    if (parseInt(data.code) !== 200) {
+                        rfAffirm(data.message);
+                    } else {
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+    }
+
     // 启用状态 status 1:启用;0禁用;
     function rfStatus(obj) {
         let id = $(obj).attr('data-id');

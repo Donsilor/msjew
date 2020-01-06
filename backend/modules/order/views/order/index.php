@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
             </ul>
 
             <div class="tab-content">
-                <div class="box-body table-responsive top-form">
+                <div class="box-body top-form">
                     <div class="row col-sm-12">
                         <div class="col-sm-3">
                             <?= $searchModel->model->getAttributeLabel('member.email') ?>：<br/>
@@ -73,17 +73,28 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                         </div>
                     </div>
                 </div>
+                <div class="box-body">
+                    <div class="row col-sm-12">
+                        <?= Html::batchAudit('ajax-batch-audit', '审核', ['data-grid'=>'grid']) ?>
+                    </div>
+                </div>
                 <div class="active tab-pane">
                     <?php
                     $config = [
+                        'id'=>'grid',
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
                         //重新定义分页样式
                         'tableOptions' => ['class' => 'table table-hover'],
                         'columns' => [
+//                            [
+//                                'class' => 'yii\grid\SerialColumn',
+//                                'visible' => false, // 不显示#
+//                            ],
                             [
-                                'class' => 'yii\grid\SerialColumn',
-                                'visible' => false, // 不显示#
+                                'class'=>'yii\grid\CheckboxColumn',
+                                'name'=>'id',  //设置每行数据的复选框属性
+                                'headerOptions' => ['width'=>'30'],
                             ],
                             [
                                 'attribute' => 'id',
@@ -211,7 +222,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             [
                                 'header' => "操作",
                                 'class' => 'yii\grid\ActionColumn',
-                                'template' => ' {view} {follower}',
+                                'template' => ' {view} {follower} {audit} {delivery}',
                                 'buttons' => [
                                     'view' => function ($url, $model, $key) {
                                         return Html::a('详情', ['view', 'id' => $model->id], ['class' => 'btn btn-info btn-sm']);
@@ -222,6 +233,15 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                             'data-target' => '#ajaxModal',
                                         ]);
                                     },
+                                    'audit' => function ($url, $model, $key) {
+                                        return Html::batchAudit();
+                                    },
+                                    'delivery' => function($url, $model, $key) {
+                                        return Html::edit(['edit-delivery', 'id' => $model->id], '发货', [
+                                            'data-toggle' => 'modal',
+                                            'data-target' => '#ajaxModal',
+                                        ]);
+                                    }
                                 ],
                             ],
                         ],
@@ -236,9 +256,24 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
 </div>
 
 <script>
+    function audit(id) {
+        let _id = [];
+        if(id===undefined) {
+            _id= []
+        }
+        else {
+            _id.push(id)
+        }
+    }
+
     (function ($) {
+        /**
+         * 头部文本框触发列表过滤事件
+         */
         $(".top-form input,select").change(function () {
             $(".filters input[name='" + $(this).attr('name') + "']").val($(this).val()).trigger('change');
         });
+
+
     })(window.jQuery);
 </script>

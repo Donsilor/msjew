@@ -277,7 +277,7 @@ class GoodsService extends Service
             $goods = Diamond::find()->alias('g')
                         ->where(['goods_id'=>$goods_id])
                         ->innerJoin(DiamondLang::tableName().' lang','g.id=lang.master_id')
-                        ->select(['g.*','lang.goods_name','lang.goods_body','g.goods_num as goods_storage'])->asArray()->one();
+                        ->select(['g.*','g.goods_sn as style_sn','lang.goods_name','lang.goods_body','g.goods_num as goods_storage'])->asArray()->one();
              $goods_attr = [
                     DiamondEnum::CARAT=>$goods['carat'],
                     DiamondEnum::COLOR=>$goods['color'],

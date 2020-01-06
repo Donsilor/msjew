@@ -128,6 +128,7 @@ class OrderService extends Service
         }
         $buyerAddress = Address::find()->where(['id'=>$buyer_address_id,'member_id'=>$buyer_id])->one();
         $orderGoodsList = [];
+        $goods_amount = 0;
         foreach ($cart_list as $cart) {
             
             $goods = \Yii::$app->services->goods->getGoodsInfo($cart->goods_id,$cart->goods_type,false);

@@ -148,6 +148,8 @@ class PayService extends Service
         $payModel->order_group = $orderGroup;
         $payModel->pay_type = $payType;
         $payModel->trade_type = $tradeType;
+        $payModel->currency = $this->getCurrency();
+        $payModel->exchange_rate = $this->getExchangeRate();
         $payModel->save();
 
         return $payModel->out_trade_no;
@@ -162,11 +164,11 @@ class PayService extends Service
      */
     public function notify(PayLog $log, $paymentType)
     {
-        $log->ip = ip2long(Yii::$app->request->userIP);
+        $log->ip = Yii::$app->request->userIP;
         $log->save();
 
         switch ($log->order_group) {
-            case PayEnum::ORDER_GROUP :
+            case PayEnum::ORDER_GROUP :                
                 // TODO 处理订单
                 return true;
                 break;

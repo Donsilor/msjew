@@ -52,7 +52,7 @@ class OrderController extends UserAuthController
                 'orderAmount'=> $orderRow['order_amount'],
                 'productAmount'=> $orderRow['goods_amount'],
                 'coinCode'=> $currencySign,
-                'payChannel'=>$orderRow['pay_type'],
+                'payChannel'=>$orderRow['payment_type'],
                 'orderTime' =>$orderRow['created_at'],
                 'details'=>[],  
            ];

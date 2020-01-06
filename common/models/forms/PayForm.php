@@ -8,6 +8,7 @@ use yii\helpers\Json;
 use yii\web\UnprocessableEntityHttpException;
 use common\enums\PayEnum;
 use common\enums\OrderStatusEnum;
+use common\models\order\Order;
 
 /**
  * Class PayForm
@@ -112,7 +113,7 @@ class PayForm extends Model
                 
                 $orderInfo = \Yii::$app->services->order->getOrderAccount($this->orderId,$this->memberId);                
                 if(empty($orderInfo) || $orderInfo['order_status'] != OrderStatusEnum::ORDER_UNPAID) {
-                    throw new UnprocessableEntityHttpException("订单状态已变更");
+                    throw new UnprocessableEntityHttpException("支付失败,订单状态已变更");
                 }
                 // TODO 查询订单获取订单信息
                 $orderSn = $orderInfo['order_sn'];
@@ -120,6 +121,8 @@ class PayForm extends Model
                 if($this->payType == PayEnum::PAY_TYPE_ALI) {
                     $totalFee = $totalFee * 100;
                 }
+                Order::updateAll(['payment_type'=>$this->payType],['id'=>$this->orderId]);//更改订单支付方式
+                
                 $order = [
                     'body' => \Yii::$app->params['currency'],
                     'total_fee' => $totalFee,

@@ -7,6 +7,7 @@ use yii\base\Model;
 use yii\helpers\Json;
 use yii\web\UnprocessableEntityHttpException;
 use common\enums\PayEnum;
+use common\enums\OrderStatusEnum;
 
 /**
  * Class PayForm
@@ -15,25 +16,26 @@ use common\enums\PayEnum;
  */
 class PayForm extends Model
 {
-    public $orderGroup;
+    public $orderGroup = 'default';
     public $payType;
     public $tradeType = 'default';
     public $data; // json数组
     public $memberId;
     public $returnUrl;
     public $notifyUrl;
-
+    public $orderId;
     /**
      * @return array
      */
     public function rules()
     {
         return [
-            [['orderGroup', 'payType', 'data', 'tradeType', 'memberId'], 'required'],
+            [['orderGroup', 'payType', 'tradeType', 'memberId'], 'required'],
             [['orderGroup'], 'in', 'range' => array_keys(PayEnum::$orderGroupExplain)],
             [['payType'], 'in', 'range' => array_keys(PayEnum::$payTypeExplain)],
-            [['notifyUrl', 'returnUrl', 'data'], 'string'],
+            [['notifyUrl', 'returnUrl'], 'string'],
             [['tradeType'], 'verifyTradeType'],
+            [['orderId'],'integer']
         ];
     }
 
@@ -104,14 +106,19 @@ class PayForm extends Model
      */
     protected function getBaseOrderInfo()
     {
-        $data = Json::decode($this->data);
+        //$data = $this->data;        
         switch ($this->orderGroup) {
             case PayEnum::ORDER_GROUP :
+                
+                $orderInfo = \Yii::$app->services->order->getOrderAccount($this->orderId,$this->memberId);                
+                if(empty($orderInfo) || $orderInfo['order_status'] != OrderStatusEnum::ORDER_UNPAID) {
+                    throw new UnprocessableEntityHttpException("订单状态已变更");
+                }
                 // TODO 查询订单获取订单信息
-                $orderSn = '';
-                $totalFee = '';
+                $orderSn = $orderInfo['order_sn'];
+                $totalFee = $orderInfo['order_amount'] - $orderInfo['discount_amount'];
                 $order = [
-                    'body' => '',
+                    'body' => \Yii::$app->params['currency'],
                     'total_fee' => $totalFee,
                 ];
                 break;

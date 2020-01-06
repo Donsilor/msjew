@@ -43,19 +43,7 @@ class AliPay
         $gateway->setPrivateKey(Yii::getAlias($this->config['private_key']));
         $gateway->setNotifyUrl($this->config['notify_url']);
         !empty($this->config['return_url']) && $gateway->setReturnUrl($this->config['return_url']);
-        $this->config['sandbox'] === true && $gateway->sandbox();
-        
-        $str= file_get_contents($this->config['private_key']);
-        //$str        = chunk_split($str, 64, "\n");
-        $key = $str;
-        $signature = '';
-        $data = '111';
-        if (openssl_sign($data, $signature, $key, OPENSSL_ALGO_MD5)) {
-            echo base64_encode($signature);
-        }else{
-            echo 'error';
-        }
-exit;
+        $this->config['sandbox'] === true && $gateway->sandbox();       
         
         return $gateway;
     }

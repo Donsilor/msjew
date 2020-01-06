@@ -171,9 +171,9 @@ class PayService extends Service
 
         switch ($log->order_group) {
             case PayEnum::ORDER_GROUP :   
-                //if($log->pay_status ==2){
+                if($log->pay_status == 1){
                     Order::updateAll(['api_pay_time'=>time(),'order_status'=>OrderStatusEnum::ORDER_PAID],['order_sn'=>$log->order_sn,'order_status'=>OrderStatusEnum::ORDER_UNPAID]);
-                //}
+                }
                 // TODO 处理订单
                 return true;
                 break;

@@ -2,6 +2,8 @@
 
 namespace api\modules\web\controllers\member;
 
+use common\models\goods\Ring;
+use common\models\goods\RingLang;
 use common\models\order\OrderCart;
 use api\modules\web\forms\CartForm;
 use common\helpers\ResultHelper;
@@ -106,9 +108,21 @@ class CartController extends UserAuthController
                     "stock"=>$goods["goods_storage"],
                     "retailPrice"=>$sale_price,
                     "retailMallPrice"=>$sale_price,
-                    "coinType"=>$this->currencySign,
-            ];            
-            $cart['simpleGoodsEntity'] = $simpleGoodsEntity;
+                    "coinType"=>$this->getCurrencySign(),
+            ];
+
+            if($model->group_type == 1){ //对戒
+                $ring = Ring::find()->alias('r')
+                    ->where(['r.id'=>$model->group_id])
+                    ->innerJoin(RingLang::tableName().' lang','r.id=lang.master_id')
+                    ->select(['r.id','r.ring_style as ringStyle','r.sale_price as salePrice','r.status','r.ring_images as ringImg','r.ring_sn as ringCode','lang.ring_name as name'])->asArray()->one();
+                $ring['coinType'] = $this->getCurrencySign();
+                $ring['simpleGoodsEntity'] = $simpleGoodsEntity;
+                $cart['ringsSimpleGoodsEntity'] = $ring;
+            }else{
+                $cart['simpleGoodsEntity'] = $simpleGoodsEntity;
+            }
+
          
             $cart_list[] = $cart;
         }

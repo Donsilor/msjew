@@ -183,7 +183,7 @@ class OrderController extends BaseController
                 }
 
                 //判断订单是否已付款状态
-                if($model->order_status!==20) {
+                if($model->order_status!==OrderStatusEnum::ORDER_PAID) {
                     throw new Exception(sprintf('[%d]不是已付款状态', $id));
                 }
 

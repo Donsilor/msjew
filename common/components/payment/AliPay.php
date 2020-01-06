@@ -37,7 +37,7 @@ class AliPay
     {
         /* @var $gateway \Omnipay\Alipay\AopPageGateway */
         $gateway = Omnipay::create($type);
-        $gateway->setSignType('RSA2'); // RSA/RSA2/MD5
+        $gateway->setSignType('RSA'); // RSA/RSA2/MD5
         $gateway->setAppId($this->config['app_id']);
         $gateway->setAlipayPublicKey(Yii::getAlias($this->config['ali_public_key']));
         $gateway->setPrivateKey(Yii::getAlias($this->config['private_key']));

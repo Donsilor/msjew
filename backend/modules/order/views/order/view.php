@@ -99,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="row">
                         <div class="col-lg-6"><label
                                     class="col-lg-3 text-right"><?= $model->getAttributeLabel('buyer_remark') ?>
-                                ：</label><?= Html::textarea('buyer_remark', $model->buyer_remark, ['class' => 'col-lg-6']) ?>
+                                ：</label><?= Html::textarea('buyer_remark', $model->buyer_remark, ['class' => 'col-lg-6', 'readonly'=>'']) ?>
                         </div>
                     </div>
                 </div>
@@ -169,7 +169,7 @@ DOM;
                             <div class="row">
                                 <div class="col-lg-3 text-right">
                                     <label><?= $model->getAttributeLabel('seller_remark') ?>：</label></div>
-                                <div class="col-lg-9"><?= Html::textarea('buyer_remark', $model->seller_remark, ['class' => 'col-lg-12']) ?></div>
+                                <div class="col-lg-9"><?= Html::textarea('buyer_remark', $model->seller_remark, ['class' => 'col-lg-12', 'readonly'=>'']) ?></div>
                             </div>
                         </div>
                         <div class="col-lg-3">

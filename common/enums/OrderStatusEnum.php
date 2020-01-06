@@ -8,14 +8,13 @@ namespace common\enums;
  * @package common\enums * 
  */
 class OrderStatusEnum extends BaseEnum
-{
-    const ORDER_CANCEL = 0;
+{    
     const ORDER_UNPAID = 10;
     const ORDER_PAID = 20;
     const ORDER_CONFIRM = 30;
     const ORDER_SEND = 40;
     const ORDER_FINISH = 50;    
-    
+    const ORDER_CANCEL = 0;
     /**
      * @return array
      */

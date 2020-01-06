@@ -43,8 +43,8 @@ class AliPay
         $gateway->setPrivateKey(Yii::getAlias($this->config['private_key']));
         $gateway->setNotifyUrl($this->config['notify_url']);
         !empty($this->config['return_url']) && $gateway->setReturnUrl($this->config['return_url']);
-        $this->config['sandbox'] === true && $gateway->sandbox();
-
+        $this->config['sandbox'] === true && $gateway->sandbox();       
+        
         return $gateway;
     }
 

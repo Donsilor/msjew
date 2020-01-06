@@ -9,6 +9,8 @@ use common\models\common\PayLog;
 use common\helpers\StringHelper;
 use common\models\forms\PayForm;
 use common\helpers\ArrayHelper;
+use common\models\order\Order;
+use common\enums\OrderStatusEnum;
 
 /**
  * Class PayService
@@ -148,6 +150,8 @@ class PayService extends Service
         $payModel->order_group = $orderGroup;
         $payModel->pay_type = $payType;
         $payModel->trade_type = $tradeType;
+        $payModel->currency = $this->getCurrency();
+        $payModel->exchange_rate = $this->getExchangeRate();
         $payModel->save();
 
         return $payModel->out_trade_no;
@@ -162,11 +166,14 @@ class PayService extends Service
      */
     public function notify(PayLog $log, $paymentType)
     {
-        $log->ip = ip2long(Yii::$app->request->userIP);
+        $log->ip = Yii::$app->request->userIP;
         $log->save();
 
         switch ($log->order_group) {
-            case PayEnum::ORDER_GROUP :
+            case PayEnum::ORDER_GROUP :   
+                if($log->pay_status == 1){
+                    Order::updateAll(['api_pay_time'=>time(),'order_status'=>OrderStatusEnum::ORDER_PAID],['order_sn'=>$log->order_sn,'order_status'=>OrderStatusEnum::ORDER_UNPAID]);
+                }
                 // TODO 处理订单
                 return true;
                 break;

@@ -45,6 +45,7 @@ class OrderService extends Service
         //$languages = $this->getLanguages();
         $buyerAddress = $orderAccountTax['buyerAddress'];
         $orderGoodsList   = $orderAccountTax['orderGoodsList'];
+        $currency = $orderAccountTax['currency'];
         //订单
         $order = new Order();
         $order->attributes = $order_info;
@@ -87,8 +88,8 @@ class OrderService extends Service
             }  */
         }
         //金额校验
-        $_order_amount = $this->exchangeAmount($orderAccountTax['order_amount']);
-        if($order_info['order_amount'] != $_order_amount) {
+        $order_amount = $this->exchangeAmount($orderAccountTax['order_amount']);
+        if($order_info['order_amount'] != $order_amount) {
             throw new UnprocessableEntityHttpException("订单金额校验失败：订单金额有变动，请刷新页面查看");
         }
                 
@@ -105,7 +106,11 @@ class OrderService extends Service
         if(false === $orderAddress->save()) {
             throw new UnprocessableEntityHttpException($this->getError($orderAddress));
         }        
-        return $order;
+        return [
+                "currency" => $currency,
+                "order_amount"=> $order_amount,
+                "order_id" => $order->id,
+        ];
     }
     /**
      * 获取订单金额，税费信息
@@ -172,6 +177,22 @@ class OrderService extends Service
                 'buyerAddress'=>$buyerAddress,
                 'orderGoodsList'=>$orderGoodsList,
         ];
+    }
+    /**
+     * 获取订单支付金额
+     * @param unknown $order_id
+     * @param unknown $member_id
+     */
+    public function getOrderAccount($order_id, $member_id = 0) 
+    {        
+        $query = Order::find()->select(['order.order_sn','order.order_status','account.*'])
+            ->innerJoin(OrderAccount::tableName().' account',"order.id=account.order_id")
+            ->where(['order.id'=>$order_id]);
+        
+        if($member_id) {
+            $query->andWhere(['=','order.member_id',$member_id]);
+        }
+        return $query->asArray()->one();
     }
           
     

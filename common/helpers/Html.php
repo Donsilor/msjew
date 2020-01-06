@@ -326,6 +326,24 @@ Css
         $str .='</ul>';
         return $str;
     }
+
+    /**
+     * 批量审核
+     * @param array|string $url
+     * @param string $content
+     * @param array $options
+     * @return string
+     */
+    public static function batchAudit($url = ['ajax-batch-audit'], $content = '审核', $options = [])
+    {
+        $options = ArrayHelper::merge([
+            'class' => "btn btn-danger btn-sm",
+            'onclick' => "batchAudit(this);return false;"
+        ], $options);
+
+        return self::a($content, $url, $options);
+    }
+
     /**
      * 批量操作按钮
      * @param array $options

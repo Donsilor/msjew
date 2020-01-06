@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\controllers;
+namespace api\controllers;
 
 use Yii;
 use yii\web\Controller;
@@ -98,7 +98,6 @@ class NotifyController extends Controller
      */
     public function actionAlipay()
     {
-        return 1111;
         $this->payment = 'ali';
 
         $request = Yii::$app->pay->alipay([

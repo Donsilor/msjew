@@ -39,6 +39,7 @@ class OrderService extends Service
     public function createOrder($cart_ids,$buyer_id, $buyer_address_id, $order_info)
     {
         $orderAccountTax = $this->getOrderAccountTax($cart_ids, $buyer_id, $buyer_address_id);
+
         if(empty($orderAccountTax['buyerAddress'])) {
             throw new UnprocessableEntityHttpException("收货地址不能为空");
         }

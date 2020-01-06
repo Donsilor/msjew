@@ -117,6 +117,9 @@ class PayForm extends Model
                 // TODO 查询订单获取订单信息
                 $orderSn = $orderInfo['order_sn'];
                 $totalFee = $orderInfo['order_amount'] - $orderInfo['discount_amount'];
+                if($this->payType == PayEnum::PAY_TYPE_ALI) {
+                    $totalFee = $totalFee * 100;
+                }
                 $order = [
                     'body' => \Yii::$app->params['currency'],
                     'total_fee' => $totalFee,

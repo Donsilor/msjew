@@ -14,6 +14,7 @@ use common\models\order\Order;
 use Exception;
 use yii\web\NotFoundHttpException;
 use common\enums\FollowStatusEnum;
+use common\enums\AuditStatusEnum;
 
 /**
  * Default controller for the `order` module
@@ -178,29 +179,28 @@ class OrderController extends BaseController
                 }
 
                 //判断订单是否待审核状态
-                if($model->status!==1) {
+                if($model->status !== AuditStatusEnum::PENDING) {
                     throw new Exception(sprintf('[%d]不是待审核状态', $id));
                 }
 
                 //判断订单是否已付款状态
-                if($model->order_status!==OrderStatusEnum::ORDER_PAID) {
+                if($model->order_status !== OrderStatusEnum::ORDER_PAID) {
                     throw new Exception(sprintf('[%d]不是已付款状态', $id));
                 }
 
                 //更新订单审核状态
-                $result = $model->updateAttributes(['status' => '2']);
+                $result = $model->updateAttributes(['status' => AuditStatusEnum::PASS]);
 
                 if($result!==1) {
                     throw new Exception('更新异常，请刷新后再试');
                 }
             }
-
+            $trans->commit();
         } catch (Exception $e) {
             $trans->rollBack();
             return ResultHelper::json(422, '审核失败！'.$e->getMessage());
         }
-
-        $trans->commit();
+        
         return ResultHelper::json(200, '审核成功', [], true);
     }
 

@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                         </div>
                         <div class="col-sm-3">
                             <?= $searchModel->model->getAttributeLabel('order_from') ?>：<br/>
-                            <?= Html::activeDropDownList($searchModel, 'order_from', \common\enums\AppEnum::getMap(), [
+                            <?= Html::activeDropDownList($searchModel, 'order_from', \common\enums\OrderFromEnum::getMap(), [
                                 'prompt' => '全部',
                                 'class' => 'form-control',
                             ]);
@@ -167,26 +167,26 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'format' => 'raw',
                             ],
                             [
-                                'label' => '支付状态',
-                                 'headerOptions' => ['class' => 'col-md-1'],
-                                'filter' => Html::activeDropDownList($searchModel, 'payment_status', common\enums\PayStatusEnum::getMap(), [
+                                'attribute' => 'order_status',
+                                'headerOptions' => ['class' => 'col-md-1'],
+                                'filter' => Html::activeDropDownList($searchModel, 'order_status', common\enums\OrderStatusEnum::getMap(), [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
                                 ]), 
                                 'value' => function ($model) {
-                                     return common\enums\PayStatusEnum::getValue($model->payment_status);
+                                    return common\enums\OrderStatusEnum::getValue($model->order_status);
                                 },
                                 'format' => 'raw',
                             ],
                             [
-                                'attribute' => 'order_status',
-                                 'headerOptions' => ['class' => 'col-md-1'],
-                                 'filter' => Html::activeDropDownList($searchModel, 'order_status', common\enums\OrderStatusEnum::getMap(), [
+                                'attribute' => 'status',
+                                'headerOptions' => ['class' => 'col-md-1'],
+                                'filter' => Html::activeDropDownList($searchModel, 'status', common\enums\AuditStatusEnum::getMap(), [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
                                 ]),
                                 'value' => function ($model) {
-                                    return common\enums\OrderStatusEnum::getValue($model->order_status);
+                                    return common\enums\AuditStatusEnum::getValue($model->status);
                                 },
                                 'format' => 'raw',
                             ],

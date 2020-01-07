@@ -52,34 +52,50 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="form-group field-contact-telphone ">
                         <div class="col-sm-1 text-right"><label class="control-label" for="contact-telphone"><?=Yii::t('telphone', '电话')?>: </label></div>
                         <div class="col-sm-11">
-                            <?=$model->telphone;?>
+                            <?=$model->telphone?? '&nbsp; ';?>
+                            <div class="help-block"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group field-contact-city ">
+                        <div class="col-sm-1 text-right"><label class="control-label" for="contact-telphone"><?=Yii::t('city', '所属城市')?>: </label></div>
+                        <div class="col-sm-11">
+                            <?=$model->city?? '&nbsp; ';?>
+                            <div class="help-block"></div>
+                        </div>
+                    </div>
+                    <div class="form-group field-contact-book_time ">
+                        <div class="col-sm-1 text-right"><label class="control-label" for="contact-telphone"><?=Yii::t('book_time', '预约时间')?>: </label></div>
+                        <div class="col-sm-11">
+                            <?=$model->book_time?? '&nbsp; ';?>
                             <div class="help-block"></div>
                         </div>
                     </div>
                     <div class="form-group field-contact-type_id">
                         <div class="col-sm-1 text-right"><label class="control-label" for="contact-type_id"><?=Yii::t('type_id', '留言类别')?>: </label></div>
                         <div class="col-sm-11">
-                            <?= common\enums\ContactTypeEnum::getMap()[$model->type_id]; ?>
+                            <?= common\enums\ContactEnum::getMap()[$model->type_id]?? '&nbsp; '; ?>
                             <div class="help-block"></div>
                         </div>
                     </div>
                     <div class="form-group field-contact-content">
                         <div class="col-sm-1 text-right"><label class="control-label" for="contact-content"><?=Yii::t('content', '留言内容')?>: </label></div>
                         <div class="col-sm-11">
-                            <?=$model->content;?>
+                            <?=$model->content?? '&nbsp; ';?>
                             <div class="help-block"></div>
                         </div>
                     </div>
-<!--                    <div class="form-group field-contact-status">-->
-<!--                        <div class="col-sm-1 text-right"><label class="control-label" for="contact-status">--><?//=Yii::t('status', '状态')?><!--</label></div>-->
-<!--                        <div class="col-sm-11">-->
-<!--                            --><?//=$model->status;?>
-<!--                        </div>-->
-<!--                    </div>-->
+                    <div class="form-group field-contact-status">
+                        <div class="col-sm-1 text-right"><label class="control-label" for="contact-status"><?=Yii::t('status', '状态')?></label></div>
+                        <div class="col-sm-11">
+                            <?=\common\enums\ContactEnum::getStatus()[$model->status]?? '&nbsp; ';?>
+                            <div class="help-block"></div>
+                        </div>
+                    </div>
                     <div class="form-group field-contact-created_at">
                         <div class="col-sm-1 text-right"><label class="control-label" for="contact-created_at"><?=Yii::t('created_at', '留言时间')?></label></div>
                         <div class="col-sm-11">
-                            <?=date('Y-m-d H:i:s',$model->created_at);?>
+                            <?=date('Y-m-d H:i:s',$model->created_at)?? '&nbsp; ';?>
                             <div class="help-block"></div>
                         </div>
                     </div>

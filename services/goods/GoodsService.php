@@ -380,6 +380,28 @@ class GoodsService extends Service
         }
         return $spec_data;
     }
+    /**
+     * 规格属性合并
+     * @param unknown $goods_attr
+     * @param unknown $goods_spec
+     * @param unknown $goods_type
+     * @param unknown $language
+     */
+    public function formatGoodsAttrAndSpec($goods_attr, $goods_spec, $goods_type, $language = null) 
+    {
+        $data = array();
+        $goods_attr = $this->formatGoodsAttr($goods_attr, $goods_type,$language);
+        foreach ($goods_attr as $vo) {
+            $data['goods_attr'][$vo['id']] = [
+                'attr_id' =>$vo['id'],
+                'value_id'=>implode("/", array_keys($vo['value'])),
+                'attr_name'=>$vo['attr_name'],
+                'attr_value'=>implode("/", $vo['value'])                    
+            ];
+        }
+        $data['goods_spec'] = $this->formatGoodsSpec($goods_spec,$language);
+        return $data;
+    }
     
     /**
      * 格式化商品属性数据

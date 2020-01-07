@@ -4,7 +4,6 @@ namespace backend\modules\order\controllers;
 
 use backend\controllers\BaseController;
 use common\enums\OrderStatusEnum;
-use common\helpers\ArrayHelper;
 use common\helpers\ResultHelper;
 use common\models\order\OrderGoods;
 use Yii;
@@ -14,6 +13,7 @@ use common\models\base\SearchModel;
 use common\models\order\Order;
 use Exception;
 use yii\web\NotFoundHttpException;
+use common\enums\FollowStatusEnum;
 
 /**
  * Default controller for the `order` module
@@ -44,10 +44,10 @@ class OrderController extends BaseController
             ],
             'pageSize' => $this->pageSize,
             'relations' => [
-//                'account' => [''],
+                'account' => ['order_amount'],
                 'address' => ['country_name', 'city_name', 'country_id', 'city_id'],
                 'member' => ['username', 'realname', 'mobile', 'email'],
-                'follower' => ['realname']
+                'follower' => ['username']
             ]
         ]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, ['created_at']);
@@ -68,7 +68,6 @@ class OrderController extends BaseController
         return $this->render($this->action->id, [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
-            'orderStatus' => OrderStatusEnum::getMap(),
         ]);
     }
 
@@ -122,6 +121,7 @@ class OrderController extends BaseController
         // ajax 校验
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
+            $model->followed_status = $model->follower_id ? FollowStatusEnum::YES : FollowStatusEnum::NO;
             return $model->save()
                 ? $this->redirect(['index'])
                 : $this->message($this->getError($model), $this->redirect(['index']), 'error');

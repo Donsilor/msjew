@@ -14,12 +14,13 @@ use Yii;
  * @property string $order_sn 订单编号
  * @property string $pay_sn 支付单号
  * @property int $member_id 买家id
- * @property string $payment_type 支付方式名称代码
- * @property int $payment_time 支付(付款)时间
+ * @property string $payment_type 支付方式
+ * @property int $payment_time 支付状态
+ * @property int $payment_time 支付时间
  * @property int $finished_time 订单完成时间
  * @property int $evaluation_status 评价状态 0未评价，1已评价，2已过期未评价
  * @property int $evaluation_again_status 追加评价状态 0未评价，1已评价，2已过期未评价
- * @property int $order_status 订单状态(1-未付款,2-已付款,3-已发货,4-已完成,5-未评论,6-已评论,7-退货申请,8-退货中,9-已退货,10-取消交易)
+ * @property int $order_status 订单状态
  * @property int $refund_status 退款状态:0是无退款,1是部分退款,2是全部退款
  * @property string $express_no 物流单号
  * @property int $order_from 订单来源 1：web 2：mobile
@@ -48,7 +49,7 @@ class Order extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id','payment_type', 'member_id', 'payment_time', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at','payment_type', 'follower_id', 'followed_time', 'express_id'], 'integer'],
+            [['merchant_id','payment_type','payment_status', 'payment_time', 'member_id', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at', 'follower_id','followed_status' ,'followed_time', 'express_id'], 'integer'],
             [['language'], 'safe'],
             [['order_sn','pay_sn'], 'string', 'max' => 20],
             [['express_no', 'trade_no'], 'string', 'max' => 50],
@@ -69,7 +70,8 @@ class Order extends \common\models\base\BaseModel
             'pay_sn' => '支付单号',
             'member_id' => '买家id',
             'payment_type' => '支付方式',
-            'payment_time' => '支付(付款)时间',
+            'payment_status'=>'支付状态',    
+            'payment_time' => '支付时间',
             'finished_time' => '订单完成时间',
             'evaluation_status' => '评价状态',
             'evaluation_again_status' => '追加评价状态',
@@ -79,15 +81,15 @@ class Order extends \common\models\base\BaseModel
             'express_no' => '物流单号',
             'order_from' => '订单来源',
             'order_type' => '订单类型',
-            'api_pay_time' => '在线支付动作时间',
-            'trade_no' => '外部交易订单号',
-            'buyer_email' => '售后邮箱',
+            'api_pay_time' => 'Api支付时间',
+            'trade_no' => '外部单号',
             'buyer_remark' => '买家留言',
             'seller_remark' => '商家备注',
             'follower_id' => '跟进人',
+            'followed_status' => '跟进状态',
             'followed_time' => '跟进时间',
-            'status' => '状态',
-            'created_at' => '订单生成时间',
+            'status' => '审核状态',
+            'created_at' => '创建时间',
             'updated_at' => '更新时间',
         ];
     }

@@ -53,6 +53,7 @@ class OrderService extends Service
         $order->language   = $this->getLanguage();
         $order->member_id = $buyer_id;
         $order->order_sn  = $this->createOrderSn();
+        $order->ip = \Yii::$app->request->userIP;
         if(false === $order->save()){
             throw new UnprocessableEntityHttpException($this->getError($order));
         }

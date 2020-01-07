@@ -15,13 +15,12 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
     <div class="col-sm-12">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-                <li<?php if (Yii::$app->request->get('order_status', -1) == -1) echo ' class="active"' ?>><a
-                            href="<?= Url::to(['order/index']) ?>"> 全部</a></li>
-                <? foreach (OrderStatusEnum::getMap() as $statusValue => $statusName) { ?>
+                <li<?php if (Yii::$app->request->get('order_status', -1) == -1) echo ' class="active"' ?>><a href="<?= Url::to(['order/index']) ?>"> 全部</a></li>
+                <?php foreach (common\enums\OrderStatusEnum::getMap() as $statusValue => $statusName) { ?>
                     <li<?php if (Yii::$app->request->get('order_status', -1) == $statusValue) echo ' class="active"' ?>>
                         <a href="<?= Url::to(['order/index', 'order_status' => $statusValue]) ?>"><?= $statusName ?></a>
                     </li>
-                <? } ?>
+                <?php } ?>
             </ul>
 
             <div class="tab-content">
@@ -75,12 +74,11 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                 </div>
                 <div class="box-body">
                     <div class="row col-sm-12">
-                        <?= Html::batchAudit('ajax-batch-audit', '审核', ['data-grid'=>'grid']) ?>
+                        <?= Html::batchAudit('ajax-batch-audit', '批量审核', ['data-grid'=>'grid']) ?>
                     </div>
                 </div>
                 <div class="active tab-pane">
-                    <?php
-                    $config = [
+                    <?= GridView::widget([
                         'id'=>'grid',
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
@@ -151,71 +149,67 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                             [
                                 'attribute' => 'account.order_amount',
-                                'filter' => true, //不显示搜索框
+                                'filter' => Html::activeTextInput($searchModel, 'account.order_amount', [
+                                        'class' => 'form-control',
+                                ]),
                                 'format' => 'raw',
                             ],
                             [
-                                'attribute' => 'address.country_name',
+                                'attribute' => 'address.country_id',
                                 'headerOptions' => ['class' => 'col-md-1'],
                                 'filter' => Html::activeDropDownList($searchModel, 'address.country_id', \Yii::$app->services->area->getDropDown(0), [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
                                 ]),
+                                'value' => function ($model) {
+                                    return \Yii::$app->services->area->getAreaName($model->address->country_id);
+                                },
                                 'format' => 'raw',
                             ],
-//                            [
-//                                'attribute' => 'address.city_name',
-//                                'filter' => Html::activeDropDownList($searchModel,
-//                                    'address.city_id',
-//                                    \Yii::$app->services->area->getDropDown(Yii::$app->request->queryParams['SearchModel']['address.country_id'] ?: $model->address->country_id),
-//                                    [
-//                                        'prompt' => '全部',
-//                                        'class' => 'form-control',
-//                                    ]
-//                                ),
-//                                'format' => 'raw',
-//                            ],
                             [
                                 'label' => '支付状态',
-                                'filter' => Html::activeDropDownList($searchModel, 'api_pay_time', ['1' => '是', '2' => '否'], [
+                                 'headerOptions' => ['class' => 'col-md-1'],
+                                'filter' => Html::activeDropDownList($searchModel, 'payment_status', common\enums\PayStatusEnum::getMap(), [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
-                                ]),
+                                ]), 
                                 'value' => function ($model) {
-                                    return "支付状态";
+                                     return common\enums\PayStatusEnum::getValue($model->payment_status);
                                 },
                                 'format' => 'raw',
                             ],
                             [
                                 'attribute' => 'order_status',
-                                'filter' => Html::activeDropDownList($searchModel, 'order_status', OrderStatusEnum::getMap(), [
+                                 'headerOptions' => ['class' => 'col-md-1'],
+                                 'filter' => Html::activeDropDownList($searchModel, 'order_status', common\enums\OrderStatusEnum::getMap(), [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
                                 ]),
                                 'value' => function ($model) {
-                                    return OrderStatusEnum::getValue($model->order_status);
+                                    return common\enums\OrderStatusEnum::getValue($model->order_status);
                                 },
                                 'format' => 'raw',
                             ],
+                            
                             [
                                 'label' => '跟进人',
-                                'filter' => Html::activeTextInput($searchModel, 'follower.realname', [
+                                'filter' => Html::activeTextInput($searchModel, 'follower.username', [
                                     'class' => 'form-control',
-                                    'style' => 'width:200px'
                                 ]),
                                 'value' => function ($model) {
-                                    return $model->follower->realname;
+                                    return $model->follower ? $model->follower->username : null;
                                 },
                                 'format' => 'raw',
                             ],
                             [
                                 'label' => '跟进状态',
-                                'filter' => Html::activeDropDownList($searchModel, 'api_pay_time', ['1' => '是', '2' => '否'], [
-                                    'prompt' => '全部',
-                                    'class' => 'form-control',
+                                'headerOptions' => ['class' => 'col-md-1'],
+                                'filter' => Html::activeDropDownList($searchModel, 'followed_status',common\enums\FollowStatusEnum::getMap(), [
+                                        'prompt' => '全部',
+                                        'class' => 'form-control',
                                 ]),
                                 'value' => function ($model) {
-                                    return "跟进状态";
+                                     return common\enums\FollowStatusEnum::getValue($model->followed_status);
                                 },
                                 'format' => 'raw',
                             ],
@@ -245,10 +239,8 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 ],
                             ],
                         ],
-                    ];
-
-                    echo GridView::widget($config);
-                    ?>
+                    ]);
+                  ?>
                 </div>
             </div>
         </div>

@@ -337,7 +337,7 @@ Css
     public static function batchAudit($url = ['ajax-batch-audit'], $content = '审核', $options = [])
     {
         $options = ArrayHelper::merge([
-            'class' => "btn btn-danger btn-sm",
+            'class' => "btn btn-primary btn-sm",
             'onclick' => "batchAudit(this);return false;"
         ], $options);
 

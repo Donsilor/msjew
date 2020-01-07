@@ -11,6 +11,7 @@ use common\models\forms\PayForm;
 use common\helpers\ArrayHelper;
 use common\models\order\Order;
 use common\enums\OrderStatusEnum;
+use common\enums\PayStatusEnum;
 
 /**
  * Class PayService
@@ -171,8 +172,17 @@ class PayService extends Service
 
         switch ($log->order_group) {
             case PayEnum::ORDER_GROUP :   
-                if($log->pay_status == 1){
-                    Order::updateAll(['api_pay_time'=>time(),'order_status'=>OrderStatusEnum::ORDER_PAID],['order_sn'=>$log->order_sn,'order_status'=>OrderStatusEnum::ORDER_UNPAID]);
+                if($log->pay_status == 1){ 
+                    $time = time();
+                    $orderUpdata = [
+                            'pay_sn'=>$log->out_trade_no,
+                            'api_pay_time'=>$time,
+                            'payment_type' =>$log->pay_type,
+                            'payment_time' =>$time,
+                            'payment_status'=>PayStatusEnum::PAID,
+                            'order_status'=>OrderStatusEnum::ORDER_PAID                            
+                    ];
+                    Order::updateAll($orderUpdata,['order_sn'=>$log->order_sn,'order_status'=>OrderStatusEnum::ORDER_UNPAID]);
                 }
                 // TODO 处理订单
                 return true;

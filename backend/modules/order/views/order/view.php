@@ -18,18 +18,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('order', '订单'), 'url' =>
 $this->params['breadcrumbs'][] = $this->title;
 //
 ?>
-<?php $form = ActiveForm::begin([
-    'id' => $model->formName(),
-    'enableAjaxValidation' => true,
-    'validationUrl' => Url::to(['ajax-edit', 'id' => $model['id']]),
-    'fieldConfig' => [
-        'template' => "<div class='col-sm-3 text-right'>{label}</div><div class='col-sm-9'>{input}\n{hint}\n{error}</div>",
-    ]
-]); ?>
-
     <div class="box-body nav-tabs-custom">
-        <h2 class="page-header">订单详情信息--详情页</h2>
-        <?php $tab_list = [0 => '全部', 1 => '基础信息', 2 => '商品明细', 3 => '图文信息', 4 => 'SEO优化']; ?>
+        <h2 class="page-header">订单详情</h2>
         <div class="tab-content">
             <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_1">
                 <ul class="nav nav-tabs pull-right">
@@ -64,8 +54,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ：</label><?= $model->member->mobile ?></div>
                         <div class="col-lg-3"><label
                                     class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_type') ?>
-                                ：</label><?= \common\enums\PayEnum::getValue($model->payment_type) ?></div>
-                        <div class="col-lg-3"><label class="col-lg-6 text-right">跟进状态：</label><?= $model->order_sn ?>
+                                ：</label><?= \common\enums\PayEnum::getValue($model->payment_status) ?></div>
+                        <div class="col-lg-3"><label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_status') ?>
+                                ：</label><?= \common\enums\PayStatusEnum::getValue($model->payment_status) ?>
                         </div>
                     </div>
                     <div class="row">
@@ -76,7 +67,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     class="col-lg-6 text-right"><?= $model->getAttributeLabel('created_at') ?>
                                 ：</label><?= Yii::$app->formatter->asDatetime($model->created_at, 'Y-M-D H:i:s') ?>
                         </div>
-                        <div class="col-lg-3"><label class="col-lg-6 text-right">审核状态：</label><?= $model->order_sn ?>
+                        <div class="col-lg-3"><label class="col-lg-6 text-right"><?= $model->getAttributeLabel('status') ?></label>
+                        <?= \common\enums\AuditStatusEnum::getValue($model->status) ?>
                         </div>
                     </div>
                     <div class="row">
@@ -97,9 +89,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="col-lg-3"></div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6"><label
-                                    class="col-lg-3 text-right"><?= $model->getAttributeLabel('buyer_remark') ?>
-                                ：</label><?= Html::textarea('buyer_remark', $model->buyer_remark, ['class' => 'col-lg-6', 'readonly'=>'']) ?>
+                        <div class="col-lg-3"><label
+                                    class="col-sm-6 text-right"><?= $model->getAttributeLabel('buyer_remark') ?>
+                                ：</label><?= Html::textarea('buyer_remark', $model->buyer_remark, ['class' => 'col-sm-6','readonly'=>true]) ?>
                         </div>
                     </div>
                 </div>
@@ -214,4 +206,3 @@ DOM;
             </div>
         </div>
     </div>
-<?php ActiveForm::end(); ?>

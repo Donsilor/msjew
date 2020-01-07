@@ -42,7 +42,7 @@ class OrderController extends BaseController
             'scenario' => 'default',
             'partialMatchAttributes' => [], // 模糊查询
             'defaultOrder' => [
-                'id' => SORT_ASC,
+                'id' => SORT_DESC,
             ],
             'pageSize' => $this->pageSize,
             'relations' => [

@@ -13,7 +13,6 @@ use common\models\order\Order;
 use common\enums\OrderStatusEnum;
 use common\enums\PayStatusEnum;
 use common\models\order\OrderAccount;
-use yii\db\Expression;
 
 /**
  * Class PayService
@@ -188,7 +187,7 @@ class PayService extends Service
                     $result = $order->save();
                     if($result == 1){ 
                         $accountUpdata = [
-                             'pay_amount'=> new Expression("pay_amount+".$pay_amount),                            
+                             'pay_amount'=> $pay_amount,                            
                         ];
                         OrderAccount::updateAll($accountUpdata,['order_id'=>$order->id]);
                     }

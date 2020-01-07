@@ -27,7 +27,7 @@ class UpPwdForm extends \common\models\forms\LoginForm
         return [
             [['member_id','original_password', 'password', 'password_repetition'], 'required'],
             [['password'], 'string', 'min' => 6],
-            [['password_repetition'], 'compare', 'compareAttribute' => 'password'],// 验证新密码和重复密码是否相等
+            [['password_repetition'], 'compare', 'compareAttribute' => 'password','message'=>'两次输入密码不一致'],// 验证新密码和重复密码是否相等
             ['group', 'in', 'range' => AccessToken::$ruleGroupRnage],
             ['original_password', 'validateOriginalPassword'],
         ];

@@ -62,7 +62,7 @@ class OrderAccount extends \common\models\base\BaseModel
             'order_amount' => \Yii::t('order','订单总金额')."({$currencySign})",
             'goods_amount' => \Yii::t('order','商品总金额')."({$currencySign})",
             'discount_amount' => \Yii::t('order','优惠金额')."({$currencySign})",
-            'pay_amount' => \Yii::t('order','支付金额')."({$currencySign})",
+            'pay_amount' => \Yii::t('order','实际支付金额')."({$currencySign})",
             'refund_amount' => \Yii::t('order','退款金额')."({$currencySign})",
             'shipping_fee' => \Yii::t('order','运费')."({$currencySign})",
             'tax_fee' => \Yii::t('order','税费')."({$currencySign})",

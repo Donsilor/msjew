@@ -15,6 +15,7 @@ use Exception;
 use yii\web\NotFoundHttpException;
 use common\enums\FollowStatusEnum;
 use common\enums\AuditStatusEnum;
+use backend\modules\order\forms\DeliveryForm;
 
 /**
  * Default controller for the `order` module
@@ -41,7 +42,7 @@ class OrderController extends BaseController
             'scenario' => 'default',
             'partialMatchAttributes' => [], // 模糊查询
             'defaultOrder' => [
-                'id' => SORT_ASC,
+                'id' => SORT_DESC,
             ],
             'pageSize' => $this->pageSize,
             'relations' => [
@@ -122,7 +123,9 @@ class OrderController extends BaseController
         // ajax 校验
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
+            
             $model->followed_status = $model->follower_id ? FollowStatusEnum::YES : FollowStatusEnum::NO;
+            
             return $model->save()
                 ? $this->redirect(['index'])
                 : $this->message($this->getError($model), $this->redirect(['index']), 'error');
@@ -140,13 +143,15 @@ class OrderController extends BaseController
      */
     public function actionEditDelivery()
     {
-        $id = Yii::$app->request->get('id', null);
+        $id = Yii::$app->request->get('id');
 
-        $model = $this->findModel($id);
-
+        $model = DeliveryForm::find()->where(['id'=>$id])->one();
         // ajax 校验
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
+            
+            $model->order_status = OrderStatusEnum::ORDER_SEND;//已发货
+            
             return $model->save()
                 ? $this->redirect(['index'])
                 : $this->message($this->getError($model), $this->redirect(['index']), 'error');
@@ -189,11 +194,13 @@ class OrderController extends BaseController
                 }
 
                 //更新订单审核状态
-                $result = $model->updateAttributes(['status' => AuditStatusEnum::PASS]);
-
-                if($result!==1) {
-                    throw new Exception('更新异常，请刷新后再试');
-                }
+                $model->status = AuditStatusEnum::PASS;
+                $model->order_status = OrderStatusEnum::ORDER_CONFIRM;//已审核，代发货
+                
+                if(false  === $model->save()) {
+                    throw new Exception($this->getError($model));
+                }                
+                //订单日志
             }
             $trans->commit();
         } catch (Exception $e) {

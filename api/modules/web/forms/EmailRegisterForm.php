@@ -42,7 +42,7 @@ class EmailRegisterForm extends Model
                 ],                
                 ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => '请输入正确的邮箱'],
                 ['code', EmailCodeValidator::class, 'usage' => EmailLog::USAGE_REGISTER],
-                [['password_repetition'], 'compare', 'compareAttribute' => 'password','message' => '重复密码错误'],// 验证新密码和重复密码是否相等
+                [['password_repetition'], 'compare', 'compareAttribute' => 'password','message'=>'两次输入密码不一致'],// 验证新密码和重复密码是否相等
                 ['group', 'in', 'range' => AccessToken::$ruleGroupRnage],
                 [['firstname','lastname'], 'string', 'max' => 60],
         ];

@@ -42,10 +42,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>                        
                     </div>
                     <div class="row">
-                        <div class="col-lg-3"><label
-                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.realname') ?>
-                                ：</label><?= $model->member->realname ?></div>
-                        <div class="col-lg-3"><label class="col-lg-6 text-right">IP：</label>
+                        <div class="col-lg-3">
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.realname') ?>：</label>
+                            <?= $model->member->realname ?>
+                        </div>
+                        <div class="col-lg-3">
+                        	<label class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.realname') ?>：</label>
+                        	<?= $model->ip ?>
                         </div>
                         <div class="col-lg-3">
                             <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('order_status') ?>：</label>
@@ -57,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.mobile') ?>
                                 ：</label><?= $model->member->mobile ?></div>
                         <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_type') ?> ：</label>
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_type') ?>：</label>
                             <?= \common\enums\PayEnum::getValue($model->payment_type) ?>
                         </div>
                         <div class="col-lg-3"><label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_status') ?>
@@ -127,7 +130,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         $html = <<<DOM
 <div class="row">
     <div class="col-lg-2">%s</div>
-    <div class="col-lg-8">%s<br/>sku：%s&nbsp;%s</div>
+    <div class="col-lg-8">%s<br/>SKU：%s&nbsp;%s</div>
 </div>
 DOM;
                                         $goods_spec = '';
@@ -163,12 +166,11 @@ DOM;
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="row">
-                                <div class="col-lg-3 text-right"><label>快递类型：</label></div>
+                                <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_id') ?>：</label></div>
                                 <div class="col-lg-9"></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_no') ?>
-                                        ：</label></div>
+                                <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_no') ?>：</label></div>
                                 <div class="col-lg-9"><?= $model->express_no ?></div>
                             </div>
                             <div class="row">
@@ -183,34 +185,43 @@ DOM;
                         </div>
                         <div class="col-lg-6">
                             <div class="row">
-                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.shipping_fee') ?>
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.shipping_fee') ?>
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->shipping_fee ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.discount_amount') ?>
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.discount_amount') ?>
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->discount_amount ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.shipping_fee') ?>
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.shipping_fee') ?>
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->shipping_fee ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.tax_fee') ?>
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.tax_fee') ?>
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->tax_fee ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.safe_fee') ?>
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.safe_fee') ?>
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->safe_fee ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.order_amount') ?>
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.order_amount') ?>
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->order_amount ?></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.order_amount') ?>
+                                        ：</label></div>
+                                <div class="col-lg-7"><?= $model->account->order_amount ?></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.pay_amount') ?>：</label></div>
+                                <div class="col-lg-7"><?=$model->account->pay_amount?>(<?=$model->account->currency?><?= \Yii::$app->services->currency->exchangeAmount($model->account->pay_amount,2,$model->account->currency) ?>)</div>
                             </div>
                         </div>
                     </div>

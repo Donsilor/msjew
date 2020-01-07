@@ -174,7 +174,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     'class' => 'form-control',
                                 ]), 
                                 'value' => function ($model) {
-                                     return common\enums\PayStatusEnum::getValue($model->payment_status);
+                                    return common\enums\PayStatusEnum::getValue($model->order_status);
                                 },
                                 'format' => 'raw',
                             ],

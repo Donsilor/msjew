@@ -203,6 +203,7 @@ class RingController extends OnAuthController
             $style_ids = RingRelation::find()
                 ->where(['ring_id'=>$id])->asArray()->select(['style_id'])->all();
             foreach ($style_ids as $style_id){
+                $style_id = $style_id['style_id'];
                 $style = \Yii::$app->services->goods->formatStyleGoodsById($style_id, $this->language);
                 $goodsModels[] = $style;
                 $searchGoods = array();

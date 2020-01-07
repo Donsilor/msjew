@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <div class="col-lg-3">
                             <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('account.currency') ?>：</label>
-                            <?= $model->account->currency ?>
+                            <?= $model->account->currency ?>(<?= $model->account->exchange_rate ?>)
                         </div>                        
                     </div>
                     <div class="row">

@@ -116,27 +116,33 @@ $this->params['breadcrumbs'][] = $this->title;
                                         $html = <<<DOM
 <div class="row">
     <div class="col-lg-2">%s</div>
-    <div class="col-lg-8">%s<br/>sku：%s&nbsp;成色：&nbsp;适用人群：</div>
+    <div class="col-lg-8">%s<br/>sku：%s&nbsp;%s</div>
 </div>
 DOM;
-
+                                        $goods_spec = '';
+                                        if($model->goods_spec){
+                                            $model->goods_spec = \Yii::$app->services->goods->formatGoodsSpec($model->goods_spec);
+                                            foreach ($model->goods_spec as $vo){
+                                                $goods_spec .= $vo['attr_name'].":".$vo['attr_value']."&nbsp;";
+                                            }
+                                        }
                                         return sprintf($html,
                                             common\helpers\ImageHelper::fancyBox($model->goods_image),
                                             $model->goods_name,
                                             $model->goods_sn,
-                                            '未知字段'
+                                            $goods_spec
                                         );
                                     },
                                     'filter' => false,
-                                    'format' => 'raw',
+                                    'format' => 'html',
                                     'headerOptions' => ['width' => '500'],
                                 ],
+                                'goods_num',
                                 'goods_price',
 //                                [
 //                                    'label' => '优惠金额',
 //                                    'attribute'=>'goods_price',
-//                                ],
-                                'goods_num',
+//                                ],                                
                                 'goods_pay_price',
                             ]
                         ]); ?>
@@ -164,7 +170,7 @@ DOM;
                                 <div class="col-lg-9"><?= Html::textarea('buyer_remark', $model->seller_remark, ['class' => 'col-lg-12', 'readonly'=>'']) ?></div>
                             </div>
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-lg-6">
                             <div class="row">
                                 <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.shipping_fee') ?>
                                         ：</label></div>

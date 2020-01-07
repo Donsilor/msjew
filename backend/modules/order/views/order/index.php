@@ -243,3 +243,26 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
         </div>
     </div>
 </div>
+
+<script>
+    function audit(id) {
+        let _id = [];
+        if(id===undefined) {
+            _id= []
+        }
+        else {
+            _id.push(id)
+        }
+    }
+
+    (function ($) {
+        /**
+         * 头部文本框触发列表过滤事件
+         */
+        $(".top-form input,select").change(function () {
+            $(".filters input[name='" + $(this).attr('name') + "']").val($(this).val()).trigger('change');
+        });
+
+
+    })(window.jQuery);
+</script>

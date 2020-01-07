@@ -127,7 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         $html = <<<DOM
 <div class="row">
     <div class="col-lg-2">%s</div>
-    <div class="col-lg-8">%s<br/>sku：%s&nbsp;%s</div>
+    <div class="col-lg-8">%s<br/>SKU：%s&nbsp;%s</div>
 </div>
 DOM;
                                         $goods_spec = '';
@@ -163,12 +163,11 @@ DOM;
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="row">
-                                <div class="col-lg-3 text-right"><label>快递类型：</label></div>
+                                <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_id') ?>：</label></div>
                                 <div class="col-lg-9"></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_no') ?>
-                                        ：</label></div>
+                                <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_no') ?>：</label></div>
                                 <div class="col-lg-9"><?= $model->express_no ?></div>
                             </div>
                             <div class="row">
@@ -211,6 +210,10 @@ DOM;
                                 <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.order_amount') ?>
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->order_amount ?></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5"><label>实际支付金额(<?=$model->account->currency?>)：</label></div>
+                                <div class="col-lg-7"><?= \Yii::$app->services->currency->exchangeAmount($model->account->order_amount,2,$model->account->currency) ?></div>
                             </div>
                         </div>
                     </div>

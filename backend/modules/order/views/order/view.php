@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ：</label><?= \common\enums\AppEnum::getValue($model->order_from) ?></div>
                         <div class="col-lg-3"><label
                                     class="col-lg-6 text-right"><?= $model->getAttributeLabel('follower_id') ?>
-                                ：</label><?= $model->follower->realname ?></div>
+                                ：</label><?= $model->follower ? $model->follower->username:'' ?></div>
                     </div>
                     <div class="row">
                         <div class="col-lg-3"><label

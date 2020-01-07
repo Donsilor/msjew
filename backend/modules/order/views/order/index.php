@@ -197,7 +197,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     'class' => 'form-control',
                                 ]),
                                 'value' => function ($model) {
-                                    return $model->follower->username;
+                                    return $model->follower ? $model->follower->username : null;
                                 },
                                 'format' => 'raw',
                             ],

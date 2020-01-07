@@ -87,21 +87,21 @@ class Html extends BaseHtml
      * @param int $status
      * @return mixed
      */
-    public static function status($status = 1, $options = [])
+    public static function status($status = 1, $options = [] , $text = ['启用','禁用'])
     {
         if (!self::beforVerify('ajax-update')) {
             return '';
         }
 
         $listBut = [
-            StatusEnum::DISABLED => self::tag('span', '启用', array_merge(
+            StatusEnum::DISABLED => self::tag('span', $text[0], array_merge(
                 [
                     'class' => "btn btn-success btn-sm",
                     'onclick' => "rfStatus(this)"
                 ],
                 $options
             )),
-            StatusEnum::ENABLED => self::tag('span', '禁用', array_merge(
+            StatusEnum::ENABLED => self::tag('span', $text[1], array_merge(
                 [
                     'class' => "btn btn-default btn-sm",
                     'onclick' => "rfStatus(this)"

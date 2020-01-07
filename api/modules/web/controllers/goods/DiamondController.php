@@ -134,7 +134,7 @@ class DiamondController extends OnAuthController
      */
     public function actionDetail()
     {
-        $type_id = 15;
+//        $type_id = 15;
         $id = \Yii::$app->request->post("goodsId");
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
@@ -144,6 +144,7 @@ class DiamondController extends OnAuthController
             ->select(['m.*','lang.goods_name', 'lang.meta_title','lang.meta_word','lang.meta_desc'])
             ->where(['m.id'=>$id]);
         $model = $query->one();
+        $type_id = $model->type_id;
         $diamond_array = $query->asArray()->one();
         if(empty($model)) {
             return ResultHelper::api(422,"裸钻信息不存在");

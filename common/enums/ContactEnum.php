@@ -9,11 +9,14 @@ namespace common\enums;
  * @package common\enums
  * @author jianyan74 <751393839@qq.com>
  */
-class ContactTypeEnum extends BaseEnum
+class ContactEnum extends BaseEnum
 {
 	const CONTACT_TYPE_RINT = 1;
 	const CONTACT_TYPE_RIGHT= 2;
 	const CONTACT_TYPE_ORNAMENTS = 3;
+
+    const ENABLED = 1;
+    const DISABLED = 0;
 	
 	/**
 	 * @return array
@@ -26,4 +29,13 @@ class ContactTypeEnum extends BaseEnum
 				self::CONTACT_TYPE_ORNAMENTS => '时尚饰品',
 		];
 	}
+
+
+	public static function getStatus(){
+        return [
+            self::DISABLED => '未跟进',
+            self::ENABLED => '跟进',
+
+        ];
+    }
 }

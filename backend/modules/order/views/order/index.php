@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     <li<?php if (Yii::$app->request->get('order_status', -1) == $statusValue) echo ' class="active"' ?>>
                         <a href="<?= Url::to(['order/index', 'order_status' => $statusValue]) ?>"><?= $statusName ?></a>
                     </li>
-                <? } ?>
+                <?php } ?>
             </ul>
 
             <div class="tab-content">

@@ -1,12 +1,12 @@
 <?php
 
-namespace api\modules\v1\controllers\member;
+namespace api\modules\web\controllers\member;
 
-use api\modules\v1\forms\BookForm;
-use api\modules\v1\forms\EmailLoginForm;
+use api\modules\web\forms\ContactForm;
 use common\helpers\ResultHelper;
-use common\models\member\Book;
+use common\models\member\Contact;
 use common\models\member\Member;
+use wsl\ip2location\Ip2Location;
 use Yii;
 use api\controllers\OnAuthController;
 use yii\helpers\ArrayHelper;
@@ -16,13 +16,13 @@ use yii\helpers\ArrayHelper;
  * @package api\modules\v1\controllers\member
  * @author jianyan74 <751393839@qq.com>
  */
-class BookController extends OnAuthController
+class ContactController extends OnAuthController
 {
     /**
      * @var Provinces
      */
-    public $modelClass = Book::class;
-    protected $authOptional = ['index','create','update'];
+    public $modelClass = Contact::class;
+    protected $authOptional = ['index','add','update'];
     /**
      * 根据邮箱获取留言
      *
@@ -56,30 +56,32 @@ class BookController extends OnAuthController
      * @param int $pid
      * @return array|yii\data\ActiveDataProvider
      */
-    public function actionCreate()
+    public function actionAdd()
     {
-        //登陆
-        $loginFrom = new EmailLoginForm();
-        $loginFrom->attributes = Yii::$app->request->post();
-        if (!$loginFrom->validate()) {
-            return ResultHelper::api(422, $this->getError($loginFrom));
-        }
-        $user = $loginFrom->login();
 
-        //验证
-        $model = new BookForm();
-        $model->member_id = $user->id;
+        $model = new ContactForm();
         $model->attributes = Yii::$app->request->post();
+
         if (!$model->validate()) {
             return ResultHelper::api(422, $this->getError($model));
         }
         //提交
-        $book = new $this->modelClass();
-        $book->attributes = ArrayHelper::toArray($model);
-        if (!$book->save()) {
-            return ResultHelper::api(422, $this->getError($book));
+        $model->book_time = $model->book_date." ".$model->book_time;
+        $model->member_id = $this->member_id;
+        $model->language = $this->getLanguage();
+        $ip = Yii::$app->request->getUserIP();
+        $model->ip = $ip;
+        //根据ip获取城市
+        $ipLocation = new Ip2Location();
+        $locationModel = $ipLocation->getLocation($ip);
+        $location = $locationModel->toArray();
+        $model->city = $location['country'];
+        $contact = new $this->modelClass();
+        $contact->attributes = ArrayHelper::toArray($model);
+        if (!$contact->save()) {
+            return ResultHelper::api(422, $this->getError($contact));
         }
-        return $book;
+        return $contact;
 
     }
 

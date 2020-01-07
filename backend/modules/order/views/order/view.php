@@ -42,10 +42,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>                        
                     </div>
                     <div class="row">
-                        <div class="col-lg-3"><label
-                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.realname') ?>
-                                ：</label><?= $model->member->realname ?></div>
-                        <div class="col-lg-3"><label class="col-lg-6 text-right">IP：</label>
+                        <div class="col-lg-3">
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.realname') ?>：</label>
+                            <?= $model->member->realname ?>
+                        </div>
+                        <div class="col-lg-3">
+                        	<label class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.realname') ?>：</label>
+                        	<?= $model->ip ?>
                         </div>
                         <div class="col-lg-3">
                             <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('order_status') ?>：</label>
@@ -57,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.mobile') ?>
                                 ：</label><?= $model->member->mobile ?></div>
                         <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_type') ?> ：</label>
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_type') ?>：</label>
                             <?= \common\enums\PayEnum::getValue($model->payment_type) ?>
                         </div>
                         <div class="col-lg-3"><label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_status') ?>

@@ -197,23 +197,28 @@ DOM;
                                 <div class="col-lg-7"><?= $model->account->shipping_fee ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.tax_fee') ?>
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.tax_fee') ?>
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->tax_fee ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.safe_fee') ?>
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.safe_fee') ?>
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->safe_fee ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label><?= $model->getAttributeLabel('account.order_amount') ?>
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.order_amount') ?>
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->order_amount ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5"><label>实际支付金额(<?=$model->account->currency?>)：</label></div>
-                                <div class="col-lg-7"><?= \Yii::$app->services->currency->exchangeAmount($model->account->order_amount,2,$model->account->currency) ?></div>
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.order_amount') ?>
+                                        ：</label></div>
+                                <div class="col-lg-7"><?= $model->account->order_amount ?></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.pay_amount') ?>：</label></div>
+                                <div class="col-lg-7"><?=$model->account->pay_amount?>(<?=$model->account->currency?><?= \Yii::$app->services->currency->exchangeAmount($model->account->pay_amount,2,$model->account->currency) ?>)</div>
                             </div>
                         </div>
                     </div>

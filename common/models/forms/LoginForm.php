@@ -66,8 +66,10 @@ abstract class LoginForm extends Model
         if (!$this->hasErrors()) {
             /* @var $user \common\models\base\User */
             $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, '账号或者密码错误');
+            if (!$user) {
+                $this->addError($attribute, '账号未注册');
+            }elseif(!$user->validatePassword($this->password)){
+                $this->addError($attribute, '账号密码错误');
             }
         }
     }

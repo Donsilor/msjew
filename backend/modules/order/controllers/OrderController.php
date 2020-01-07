@@ -189,11 +189,13 @@ class OrderController extends BaseController
                 }
 
                 //更新订单审核状态
-                $result = $model->updateAttributes(['status' => AuditStatusEnum::PASS]);
-
-                if($result!==1) {
-                    throw new Exception('更新异常，请刷新后再试');
-                }
+                $model->status = AuditStatusEnum::PASS;
+                $model->order_status = OrderStatusEnum::ORDER_CONFIRM;//已审核，代发货
+                
+                if(false  === $model->save()) {
+                    throw new Exception($this->getError($model));
+                }                
+                //订单日志
             }
             $trans->commit();
         } catch (Exception $e) {

@@ -89,7 +89,7 @@ class Order extends \common\models\base\BaseModel
             'followed_status' => '跟进状态',
             'followed_time' => '跟进时间',
             'status' => '审核状态',
-            'created_at' => '创建时间',
+            'created_at' => '下单时间',
             'updated_at' => '更新时间',
         ];
     }

@@ -40,7 +40,7 @@ class RingController extends OnAuthController
 
     public function actionSearch(){
         $sort_map = [
-            "price"=>'m.sale_price',//价格
+            "sale_price"=>'m.sale_price',//价格
             "sale_volume"=>'m.sale_volume',//销量
         ];
         //$type_id = \Yii::$app->request->get("type_id", 12);//产品线ID
@@ -138,12 +138,14 @@ class RingController extends OnAuthController
         $where = ['a.attr_id'=>26, 'a.attr_value_id'=>41];
         $man_web_site = $this->getAdvertStyle($where);
         $man_web_site['moduleTitle'] = '自由搭配 愛我所愛';
+        $man_web_site['recommendInfo'] = 'Go for the traditional, classic wedding band, or dare to be different with a unique alternative metal wedding ring made from cobalt, tantalum or titanium.';
         $man_web_site['title'] = '男士結婚戒指';
         $man_web_site['id'] = $type_id;
 
         $where = ['a.attr_id'=>26, 'a.attr_value_id'=>42];
         $woman_web_site = $this->getAdvertStyle($where);
         $woman_web_site['moduleTitle'] = '自由搭配 愛我所愛';
+        $woman_web_site['recommendInfo'] = 'Go for the traditional, classic wedding band, or dare to be different with a unique alternative metal wedding ring made from cobalt, tantalum or titanium.';
         $woman_web_site['title'] = '女士結婚戒指';
         $woman_web_site['id'] = $type_id;
 

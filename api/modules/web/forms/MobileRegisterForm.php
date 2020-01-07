@@ -43,7 +43,7 @@ class MobileRegisterForm extends Model
                 ],
                 ['code', SmsCodeValidator::class, 'usage' => SmsLog::USAGE_REGISTER],
                 ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号码'],
-                [['password_repetition'], 'compare', 'compareAttribute' => 'password','message' => '重复密码错误'],// 验证新密码和重复密码是否相等
+                [['password_repetition'], 'compare', 'compareAttribute' => 'password','message'=>'两次输入密码不一致'],// 验证新密码和重复密码是否相等
                 ['group', 'in', 'range' => AccessToken::$ruleGroupRnage],
                 [['firstname','lastname'], 'string', 'max' => 60],
         ];

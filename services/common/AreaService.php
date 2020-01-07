@@ -66,6 +66,17 @@ class AreaService extends Service
         $model = Area::find()->select(['id',$name." as name"])->where(['id' => $id])->asArray()->one();
         return $model;
     }
+    /**
+     * 获取地区名称
+     * @param unknown $id
+     * @param unknown $language
+     * @return string
+     */
+    public function getAreaName($id,$language = null) 
+    {
+        $model = $this->getArea($id, $language);
+        return $model['name'] ?? '';
+    }
 
     
 }

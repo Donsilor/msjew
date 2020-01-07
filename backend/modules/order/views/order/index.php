@@ -155,12 +155,15 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'format' => 'raw',
                             ],
                             [
-                                'attribute' => 'address.country_name',
+                                'attribute' => 'address.country_id',
                                 'headerOptions' => ['class' => 'col-md-1'],
                                 'filter' => Html::activeDropDownList($searchModel, 'address.country_id', \Yii::$app->services->area->getDropDown(0), [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
                                 ]),
+                                'value' => function ($model) {
+                                    return \Yii::$app->services->area->getAreaName($model->address->country_id);
+                                },
                                 'format' => 'raw',
                             ],
                             [
@@ -183,18 +186,18 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     'class' => 'form-control',
                                 ]),
                                 'value' => function ($model) {
-                                    return OrderStatusEnum::getValue($model->order_status);
+                                    return common\enums\OrderStatusEnum::getValue($model->order_status);
                                 },
                                 'format' => 'raw',
                             ],
                             
                             [
                                 'label' => '跟进人',
-                                'filter' => Html::activeTextInput($searchModel, 'follower.realname', [
+                                'filter' => Html::activeTextInput($searchModel, 'follower.username', [
                                     'class' => 'form-control',
                                 ]),
                                 'value' => function ($model) {
-                                    return $model->follower->realname;
+                                    return $model->follower->username;
                                 },
                                 'format' => 'raw',
                             ],
@@ -237,7 +240,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                         ],
                     ]);
-                    ?>
+                  ?>
                 </div>
             </div>
         </div>

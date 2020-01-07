@@ -47,7 +47,7 @@ class OrderController extends BaseController
                 'account' => ['order_amount'],
                 'address' => ['country_name', 'city_name', 'country_id', 'city_id'],
                 'member' => ['username', 'realname', 'mobile', 'email'],
-                'follower' => ['realname']
+                'follower' => ['username']
             ]
         ]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, ['created_at']);

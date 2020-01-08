@@ -153,10 +153,13 @@ DOM;
                                 ],
                                 'goods_num',
                                 'goods_price',
-//                                [
-//                                    'label' => '优惠金额',
-//                                    'attribute'=>'goods_price',
-//                                ],                                
+                                [
+                                    'label' => '优惠金额',
+                                    'attribute'=>'goods_price',
+                                    'value' => function($model) {
+                                        return 0;
+                                    }
+                                ],
                                 'goods_pay_price',
                             ]
                         ]); ?>
@@ -193,11 +196,6 @@ DOM;
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.discount_amount') ?>
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->discount_amount ?></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.shipping_fee') ?>
-                                        ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->shipping_fee ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.tax_fee') ?>

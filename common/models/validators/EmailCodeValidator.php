@@ -55,9 +55,13 @@ class EmailCodeValidator extends Validator
         ])->orderBy('id desc')->one();
 
         $time = time();
-        if (is_null($emailLog) ||($emailLog->code != $model->$attribute) || ($emailLog->created_at > $time || $time > ($emailLog->created_at + $this->expireTime))) {
+        if (is_null($emailLog) ||($emailLog->code != $model->$attribute)) {
             $this->addError($model, $attribute, '验证码错误');
-        } else {
+        }
+        elseif($emailLog->created_at > $time || $time > ($emailLog->created_at + $this->expireTime)){
+            $this->addError($model, $attribute, '验证码已过期');
+        }        
+        else {
             $emailLog->used = StatusEnum::ENABLED;
             $emailLog->use_time = $time;
             $emailLog->save(false);

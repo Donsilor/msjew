@@ -3,12 +3,13 @@
 namespace api\modules\web\controllers;
 
 use Yii;
+use yii\base\Exception;
 use yii\web\NotFoundHttpException;
+use yii\web\UnprocessableEntityHttpException;
 use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
 use common\helpers\ArrayHelper;
 use common\models\member\Member;
-use api\modules\web\forms\UpPwdForm;
 use api\modules\web\forms\LoginForm;
 use api\modules\web\forms\RefreshForm;
 use api\modules\web\forms\MobileLogin;
@@ -18,6 +19,7 @@ use api\modules\web\forms\MobileRegisterForm;
 use api\modules\web\forms\EmailRegisterForm;
 use api\modules\web\forms\EmailUpPwdForm;
 use api\modules\web\forms\MobileUpPwdForm;
+
 
 /**
  * 登录接口
@@ -151,24 +153,32 @@ class SiteController extends OnAuthController
      * @throws \yii\base\Exception
      */
     public function actionMobileRegister()
-    {
-        $model = new MobileRegisterForm();
-        $model->attributes = Yii::$app->request->post();
-        if (!$model->validate()) {
-            return ResultHelper::api(422, $this->getError($model));
+    {        
+        try {            
+            $trans = \Yii::$app->db->beginTransaction();
+            $model = new MobileRegisterForm();
+            $model->attributes = Yii::$app->request->post();
+            if (!$model->validate()) {
+                throw new UnprocessableEntityHttpException($this->getError($model));
+            }
+    
+            $member = new Member();
+            $member->attributes = ArrayHelper::toArray($model);
+            $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
+            $member->username = $model->mobile;
+            $member->realname = $model->lastname.''.$model->firstname;
+    
+            if (!$member->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($member));
+            }
+    
+            $trans->commit();
+            return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);
+            
+        } catch (Exception $e){
+            $trans->rollBack();
+            throw $e;
         }
-
-        $member = new Member();
-        $member->attributes = ArrayHelper::toArray($model);
-        $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
-        $member->username = $model->mobile;
-        $member->realname = $model->lastname.''.$model->firstname;
-
-        if (!$member->save()) {
-            return ResultHelper::api(422, $this->getError($member));
-        }
-
-        return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);
     }
     
     /**
@@ -178,20 +188,25 @@ class SiteController extends OnAuthController
      * @throws \yii\base\Exception
      */
     public function actionMobileUpPwd()
-    {
-        $model = new MobileUpPwdForm();
-        $model->attributes = Yii::$app->request->post();
-        if (!$model->validate()) {
-            return ResultHelper::api(422, $this->getError($model));
+    {        
+        try {               
+            $trans = \Yii::$app->db->beginTransaction();
+            $model = new MobileUpPwdForm();
+            $model->attributes = Yii::$app->request->post();
+            if (!$model->validate()) {
+                throw new UnprocessableEntityHttpException($this->getError($model));
+            }            
+            $member = $model->getUser();
+            $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
+            if (!$member->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($member));
+            }
+            $trans->commit();
+            return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);            
+        } catch (Exception $e){
+            $trans->rollBack();
+            throw $e;
         }
-        
-        $member = $model->getUser();
-        $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
-        if (!$member->save()) {
-            return ResultHelper::api(422, $this->getError($member));
-        }
-        
-        return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);
     }
     
     /**
@@ -201,22 +216,28 @@ class SiteController extends OnAuthController
      * @throws \yii\base\Exception
      */
     public function actionEmailRegister()
-    {
-        $model = new EmailRegisterForm();
-        $model->attributes = Yii::$app->request->post();
-        if (!$model->validate()) {
-            return ResultHelper::api(422, $this->getError($model));
+    {        
+        try {            
+            $trans = \Yii::$app->db->beginTransaction();
+            $model = new EmailRegisterForm();
+            $model->attributes = Yii::$app->request->post();
+            if (!$model->validate()) {
+                throw new UnprocessableEntityHttpException($this->getError($model));
+            }
+    
+            $member = new Member();
+            $member->attributes = ArrayHelper::toArray($model);
+            $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
+            $member->username = $model->email;
+            if (!$member->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($member));
+            }  
+            $trans->commit();
+            return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);            
+        } catch (Exception $e){
+            $trans->rollBack();
+            throw $e;
         }
-
-        $member = new Member();
-        $member->attributes = ArrayHelper::toArray($model);
-        $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
-        $member->username = $model->email;
-        if (!$member->save()) {
-            return ResultHelper::api(422, $this->getError($member));
-        }
-        
-        return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);
     }
 
     /**
@@ -226,20 +247,27 @@ class SiteController extends OnAuthController
      * @throws \yii\base\Exception
      */
     public function actionEmailUpPwd()
-    {
-        $model = new EmailUpPwdForm();
-        $model->attributes = Yii::$app->request->post();
-        if (!$model->validate()) {
-            return ResultHelper::api(422, $this->getError($model));
+    {        
+        try {            
+            $trans = \Yii::$app->db->beginTransaction();
+            $model = new EmailUpPwdForm();
+            $model->attributes = Yii::$app->request->post();
+            if (!$model->validate()) {
+                throw new UnprocessableEntityHttpException($this->getError($model));
+            }
+    
+            $member = $model->getUser();
+            $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
+            if (!$member->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($member));
+            }
+            
+            $trans->commit();
+            return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);
+        } catch (Exception $e){
+            $trans->rollBack();
+            throw $e;
         }
-
-        $member = $model->getUser();
-        $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
-        if (!$member->save()) {
-            return ResultHelper::api(422, $this->getError($member));
-        }
-        
-        return Yii::$app->services->apiAccessToken->getAccessToken($member, $model->group);
     }
 
     /**

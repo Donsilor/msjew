@@ -7,12 +7,10 @@ use common\models\order\OrderCart;
 use yii\web\UnprocessableEntityHttpException;
 use common\models\order\OrderGoods;
 use common\models\order\Order;
-use common\models\member\Member;
-use common\enums\StatusEnum;
 use common\models\member\Address;
 use common\models\order\OrderAccount;
 use common\models\order\OrderAddress;
-use common\models\order\OrderGoodsLang;
+use common\enums\PayStatusEnum;
 
 /**
  * Class OrderService
@@ -53,7 +51,8 @@ class OrderService extends Service
         $order->language   = $this->getLanguage();
         $order->member_id = $buyer_id;
         $order->order_sn  = $this->createOrderSn();
-        $order->ip = \Yii::$app->request->userIP;
+        $order->payment_status = PayStatusEnum::UNPAID;
+        $order->ip = \Yii::$app->request->userIP;        
         if(false === $order->save()){
             throw new UnprocessableEntityHttpException($this->getError($order));
         }
@@ -148,8 +147,8 @@ class OrderService extends Service
                     'goods_sn' => $goods['goods_sn'],
                     'style_sn' => $goods['style_sn'],
                     'goods_name' => $goods['goods_name'],
-                    'goods_price' => $goods['sale_price'],
-                    'goods_pay_price' => $goods['sale_price'],
+                    'goods_price' => $this->exchangeAmount($goods['sale_price']),
+                    'goods_pay_price' => $this->exchangeAmount($goods['sale_price']),
                     'goods_num' => $cart->goods_num,
                     'goods_type' => $cart->goods_type,
                     'goods_image' => $goods['goods_image'],
@@ -159,11 +158,11 @@ class OrderService extends Service
             ];
         }
         //金额
-        $discount_amount = 0;//优惠金额
-        $shipping_fee = 0;//运费
-        $tax_fee = 0;//税费
-        $safe_fee = 0;//保险费
-        $other_fee = 0;//其他费用
+        $discount_amount = $this->exchangeAmount(0);//优惠金额
+        $shipping_fee = $this->exchangeAmount(0);//运费
+        $tax_fee = $this->exchangeAmount(0);//税费
+        $safe_fee = $this->exchangeAmount(0);//保险费
+        $other_fee = $this->exchangeAmount(0);//其他费用
         
         $order_amount = $goods_amount + $shipping_fee + $tax_fee + $safe_fee + $other_fee;//订单总金额 
 

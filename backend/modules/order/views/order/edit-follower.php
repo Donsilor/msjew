@@ -19,7 +19,7 @@ $form = ActiveForm::begin([
     </div>
     <div class="modal-body">
         <?= $form->field($model, 'follower_id')->widget(kartik\select2\Select2::class, [
-            'data' => [Yii::$app->user->getIdentity()->id=>Yii::$app->user->getIdentity()->realname],
+            'data' => [Yii::$app->user->getIdentity()->id=>Yii::$app->user->getIdentity()->username],
             'options' => ['placeholder' => '请选择'],
             'pluginOptions' => [
                 'allowClear' => true

@@ -43,7 +43,19 @@ class ContactController extends BaseController
         ]);
 
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams);
+            ->search(Yii::$app->request->queryParams,['created_at','book_time']);
+
+        $created_at = $searchModel->created_at;
+        if (!empty($created_at)) {
+            $dataProvider->query->andFilterWhere(['>=','created_at', strtotime(explode('/', $searchModel->created_at)[0])]);//起始时间
+            $dataProvider->query->andFilterWhere(['<','created_at', (strtotime(explode('/', $searchModel->created_at)[1]) + 86400)] );//结束时间
+        }
+
+        $book_time = $searchModel->book_time;
+        if (!empty($book_time)) {
+            $dataProvider->query->andFilterWhere(['>=','book_time', explode('/', $searchModel->book_time)[0]]);//起始时间
+            $dataProvider->query->andFilterWhere(['<','book_time', date('Y-m-d',strtotime("+1 day",strtotime(explode('/', $searchModel->book_time)[1])))] );//结束时间
+        }
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,

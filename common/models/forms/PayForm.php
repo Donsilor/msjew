@@ -123,13 +123,11 @@ class PayForm extends Model
                 // TODO 查询订单获取订单信息
                 $orderSn = $orderInfo['order_sn'];
                 $totalFee = $orderInfo['order_amount'] - $orderInfo['discount_amount'];
-                if($this->payType == PayEnum::PAY_TYPE_ALI) {
-                    $totalFee = $totalFee * 100;
-                }
+ 
                 Order::updateAll(['payment_type'=>$this->payType],['id'=>$this->orderId]);//更改订单支付方式
                 
                 $order = [
-                    'body' => \Yii::$app->params['currency'],
+                    'body' => "商品",
                     'total_fee' => $totalFee,
                 ];
                 break;

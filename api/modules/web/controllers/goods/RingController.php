@@ -40,7 +40,7 @@ class RingController extends OnAuthController
 
     public function actionSearch(){
         $sort_map = [
-            "price"=>'m.sale_price',//价格
+            "sale_price"=>'m.sale_price',//价格
             "sale_volume"=>'m.sale_volume',//销量
         ];
         //$type_id = \Yii::$app->request->get("type_id", 12);//产品线ID
@@ -68,6 +68,8 @@ class RingController extends OnAuthController
         $material = \Yii::$app->request->post("materialValue");//成色Id
         $query->andWhere(['=','m.ring_style', $ring_style]);
         if($begin_price && $end_price){
+            $begin_price = $this->exchangeAmount($begin_price,2, 'CNY', $this->getCurrencySign());
+            $end_price = $this->exchangeAmount($end_price,2, 'CNY', $this->getCurrencySign());
             $query->andWhere(['between','m.sale_price', $begin_price, $end_price]);
         }
 
@@ -138,12 +140,14 @@ class RingController extends OnAuthController
         $where = ['a.attr_id'=>26, 'a.attr_value_id'=>41];
         $man_web_site = $this->getAdvertStyle($where);
         $man_web_site['moduleTitle'] = '自由搭配 愛我所愛';
+        $man_web_site['recommendInfo'] = 'Go for the traditional, classic wedding band, or dare to be different with a unique alternative metal wedding ring made from cobalt, tantalum or titanium.';
         $man_web_site['title'] = '男士結婚戒指';
         $man_web_site['id'] = $type_id;
 
         $where = ['a.attr_id'=>26, 'a.attr_value_id'=>42];
         $woman_web_site = $this->getAdvertStyle($where);
         $woman_web_site['moduleTitle'] = '自由搭配 愛我所愛';
+        $woman_web_site['recommendInfo'] = 'Go for the traditional, classic wedding band, or dare to be different with a unique alternative metal wedding ring made from cobalt, tantalum or titanium.';
         $woman_web_site['title'] = '女士結婚戒指';
         $woman_web_site['id'] = $type_id;
 

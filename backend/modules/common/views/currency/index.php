@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             [
                                 'header' => "操作",
                                 'class' => 'yii\grid\ActionColumn',
-                                'template' => '{edit} {status} {destroy}',
+                                'template' => '{edit} {status}',
                                 'buttons' => [
                                     'edit' => function ($url, $model, $key) {
                                         return Html::edit(['ajax-edit', 'id' => $model->id], '编辑', [
@@ -51,9 +51,9 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     'status' => function ($url, $model, $key) {
                                         return Html::status($model->status);
                                     },
-                                    'destroy' => function ($url, $model, $key) {
+                                    /* 'destroy' => function ($url, $model, $key) {
                                         return Html::delete(['destroy', 'id' => $model->id]);
-                                    },
+                                    }, */
                                 ],
                             ],
                         ],

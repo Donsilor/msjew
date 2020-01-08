@@ -14,7 +14,7 @@ use common\models\member\Member;
  */
 class RefreshForm extends Model
 {
-    public $group;
+    public $group = 'front';
     public $refresh_token;
 
     protected $_user;

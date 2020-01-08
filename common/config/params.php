@@ -9,9 +9,10 @@ return [
         'zh-TW'=>'繁体中文',
         'en-US'=>'English',
     ],
-    'language'=>'zh-CN',//默认语言
-    'currency' =>'CNY',//默认货币代号
-    'currencySign' =>'CNY',//默认货币符号
+    'language'=>'zh-CN',//默认语言    
+    'currency' =>'CNY',//当前货币代号
+    'currencyBase' =>'CNY',//基础货币代号
+    'currencySign' =>'CNY',//当前货币符号
     'cachePrefix'=>'common',//缓存前缀
     'goodsType.diamond'=>15,//裸钻产品线
     

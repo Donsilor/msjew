@@ -3,12 +3,21 @@
 use common\helpers\Html;
 use common\helpers\Url;
 use yii\grid\GridView;
-
+use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('web_seo', '客户留言');
 $this->params['breadcrumbs'][] = $this->title;
+
+$start_time = Yii::$app->request->post('start_time', date('Y-m-d', strtotime("-60 day")));
+$end_time = Yii::$app->request->post('end_time', date('Y-m-d', strtotime("+1 day")));
+$title = Yii::$app->request->post('title');
+$addon = <<< HTML
+<span class="input-group-addon">
+    <i class="glyphicon glyphicon-calendar"></i>
+</span>
+HTML;
 ?>
 
 <div class="row">
@@ -31,7 +40,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'visible' => false,
             ],
 
-            'id',
+            [
+                'attribute' => 'id',
+                'value' => 'id',
+                'filter' =>false,
+                'format' => 'raw',
+                'headerOptions' => ['width'=>'50'],
+            ],
 
 
             [
@@ -39,26 +54,123 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
-                    return \common\enums\LanguageEnum::getMap()[$model->language];
+                    return \Yii::$app->params['languages'][$model->language];
                 },
-                'filter' => Html::activeDropDownList($searchModel, 'language',\common\enums\LanguageEnum::getMap(), [
+                'filter' => Html::activeDropDownList($searchModel, 'language',\Yii::$app->params['languages'], [
                     'prompt' => '全部',
                     'class' => 'form-control'
                 ]),
             ],
             //'member_id',
-            'first_name',
-            'last_name',
-            'telphone',
+            [
+                'attribute'=>'姓名',
+                'filter' => Html::activeTextInput($searchModel, 'first_name', [
+                    'class' => 'form-control',
+                ]),
+                'value'=>function($model){
+                    return $model->first_name . $model->last_name;
+                },
+                'headerOptions' => ['width'=>'100'],
+            ],
 
+            [
+                'attribute' => 'telphone',
+                'value' => 'telphone',
+                'filter' => Html::activeTextInput($searchModel, 'telphone', [
+                    'class' => 'form-control',
+                ]),
+                'format' => 'raw',
+                'headerOptions' => ['width'=>'120'],
+            ],
+//            [
+//                'attribute' => 'ip',
+//                'value' => 'ip',
+//                'filter' => false,
+//                'format' => 'raw',
+//                'headerOptions' => ['width'=>'120'],
+//            ],
+            [
+                'attribute' => 'city',
+                'value' => 'city',
+                'filter' => Html::activeTextInput($searchModel, 'city', [
+                    'class' => 'form-control',
+                ]),
+                'format' => 'raw',
+                'headerOptions' => ['width'=>'120'],
+            ],
+            [
+                'attribute'=>'book_time',
+                'filter' => DateRangePicker::widget([    // 日期组件
+                    'model' => $searchModel,
+                    'attribute' => 'book_time',
+                    'value' => $searchModel->created_at,
+                    'options' => ['readonly' => true,'class'=>'form-control','style'=>'background-color:#fff;'],
+                    'pluginOptions' => [
+                        'format' => 'yyyy-mm-dd',
+                        'locale' => [
+                            'separator' => '/',
+                        ],
+                        'endDate' => date('Y-m-d',time()),
+                        'todayHighlight' => true,
+                        'autoclose' => true,
+                        'todayBtn' => 'linked',
+                        'clearBtn' => true,
+
+
+                    ],
+
+                ]),
+                'value'=>'book_time',
+
+            ],
+//            [
+//                'attribute' => 'created_at',
+//                'filter' => DateRangePicker::widget([    // 日期组件
+//                    'model' => $searchModel,
+//                    'attribute' => 'created_at',
+//                    'value' => $searchModel->created_at,
+//                    'options' => ['readonly' => true,'class'=>'form-control','style'=>'background-color:#fff;width:190px;'],
+//                    'pluginOptions' => [
+//                        'format' => 'yyyy-mm-dd',
+//                        'locale' => [
+//                            'separator' => '/',
+//                        ],
+//                        'endDate' => date('Y-m-d',time()),
+//                        'todayHighlight' => true,
+//                        'autoclose' => true,
+//                        'todayBtn' => 'linked',
+//                        'clearBtn' => true,
+//
+//
+//                    ],
+//
+//                ]),
+//                'value' => function ($model) {
+//                    return Yii::$app->formatter->asDate($model->created_at);
+//                },
+//                'format' => 'raw',
+//
+//            ],
+            [
+                'attribute' => 'status',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\ContactEnum::getStatus()[$model->status??0];
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\ContactEnum::getStatus(), [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+            ],
             [
                 'attribute'=>'type_id',
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
-                    return \common\enums\ContactTypeEnum::getMap()[$model->type_id];
+                    return \common\enums\ContactEnum::getMap()[$model->type_id];
                 },
-                'filter' => Html::activeDropDownList($searchModel, 'type_id',\common\enums\ContactTypeEnum::getMap(), [
+                'filter' => Html::activeDropDownList($searchModel, 'type_id',\common\enums\ContactEnum::getMap(), [
                     'prompt' => '全部',
                     'class' => 'form-control'
                 ]),
@@ -70,16 +182,16 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{info}',
+                'template' => '{status} {info}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
                         return Html::edit(['edit', 'id' => $model->id]);
                 },
                 'info' => function($url, $model, $key){
-                    return Html::a('查看',['info', 'id' => $model->id]);
+                    return Html::a('查看',['info', 'id' => $model->id],['class'=>'btn btn-info btn-sm']);
                 },
                'status' => function($url, $model, $key){
-                        return Html::status($model['status']);
+                        return Html::status($model['status'],[],\common\enums\ContactEnum::getStatus());
                   },
                 'delete' => function($url, $model, $key){
                         return Html::delete(['delete', 'id' => $model->id]);

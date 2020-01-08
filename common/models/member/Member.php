@@ -2,6 +2,7 @@
 
 namespace common\models\member;
 
+use common\models\common\Area;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\db\ActiveRecord;
@@ -62,8 +63,8 @@ class Member extends User
             [['username', 'password_hash'], 'required', 'on' => ['backendCreate']],
             [['password_hash'], 'string', 'min' => 6, 'on' => ['backendCreate']],
             [['username'], 'unique', 'on' => ['backendCreate']],
-            [['marriage','merchant_id', 'type', 'gender','visit_count', 'role', 'last_time', 'province_id', 'city_id', 'area_id', 'pid', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['birthday','created_at','is_book'], 'safe'],
+            [['marriage','merchant_id', 'type', 'gender','visit_count', 'role', 'last_time','country_id', 'province_id', 'city_id', 'area_id', 'pid', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['birthday','created_at','is_book','is_buy'], 'safe'],
             [['username', 'qq', 'home_phone', 'mobile'], 'string', 'max' => 20],
             [['password_hash', 'password_reset_token', 'head_portrait'], 'string', 'max' => 150],
             [['auth_key'], 'string', 'max' => 32],
@@ -102,10 +103,11 @@ class Member extends User
             'mobile' => '手机号码',
             'role' => '权限',
             'last_time' => '最后一次登录时间',                
-            'last_ip' => '最后一次登录ip',
-            'province_id' => 'Province ID',
-            'city_id' => 'City ID',
-            'area_id' => 'Area ID',
+            'last_ip' => 'ip',
+            'country_id' => '国家',
+            'province_id' => '省',
+            'city_id' => '市',
+            'area_id' => '区',
             'pid' => '上级id',
             'status' => '状态',
             'created_at' => '创建时间',
@@ -144,6 +146,23 @@ class Member extends User
     {
         return $this->hasMany(Auth::class, ['member_id' => 'id'])->where(['status' => StatusEnum::ENABLED]);
     }
+
+    /**
+     * 关联国家
+     */
+    public function getCountry()
+    {
+        return $this->hasOne(Area::class, ['id' => 'country_id'])->alias('country');
+    }
+
+    /**
+     * 关联城市
+     */
+    public function getCity()
+    {
+        return $this->hasOne(Area::class, ['id' => 'city_id'])->alias('city');
+    }
+
 
     /**
      * @param bool $insert

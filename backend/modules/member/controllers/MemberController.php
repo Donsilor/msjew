@@ -3,6 +3,7 @@
 namespace backend\modules\member\controllers;
 
 use common\models\member\Book;
+use common\models\order\Order;
 use Yii;
 use common\models\base\SearchModel;
 use common\components\Curd;
@@ -29,7 +30,7 @@ class MemberController extends BaseController
     public $modelClass = Member::class;
 
     /**
-     * 首页
+     * 批发国际网站
      *
      * @return string
      * @throws \yii\web\NotFoundHttpException
@@ -92,7 +93,86 @@ class MemberController extends BaseController
             ->andWhere(['>=', 'status', StatusEnum::DISABLED])
             ->with('account');
 
-        return $this->render('member', [
+        return $this->render($this->action->id, [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+
+        ]);
+    }
+
+
+    /**
+     * BDD官网
+     *
+     * @return string
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function actionMember()
+    {
+        $title = Yii::$app->request->post('title',null);
+        $start_time = Yii::$app->request->post('start_time', null);
+        $end_time = Yii::$app->request->post('end_time', null);
+        $searchModel = new SearchModel([
+            'model' => $this->modelClass,
+            'scenario' => 'default',
+            'partialMatchAttributes' => ['realname', 'mobile'], // 模糊查询
+            'defaultOrder' => [
+                'id' => SORT_DESC
+            ],
+            'pageSize' => $this->pageSize
+        ]);
+
+        $dataProvider = $searchModel
+            ->search(Yii::$app->request->queryParams,['created_at','visit_count','is_buy','country_id','city_id']);
+
+        //搜索国家
+        $dataProvider->query->joinWith(['country']);
+        $dataProvider->query->andFilterWhere(['like', 'country.name_zh_cn',$searchModel->country_id]);
+        //搜索城市
+        $dataProvider->query->joinWith(['city']);
+        $dataProvider->query->andFilterWhere(['like', 'city.name_zh_cn',$searchModel->city_id]);
+
+        if($title){
+            $dataProvider->query->andFilterWhere(['=','email',$title]);
+        }
+        if($start_time && $end_time){
+            $dataProvider->query->andFilterWhere(['between','created_at', strtotime($start_time), strtotime($end_time)]);
+        }
+
+        $created_at = $searchModel->created_at;
+        if (!empty($created_at)) {
+            $dataProvider->query->andFilterWhere(['>=','created_at', strtotime(explode('/', $searchModel->created_at)[0])]);//起始时间
+            $dataProvider->query->andFilterWhere(['<','created_at', (strtotime(explode('/', $searchModel->created_at)[1]) + 86400)] );//结束时间
+        }
+
+        //是否首次登陆
+        $visit_count = $searchModel->visit_count;
+        if (!empty($visit_count)) {
+            if($visit_count  == 1){
+                $dataProvider->query->andFilterWhere(['=','visit_count',1 ]);
+            }else{
+                $dataProvider->query->andFilterWhere(['>','visit_count',1 ]);
+            }
+        }
+
+        //是否购买
+        $is_buy = $searchModel->is_buy;
+        if (!empty($is_buy)) {
+            $member_ids = Order::find()->select(['member_id'])->distinct()->asArray()->all();
+            $member_ids = array_column($member_ids,'member_id');
+            if($is_buy  == 1){
+                $dataProvider->query->andFilterWhere(['in','id',$member_ids ]);
+            }else{
+                $dataProvider->query->andFilterWhere(['not in','id',$member_ids ]);
+            }
+
+        }
+
+        $dataProvider->query
+            ->andWhere(['>=', 'status', StatusEnum::DISABLED])
+            ->with('account');
+
+        return $this->render($this->action->id, [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
 

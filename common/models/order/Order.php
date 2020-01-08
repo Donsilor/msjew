@@ -15,21 +15,24 @@ use Yii;
  * @property string $pay_sn 支付单号
  * @property int $member_id 买家id
  * @property string $payment_type 支付方式
- * @property int $payment_time 支付状态
+ * @property int $payment_status 支付状态
  * @property int $payment_time 支付时间
  * @property int $finished_time 订单完成时间
  * @property int $evaluation_status 评价状态 0未评价，1已评价，2已过期未评价
  * @property int $evaluation_again_status 追加评价状态 0未评价，1已评价，2已过期未评价
  * @property int $order_status 订单状态
  * @property int $refund_status 退款状态:0是无退款,1是部分退款,2是全部退款
- * @property string $express_no 物流单号
+ * @property string $express_id 快递类型
+ * @property string $express_no 快递单号
  * @property int $order_from 订单来源 1：web 2：mobile
  * @property int $order_type 订单类型(1普通订单,2预定订单,3门店自提订单)
  * @property int $api_pay_time 在线支付动作时间,只要向第三方支付平台提交就会更新
  * @property string $trade_no 外部交易订单号
  * @property string $buyer_remark 买家留言
  * @property string $seller_remark 商家备注
- * @property int $status 状态 1启用 0禁用 -1删除
+ * @property int $ip ip地址
+ * @property int $ip_area_id IP所在区域
+ * @property int $status 状态 1已审核 0待审核 -1取消
  * @property int $created_at 订单生成时间
  * @property int $updated_at 更新时间
  */

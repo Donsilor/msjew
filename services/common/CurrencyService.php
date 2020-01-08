@@ -69,7 +69,7 @@ class CurrencyService extends Component
         $cacheKey = CacheEnum::getPrefix('currency',$merchant_id);
         if($this->currencies) {
             return $this->currencies;
-        }        
+        }         
         if (!($currencies = Yii::$app->cache->get($cacheKey)) || $noCache == true) {
             
             $models = Currency::find()->select(['code','name','sign','rate','refer_rate'])->where(['status'=>StatusEnum::ENABLED])->asArray()->all();
@@ -93,26 +93,68 @@ class CurrencyService extends Component
         return $currencies;
     }
     /**
-     * 货币金额转换
+     * 货币金额转换(从A货币转到B货币)
+     * 
      * @param number $amount
      * @param number $format
-     * @param string $currency
+     * @param string $toCurrency 为空表示转到当前货币
+     * @param string $fromCurrency 为空表示从基础货币(RMB)开始
      * @throws UnprocessableEntityHttpException
      * @return array
      */
-    public function exchangeAmount($amount ,$format = 2, $currency = null)
+    public function exchangeAmount($amount ,$format = 2, $toCurrency = null, $fromCurrency = null)
     {
-        if($currency == null) {
-            $currency = \Yii::$app->params['currency'];
+        if($toCurrency == null) {
+            $toCurrency = \Yii::$app->params['currency'];
         }
-        $info = $this->getCurrencyInfo($currency);
-        if(empty($info['rate']) || $info['rate'] <= 0) {
+        $toInfo = $this->getCurrencyInfo($toCurrency);
+        if(empty($toInfo['rate']) || $toInfo['rate'] <= 0) {
             throw new UnprocessableEntityHttpException("Currency rate is wrong!");
         }
-        $rate = $info['rate'] ?? 1;
-        $sign = $info['sign'] ?? $currency;
-        $amount = bcmul($amount,$rate,$format);
-        
+        if($fromCurrency == null) {
+            $fromRate = 1;
+        } else {
+            $fromRate = $this->getRate($fromCurrency);
+        }
+        $toRate = $toInfo['rate'] ?? 1;
+        $amount = bcmul(bcdiv($amount,$fromRate,5),$toRate,$format);        
         return $amount;
     }
+    /**
+     * 货币代号
+     * @param string $toCurrency 为空表示转到当前货币
+     * @return mixed
+     */
+    public function getCurrency($code = null)
+    {
+        return \Yii::$app->params['currency'];
+    }
+    /**
+     * 基础货币代号
+     * @return mixed
+     */
+    public function getBaseCurrency()
+    {
+        return \Yii::$app->params['currencyBase'];
+    }
+    /**
+     * 货币转换成 基础货币
+     * @param unknown $amount
+     * @param number $format
+     * @param unknown $fromCurrency
+     * @return array
+     */
+    public function toBaseAmount($amount,$format = 2,$fromCurrency = null)
+    {
+        $toCurrency = $this->getBaseCurrency();
+        
+        if($fromCurrency == null) {
+            $fromCurrency = $this->getCurrency();
+        } elseif ($fromCurrency == $toCurrency) {
+            return $amount; 
+        }
+        return $this->exchangeAmount($amount,$toCurrency,$fromCurrency);
+    }
+    
+
 }

@@ -3,8 +3,8 @@
 namespace common\enums;
 
 /**
- * 属性类型枚举
- * 分类类型(1-基础属性,2-销售属性,3-定制属性,4款式分类)
+ * 地区枚举
+ * AreaEnum
  * @package common\enums
  * @author jianyan74 <751393839@qq.com>
  */
@@ -24,8 +24,8 @@ class AreaEnum extends BaseEnum
                 self::China => '中国',
                 self::HongKong => '香港',
                 self::MaCao => '澳门',
-                self::Other => '其他',
+                self::Other => '国外',
         ];
-    }    
+    }  
     
 }

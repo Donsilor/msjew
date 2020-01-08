@@ -156,7 +156,7 @@ HTML;
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
-                    return \common\enums\ContactEnum::getStatus()[$model->status];
+                    return \common\enums\ContactEnum::getStatus()[$model->status??0];
                 },
                 'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\ContactEnum::getStatus(), [
                     'prompt' => '全部',

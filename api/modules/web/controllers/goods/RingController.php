@@ -68,6 +68,8 @@ class RingController extends OnAuthController
         $material = \Yii::$app->request->post("materialValue");//成色Id
         $query->andWhere(['=','m.ring_style', $ring_style]);
         if($begin_price && $end_price){
+            $begin_price = $this->exchangeAmount($begin_price);
+            $end_price = $this->exchangeAmount($end_price);
             $query->andWhere(['between','m.sale_price', $begin_price, $end_price]);
         }
 

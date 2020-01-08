@@ -509,7 +509,7 @@ class GoodsService extends Service
         $style['goodsName'] = $model['style_name'];
         $style['goodsCode'] = $model['style_sn'];
         $style['goodsImages'] = $model['goods_images'];
-        $style['salePrice'] = $model['sale_price'];
+        $style['salePrice'] = $this->exchangeAmount($model['sale_price']);
         $style['coinType'] = $this->getCurrencySign();
         $style['goods3ds'] = $model['style_3ds'];
         $style['goodsDesc'] = $model['goods_body'];
@@ -610,7 +610,7 @@ class GoodsService extends Service
             $details[$key]['warehouse'] = $val['warehouse'];;
             $details[$key]['categoryId'] = $model['type_id'];
             $details[$key]['goodsDetailsCode'] = $val['goods_sn'];
-            $details[$key]['retailMallPrice'] = $val['sale_price'];
+            $details[$key]['retailMallPrice'] = $this->exchangeAmount($val['sale_price']);
             $details[$key]['retailPrice'] = null;
             $details[$key]['goodsId'] = $style_id;
             $details[$key]['id'] = $val['id'];

@@ -285,7 +285,7 @@ class OrderController extends UserAuthController
         if($order->order_status > OrderStatusEnum::ORDER_UNPAID){
             return ResultHelper::api(422, '此订单不是待付款状态，不能取消');
         }
-        $res = Order::updateAll(['order_status'=>OrderStatusEnum::ORDER_CANCEL],['id'=>$order_id]);
+        $res = Order::updateAll(['order_status'=>OrderStatusEnum::ORDER_CANCEL],['id'=>$order_id,'order_status'=>OrderStatusEnum::ORDER_UNPAID]);
         if($res){
             return 'success';
         }else{
@@ -294,6 +294,28 @@ class OrderController extends UserAuthController
 
     }
 
+
+    //确认收货
+    public function actionConfirmReceipt(){
+        $order_id = \Yii::$app->request->post('orderId');
+        if($order_id == null) {
+            return ResultHelper::api(422, '请参入正确的订单号');
+        }
+        $order = Order::find()->where(['member_id'=>$this->member_id,'id'=>$order_id])->one();
+        if(!$order){
+            return ResultHelper::api(422, '此订单不存在');
+        }
+        if($order->order_status > OrderStatusEnum::ORDER_SEND){
+            return ResultHelper::api(422, '此订单不是已发货状态');
+        }
+        $res = Order::updateAll(['order_status'=>OrderStatusEnum::ORDER_FINISH],['id'=>$order_id,'order_status'=>OrderStatusEnum::ORDER_SEND]);
+        if($res){
+            return 'success';
+        }else{
+            return ResultHelper::api(422, '取消订单失败');
+        }
+
+    }
 
 
     
@@ -310,11 +332,11 @@ class OrderController extends UserAuthController
         }
         $taxInfo = \Yii::$app->services->order->getOrderAccountTax($cartIds, $this->member_id, $addressId);        
         return [
-                'logisticsFee' => $this->exchangeAmount($taxInfo['shipping_fee']),
-                'orderAmount'  => $this->exchangeAmount($taxInfo['order_amount']),                
-                'productAmount' => $this->exchangeAmount($taxInfo['goods_amount']),
-                'safeFee'=>$this->exchangeAmount($taxInfo['safe_fee']),
-                'taxFee'  =>$this->exchangeAmount($taxInfo['tax_fee']),
+                'logisticsFee' => $taxInfo['shipping_fee'],
+                'orderAmount'  => $taxInfo['order_amount'],
+                'productAmount' => $taxInfo['goods_amount'],
+                'safeFee'=>$taxInfo['safe_fee'],
+                'taxFee'  =>$taxInfo['tax_fee'],
                 'planDays' =>$taxInfo['plan_days'],
                 'currency' =>$taxInfo['currency'],
                 'exchangeRate'=>$taxInfo['exchange_rate']

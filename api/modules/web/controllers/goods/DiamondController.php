@@ -89,8 +89,8 @@ class DiamondController extends OnAuthController
                     $begin_value = $param['beginValue'];
                     $end_value = $param['endValue'];
                     if($param_name == 'sale_price'){
-                        $begin_value = $this->exchangeAmount($begin_value);
-                        $end_value = $this->exchangeAmount($end_value);
+                        $begin_value = $this->exchangeAmount($begin_value,2, 'CNY', $this->getCurrencySign());
+                        $end_value = $this->exchangeAmount($end_value,2, 'CNY', $this->getCurrencySign());
                     }
 
                     $query->andWhere(['between',$params_map[$param_name], $begin_value, $end_value]);

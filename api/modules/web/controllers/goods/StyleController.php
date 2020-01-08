@@ -75,11 +75,11 @@ class StyleController extends OnAuthController
                     $min_price = $param['beginValue'];
                     $max_price = $param['endValue'];
                     if(is_numeric($min_price)){
-                        $min_price = $this->exchangeAmount($min_price);
+                        $min_price = $this->exchangeAmount($min_price,2, 'CNY', $this->getCurrencySign());
                         $query->andWhere(['>','m.sale_price',$min_price]);
                     }
                     if(is_numeric($max_price) && $max_price>0){
-                        $max_price = $this->exchangeAmount($max_price);
+                        $max_price = $this->exchangeAmount($max_price,2, 'CNY', $this->getCurrencySign());
                         $query->andWhere(['<=','m.sale_price',$max_price]);
                     }
                     continue;

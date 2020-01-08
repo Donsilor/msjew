@@ -7,12 +7,10 @@ use common\models\order\OrderCart;
 use yii\web\UnprocessableEntityHttpException;
 use common\models\order\OrderGoods;
 use common\models\order\Order;
-use common\models\member\Member;
-use common\enums\StatusEnum;
 use common\models\member\Address;
 use common\models\order\OrderAccount;
 use common\models\order\OrderAddress;
-use common\models\order\OrderGoodsLang;
+use common\enums\PayStatusEnum;
 
 /**
  * Class OrderService
@@ -53,7 +51,8 @@ class OrderService extends Service
         $order->language   = $this->getLanguage();
         $order->member_id = $buyer_id;
         $order->order_sn  = $this->createOrderSn();
-        $order->ip = \Yii::$app->request->userIP;
+        $order->payment_status = PayStatusEnum::UNPAID;
+        $order->ip = \Yii::$app->request->userIP;        
         if(false === $order->save()){
             throw new UnprocessableEntityHttpException($this->getError($order));
         }

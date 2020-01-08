@@ -62,13 +62,13 @@ class PayService extends Service
         $config = [
             'notify_url' => $payForm->notifyUrl, // 支付通知回调地址
             'return_url' => $payForm->returnUrl, // 买家付款成功跳转地址
-            'sandbox' => true
+            'sandbox' => true,  
         ];
 
         // 生成订单
         $order = [
             'out_trade_no' => $baseOrder['out_trade_no'],
-            'total_amount' => $baseOrder['total_fee'] / 100,
+            'total_amount' => $baseOrder['total_fee'] ,
             'subject' => $baseOrder['body'],
         ];
 

@@ -81,6 +81,11 @@ class PayForm extends Model
                     $this->addError($attribute, '银联交易类型不符');
                 }
                 break;
+            case PayEnum::PAY_TYPE_PAYPAL :
+                if (!in_array($this->tradeType, ['pc'])) {
+                    $this->addError($attribute, 'PayPal交易类型不符');
+                }
+                break;
         }
     }
 

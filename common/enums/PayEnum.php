@@ -73,5 +73,6 @@ class PayEnum extends BaseEnum
         self::PAY_TYPE_ALI => 'alipay',
         self::PAY_TYPE_UNION => 'union',
         self::PAY_TYPE_MINI_PROGRAM => 'miniProgram',
+        self::PAY_TYPE_PAYPAL => 'paypal',
     ];
 }

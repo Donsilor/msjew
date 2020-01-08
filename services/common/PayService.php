@@ -78,6 +78,29 @@ class PayService extends Service
         ];
     }
 
+    public function paypal(PayForm $payForm, $baseOrder)
+    {
+        // 配置
+        $config = [
+            'notify_url' => $payForm->notifyUrl, // 支付通知回调地址
+            'return_url' => $payForm->returnUrl, // 买家付款成功跳转地址
+            'sandbox' => true
+        ];
+
+        // 生成订单
+        $order = [
+            'out_trade_no' => $baseOrder['out_trade_no'],
+            'total_amount' => $baseOrder['total_fee'] / 100,
+            'subject' => $baseOrder['body'],
+        ];
+
+        // 交易类型
+        $tradeType = $payForm->tradeType;
+        return [
+            'config' => Yii::$app->pay->paypal($config)->$tradeType($order)
+        ];
+    }
+
     /**
      * @param PayForm $payForm
      * @return mixed

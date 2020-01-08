@@ -2,6 +2,7 @@
 
 namespace common\components;
 
+use common\components\payment\PaypalPay;
 use Yii;
 use yii\base\Component;
 use common\components\payment\AliPay;
@@ -87,6 +88,23 @@ class Pay extends Component
             'return_url' => '',
             'cert_id' => $this->rfConfig['union_cert_id'],
             'private_key' => $this->rfConfig['union_private_key'],
+        ], $config));
+    }
+
+    /**
+     * @param array $config
+     * @return PaypalPay
+     */
+    public function paypal(array $config = [])
+    {
+        return new PaypalPay(ArrayHelper::merge([
+            //'app_id' => $this->rfConfig['alipay_appid'],
+            'notify_url' => '',
+            'return_url' => '',
+
+            'client_id' => $this->rfConfig['paypal_client_id'],
+            'client_secret' => $this->rfConfig['paypal_client_secret'],
+            'sandbox' => false
         ], $config));
     }
 

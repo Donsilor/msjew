@@ -116,7 +116,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 ]),
                                 'format' => 'raw',
                                 'value' => function($model) {
-                                    return Html::a($model->order_sn, ['view', 'id' => $model->id]);
+                                    return Html::a($model->order_sn, ['view', 'id' => $model->id], ['style'=>"text-decoration:underline;color:#3c8dbc"]);
                                 }
                             ],
                             [

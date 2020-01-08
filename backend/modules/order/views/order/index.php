@@ -27,21 +27,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                 <div class="box-body top-form">
                     <div class="row col-sm-12">
                         <div class="col-sm-3">
-                            <?= $searchModel->model->getAttributeLabel('member.email') ?>：<br/>
-                            <?= Html::activeTextInput($searchModel, 'member.email', [
-                                'class' => 'form-control',
-                            ]);
-                            ?>
-                        </div>
-                        <div class="col-sm-3">
-                            <?= $searchModel->model->getAttributeLabel('payment_type') ?>：<br/>
-                            <?= Html::activeDropDownList($searchModel, 'payment_type', \common\enums\PayEnum::getMap(), [
-                                'prompt' => '全部',
-                                'class' => 'form-control',
-                            ]);
-                            ?>
-                        </div>
-                        <div class="col-sm-3">
                             <?= $searchModel->model->getAttributeLabel('created_at') ?>：<br/>
                             <?= DateRangePicker::widget([    // 日期组件
                                 'model' => $searchModel,
@@ -63,6 +48,22 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ?>
                         </div>
                         <div class="col-sm-3">
+                            <?= $searchModel->model->getAttributeLabel('payment_type') ?>：<br/>
+                            <?= Html::activeDropDownList($searchModel, 'payment_type', \common\enums\PayEnum::getMap(), [
+                                'prompt' => '全部',
+                                'class' => 'form-control',
+                            ]);
+                            ?>
+                        </div>
+                        <div class="col-sm-3">
+                            <?= $searchModel->model->getAttributeLabel('language') ?>：<br/>
+                            <?= Html::activeDropDownList($searchModel, 'language', \common\enums\LanguageEnum::getMap(), [
+                                'prompt' => '全部',
+                                'class' => 'form-control',
+                            ]);
+                            ?>
+                        </div>
+                        <div class="col-sm-3">
                             <?= $searchModel->model->getAttributeLabel('order_from') ?>：<br/>
                             <?= Html::activeDropDownList($searchModel, 'order_from', \common\enums\OrderFromEnum::getMap(), [
                                 'prompt' => '全部',
@@ -70,11 +71,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ]);
                             ?>
                         </div>
-                    </div>
-                </div>
-                <div class="box-body">
-                    <div class="row col-sm-12">
-                        <?= Html::batchAudit('ajax-batch-audit', '批量审核', ['data-grid'=>'grid']) ?>
                     </div>
                 </div>
                 <div class="active tab-pane">
@@ -119,6 +115,9 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     'class' => 'form-control',
                                 ]),
                                 'format' => 'raw',
+                                'value' => function($model) {
+                                    return Html::a($model->order_sn, ['view', 'id' => $model->id]);
+                                }
                             ],
                             [
                                 'attribute' => 'member.realname',
@@ -167,29 +166,41 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'format' => 'raw',
                             ],
                             [
+                                'attribute' => 'payment_status',
+                                'headerOptions' => ['class' => 'col-md-1'],
+                                'filter' => Html::activeDropDownList($searchModel, 'payment_status', \common\enums\PayStatusEnum::getMap(), [
+                                    'prompt' => '全部',
+                                    'class' => 'form-control',
+                                ]),
+                                'value' => function ($model) {
+                                    return \common\enums\PayStatusEnum::getValue($model->payment_status);
+                                },
+                                'format' => 'raw',
+                            ],
+                            [
                                 'attribute' => 'order_status',
                                 'headerOptions' => ['class' => 'col-md-1'],
                                 'filter' => Html::activeDropDownList($searchModel, 'order_status', common\enums\OrderStatusEnum::getMap(), [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
-                                ]), 
+                                ]),
                                 'value' => function ($model) {
                                     return common\enums\OrderStatusEnum::getValue($model->order_status);
                                 },
                                 'format' => 'raw',
                             ],
-                            [
-                                'attribute' => 'status',
-                                'headerOptions' => ['class' => 'col-md-1'],
-                                'filter' => Html::activeDropDownList($searchModel, 'status', common\enums\AuditStatusEnum::getMap(), [
-                                    'prompt' => '全部',
-                                    'class' => 'form-control',
-                                ]),
-                                'value' => function ($model) {
-                                    return common\enums\AuditStatusEnum::getValue($model->status);
-                                },
-                                'format' => 'raw',
-                            ],
+//                            [
+//                                'attribute' => 'status',
+//                                'headerOptions' => ['class' => 'col-md-1'],
+//                                'filter' => Html::activeDropDownList($searchModel, 'status', common\enums\AuditStatusEnum::getMap(), [
+//                                    'prompt' => '全部',
+//                                    'class' => 'form-control',
+//                                ]),
+//                                'value' => function ($model) {
+//                                    return common\enums\AuditStatusEnum::getValue($model->status);
+//                                },
+//                                'format' => 'raw',
+//                            ],
                             
                             [
                                 'label' => '跟进人',
@@ -216,25 +227,27 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             [
                                 'header' => "操作",
                                 'class' => 'yii\grid\ActionColumn',
-                                'template' => ' {view} {follower} {audit} {delivery}',
+                                'template' => '{operation}',
                                 'buttons' => [
-                                    'view' => function ($url, $model, $key) {
-                                        return Html::a('详情', ['view', 'id' => $model->id], ['class' => 'btn btn-info btn-sm']);
-                                    },
-                                    'follower' => function ($url, $model, $key) {
-                                        return Html::edit(['edit-follower', 'id' => $model->id], '跟进', [
+//                                    'view' => function ($url, $model, $key) {
+//                                        return Html::a('详情', ['view', 'id' => $model->id], ['class' => 'btn btn-info btn-sm']);
+//                                    },
+                                    'operation' => function ($url, $model, $key) {
+                                        $html = '';
+                                        $html .= Html::edit(['edit-follower', 'id' => $model->id], '跟进', [
                                             'data-toggle' => 'modal',
                                             'data-target' => '#ajaxModal',
                                         ]);
-                                    },
-                                    'audit' => function ($url, $model, $key) {
-                                        return Html::batchAudit();
-                                    },
-                                    'delivery' => function($url, $model, $key) {
-                                        return Html::edit(['edit-delivery', 'id' => $model->id], '发货', [
-                                            'data-toggle' => 'modal',
-                                            'data-target' => '#ajaxModal',
-                                        ]);
+                                        if($model->payment_status == \common\enums\PayStatusEnum::PAID) {
+                                            $html .= Html::batchAudit();
+                                        }
+                                        if($model->status == \common\enums\AuditStatusEnum::PASS) {
+                                            $html .= Html::edit(['edit-delivery', 'id' => $model->id], '发货', [
+                                                'data-toggle' => 'modal',
+                                                'data-target' => '#ajaxModal',
+                                            ]);
+                                        }
+                                        return $html;
                                     }
                                 ],
                             ],

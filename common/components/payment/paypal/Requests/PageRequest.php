@@ -82,6 +82,7 @@ class PageRequest extends AbstractPaypalRequest
         $clientSecret = $this->getParameter('clientSecret');
 
         $subject = $this->getParameter('subject');
+        $currency = \Yii::$app->params['currency'];
         $totalAmount = $this->getParameter('totalAmount');
         $outTradeNo = $this->getParameter('outTradeNo');
 
@@ -100,7 +101,7 @@ class PageRequest extends AbstractPaypalRequest
 
         //设置金额
         $amount = new Amount();
-        $amount->setCurrency($subject)
+        $amount->setCurrency($currency)
             ->setTotal($totalAmount);
 
         $transaction = new Transaction();

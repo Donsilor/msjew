@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $model->member->realname ?>
                         </div>
                         <div class="col-lg-3">
-                        	<label class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.realname') ?>：</label>
+                        	<label class="col-lg-6 text-right"><?= $model->getAttributeLabel('ip') ?>：</label>
                         	<?= $model->ip ?>
                         </div>
                         <div class="col-lg-3">
@@ -215,12 +215,7 @@ DOM;
                                 <div class="col-lg-7"><?= $model->account->order_amount ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.order_amount') ?>
-                                        ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->order_amount ?></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.pay_amount') ?>：</label></div>
+                                <div class="col-lg-5 text-right"><label style="font-weight:bold"><?= $model->getAttributeLabel('account.pay_amount') ?>：</label></div>
                                 <div class="col-lg-7"><?=$model->account->pay_amount?>(<?=$model->account->currency?><?= \Yii::$app->services->currency->exchangeAmount($model->account->pay_amount,2,$model->account->currency) ?>)</div>
                             </div>
                         </div>

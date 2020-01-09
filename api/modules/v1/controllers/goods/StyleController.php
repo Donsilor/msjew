@@ -112,7 +112,8 @@ class StyleController extends OnAuthController
         $result = $this->pagination($query,$page,$page_size);
         
         foreach($result['data'] as & $val) {
-            $val['url'] = '/goods-'.str_replace(' ','-',StringHelper::trim($val['style_name'])).'/'.$val['id'];
+            
+            $val['url'] = '/goods-'.StringHelper::parseCatgory($val['style_name']).'/'.$val['id'];
             $val['currency'] = $this->getCurrencySign(); 
             $val['style_image'] = ImageHelper::thumb($val['style_image']);
         } 
@@ -215,7 +216,7 @@ class StyleController extends OnAuthController
                     ->orderby("s.goods_clicks desc");
         $models = $query->limit(10)->asArray()->all();
         foreach ($models as &$model){
-            $model['url'] = '/goods-'.str_replace(' ','-',StringHelper::trim($model['style_name'])).'/'.$model['id'];
+            $model['url'] = '/goods-'.StringHelper::parseCatgory($model['style_name']).'/'.$model['id'];
             $model['style_image'] = ImageHelper::thumb($model['style_image']);
             $model['currency'] = $this->currencySign;
         }

@@ -2,6 +2,7 @@
 
 namespace backend\modules\member\controllers;
 
+use common\enums\OrderStatusEnum;
 use common\models\member\Book;
 use common\models\order\Order;
 use Yii;
@@ -125,12 +126,12 @@ class MemberController extends BaseController
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams,['created_at','visit_count','is_buy','country_id','city_id']);
 
-        //搜索国家
-        $dataProvider->query->joinWith(['country']);
-        $dataProvider->query->andFilterWhere(['like', 'country.name_zh_cn',$searchModel->country_id]);
-        //搜索城市
-        $dataProvider->query->joinWith(['city']);
-        $dataProvider->query->andFilterWhere(['like', 'city.name_zh_cn',$searchModel->city_id]);
+//        //搜索国家
+//        $dataProvider->query->joinWith(['country']);
+//        $dataProvider->query->andFilterWhere(['like', 'country.name_zh_cn',$searchModel->country_id]);
+//        //搜索城市
+//        $dataProvider->query->joinWith(['city']);
+//        $dataProvider->query->andFilterWhere(['like', 'city.name_zh_cn',$searchModel->city_id]);
 
         if($title){
             $dataProvider->query->andFilterWhere(['=','email',$title]);
@@ -158,7 +159,7 @@ class MemberController extends BaseController
         //是否购买
         $is_buy = $searchModel->is_buy;
         if (!empty($is_buy)) {
-            $member_ids = Order::find()->select(['member_id'])->distinct()->asArray()->all();
+            $member_ids = Order::find()->where(['>=','order_status',OrderStatusEnum::ORDER_PAID])->select(['member_id'])->distinct()->asArray()->all();
             $member_ids = array_column($member_ids,'member_id');
             if($is_buy  == 1){
                 $dataProvider->query->andFilterWhere(['in','id',$member_ids ]);

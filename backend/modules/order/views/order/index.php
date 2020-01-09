@@ -116,7 +116,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 ]),
                                 'format' => 'raw',
                                 'value' => function($model) {
-                                    return Html::a($model->order_sn, ['view', 'id' => $model->id]);
+                                    return Html::a($model->order_sn, ['view', 'id' => $model->id], ['style'=>"text-decoration:underline;color:#3c8dbc"]);
                                 }
                             ],
                             [
@@ -238,10 +238,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                             'data-toggle' => 'modal',
                                             'data-target' => '#ajaxModal',
                                         ]);
-                                        if($model->payment_status == \common\enums\PayStatusEnum::PAID) {
+                                        if($model->order_status == \common\enums\OrderStatusEnum::ORDER_PAID) {
                                             $html .= Html::batchAudit();
                                         }
-                                        if($model->status == \common\enums\AuditStatusEnum::PASS) {
+                                        if($model->order_status == \common\enums\OrderStatusEnum::ORDER_CONFIRM) {
                                             $html .= Html::edit(['edit-delivery', 'id' => $model->id], '发货', [
                                                 'data-toggle' => 'modal',
                                                 'data-target' => '#ajaxModal',

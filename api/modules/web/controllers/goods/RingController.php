@@ -177,7 +177,7 @@ class RingController extends OnAuthController
     {
         $id = \Yii::$app->request->post("id");
         if(empty($id)) {
-            return ResultHelper::api(422,"id不能为空");
+            return ResultHelper::json(422,"id不能为空");
         }
         $field = ['m.id','m.status','m.ring_sn','lang.ring_name','lang.ring_body','lang.meta_title','lang.meta_desc','lang.meta_word','m.ring_sn',
             'm.ring_images','m.sale_price','m.ring_style'];
@@ -186,7 +186,7 @@ class RingController extends OnAuthController
             ->where(['m.id'=>$id,'m.status'=>StatusEnum::ENABLED])
             ->one();
         if(empty($model)) {
-            return ResultHelper::api(422,"对戒信息不存在");
+            return ResultHelper::json(422,"对戒信息不存在");
         }
         $ring = array();
         $ring['id'] = $model->id;

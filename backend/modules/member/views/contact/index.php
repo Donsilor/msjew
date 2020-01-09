@@ -156,9 +156,9 @@ HTML;
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model){
-                    return \common\enums\ContactEnum::getStatus()[$model->status??0];
+                    return \common\enums\FollowStatusEnum::getValue($model->status??0);
                 },
-                'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\ContactEnum::getStatus(), [
+                'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\FollowStatusEnum::getMap(), [
                     'prompt' => '全部',
                     'class' => 'form-control',
                 ]),
@@ -191,7 +191,7 @@ HTML;
                     return Html::a('查看',['info', 'id' => $model->id],['class'=>'btn btn-info btn-sm']);
                 },
                'status' => function($url, $model, $key){
-                        return Html::status($model['status'],[],\common\enums\ContactEnum::getStatus());
+                        return Html::status($model['status'],[],\common\enums\FollowStatusEnum::getMap());
                   },
                 'delete' => function($url, $model, $key){
                         return Html::delete(['delete', 'id' => $model->id]);

@@ -177,11 +177,11 @@ class StyleController extends OnAuthController
     {
         $id = \Yii::$app->request->post("goodsId");
         if(empty($id)) {
-            return ResultHelper::api(422,"id不能为空");
+            return ResultHelper::json(422,"id不能为空");
         }
-        $model = Style::find()->where(['id'=>$id])->one();
+        $model = Style::find()->where(['id'=>$id,'status'=>StatusEnum::ENABLED])->one();
         if(empty($model)) {
-            return ResultHelper::api(422,"商品信息不存在");
+            return ResultHelper::json(422,"商品信息不存在或者已经下架");
         }
         try{
             $style = \Yii::$app->services->goods->formatStyleGoodsById($id, $this->language);
@@ -214,7 +214,7 @@ class StyleController extends OnAuthController
 
         }catch (Exception $e){
             $error = $e->getMessage();
-            return ResultHelper::api(422, $error);
+            return ResultHelper::json(422, $error);
         }
 
     }

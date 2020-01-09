@@ -32,7 +32,8 @@ class MenuController extends OnAuthController
         $models = ArrayHelper::itemsMerge($models,0,'id','pid','items');
         foreach ($models as &$m1) {
             if(empty($m1['items'])) continue;            
-            $cate1 = $m1['title'];
+            $cate1 = StringHelper::parseCatgory($m1['title']);
+            $m1['url'] = str_replace("/goods-list/?",'/category/'.$cate1.'/', $m1['url']);
             foreach ($m1['items'] as &$m2){                
                 if(empty($m2['items'])) continue;
                 foreach ($m2['items'] as &$m3){

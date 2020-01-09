@@ -420,4 +420,13 @@ class StringHelper extends BaseStringHelper
 
         return $string;
     }
+    /**
+     * 过滤空格
+     * @param unknown $str
+     * @return mixed
+     */
+    public static function trim($str)
+    {
+        return preg_replace("/\s(?=\s)/","\\1",trim($str));
+    }
 }

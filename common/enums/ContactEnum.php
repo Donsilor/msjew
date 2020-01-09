@@ -30,12 +30,4 @@ class ContactEnum extends BaseEnum
 		];
 	}
 
-
-	public static function getStatus(){
-        return [
-            self::DISABLED => '未跟进',
-            self::ENABLED => '跟进',
-
-        ];
-    }
 }

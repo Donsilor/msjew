@@ -14,12 +14,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title"><?= $this->title; ?></h3>
-<!--                <div class="box-tools">-->
-<!--                    --><?//= Html::create(['ajax-edit'], '创建', [
-//                        'data-toggle' => 'modal',
-//                        'data-target' => '#ajaxModal',
-//                    ]) ?>
-<!--                </div>-->
             </div>
             <div class="box-body table-responsive">
                 <?= GridView::widget([
@@ -36,17 +30,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             'attribute' => 'id',
                             'headerOptions' => ['class' => 'col-md-1'],
                         ],
-                        [
-                            'attribute' => 'head_portrait',
-                            'value' => function ($model) {
-                                return Html::img(ImageHelper::defaultHeaderPortrait(Html::encode($model->head_portrait)),
-                                    [
-                                        'class' => 'img-circle rf-img-md img-bordered-sm',
-                                    ]);
-                            },
-                            'filter' => false,
-                            'format' => 'raw',
-                        ],
+
                         [
                             'attribute' => 'username',
                             'filter' =>  Html::activeTextInput($searchModel, 'username', [
@@ -86,26 +70,47 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
 
                         [
                             'label' => '所属国家',
-                            'filter' =>  Html::activeTextInput($searchModel, 'country_id', [
+                            'filter' =>  Html::activeTextInput($searchModel, 'country', [
                                 'class' => 'form-control',
                                 'style' =>'width:100px'
                             ]),
-                            'value' => 'country.name_zh_cn'
+                            'value' => 'country'
                         ],
 
                         [
                             'label' => '所属城市',
-                            'filter' =>  Html::activeTextInput($searchModel, 'city_id', [
+                            'filter' =>  Html::activeTextInput($searchModel, 'city', [
                                 'class' => 'form-control',
                                 'style' =>'width:100px'
                             ]),
-                            'value' => 'city.name_zh_cn'
+                            'value' => 'city'
+                        ],
+                        [
+                            'label' => '用户信息',
+                            'filter' => false, //不显示搜索框
+                            'value' => function ($model) {
+                                if($model->marriage === 1){
+                                    $marriage = '已婚';
+                                }elseif($model->marriage === 2 ){
+                                    $marriage = '未婚';
+                                }else{
+                                    $marriage = '保密';
+                                }
+                                return
+                                    "电话：" . $model->mobile . '<br>' .
+                                    "邮箱：" . $model->email . '<br>'.
+                                    "性别：" .\common\enums\GenderEnum::getValue($model->gender) . '<br>' .
+                                    "出生日期：" . $model->birthday . '<br>'.
+                                    "婚姻狀況：" . $marriage . '<br>';
+
+                            },
+                            'format' => 'raw',
                         ],
 
                         [
                             'label'=>'是否购买',
                             'value'=>function($model){
-                                $count = \common\models\order\Order::find()->where(['member_id'=>$model->id])->count();
+                                $count = \common\models\order\Order::find()->where(['and',['member_id'=>$model->id],['>=','order_status',\common\enums\OrderStatusEnum::ORDER_PAID]])->count();
                                 return $count > 0 ? "是":"否";
                             },
                             'filter' => Html::activeDropDownList($searchModel, 'is_buy',['1'=>'是','2'=>'否'], [
@@ -117,7 +122,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                         [
                             'header' => "操作",
                             'class' => 'yii\grid\ActionColumn',
-                            'template' => '{ajax-edit} {address} <br/> {edit} {status} {destroy}',
+                            'template' => '  {status} ',
                             'buttons' => [
                                 'ajax-edit' => function ($url, $model, $key) {
                                     return Html::linkButton(['ajax-edit', 'id' => $model->id], '账号密码', [

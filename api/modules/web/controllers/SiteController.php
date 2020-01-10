@@ -40,7 +40,7 @@ class SiteController extends OnAuthController
      *
      * @var array
      */
-    protected $authOptional = ['login', 'refresh', 'mobile-login', 'sms-code','email-code', 'mobile-register','email-register', 'mobile-up-pwd','email-up-pwd'];
+    protected $authOptional = ['ip','login', 'refresh', 'mobile-login', 'sms-code','email-code', 'mobile-register','email-register', 'mobile-up-pwd','email-up-pwd'];
     
     /**
      * 登录根据用户信息返回accessToken
@@ -145,7 +145,13 @@ class SiteController extends OnAuthController
         
         return $model->send();
     }
-
+    public function actionIp(){
+        $last_ip  = \Yii::$app->request->userIP;
+        $location = \Yii::$app->ipLocation->getLocation($last_ip);
+        echo $last_ip,'--';
+        print_r($location);
+        exit;
+    }
     /**
      * 手机注册
      *
@@ -153,7 +159,8 @@ class SiteController extends OnAuthController
      * @throws \yii\base\Exception
      */
     public function actionMobileRegister()
-    {        
+    {  
+        
         try {            
             $trans = \Yii::$app->db->beginTransaction();
             $model = new MobileRegisterForm();
@@ -167,7 +174,12 @@ class SiteController extends OnAuthController
             $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
             $member->username = $model->mobile;
             $member->realname = $model->lastname.''.$model->firstname;
-    
+            $member->last_ip  = \Yii::$app->request->getRemoteIP();
+            $location = \Yii::$app->ipLocation->getLocation($member->last_ip);
+            if($location) {
+                $member->country = $location->country;
+                $member->city = $location->area;
+            }
             if (!$member->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($member));
             }

@@ -146,7 +146,6 @@ class SiteController extends OnAuthController
         return $model->send();
     }
     public function actionIp(){
-        print_r($_SERVER);
         $last_ip  = \Yii::$app->request->userIP;
         $location = \Yii::$app->ipLocation->getLocation($last_ip);
         echo $last_ip,'--';

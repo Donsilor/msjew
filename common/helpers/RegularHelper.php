@@ -85,9 +85,12 @@ class RegularHelper
     {
         return '/(http:\/\/)|(https:\/\/)/i';
     }
-    
+    /**
+     * 中文汉字
+     * @return string
+     */
     public static function chineseCharacters()
     {
-        return '/[^\x{4e00}-\x{9fa5}]/u';
+        return '/^[\x{4e00}-\x{9fa5}]/u';
     }
 }

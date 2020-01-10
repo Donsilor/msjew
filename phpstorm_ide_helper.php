@@ -30,7 +30,7 @@ class Yii
  * @property \jianyan\easywechat\Wechat $wechat
  * @property \Da\QrCode\Component\QrCodeComponent $qr
  * @property \common\components\Attr $attr
- * @property \common\components\Currency $currency
+ * @property \common\components\IpLocation $ipLocation
  * @author jianyan74 <751393839@qq.com>
  */
 class MyApplication

@@ -83,6 +83,9 @@ return [
             'class' => '\Da\QrCode\Component\QrCodeComponent',
             // ... 您可以在这里配置组件的更多属性
         ],
+        'ipLocation' => [
+             'class'=> 'common\components\IpLocation'   
+        ],    
         /** ------ 微信SDK ------ **/
         'wechat' => [
             'class' => 'jianyan\easywechat\Wechat',

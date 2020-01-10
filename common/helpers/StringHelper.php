@@ -420,4 +420,26 @@ class StringHelper extends BaseStringHelper
 
         return $string;
     }
+    /**
+     * 过滤空格
+     * @param unknown $str
+     * @return mixed
+     */
+    public static function trim($str)
+    {
+        return preg_replace("/\s(?=\s)/","\\1",trim($str));
+    }
+    /**
+     * 格式化成目录
+     * @param unknown $str
+     * @param string $sign
+     * @return mixed
+     */
+    public static function parseCatgory($str, $sign = '-')
+    {
+        $str = preg_replace("/\s(?=\s)/","\\1",trim($str));
+        $str = str_replace(' ',$sign, $str);
+        $str = preg_replace('#[^\x{4e00}-\x{9fa5}A-Za-z0-9\-\$]#u','',$str);
+        return $str;
+    }
 }

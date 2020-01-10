@@ -120,7 +120,7 @@ class MenuService extends Service
         if($cate_id >0) {
             $query->andWhere(['=','a.cate_id',$cate_id]);
         }
-        $models = $query->orderBy('sort asc, a.id asc')->asArray()->all();
+        $models = $query->orderBy('sort asc, a.id asc')->asArray()->all();        
         return $models;
     }
     

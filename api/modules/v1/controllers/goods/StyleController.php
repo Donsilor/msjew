@@ -13,6 +13,7 @@ use common\models\goods\AttributeIndex;
 use common\enums\StatusEnum;
 use common\models\goods\Type;
 use common\models\goods\TypeLang;
+use common\helpers\StringHelper;
 
 /**
  * Class ProvincesController
@@ -111,7 +112,9 @@ class StyleController extends OnAuthController
         $result = $this->pagination($query,$page,$page_size);
         
         foreach($result['data'] as & $val) {
-            $val['currency'] = $this->currencySign; 
+            
+            $val['url'] = '/goods-'.StringHelper::parseCatgory($val['style_name']).'/'.$val['id'];
+            $val['currency'] = $this->getCurrencySign(); 
             $val['style_image'] = ImageHelper::thumb($val['style_image']);
         } 
         $seo = [
@@ -180,7 +183,7 @@ class StyleController extends OnAuthController
                 'style_name'=>$model->lang->style_name,
                 'style_moq'=>$model->goods_storage,
                 'sale_price'=>$model->sale_price,
-                'currency'=> $this->currencySign,
+                'currency'=> $this->getCurrencySign(),
                 'goods_images'=>$goods_images,
                 'goods_3ds'=>$model->style_3ds,
                 'style_attrs' =>$attr_list,
@@ -213,6 +216,7 @@ class StyleController extends OnAuthController
                     ->orderby("s.goods_clicks desc");
         $models = $query->limit(10)->asArray()->all();
         foreach ($models as &$model){
+            $model['url'] = '/goods-'.StringHelper::parseCatgory($model['style_name']).'/'.$model['id'];
             $model['style_image'] = ImageHelper::thumb($model['style_image']);
             $model['currency'] = $this->currencySign;
         }

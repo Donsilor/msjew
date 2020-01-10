@@ -115,14 +115,15 @@ class Address extends \common\models\base\BaseModel
         $this->country_name = $country['name']?? '';
         $this->province_name = $province['name']?? '';
         $this->city_name = $city['name']?? '';
-        if(!$this->realname){
-            if(RegularHelper::verify('chineseCharacters',$this->lastname.''.$this->firstname)){
-                $this->realname  = $this->lastname.''.$this->firstname;
-            }else {
-                $this->realname  = $this->lastname.' '.$this->firstname;
-            }
+
+        if(RegularHelper::verify('chineseCharacters',$this->lastname.''.$this->firstname)){
+            $realname  = $this->lastname.''.$this->firstname;
+        }else {
+            $realname  = $this->lastname.' '.$this->firstname;
+        }        
+        if($realname != $this->realname){
+            $this->realname = $realname;
         }
-        
         if ($this->is_default == StatusEnum::ENABLED) {
             self::updateAll(['is_default' => StatusEnum::DISABLED], ['member_id' => $this->member_id, 'is_default' => StatusEnum::ENABLED]);
         }

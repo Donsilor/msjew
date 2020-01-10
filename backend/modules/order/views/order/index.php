@@ -120,21 +120,35 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 }
                             ],
                             [
-                                'attribute' => 'member.realname',
-                                'filter' => Html::activeTextInput($searchModel, 'member.realname', [
+                                'attribute' => 'address.realname',
+                                'filter' => Html::activeTextInput($searchModel, 'address.realname', [
                                     'class' => 'form-control',
                                 ]),
                                 'value' => function ($model) {
-                                    return $model->member['realname'];
+                                    return $model->address['realname'];
                                 },
                                 'format' => 'raw',
                             ],
                             [
-                                'attribute' => 'member.mobile',
-                                'filter' => Html::activeTextInput($searchModel, 'member.mobile', [
+                                'label' => '联系方式',
+                                'attribute' => 'address.mobile',
+                                'filter' => Html::activeTextInput($searchModel, 'address.mobile', [
                                     'class' => 'form-control',
                                 ]),
                                 'format' => 'raw',
+                                'value' => function ($model) {
+                                    $html = '';
+                                    if($model->address->mobile) {
+                                        $html .= '手机：' . $model->address->mobile;
+                                    }
+                                    if($model->address->email) {
+                                        if(!empty($html)) {
+                                            $html .= '<br/>';
+                                        }
+                                        $html .= '邮箱：' . $model->address->email;
+                                    }
+                                    return $html;
+                                }
                             ],
                             [
                                 'attribute' => 'member.username',

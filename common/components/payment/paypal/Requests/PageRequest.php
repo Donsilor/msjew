@@ -43,32 +43,15 @@ class PageRequest extends AbstractPaypalRequest
         return $this->setParameter('outTradeNo', $value);
     }
 
-//    /**
-//     * @param $value
-//     * @return PageRequest
-//     */
-//    public function setReturnUrl($value)
-//    {
-//        return $this->setParameter('returnUrl', $value);
-//    }
-//
-//    /**
-//     * @param $value
-//     * @return PageRequest
-//     */
-//    public function setCancelUrl($value)
-//    {
-//        return $this->setParameter('cancelUrl', $value);
-//    }
-
-
     /**
      * 获取数据
      * @inheritDoc
      */
     public function getData()
     {
-        // TODO: Implement getData() method.
+        $notifyUrl = $this->getNotifyUrl();
+        $this->setCancelUrl(sprintf('%s?success=false', $notifyUrl));
+        $this->setReturnUrl(sprintf('%s?success=true', $notifyUrl));
     }
 
     /**
@@ -89,8 +72,6 @@ class PageRequest extends AbstractPaypalRequest
         $returnUrl = $this->getParameter('returnUrl');
         $cancelUrl = $this->getParameter('cancelUrl');
 
-        $baseUrl = 'http://www.pay.com';
-
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
 
@@ -110,12 +91,18 @@ class PageRequest extends AbstractPaypalRequest
 
         $apiContext = $this->getApiContext($clientId, $clientSecret);
 
-        $payment = new Payment();
-        $payment->setIntent("order")
-            ->setPayer($payer)
-            ->setRedirectUrls($redirectUrls)
-            ->setTransactions(array($transaction));
-        $payment->create($apiContext);
+        try {
+            $payment = new Payment();
+            $payment->setIntent("order")
+                ->setPayer($payer)
+                ->setRedirectUrls($redirectUrls)
+                ->setTransactions(array($transaction));
+            $payment->create($apiContext);
+        } catch (\Exception $ex) {
+            // NOTE: PLEASE DO NOT USE RESULTPRINTER CLASS IN YOUR ORIGINAL CODE. FOR SAMPLE ONLY
+            //ResultPrinter::printError("Executed Payment", "Payment", null, null, $ex);
+            exit(1);
+        }
 
         // TODO: Implement sendData() method.
         return $payment;

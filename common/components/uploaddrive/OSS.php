@@ -33,7 +33,7 @@ class OSS extends DriveInterface
         $key = $config['storage_aliyun_accesskeysecret'];
         $bucket = $config['storage_aliyun_bucket'];
         $endpoint = $config['storage_aliyun_endpoint'];
-        $host = "http://$bucket.$endpoint";
+        $host = $bucket.$endpoint;
         // CNAME别名
         if (!empty($config['storage_aliyun_user_url'])) {
             $host = $config['storage_aliyun_user_url'];

@@ -36,7 +36,7 @@ class OSS extends DriveInterface
         $host = "http://$bucket.$endpoint";
         // CNAME别名
         if (!empty($config['storage_aliyun_user_url'])) {
-            $host = "http://" . $config['storage_aliyun_user_url'];
+            $host = $config['storage_aliyun_user_url'];
         }
 
         !$callbackUrl && $callbackUrl = Url::toFront(['storage/oss'], true);
@@ -106,7 +106,7 @@ class OSS extends DriveInterface
     {
         $user_url = $this->config['storage_aliyun_user_url'];
         if (!empty($user_url)) {
-            $baseInfo['url'] = 'http://' . $user_url . '/' . $baseInfo['url'];
+            $baseInfo['url'] = $user_url . '/' . $baseInfo['url'];
         } else {
             $raw = $this->adapter->supports->getFlashData();
             $baseInfo['url'] = $raw['info']['url'];

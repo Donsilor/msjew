@@ -118,7 +118,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'class' => 'form-control',
                             ]),
                         ],
-
+                        /*
                         [
                             'header' => "操作",
                             'class' => 'yii\grid\ActionColumn',
@@ -149,7 +149,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     return Html::delete(['destroy', 'id' => $model->id]);
                                 },
                             ],
-                        ],
+                        ],*/
                     ],
                 ]); ?>
             </div>

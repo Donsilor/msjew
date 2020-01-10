@@ -116,10 +116,10 @@ class Address extends \common\models\base\BaseModel
         $this->province_name = $province['name']?? '';
         $this->city_name = $city['name']?? '';
 
-        if(RegularHelper::verify('chineseCharacters',$this->lastname.''.$this->firstname)){
+        if(!RegularHelper::verify('chineseCharacters',$this->lastname.''.$this->firstname)){
             $realname  = $this->lastname.''.$this->firstname;
         }else {
-            $realname  = $this->lastname.' '.$this->firstname;
+            $realname  = $this->firstname.' '.$this->lastname;
         }        
         if($realname != $this->realname){
             $this->realname = $realname;

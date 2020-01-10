@@ -36,9 +36,12 @@ use common\helpers\RegularHelper;
  * @property int $role 权限
  * @property int $last_time 最后一次登录时间
  * @property string $last_ip 最后一次登录ip
+ * @property int $country_id 国家id
  * @property int $province_id 省
  * @property int $city_id 城市
  * @property int $area_id 地区
+ * @property int $country 国家名称
+ * @property int $city 城市名称
  * @property string $pid 上级id
  * @property int $status 状态[-1:删除;0:禁用;1启用]
  * @property string $created_at 创建时间

@@ -2,6 +2,7 @@
 
 namespace common\components\payment;
 
+use common\models\common\PayLog;
 use Yii;
 use Omnipay\Omnipay;
 use Omnipay\Paypal\Responses\AopTradeAppPayResponse;
@@ -57,19 +58,25 @@ class PaypalPay
      * ]
      *
      * @return string
-     * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
     public function pc($order, $debug = false)
     {
+        //支付记录填充支付单号
+        $model = PayLog::find()->where(['out_trade_no' => $order['out_trade_no']])->one();
+
+        if(!$model) {
+            exit(1);
+        }
+
         $gateway = $this->create(self::PC);
 
         $request = $gateway->purchase($order);
 
-        $request->setCancelUrl('http://www.pay.com/payments/OrderAuthorize.php?success=false');
-        $request->setReturnUrl('http://www.pay.com/payments/OrderAuthorize.php?success=true');
-
         //返回URL
         $payment = $request->send();
+
+        $model->transaction_id = $payment->getId();
+        $model->save();
 
         /**
          * 直接跳转
@@ -105,19 +112,23 @@ class PaypalPay
 
     /**
      * 异步/同步通知
-     *
-     * @return \Omnipay\Paypal\Requests\CompletePurchaseRequest
-     * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
-    public function notify()
+    public function notify($info)
     {
         $gateway = $this->create();
-        /**
-         * 退知成功
-         */
-        $request = $gateway->completePurchase();
-        $request->setParams(array_merge(Yii::$app->request->post(), Yii::$app->request->get())); // Optional
 
-        return $request;
+        /**
+         * 确认订单
+         */
+        $request = $gateway->completePurchase($info);
+
+        $response = $request->send();
+var_dump($response);exit;
+        return $response;
+    }
+
+    public function d()
+    {
+
     }
 }

@@ -63,28 +63,20 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             }
                         ],
                         [
-                            'attribute' => 'last_ip',
+                            'attribute' => 'first_ip',
                             'filter' => false,
 
                         ],
 
                         [
-                            'label' => '所属国家',
-                            'filter' =>  Html::activeTextInput($searchModel, 'country', [
+                            'label' => '注册地址',
+                            'filter' =>  Html::activeTextInput($searchModel, 'first_ip_location', [
                                 'class' => 'form-control',
                                 'style' =>'width:100px'
                             ]),
                             'value' => 'country'
                         ],
 
-                        [
-                            'label' => '所属城市',
-                            'filter' =>  Html::activeTextInput($searchModel, 'city', [
-                                'class' => 'form-control',
-                                'style' =>'width:100px'
-                            ]),
-                            'value' => 'city'
-                        ],
                         [
                             'label' => '用户信息',
                             'filter' => false, //不显示搜索框

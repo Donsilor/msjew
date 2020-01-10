@@ -47,12 +47,12 @@ class OrderController extends BaseController
             'pageSize' => $this->pageSize,
             'relations' => [
                 'account' => ['order_amount'],
-                'address' => ['country_name', 'city_name', 'country_id', 'city_id'],
+                'address' => ['country_name', 'city_name', 'country_id', 'city_id', 'realname', 'mobile', 'email'],
                 'member' => ['username', 'realname', 'mobile', 'email'],
                 'follower' => ['username']
             ]
         ]);
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, ['created_at']);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, ['created_at', 'address.mobile', 'address.email']);
 
         //订单状态
         if ($orderStatus !== -1)

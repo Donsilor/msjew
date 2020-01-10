@@ -132,6 +132,57 @@ class NotifyController extends Controller
         }
     }
 
+    public function actionPaypalHooks()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $result = [
+//            'verification_status' => 'SUCCESS'//成功
+            'verification_status' => 'FAILURE'//失败
+        ];
+
+        $data = Yii::$app->request->post();
+
+        if(empty($data)) {
+            return $result;
+        }
+
+        //买家付款事件
+        if(!empty($data['event_type']) && $data['event_type']=='PAYMENTS.PAYMENT.CREATED') {
+            $paymentId = $data['resource']['id'];
+
+            $model = PayLog::find()->where(['transaction_id'=>$paymentId])->one();
+
+            if(!$model) {
+                return exit(Json::encode($result));
+            }
+
+            try {
+                $notify = Yii::$app->pay->Paypal()->notify(['model'=>$model]);
+
+                if ($notify) {
+
+                    $message = [];//= Yii::$app->request->post();
+                    $message['out_trade_no'] = $model->out_trade_no;
+
+                    // 日志记录
+                    $logPath = $this->getLogPath('paypal_hooks');
+                    FileHelper::writeLog($logPath, Json::encode(ArrayHelper::toArray($message)));
+
+                    if ($this->pay($message)) {
+                        $result['verification_status'] = 'SUCCESS';
+                    }
+                }
+            } catch (\Exception $e) {
+                // 记录报错日志
+                $logPath = $this->getLogPath('error');
+                FileHelper::writeLog($logPath, $e->getMessage());
+            }
+        }
+
+        return exit(Json::encode($result));
+    }
+
     public function actionPaypal()
     {
         if(empty($_GET['success']) || $_GET['success'] !== 'true') {

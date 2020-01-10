@@ -123,7 +123,7 @@ class PaypalPay
         $request = $gateway->completePurchase($info);
 
         $response = $request->send();
-var_dump($response);exit;
+
         return $response;
     }
 

@@ -121,7 +121,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{edit} {add} {status} ',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
-                        return Html::edit(['edit-lang', 'id' => $model->id,'returnUrl' => \common\components\Helper::getReturnUrl()]);
+                        return Html::edit(['edit-lang', 'id' => $model->id,'returnUrl' => Url::getReturnUrl()]);
                 },                
                 'status' => function($url, $model, $key){
                         return Html::status($model['status']);

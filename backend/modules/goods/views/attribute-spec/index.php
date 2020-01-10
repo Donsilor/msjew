@@ -140,13 +140,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{edit} {info} {status}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
-                        return Html::edit(['ajax-edit','id' => $model->id,'returnUrl' => \common\components\Helper::getReturnUrl()], '编辑', [
+                        return Html::edit(['ajax-edit','id' => $model->id,'returnUrl' => Url::getReturnUrl()], '编辑', [
                                 'data-toggle' => 'modal',
                                 'data-target' => '#ajaxModalLg',
                         ]); 
                 },
                 'info' => function($url, $model, $key){
-                     return Html::edit(['edit', 'id' => $model->id,'returnUrl' => \common\components\Helper::getReturnUrl()],'详情',[
+                     return Html::edit(['edit', 'id' => $model->id,'returnUrl' => Url::getReturnUrl()],'详情',[
                              'class'=>'btn btn-info btn-sm'
                      ]);                
                 },

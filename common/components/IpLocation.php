@@ -34,7 +34,7 @@ class IpLocation extends Component {
      */
     public function getLocation($ip = null)
     {
-        $this->handle->getLocation($ip);
+        return $this->handle->getLocation($ip);
     }   
     
 }

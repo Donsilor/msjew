@@ -52,10 +52,11 @@ class Order extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id','payment_type','payment_status', 'payment_time', 'member_id', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at', 'follower_id','followed_status' ,'followed_time', 'express_id'], 'integer'],
+            [['merchant_id','ip_area_id','payment_type','payment_status', 'payment_time', 'member_id', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at', 'follower_id','followed_status' ,'followed_time', 'express_id'], 'integer'],
             [['language'], 'safe'],
             [['order_sn','pay_sn'], 'string', 'max' => 20],
             [['express_no', 'trade_no'], 'string', 'max' => 50],
+            [['ip', 'ip_location'], 'safe'],
             [['buyer_remark', 'seller_remark'], 'string', 'max' => 500],
         ];
     }
@@ -90,8 +91,10 @@ class Order extends \common\models\base\BaseModel
             'seller_remark' => '订单备注',
             'follower_id' => '跟进人',
             'followed_status' => '跟进状态',
-            'followed_time' => '跟进时间',
-            'ip' => 'IP地址',
+            'followed_time' => '跟进时间',            
+            'ip' => 'IP',
+            'ip_area_id' => '国家区域',
+            'ip_location' => 'IP位置',
             'status' => '审核状态',
             'created_at' => '下单时间',
             'updated_at' => '更新时间',

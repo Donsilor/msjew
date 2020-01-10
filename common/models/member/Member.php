@@ -75,7 +75,7 @@ class Member extends User
             [['nickname', 'realname'], 'string', 'max' => 50],
             [['google_account', 'facebook_account'], 'string', 'max' => 100],
             [['username','email','firstname','lastname'], 'string', 'max' => 60],
-            [['last_ip','ip'], 'string', 'max' => 16],
+            [['last_ip','first_ip'], 'string', 'max' => 16],
             ['mobile', 'match', 'pattern' => RegularHelper::mobile(),'message' => '不是一个有效的手机号码'],
         ];
     }

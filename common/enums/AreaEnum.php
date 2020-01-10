@@ -13,6 +13,7 @@ class AreaEnum extends BaseEnum
     const China = 1;
     const HongKong = 2;
     const MaCao = 3;
+    const TaiWan = 4;
     const Other = 99;
     
     /**
@@ -24,6 +25,7 @@ class AreaEnum extends BaseEnum
                 self::China => '中国',
                 self::HongKong => '香港',
                 self::MaCao => '澳门',
+                self::TaiWan => '台湾',
                 self::Other => '国外',
         ];
     }  

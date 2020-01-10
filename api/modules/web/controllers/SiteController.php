@@ -174,12 +174,8 @@ class SiteController extends OnAuthController
             $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
             $member->username = $model->mobile;
             $member->realname = $model->lastname.''.$model->firstname;
-            $member->last_ip  = \Yii::$app->request->getRemoteIP();
-            $location = \Yii::$app->ipLocation->getLocation($member->last_ip);
-            if($location) {
-                $member->country = $location->country;
-                $member->city = $location->area;
-            }
+            $this->buildFirstIpLocation($member);
+            
             if (!$member->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($member));
             }
@@ -191,7 +187,7 @@ class SiteController extends OnAuthController
             $trans->rollBack();
             throw $e;
         }
-    }
+    }    
     
     /**
      * 手机重置密码
@@ -241,6 +237,7 @@ class SiteController extends OnAuthController
             $member->attributes = ArrayHelper::toArray($model);
             $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
             $member->username = $model->email;
+            $this->buildFirstIpLocation($member);
             if (!$member->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($member));
             }  
@@ -296,5 +293,25 @@ class SiteController extends OnAuthController
         if (in_array($action, ['index', 'view', 'update', 'create', 'delete'])) {
             throw new \yii\web\BadRequestHttpException('权限不足');
         }
+    }
+    
+    /**
+     * 用户首次注册ip
+     * @param Member $member
+     */
+    private function buildFirstIpLocation(& $member)
+    {
+        $member->last_ip  = \Yii::$app->request->getRemoteIP();
+        $member->first_ip  = $member->last_ip;
+        list(,$member->first_ip_location) = \Yii::$app->ipLocation->getLocation($member->first_ip);
+    }
+     /**
+     * 用户首次注册ip
+     * @param Member $member
+     */
+    private function buildLastIpLocation(& $member)
+    {
+        $member->last_ip  = \Yii::$app->request->getRemoteIP();
+        $member->last_time = time();
     }
 }

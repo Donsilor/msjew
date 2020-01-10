@@ -66,6 +66,7 @@ class OrderAddress extends \common\models\base\BaseModel
             'city_id' => '城市市',
             'firstname' => '名字',
             'lastname' => '姓氏',
+            'realname' => '收货人',
             'country_name' => '国家',
             'province_name' => '省份',
             'city_name' => '城市',

@@ -8,7 +8,7 @@ $form = ActiveForm::begin([
     'enableAjaxValidation' => true,
     'validationUrl' => Url::to(['ajax-edit', 'id' => $model['id']]),
     'fieldConfig' => [
-        'template' => "<div class='col-sm-3 text-right'>{label}</div><div class='col-sm-9'>{input}\n{hint}\n{error}</div>",
+        'template' => "{label}{input}{hint}",
     ]
 ]);
 ?>

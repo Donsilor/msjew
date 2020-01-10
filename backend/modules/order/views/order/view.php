@@ -47,8 +47,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $model->member->realname ?>
                         </div>
                         <div class="col-lg-3">
-                        	<label class="col-lg-6 text-right"><?= $model->getAttributeLabel('ip') ?>：</label>
-                        	<?= $model->ip ?>
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_type') ?>：</label>
+                            <?= \common\enums\PayEnum::getValue($model->payment_type) ?>
                         </div>
                         <div class="col-lg-3">
                             <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('order_status') ?>：</label>
@@ -59,9 +59,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="col-lg-3"><label
                                     class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.mobile') ?>
                                 ：</label><?= $model->member->mobile ?></div>
+
                         <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_type') ?>：</label>
-                            <?= \common\enums\PayEnum::getValue($model->payment_type) ?>
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('pay_sn') ?>：</label>
+                            <?= $model->pay_sn?>
                         </div>
                         <div class="col-lg-3"><label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_status') ?>
                                 ：</label><?= \common\enums\PayStatusEnum::getValue($model->payment_status) ?>
@@ -73,8 +74,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $model->member->username ?>
                         </div>
                         <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('pay_sn') ?>：</label>
-                            <?= $model->pay_sn?>
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('order_from') ?>：</label>
+                            <?= \common\enums\OrderFromEnum::getValue($model->order_from) ?>
                         </div>
                         <div class="col-lg-3">
                             <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('status') ?></label>
@@ -87,8 +88,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $model->address->country_name ?>
                         </div>
                         <div class="col-lg-3">
-                        	<label class="col-lg-6 text-right"><?= $model->getAttributeLabel('order_from') ?>：</label>
-                            <?= \common\enums\OrderFromEnum::getValue($model->order_from) ?>
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('ip') ?>：</label>
+                            <?= $model->ip ?>(<?= \common\enums\AreaEnum::getValue($model->ip_area_id) ?>)
                         </div>
                         <div class="col-lg-3">
                             <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('follower_id') ?>：</label>
@@ -100,7 +101,14 @@ $this->params['breadcrumbs'][] = $this->title;
                             <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.city_name') ?>：</label>
                             <?= $model->address->city_name ?>
                         </div>
-                        <div class="col-lg-3"></div>
+                        <div class="col-lg-3">
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('ip_location') ?>：</label>
+                            <?= $model->ip_location ?>
+                        </div>
+                        <div class="col-lg-3">
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('created_at') ?>：</label>
+                            <?= Yii::$app->formatter->asDatetime($model->created_at); ?>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-3">

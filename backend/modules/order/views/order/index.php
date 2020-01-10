@@ -139,13 +139,13 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'value' => function ($model) {
                                     $html = '';
                                     if($model->address->mobile) {
-                                        $html .= '手机：' . $model->address->mobile;
+                                        $html .= $model->address->mobile;
                                     }
                                     if($model->address->email) {
                                         if(!empty($html)) {
                                             $html .= '<br/>';
                                         }
-                                        $html .= '邮箱：' . $model->address->email;
+                                        $html .= $model->address->email;
                                     }
                                     return $html;
                                 }

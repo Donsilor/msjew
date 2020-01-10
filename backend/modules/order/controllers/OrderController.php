@@ -61,6 +61,16 @@ class OrderController extends BaseController
         // 数据状态
         $dataProvider->query->andWhere(['>=', 'order.status', StatusEnum::DISABLED]);
 
+        // 联系人搜索
+        if(!empty(Yii::$app->request->queryParams['SearchModel']['address.mobile'])) {
+            $where = [];
+            $where[] = 'or';
+            $where[] = ['like', 'order_address.mobile', Yii::$app->request->queryParams['SearchModel']['address.mobile']];//Yii::$app->request->queryParams['SearchModel']['address.mobile'], false];
+            $where[] = ['like', 'order_address.email', Yii::$app->request->queryParams['SearchModel']['address.mobile']];//Yii::$app->request->queryParams['SearchModel']['address.mobile'], false];
+
+            $dataProvider->query->andWhere($where);
+        }
+
         //创建时间过滤
         if (!empty(Yii::$app->request->queryParams['SearchModel']['created_at'])) {
             list($start_date, $end_date) = explode('/', Yii::$app->request->queryParams['SearchModel']['created_at']);

@@ -121,7 +121,7 @@ class Address extends \common\models\base\BaseModel
         }else {
             $realname  = $this->firstname.' '.$this->lastname;
         }        
-        if($realname != $this->realname){
+        if(trim($realname) != '' && $realname != $this->realname){
             $this->realname = $realname;
         }
         if ($this->is_default == StatusEnum::ENABLED) {

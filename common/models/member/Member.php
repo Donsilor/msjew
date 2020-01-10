@@ -183,12 +183,13 @@ class Member extends User
         $this->auth_key = Yii::$app->security->generateRandomString();
         $this->visit_count = $this->visit_count + 1;
 
-        if(!$this->realname && ($this->lastname || $this->firstname)){
-            if(RegularHelper::verify('chineseCharacters',$this->lastname.''.$this->firstname)){
-                $this->realname  = $this->lastname.''.$this->firstname;
-            }else {
-                $this->realname  = $this->lastname.' '.$this->firstname;
-            }
+        if(RegularHelper::verify('chineseCharacters',$this->lastname.''.$this->firstname)){
+            $realname  = $this->lastname.''.$this->firstname;
+        }else {
+            $realname  = $this->firstname.' '.$this->lastname;
+        }
+        if(trim($realname) != '' && $realname != $this->realname){
+            $this->realname = $realname;
         }
 
         return parent::beforeSave($insert);

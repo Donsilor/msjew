@@ -88,6 +88,6 @@ class RegularHelper
     
     public static function chineseCharacters()
     {
-        return '#[^\x{4e00}-\x{9fa5}]#u';
+        return '/[^\x{4e00}-\x{9fa5}]/u';
     }
 }

@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="row">
                         <div class="col-lg-3"><label
                                     class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.mobile') ?>
-                                ：</label><?= $model->address->mobile ?></div>
+                                ：</label><?= $model->address->mobile_code ?>-<?= $model->address->mobile ?></div>
 
                         <div class="col-lg-3">
                             <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('pay_sn') ?>：</label>

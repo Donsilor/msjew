@@ -43,8 +43,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                     <div class="row">
                         <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.realname') ?>：</label>
-                            <?= $model->member->realname ?>
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.realname') ?>：</label>
+                            <?= $model->address->realname ?>
                         </div>
                         <div class="col-lg-3">
                             <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_type') ?>：</label>
@@ -57,8 +57,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                     <div class="row">
                         <div class="col-lg-3"><label
-                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.mobile') ?>
-                                ：</label><?= $model->member->mobile ?></div>
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.mobile') ?>
+                                ：</label><?= $model->address->mobile ?></div>
 
                         <div class="col-lg-3">
                             <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('pay_sn') ?>：</label>

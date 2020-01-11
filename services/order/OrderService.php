@@ -36,6 +36,9 @@ class OrderService extends Service
      */
     public function createOrder($cart_ids,$buyer_id, $buyer_address_id, $order_info)
     {
+        if($cart_ids && !is_array($cart_ids)) {
+            $cart_ids = explode(',', $cart_ids);
+        }
         $orderAccountTax = $this->getOrderAccountTax($cart_ids, $buyer_id, $buyer_address_id);
 
         if(empty($orderAccountTax['buyerAddress'])) {
@@ -107,7 +110,9 @@ class OrderService extends Service
         $orderAddress->order_id   = $order->id;
         if(false === $orderAddress->save()) {
             throw new UnprocessableEntityHttpException($this->getError($orderAddress));
-        }        
+        }  
+        //清空购物车
+        OrderCart::deleteAll(['id'=>$cart_ids,'member_id'=>$buyer_id]);
         return [
                 "currency" => $currency,
                 "order_amount"=> $order_amount,

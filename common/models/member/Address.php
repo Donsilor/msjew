@@ -49,9 +49,9 @@ class Address extends \common\models\base\BaseModel
             ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '不是一个有效的手机号码'],
             [['merchant_id', 'member_id','country_id', 'province_id', 'city_id', 'area_id', 'is_default', 'zip_code', 'status', 'created_at', 'updated_at'], 'integer'],
             [['address_name', 'address_details'], 'string', 'max' => 200],
-            [['realname'], 'string', 'max' => 100],
-            [['firstname','lastname','email'], 'string', 'max' => 60],
-            [['country_name','province_name','city_name','area_name'], 'string', 'max' => 60],
+            [['realname'], 'string', 'max' => 60],
+            [['firstname','lastname'], 'string', 'max' => 30],
+            [['email','country_name','province_name','city_name','area_name'], 'string', 'max' => 60],
             [['home_phone', 'mobile'], 'string', 'max' => 20],
             [['mobile_code'], 'string', 'max' => 10],
         ];
@@ -78,6 +78,8 @@ class Address extends \common\models\base\BaseModel
             'address_details' => '详细地址',
             'is_default' => '默认地址',
             'zip_code' => '邮编',
+            'firstname' => '名子',
+            'lastname' => '姓氏',
             'realname' => '真实姓名',
             'home_phone' => '电话',
             'mobile' => '手机号码',
@@ -113,7 +115,15 @@ class Address extends \common\models\base\BaseModel
         $this->country_name = $country['name']?? '';
         $this->province_name = $province['name']?? '';
         $this->city_name = $city['name']?? '';
-        
+
+        if(RegularHelper::verify('chineseCharacters',$this->lastname.''.$this->firstname)){
+            $realname  = $this->lastname.''.$this->firstname;
+        }else {
+            $realname  = $this->firstname.' '.$this->lastname;
+        }        
+        if(trim($realname) != '' && $realname != $this->realname){
+            $this->realname = $realname;
+        }
         if ($this->is_default == StatusEnum::ENABLED) {
             self::updateAll(['is_default' => StatusEnum::DISABLED], ['member_id' => $this->member_id, 'is_default' => StatusEnum::ENABLED]);
         }

@@ -45,16 +45,18 @@ class IpLocation extends Component {
         $address = null;
         $location = $this->handle->getLocation($ip);
         if($location) {
-            if(preg_match("/香港/is",$location->country)){
+            $country = $location->country;
+            $area  = $location->area;
+            if(preg_match("/香港/is",$country)){
                 $area_id = AreaEnum::HongKong;
             }
-            elseif(preg_match("/澳门/is",$location->country)){
+            elseif(preg_match("/澳门/is",$country)){
                 $area_id = AreaEnum::MaCao;
             }
-            elseif(preg_match("/台湾/is",$location->country)){
+            elseif(preg_match("/台湾/is",$country)){
                 $area_id = AreaEnum::TaiWan;
             }
-            elseif(preg_match("/省|中国/is",$location->country)) {
+            elseif(preg_match("/省|中国/is",$country)) {
                 $area_id = AreaEnum::China;
             }
             else {

@@ -49,7 +49,7 @@ class PageRequest extends AbstractPaypalRequest
      */
     public function getData()
     {
-        $notifyUrl = $this->getNotifyUrl();
+        $notifyUrl = $this->getReturnUrl();
         $this->setCancelUrl(sprintf('%s?success=false', $notifyUrl));
         $this->setReturnUrl(sprintf('%s?success=true', $notifyUrl));
     }

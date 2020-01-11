@@ -23,6 +23,15 @@ class PageGateway extends AbstractPaypalGateway
     }
 
     /**
+     * @param $value
+     * @return mixed
+     */
+    public function setReturnUrl($value)
+    {
+        return $this->setParameter('returnUrl', $value);
+    }
+
+    /**
      * Get gateway display name
      *
      * This can be used by carts to get the display name for each gateway.

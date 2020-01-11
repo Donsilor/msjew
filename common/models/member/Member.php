@@ -23,7 +23,7 @@ use common\helpers\RegularHelper;
  * @property int $type 类别[1:普通会员;10管理员]
  * @property string $nickname 昵称
  * @property string $realname 真实姓名
- * @property string $firtname 真实姓名
+ * @property string $firstname 真实姓名
  * @property string $lastname 真实姓名
  * @property string $head_portrait 头像
  * @property int $gender 性别[0:未知;1:男;2:女]
@@ -169,7 +169,6 @@ class Member extends User
         return $this->hasOne(Area::class, ['id' => 'city_id'])->alias('city');
     }
 
-
     /**
      * @param bool $insert
      * @return bool
@@ -177,13 +176,19 @@ class Member extends User
      */
     public function beforeSave($insert)
     {
-//        if ($this->isNewRecord) {
-            $this->last_ip = Yii::$app->request->getUserIP();
-            $this->last_time = time();
-            $this->auth_key = Yii::$app->security->generateRandomString();
-            $this->visit_count = $this->visit_count + 1;
-//        }
+        $this->last_ip = Yii::$app->request->getUserIP();
+        $this->last_time = time();
+        $this->auth_key = Yii::$app->security->generateRandomString();
+        $this->visit_count = $this->visit_count + 1;
 
+        if(RegularHelper::verify('chineseCharacters',$this->lastname.''.$this->firstname)){
+            $realname  = $this->lastname.''.$this->firstname;
+        }else {
+            $realname  = $this->firstname.' '.$this->lastname;
+        }
+        if(trim($realname) != '' && $realname != $this->realname){
+            $this->realname = $realname;
+        }
 
         return parent::beforeSave($insert);
     }

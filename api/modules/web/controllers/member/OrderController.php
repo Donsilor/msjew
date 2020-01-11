@@ -39,6 +39,8 @@ class OrderController extends UserAuthController
         if($orderStatus && in_array($orderStatus,OrderStatusEnum::getKeys())) {
             $query->andWhere(['=','order_status',$orderStatus]);
         }
+
+        $query->orderBy('id DESC');
         
         $result = $this->pagination($query, $this->page, $this->pageSize);
         

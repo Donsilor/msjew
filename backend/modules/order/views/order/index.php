@@ -139,7 +139,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 'value' => function ($model) {
                                     $html = '';
                                     if($model->address->mobile) {
-                                        $html .= $model->address->mobile;
+                                        $html .= $model->address->mobile_code.'-'.$model->address->mobile;
                                     }
                                     if($model->address->email) {
                                         if(!empty($html)) {

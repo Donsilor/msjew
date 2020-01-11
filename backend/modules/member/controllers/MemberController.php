@@ -124,7 +124,7 @@ class MemberController extends BaseController
         ]);
 
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams,['created_at','visit_count','is_buy','country_id','city_id']);
+            ->search(Yii::$app->request->queryParams,['created_at','visit_count','is_buy']);
 
 //        //搜索国家
 //        $dataProvider->query->joinWith(['country']);

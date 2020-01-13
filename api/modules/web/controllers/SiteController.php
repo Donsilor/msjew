@@ -158,7 +158,7 @@ class SiteController extends OnAuthController
         print_r($location);  
         echo "<br/>";
         echo 'zhuzhichao/ip-location-zh:<br/>','--';
-        $location = Ip::find($last_ip);
+        $location = Ip::find($ip);
         print_r($location);
         exit;
     }

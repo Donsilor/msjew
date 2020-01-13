@@ -225,13 +225,15 @@ class PayService extends Service
                     ];
                     $result = $order->save();
                     
-                    //订单发送邮件
-                    \Yii::$app->services->order->sendOrderNotification($order->id);
+                    
                     if($result == 1){ 
                         $accountUpdata = [
                              'pay_amount'=> $pay_amount,                            
                         ];
                         OrderAccount::updateAll($accountUpdata,['order_id'=>$order->id]);
+                        
+                        //订单发送邮件
+                        \Yii::$app->services->order->sendOrderNotification($order->id);
                     }
                 }
                 // TODO 处理订单

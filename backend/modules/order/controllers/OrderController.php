@@ -161,10 +161,10 @@ class OrderController extends BaseController
         if ($model->load(Yii::$app->request->post())) {
             
             $model->order_status = OrderStatusEnum::ORDER_SEND;//已发货
-            
-            return $model->save()
-                ? $this->redirect(['index'])
-                : $this->message($this->getError($model), $this->redirect(['index']), 'error');
+            $result = $model->save();
+            //订单发送邮件
+            \Yii::$app->services->order->sendOrderNotification($id);
+            return $result ? $this->redirect(['index']):$this->message($this->getError($model), $this->redirect(['index']), 'error');
         }
 
         return $this->renderAjax($this->action->id, [

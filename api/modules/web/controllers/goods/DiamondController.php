@@ -257,10 +257,10 @@ class DiamondController extends OnAuthController
 
     //訂婚戒指--活动页
     public function actionWebSite(){
-        $type_id = 12;
+        $type_id = 14;
         $limit = 5;
         $language = $this->language;
-        $order = 'virtual_clicks desc';
+        $order = 'sale_volume desc';
         $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
         $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit,$order, $fields ,$language);
         $webSite = array();

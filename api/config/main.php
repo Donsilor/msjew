@@ -15,8 +15,12 @@ return [
         'v1' => [ // 版本1
             'class' => 'api\modules\v1\Module',
         ],
-        'web' => [ // 版本2
+        'web' => [ // BDD PC端
             'class' => 'api\modules\web\Module',
+        ],
+
+        'wap' => [ // BDD手机端
+            'class' => 'api\modules\wap\Module',
         ],
     ],
     'as cors' =>[
@@ -80,6 +84,12 @@ return [
                     'GET web/<module>/<action>' => 'web/<module>/<action>',
                     'POST web/<module>/<controller>/<action>' => 'web/<module>/<controller>/<action>',
                     'GET web/<module>/<controller>/<action>' => 'web/<module>/<controller>/<action>',
+
+
+                    'POST wap/<module>/<action>' => 'wap/<module>/<action>',
+                    'GET wap/<module>/<action>' => 'wap/<module>/<action>',
+                    'POST wap/<module>/<controller>/<action>' => 'wap/<module>/<controller>/<action>',
+                    'GET wap/<module>/<controller>/<action>' => 'wap/<module>/<controller>/<action>',
                 ],
         ],        
     ],

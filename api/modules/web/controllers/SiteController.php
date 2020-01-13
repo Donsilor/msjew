@@ -147,14 +147,17 @@ class SiteController extends OnAuthController
         return $model->send();
     }
     public function actionIp(){
-        $last_ip  = \Yii::$app->request->userIP;
-        $location = \Yii::$app->ipLocation->getLocation($last_ip);
+        $ip = \Yii::$app->request->get('ip');
+        if(!$ip) {
+            $ip  = \Yii::$app->request->userIP;
+        }
+        $location = \Yii::$app->ipLocation->getLocation($ip);
         echo '<pre/>';
-        echo $last_ip,'--';
+        echo $ip,'--';
         echo 'myweishanli/yii2-ip2location:<br/>';
         print_r($location);  
         echo "<br/>";
-        echo 'zhuzhichao/ip-location-zh:<br/>',$last_ip,'--';
+        echo 'zhuzhichao/ip-location-zh:<br/>','--';
         $location = Ip::find($last_ip);
         print_r($location);
         exit;

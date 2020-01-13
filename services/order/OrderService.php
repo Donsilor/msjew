@@ -17,6 +17,7 @@ use common\models\member\Member;
 use common\helpers\RegularHelper;
 use common\models\common\SmsLog;
 use common\enums\OrderStatusEnum;
+use common\enums\ExpressEnum;
 
 /**
  * Class OrderService
@@ -230,7 +231,14 @@ class OrderService extends Service
             \Yii::$app->services->mailer->send($order->address->email,EmailLog::USAGE_ORDER_NOTIFICATION,['code'=>$order->id]);
         }else if($order->address->mobile){
             if($order->order_status == OrderStatusEnum::ORDER_SEND) {
-                \Yii::$app->services->sms->send($order->address->mobile,SmsLog::USAGE_ORDER_SEND,['code'=>$order->id]);
+                $params = [
+                     'code' =>$order->id,                       
+                     'express_name' => ExpressEnum::getValue($order->express_id),
+                     'express_no' =>$order->express_no,
+                     'company_name'=>'BDD Co.', 
+                     'to_email' => 'admin@bddco.com'
+                ];
+                \Yii::$app->services->sms->send($order->address->mobile,SmsLog::USAGE_ORDER_SEND,$params);
             }
         }
     }

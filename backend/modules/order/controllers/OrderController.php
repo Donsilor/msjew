@@ -65,8 +65,8 @@ class OrderController extends BaseController
         if(!empty(Yii::$app->request->queryParams['SearchModel']['address.mobile'])) {
             $where = [];
             $where[] = 'or';
-            $where[] = ['like', 'order_address.mobile', Yii::$app->request->queryParams['SearchModel']['address.mobile']];//Yii::$app->request->queryParams['SearchModel']['address.mobile'], false];
-            $where[] = ['like', 'order_address.email', Yii::$app->request->queryParams['SearchModel']['address.mobile']];//Yii::$app->request->queryParams['SearchModel']['address.mobile'], false];
+            $where[] = ['like', 'order_address.mobile', Yii::$app->request->queryParams['SearchModel']['address.mobile']];
+            $where[] = ['like', 'order_address.email', Yii::$app->request->queryParams['SearchModel']['address.mobile']];
 
             $dataProvider->query->andWhere($where);
         }

@@ -102,6 +102,21 @@ class Order extends \common\models\base\BaseModel
     }
 
     /**
+     * 获取不同状态的数据行数
+     * @param $orderStatus
+     * @return int
+     */
+    static public function getCountByOrderStatus($orderStatus=null)
+    {
+        $where = [];
+
+        if(!is_null($orderStatus))
+            $where['order_status'] = $orderStatus;
+
+        return (int)self::find()->where($where)->count('id');
+    }
+
+    /**
      * 对应订单付款信息模型
      * @return \yii\db\ActiveQuery
      */

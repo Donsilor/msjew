@@ -11,6 +11,8 @@ use common\models\member\Address;
 use common\models\order\OrderAccount;
 use common\models\order\OrderAddress;
 use common\enums\PayStatusEnum;
+use common\models\common\EmailLog;
+use common\enums\LanguageEnum;
 
 /**
  * Class OrderService
@@ -48,6 +50,7 @@ class OrderService extends Service
         $buyerAddress = $orderAccountTax['buyerAddress'];
         $orderGoodsList   = $orderAccountTax['orderGoodsList'];
         $currency = $orderAccountTax['currency'];
+        $exchange_rate = $orderAccountTax['exchange_rate'];
         //订单
         $order = new Order();
         $order->attributes = $order_info;
@@ -65,6 +68,8 @@ class OrderService extends Service
             $orderGoods = new OrderGoods();
             $orderGoods->attributes = $goods;
             $orderGoods->order_id = $order->id;
+            $orderGoods->exchange_rate = $exchange_rate;
+            $orderGoods->currency = $currency;
             if(false === $orderGoods->save()){
                 throw new UnprocessableEntityHttpException($this->getError($orderGoods));
             }            
@@ -113,6 +118,11 @@ class OrderService extends Service
         }  
         //清空购物车
         OrderCart::deleteAll(['id'=>$cart_ids,'member_id'=>$buyer_id]);
+        //订单发送邮件
+        if($this->language != LanguageEnum::ZH_CN && $orderAddress->email) {
+            \Yii::$app->services->mailer->send($orderAddress->email,EmailLog::USAGE_ORDER_NOTIFICATION,['code'=>$order->id]);
+        }
+        
         return [
                 "currency" => $currency,
                 "order_amount"=> $order_amount,

@@ -2,6 +2,7 @@
 
 namespace common\models\order;
 
+use common\components\outputFormat;
 use Yii;
 
 /**
@@ -27,6 +28,8 @@ use Yii;
  */
 class OrderGoods extends \common\models\base\BaseModel
 {
+    use outputFormat;
+
     /**
      * {@inheritdoc}
      */
@@ -81,5 +84,14 @@ class OrderGoods extends \common\models\base\BaseModel
     public function langModel()
     {
         return new OrderGoodsLang();
+    }
+
+    /**
+     * 对应金额表信息
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAccount()
+    {
+        return $this->hasOne(OrderAccount::class, ['order_id'=>'order_id']);
     }
 }

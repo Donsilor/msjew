@@ -160,15 +160,25 @@ DOM;
                                     'headerOptions' => ['width' => '500'],
                                 ],
                                 'goods_num',
-                                'goods_price',
+                                [
+                                    'attribute'=>'goods_price',
+                                    'value' => function($model) {
+                                        return $model->account->currency ." ".$model->asAmount('goods_price', $model->account->exchange_rate);
+                                    }
+                                ],
                                 [
                                     'label' => '优惠金额',
                                     'attribute'=>'goods_price',
                                     'value' => function($model) {
-                                        return 0;
+                                        return $model->account->currency ." "."0";
                                     }
                                 ],
-                                'goods_pay_price',
+                                [
+                                    'attribute'=>'goods_pay_price',
+                                    'value' => function($model) {
+                                        return $model->account->currency ." ".$model->asAmount('goods_pay_price', $model->account->exchange_rate);
+                                    }
+                                ],
                             ]
                         ]); ?>
                     </div>
@@ -198,31 +208,35 @@ DOM;
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.shipping_fee') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->shipping_fee ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= $model->account->asAmount('shipping_fee', 'exchange_rate') ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.discount_amount') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->discount_amount ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= $model->account->asAmount('discount_amount', 'exchange_rate') ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.tax_fee') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->tax_fee ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= $model->account->asAmount('tax_fee', 'exchange_rate') ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.safe_fee') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->safe_fee ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= $model->account->asAmount('safe_fee', 'exchange_rate') ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.order_amount') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->order_amount ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= $model->account->asAmount('order_amount', 'exchange_rate') ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label style="font-weight:bold"><?= $model->getAttributeLabel('account.pay_amount') ?>：</label></div>
-                                <div class="col-lg-7"><?=$model->account->pay_amount?>(<?=$model->account->currency?><?= \Yii::$app->services->currency->exchangeAmount($model->account->pay_amount,2,$model->account->currency) ?>)</div>
+                                <div class="col-lg-7 text-red"><?= $model->account->currency ?>&nbsp;<?= $model->account->asAmount('pay_amount', 'exchange_rate') ?></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5 text-right"><label style="font-weight:bold">参考支付RMB金额：</label></div>
+                                <div class="col-lg-7 text-red"><?= \Yii::$app->services->currency->getSign() ?>&nbsp;<?=$model->account->pay_amount?></div>
                             </div>
                         </div>
                     </div>

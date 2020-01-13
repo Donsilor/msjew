@@ -212,4 +212,14 @@ class AliPay
 
         return $request;
     }
+
+    /**
+     * 验证支付是否成功
+     * @param array $info
+     * @return bool
+     */
+    public function verify($info=[])
+    {
+        return true;
+    }
 }

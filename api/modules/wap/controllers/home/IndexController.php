@@ -21,7 +21,7 @@ class IndexController extends OnAuthController
 
     //商品推荐
     public function actionWebSite(){
-        $type_id = 12;
+        $type_id = 2;
         $limit = 6;
         $language = $this->language;
         $order = 'sale_volume desc';

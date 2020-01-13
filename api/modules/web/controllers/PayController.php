@@ -82,7 +82,7 @@ class PayController extends OnAuthController
         return null;
     }
 
-    public function actionVerific()
+    public function actionVerify()
     {
         //返回结果
         $result = [

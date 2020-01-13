@@ -46,7 +46,7 @@ class OrderAccount extends \common\models\base\BaseModel
             [['order_id', 'merchant_id'], 'integer'],
             [['order_amount', 'goods_amount', 'discount_amount', 'pay_amount', 'refund_amount', 'shipping_fee', 'tax_fee', 'safe_fee', 'other_fee','exchange_rate'], 'number'],
             [['order_id'], 'unique'],
-            [['currency'], 'string'],
+            [['currency'], 'string','max'=>5],
         ];
     }
 

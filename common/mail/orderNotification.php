@@ -41,7 +41,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 								<span>付款訊息：</span><span>在線支付<i><?= OrderStatusEnum::getValue($order->order_status) ?></i></span>
 							</dd>
 							<dd><span>訂單編號：</span><span class="orderno"><?= $order->order_sn ?></span></dd>
-							<dd><span>下單時間：</span><span><?= Yii::$app->formatter->asDatetime($order->created_at,'Y/m/d H:i:s'); ?></span></dd>
+							<dd><span>下單時間：</span><span><?= \Yii::$app->formatter->asDatetime($order->created_at); ?></span></dd>
 						</dl>
 					</div>
 					<div class="list">

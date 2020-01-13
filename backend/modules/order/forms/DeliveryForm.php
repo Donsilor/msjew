@@ -14,7 +14,7 @@ class DeliveryForm extends \common\models\order\Order
     public function rules()
     {
         return [
-                [['express_id', 'express_no'], 'required'], 
+                [['id','express_id', 'express_no'], 'required'], 
                 [['order_status','updated_at'], 'integer'],
                 [['express_no'], 'validateOrderStatus'],
         ];

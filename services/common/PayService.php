@@ -224,11 +224,16 @@ class PayService extends Service
                             'order_status'=>OrderStatusEnum::ORDER_PAID
                     ];
                     $result = $order->save();
+                    
+                    
                     if($result == 1){ 
                         $accountUpdata = [
                              'pay_amount'=> $pay_amount,                            
                         ];
                         OrderAccount::updateAll($accountUpdata,['order_id'=>$order->id]);
+                        
+                        //订单发送邮件
+                        \Yii::$app->services->order->sendOrderNotification($order->id);
                     }
                 }
                 // TODO 处理订单

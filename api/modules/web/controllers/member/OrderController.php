@@ -37,7 +37,15 @@ class OrderController extends UserAuthController
                     ->where(['order.member_id'=>$this->member_id]);
         
         if($orderStatus && in_array($orderStatus,OrderStatusEnum::getKeys())) {
-            $query->andWhere(['=','order_status',$orderStatus]);
+            if($orderStatus == 30) {
+                $or = ['or'];
+                $or[] = ['=','order_status', 20];
+                $or[] = ['=','order_status', 30];
+                $query->andWhere($or);
+            }
+            else {
+                $query->andWhere(['=','order_status', $orderStatus]);
+            }
         }
 
         $query->orderBy('id DESC');

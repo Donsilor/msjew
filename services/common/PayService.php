@@ -214,7 +214,7 @@ class PayService extends Service
             case PayEnum::ORDER_GROUP :   
                 if($log->pay_status == 1 && ($order = Order::find()->where(['order_sn'=>$log->order_sn,'order_status'=>OrderStatusEnum::ORDER_UNPAID])->one())){ 
                     $time = time();
-                    $pay_amount = $log->total_fee/100;
+                    $pay_amount = $log->total_fee;
                     $order->attributes = [
                             'pay_sn'=>$log->out_trade_no,
                             'api_pay_time'=>$time,

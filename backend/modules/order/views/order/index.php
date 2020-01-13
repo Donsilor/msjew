@@ -151,16 +151,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 }
                             ],
                             [
-                                'attribute' => 'member.username',
-                                'filter' => Html::activeTextInput($searchModel, 'member.username', [
-                                    'class' => 'form-control',
-                                ]),
-//                                'value' => function ($model) {
-//                                    return $model->member['username'];
-//                                },
-                                'format' => 'raw',
-                            ],
-                            [
                                 'attribute' => 'account.order_amount',
                                 'filter' => Html::activeTextInput($searchModel, 'account.order_amount', [
                                         'class' => 'form-control',

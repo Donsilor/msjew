@@ -5,7 +5,14 @@ namespace common\components;
 
 trait outputFormat
 {
-    public function asAmount($name, $rate = 1, $scale = 2, $sep = ',')//金额，精度，汇率，逗号
+    /**
+     * @param string $name 金额
+     * @param int $rate 汇率
+     * @param int $scale 精度
+     * @param string $sep 逗号
+     * @return string
+     */
+    public function asAmount($name, $rate = 1, $scale = 2, $sep = ',')
     {
         $value = $this->getAttribute($name);
         $rate = is_string($rate) && $this->hasAttribute($rate) ? $this->getAttribute($rate) : $rate;

@@ -22,6 +22,22 @@ use common\models\order\OrderAccount;
 class PayService extends Service
 {
     /**
+     * 通过 TypeId 获取支付
+     * @param $typeId
+     * @param array $config
+     * @return mixed|null
+     */
+    public function getPayByType($typeId, $config=[])
+    {
+        $payType = PayEnum::$payTypeAction[$typeId]?:null;
+
+        if($payType && method_exists(Yii::$app->pay, $payType)) {
+            return call_user_func([Yii::$app->pay, $payType], $config);
+        }
+        return null;
+    }
+
+    /**
      * @param PayForm $payForm
      * @return mixed
      * @throws \yii\base\InvalidConfigException
@@ -198,7 +214,7 @@ class PayService extends Service
             case PayEnum::ORDER_GROUP :   
                 if($log->pay_status == 1 && ($order = Order::find()->where(['order_sn'=>$log->order_sn,'order_status'=>OrderStatusEnum::ORDER_UNPAID])->one())){ 
                     $time = time();
-                    $pay_amount = $log->total_fee/100;
+                    $pay_amount = $log->total_fee;
                     $order->attributes = [
                             'pay_sn'=>$log->out_trade_no,
                             'api_pay_time'=>$time,

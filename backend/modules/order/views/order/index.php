@@ -27,27 +27,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                 <div class="box-body top-form">
                     <div class="row col-sm-12">
                         <div class="col-sm-3">
-                            <?= $searchModel->model->getAttributeLabel('created_at') ?>：<br/>
-                            <?= DateRangePicker::widget([    // 日期组件
-                                'model' => $searchModel,
-                                'attribute' => 'created_at',
-                                'value' => '',
-                                'options' => ['readonly' => true, 'class' => 'form-control',],
-                                'pluginOptions' => [
-                                    'format' => 'yyyy-mm-dd',
-                                    'locale' => [
-                                        'separator' => '/',
-                                    ],
-                                    'endDate' => date('Y-m-d', time()),
-                                    'todayHighlight' => true,
-                                    'autoclose' => true,
-                                    'todayBtn' => 'linked',
-                                    'clearBtn' => true,
-                                ],
-                            ])
-                            ?>
-                        </div>
-                        <div class="col-sm-3">
                             <?= $searchModel->model->getAttributeLabel('payment_type') ?>：<br/>
                             <?= Html::activeDropDownList($searchModel, 'payment_type', \common\enums\PayEnum::getMap(), [
                                 'prompt' => '全部',
@@ -99,15 +78,36 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     Html::activeTextInput($searchModel, 'payment_type', [
                                         'class' => 'hidden',
                                     ]) .
-                                    Html::activeTextInput($searchModel, 'created_at', [
-                                        'class' => 'hidden',
-                                    ]) .
                                     Html::activeTextInput($searchModel, 'language', [
                                         'class' => 'hidden',
                                     ]) .
                                     Html::activeTextInput($searchModel, 'order_from', [
                                         'class' => 'hidden',
                                     ])
+                            ],
+                            [
+                                'attribute' => 'created_at',
+                                'filter' => DateRangePicker::widget([    // 日期组件
+                                    'model' => $searchModel,
+                                    'attribute' => 'created_at',
+                                    'value' => '',
+                                    'options' => ['readonly' => true, 'class' => 'form-control',],
+                                    'pluginOptions' => [
+                                        'format' => 'yyyy-mm-dd',
+                                        'locale' => [
+                                            'separator' => '/',
+                                        ],
+                                        'endDate' => date('Y-m-d', time()),
+                                        'todayHighlight' => true,
+                                        'autoclose' => true,
+                                        'todayBtn' => 'linked',
+                                        'clearBtn' => true,
+                                    ],
+                                ]),
+                                'value' => function ($model) {
+                                    return Yii::$app->formatter->asDatetime($model->created_at);
+                                },
+                                'format' => 'raw',
                             ],
                             [
                                 'attribute' => 'order_sn',
@@ -149,16 +149,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     }
                                     return $html;
                                 }
-                            ],
-                            [
-                                'attribute' => 'member.username',
-                                'filter' => Html::activeTextInput($searchModel, 'member.username', [
-                                    'class' => 'form-control',
-                                ]),
-//                                'value' => function ($model) {
-//                                    return $model->member['username'];
-//                                },
-                                'format' => 'raw',
                             ],
                             [
                                 'attribute' => 'account.order_amount',

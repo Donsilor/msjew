@@ -19,6 +19,7 @@ use api\modules\web\forms\MobileRegisterForm;
 use api\modules\web\forms\EmailRegisterForm;
 use api\modules\web\forms\EmailUpPwdForm;
 use api\modules\web\forms\MobileUpPwdForm;
+use Zhuzhichao\IpLocationZh\Ip;
 
 
 /**
@@ -146,9 +147,19 @@ class SiteController extends OnAuthController
         return $model->send();
     }
     public function actionIp(){
-        $last_ip  = \Yii::$app->request->userIP;
-        $location = \Yii::$app->ipLocation->getLocation($last_ip);
-        echo $last_ip,'--';
+        return Yii::$app->services->mailer->send("763429951@qq.com",'order-notify',['code'=>'5']);
+        $ip = \Yii::$app->request->get('ip');
+        if(!$ip) {
+            $ip  = \Yii::$app->request->userIP;
+        }
+        $location = \Yii::$app->ipLocation->getLocation($ip);
+        echo '<pre/>';
+        echo $ip,'--';
+        echo 'myweishanli/yii2-ip2location:<br/>';
+        print_r($location);  
+        echo "<br/>";
+        echo 'zhuzhichao/ip-location-zh:<br/>','--';
+        $location = Ip::find($ip);
         print_r($location);
         exit;
     }

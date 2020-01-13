@@ -2,6 +2,7 @@
 
 namespace common\models\order;
 
+use common\components\outputFormat;
 use Yii;
 
 /**
@@ -21,7 +22,8 @@ use Yii;
  */
 class OrderAccount extends \common\models\base\BaseModel
 {
-    
+    use outputFormat;
+
     public function behaviors()
     {
         return [];
@@ -53,21 +55,18 @@ class OrderAccount extends \common\models\base\BaseModel
      */
     public function attributeLabels()
     {
-        
-        $currencySign = \Yii::$app->services->currency->getSign();
-        
         return [                
             'order_id' => '订单ID',
             'merchant_id' => '商户ID',
-            'order_amount' => \Yii::t('order','订单总金额')."({$currencySign})",
-            'goods_amount' => \Yii::t('order','商品总金额')."({$currencySign})",
-            'discount_amount' => \Yii::t('order','优惠金额')."({$currencySign})",
-            'pay_amount' => \Yii::t('order','实际支付金额')."({$currencySign})",
-            'refund_amount' => \Yii::t('order','退款金额')."({$currencySign})",
-            'shipping_fee' => \Yii::t('order','运费')."({$currencySign})",
-            'tax_fee' => \Yii::t('order','税费')."({$currencySign})",
-            'safe_fee' => \Yii::t('order','保险费')."({$currencySign})",
-            'other_fee' => \Yii::t('order','附加费')."({$currencySign})",
+            'order_amount' => \Yii::t('order','订单总金额'),
+            'goods_amount' => \Yii::t('order','商品总金额'),
+            'discount_amount' => \Yii::t('order','优惠金额'),
+            'pay_amount' => \Yii::t('order','实际支付金额'),
+            'refund_amount' => \Yii::t('order','退款金额'),
+            'shipping_fee' => \Yii::t('order','运费'),
+            'tax_fee' => \Yii::t('order','税费'),
+            'safe_fee' => \Yii::t('order','保险费'),
+            'other_fee' => \Yii::t('order','附加费'),
             'exchange_rate'=> \Yii::t('common','汇率'),
             'currency'=> \Yii::t('common','货币'),
         ];

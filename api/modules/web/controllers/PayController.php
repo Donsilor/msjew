@@ -26,6 +26,8 @@ use function GuzzleHttp\Psr7\parse_query;
  */
 class PayController extends OnAuthController
 {
+    protected $authOptional = ['verific'];
+
     /**
      * @var PayForm
      */
@@ -80,7 +82,11 @@ class PayController extends OnAuthController
         return null;
     }
 
-    public function actionVerific()
+    /**
+     * 无登录验证
+     * @return array
+     */
+    public function actionVerify()
     {
         //返回结果
         $result = [

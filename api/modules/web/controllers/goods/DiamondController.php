@@ -257,7 +257,7 @@ class DiamondController extends OnAuthController
 
     //訂婚戒指--活动页
     public function actionWebSite(){
-        $type_id = 14;
+        $type_id = 2;
         $limit = 5;
         $language = $this->language;
         $order = 'sale_volume desc';

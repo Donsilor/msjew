@@ -2,6 +2,8 @@
 
 namespace common\enums;
 
+use phpDocumentor\Reflection\Types\Self_;
+
 /**
  * SubscriptionReasonEnum
  *
@@ -27,11 +29,17 @@ class SubscriptionReasonEnum
      * 短信创建
      */
     const SMS_CREATE = 'sms_create';
+    /**
+     * 邮件创建
+     * @var string
+     */
+    const EMAIL_CREATE = 'email_create';
 
     // 订阅原因对应订阅事件
     public static $reasonAction = [
         self::BEHAVIOR_CREATE => [SubscriptionActionEnum::BEHAVIOR_WARNING, SubscriptionActionEnum::BEHAVIOR_ERROR],
         self::LOG_CREATE => [SubscriptionActionEnum::LOG_WARNING, SubscriptionActionEnum::LOG_ERROR],
         self::SMS_CREATE => [SubscriptionActionEnum::SMS_ERROR],
+        self::EMAIL_CREATE=>[SubscriptionActionEnum::EMAIL_ERROR],
     ];
 }

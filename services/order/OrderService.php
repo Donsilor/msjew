@@ -15,6 +15,8 @@ use common\models\common\EmailLog;
 use common\enums\LanguageEnum;
 use common\models\member\Member;
 use common\helpers\RegularHelper;
+use common\models\common\SmsLog;
+use common\enums\OrderStatusEnum;
 
 /**
  * Class OrderService
@@ -226,6 +228,10 @@ class OrderService extends Service
         $order = Order::find()->where(['id'=>$order_id])->one();
         if(RegularHelper::verify('email',$order->member->username) && $order->address->email) {
             \Yii::$app->services->mailer->send($order->address->email,EmailLog::USAGE_ORDER_NOTIFICATION,['code'=>$order->id]);
+        }else if($order->address->mobile){
+            if($order->order_status == OrderStatusEnum::ORDER_SEND) {
+                \Yii::$app->services->sms->send($order->address->mobile,SmsLog::USAGE_ORDER_SEND,['code'=>$order->id]);
+            }
         }
     }
           

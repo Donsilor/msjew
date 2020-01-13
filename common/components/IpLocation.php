@@ -5,9 +5,8 @@ namespace common\components;
 
 use Yii;
 use yii\base\Component;
-use wsl\ip2location\Ip2Location;
-use wsl\ip2location\QQWry;
 use common\enums\AreaEnum;
+use Zhuzhichao\IpLocationZh\Ip;
 
 
 /**
@@ -26,7 +25,7 @@ class IpLocation extends Component {
     
     public function init() {
         if(!$this->handle) {
-            $this->handle = new Ip2Location(); 
+            $this->handle = new Ip(); 
         }
         parent::init();
     }
@@ -41,31 +40,29 @@ class IpLocation extends Component {
         }
         $area_id = 0;
         $country = null;
+        $province = null;
+        $city = null;
         $area = null;
         $address = null;
-        $location = $this->handle->getLocation($ip);
-        if($location) {
-            $country = $location->country;
-            $area  = $location->area;
-            if(preg_match("/香港/is",$country)){
-                $area_id = AreaEnum::HongKong;
-            }
-            elseif(preg_match("/澳门/is",$country)){
-                $area_id = AreaEnum::MaCao;
-            }
-            elseif(preg_match("/台湾/is",$country)){
-                $area_id = AreaEnum::TaiWan;
-            }
-            elseif(preg_match("/省|中国/is",$country)) {
+        $locations = $this->handle->find($ip);
+        if(!empty($locations) && is_array($locations)) {
+            list($country,$province,$city,$area,$code) = $locations;
+            if($country == '中国') { 
                 $area_id = AreaEnum::China;
-            }
-            else {
+                if($province == "香港") {
+                    $area_id = AreaEnum::HongKong;
+                }elseif($province == "澳门"){
+                    $area_id = AreaEnum::MaCao;
+                }elseif($province == "台湾"){
+                    $area_id = AreaEnum::TaiWan;
+                }
+            }else {
                 $area_id = AreaEnum::Other;
             }
-            $address = $country.' '.$area;
+            $address = $country.' '.$province.' '.$city.' '.$area;
         }
-        return [$area_id,$address,$country,$area];
-    }
+        return [$area_id,trim($address),$country,$province,$city,$area];
+    }    
     /**
      * 获取IP区域
      * @param unknown $ip
@@ -74,15 +71,7 @@ class IpLocation extends Component {
     {
         $location = $this->getLocation($ip);                
         return $location[0];
-    }
-    /**
-     * 更新IP库
-     */
-    public function updateQQWry()
-    {
-        (new QQWry())->upgrade();
-    }
-    
+    }      
     
     
 }

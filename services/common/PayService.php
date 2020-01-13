@@ -224,6 +224,9 @@ class PayService extends Service
                             'order_status'=>OrderStatusEnum::ORDER_PAID
                     ];
                     $result = $order->save();
+                    
+                    //订单发送邮件
+                    \Yii::$app->services->order->sendOrderNotification($order->id);
                     if($result == 1){ 
                         $accountUpdata = [
                              'pay_amount'=> $pay_amount,                            

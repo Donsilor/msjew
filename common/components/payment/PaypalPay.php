@@ -127,8 +127,23 @@ class PaypalPay
         return $response;
     }
 
-    public function d()
+    /**
+     * 通过回跳URL验证支付是否成功
+     * @param $query
+     * @return \Omnipay\Common\Message\ResponseInterface
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
+     */
+    public function verify($query)
     {
+        $gateway = $this->create();
 
+        /**
+         * 确认订单
+         */
+        $request = $gateway->completePurchase($query);
+
+        $response = $request->send();
+
+        return $response;
     }
 }

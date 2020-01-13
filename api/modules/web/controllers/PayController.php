@@ -100,6 +100,7 @@ class PayController extends OnAuthController
             $urlInfo = parse_url($returnUrl);
             $query = parse_query($urlInfo['query']);
 
+            //获取支付记录模型
             $model = $this->getPayModelByReturnUrlQuery($query);
 
             if(empty($model)) {
@@ -110,7 +111,7 @@ class PayController extends OnAuthController
             $pay = Yii::$app->services->pay->getPayByType($model->pay_type);
 
             //验证是否支付
-            $notify = $pay->notify(array_merge($query, ['model'=>$model]));
+            $notify = $pay->verify(array_merge($query, ['model'=>$model]));
 
             if($notify) {
                 $message = [];

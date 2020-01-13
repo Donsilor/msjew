@@ -19,6 +19,7 @@ use api\modules\web\forms\MobileRegisterForm;
 use api\modules\web\forms\EmailRegisterForm;
 use api\modules\web\forms\EmailUpPwdForm;
 use api\modules\web\forms\MobileUpPwdForm;
+use Zhuzhichao\IpLocationZh\Ip;
 
 
 /**
@@ -148,7 +149,13 @@ class SiteController extends OnAuthController
     public function actionIp(){
         $last_ip  = \Yii::$app->request->userIP;
         $location = \Yii::$app->ipLocation->getLocation($last_ip);
+        echo '<pre/>';
         echo $last_ip,'--';
+        echo 'myweishanli/yii2-ip2location:<br/>';
+        print_r($location);  
+        echo "<br/>";
+        echo 'zhuzhichao/ip-location-zh:<br/>',$last_ip,'--';
+        $location = Ip::find($last_ip);
         print_r($location);
         exit;
     }

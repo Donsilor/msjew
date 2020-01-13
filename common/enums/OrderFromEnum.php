@@ -18,8 +18,8 @@ class OrderFromEnum extends BaseEnum
     public static function getMap(): array
     {
         return [
-                self::FROM_WEB => 'PC端下单',
-                self::FROM_MOBILE => '手机端下单',                
+                self::FROM_WEB => '官网PC端',
+                self::FROM_MOBILE => '官网手机端',                
         ];
     }
 }

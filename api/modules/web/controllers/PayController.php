@@ -26,7 +26,7 @@ use function GuzzleHttp\Psr7\parse_query;
  */
 class PayController extends OnAuthController
 {
-    protected $authOptional = ['verific'];
+    protected $authOptional = ['verify'];
 
     /**
      * @var PayForm

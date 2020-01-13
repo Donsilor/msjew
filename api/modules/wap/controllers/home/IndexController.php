@@ -1,9 +1,10 @@
 <?php
 
-namespace api\modules\web\controllers\home;
+namespace api\modules\wap\controllers\home;
 
 use api\controllers\OnAuthController;
 use common\models\goods\Style;
+
 
 /**
  * Class ProvincesController

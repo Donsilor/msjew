@@ -1,6 +1,6 @@
 <?php
 
-namespace api\modules\web\controllers\member;
+namespace api\modules\wap\controllers\member;
 
 use api\controllers\UserAuthController;
 use common\models\member\Invoice;

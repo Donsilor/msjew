@@ -1,12 +1,11 @@
 <?php
 
-namespace api\modules\web\controllers\common;
+namespace api\modules\wap\controllers\common;
 
 use common\enums\StatusEnum;
 use api\controllers\OnAuthController;
 use common\models\goods\Style;
 use common\models\goods\StyleLang;
-
 
 /**
  * Class ProvincesController

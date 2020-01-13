@@ -1,6 +1,6 @@
 <?php
 
-namespace api\modules\web\forms;
+namespace api\modules\wap\forms;
 
 use common\enums\StatusEnum;
 use common\helpers\RegularHelper;
@@ -10,7 +10,7 @@ use yii\base\Model;
 
 /**
  * Class LoginForm
- * @package api\modules\v1\forms
+ * @package api\modules\wap\forms
  * @author jianyan74 <751393839@qq.com>
  */
 class EmailLoginForm extends Model

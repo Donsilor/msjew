@@ -1,10 +1,10 @@
 <?php
 
-namespace api\modules\web\controllers;
+namespace api\modules\wap\controllers;
 
 use Yii;
 use api\controllers\OnAuthController;
-use api\modules\web\forms\MiniProgramLoginForm;
+use api\modules\wap\forms\MiniProgramLoginForm;
 use common\models\member\Member;
 use common\models\api\AccessToken;
 use common\helpers\ResultHelper;

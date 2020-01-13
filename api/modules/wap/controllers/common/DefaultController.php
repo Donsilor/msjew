@@ -1,6 +1,6 @@
 <?php
 
-namespace api\modules\web\controllers\common;
+namespace api\modules\wap\controllers\common;
 
 use common\enums\StatusEnum;
 use common\helpers\ResultHelper;

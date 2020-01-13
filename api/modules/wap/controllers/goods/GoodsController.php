@@ -1,6 +1,6 @@
 <?php
 
-namespace api\modules\web\controllers\goods;
+namespace api\modules\wap\controllers\goods;
 
 use api\controllers\OnAuthController;
 use common\models\goods\Style;

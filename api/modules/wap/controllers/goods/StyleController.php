@@ -1,6 +1,6 @@
 <?php
 
-namespace api\modules\web\controllers\goods;
+namespace api\modules\wap\controllers\goods;
 
 use common\enums\StatusEnum;
 use api\controllers\OnAuthController;

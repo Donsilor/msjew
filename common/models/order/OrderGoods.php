@@ -46,11 +46,12 @@ class OrderGoods extends \common\models\base\BaseModel
         return [
             [['merchant_id', 'order_id', 'goods_id', 'goods_type', 'goods_num', 'promotions_id', 'created_at', 'updated_at'], 'integer'],
             [['order_id', 'goods_id'], 'required'],
-            [['goods_price', 'goods_pay_price'], 'number'],
+            [['goods_price', 'goods_pay_price','exchange_rate'], 'number'],
             [['goods_attr'], 'string'],
             [['style_sn', 'goods_sn', 'goods_name'], 'string', 'max' => 50],
             [['goods_image'], 'string', 'max' => 100],
             [['goods_spec'], 'string', 'max' => 255],
+            [['currency'], 'string','max'=>5],
         ];
     }
 
@@ -74,6 +75,8 @@ class OrderGoods extends \common\models\base\BaseModel
             'goods_pay_price' => '商品实际成交价',
             'member_id' => '买家ID',
             'promotions_id' => '促销活动ID',
+            'exchange_rate' => '交易汇率',
+            'currency' => '货币',
             'goods_spec' => '商品规格',
             'goods_attr' => 'Goods Attr',
             'created_at' => '创建时间',

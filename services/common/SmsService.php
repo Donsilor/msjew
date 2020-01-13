@@ -143,6 +143,7 @@ class SmsService extends Service
                 'error_code' => 200,
                 'error_msg' => 'ok',
                 'error_data' => Json::encode($result),
+                'status' =>StatusEnum::ENABLED
             ]);
         } catch (NotFoundHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
@@ -165,6 +166,7 @@ class SmsService extends Service
                 'error_code' => 422,
                 'error_msg' => '发送失败',
                 'error_data' => Json::encode($errorMessage),
+                'status' => StatusEnum::DISABLED
             ]);
 
             // 加入提醒池

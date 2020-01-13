@@ -82,6 +82,10 @@ class PayController extends OnAuthController
         return null;
     }
 
+    /**
+     * 无登录验证
+     * @return array
+     */
     public function actionVerify()
     {
         //返回结果

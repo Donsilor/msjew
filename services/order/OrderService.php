@@ -217,6 +217,17 @@ class OrderService extends Service
         }
         return $query->asArray()->one();
     }
+    /**
+     * 发送订单邮件通知
+     * @param unknown $order_id
+     */
+    public function sendOrderNotification($order_id)
+    {
+        $order = Order::find()->where(['id'=>$order_id])->one();
+        if(RegularHelper::verify('email',$order->member->username) && $order->address->email) {
+            \Yii::$app->services->mailer->send($order->address->email,EmailLog::USAGE_ORDER_NOTIFICATION,['code'=>$order->id]);
+        }
+    }
           
     
 }

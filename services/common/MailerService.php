@@ -8,6 +8,11 @@ use common\components\Service;
 use common\queues\MailerJob;
 use common\models\common\EmailLog;
 use yii\helpers\Json;
+use common\enums\StatusEnum;
+use yii\web\UnprocessableEntityHttpException;
+use common\enums\SubscriptionReasonEnum;
+use common\enums\SubscriptionActionEnum;
+use common\enums\MessageLevelEnum;
 
 /**
  * Class MailerService
@@ -85,8 +90,6 @@ class MailerService extends Service
                 ->setSubject($subject)
                 ->send(); 
 
-            //Yii::info($result);
-
             $this->saveLog([
                     'title'=>$subject,
                     'email' => $email,
@@ -96,10 +99,35 @@ class MailerService extends Service
                     'error_code' => 200,
                     'error_msg' => 'ok',
                     'error_data' => Json::encode($result),
+                    'status' => StatusEnum::ENABLED
             ]);
             return $params;
         } catch (InvalidConfigException $e) {
-            Yii::error($e->getMessage());
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        }catch (\Exception $e) {            
+            
+            $log = $this->saveLog([
+                    'title'=>$subject,
+                    'email' => $email,
+                    'code' => $params['code']??null,
+                    'member_id' => $params['member_id']??0,
+                    'usage' => $usage,
+                    'error_code' => 422,
+                    'error_msg' => '发送失败',
+                    'error_data' => Json::encode($result),
+                    'status' => StatusEnum::DISABLED
+            ]);
+            
+            // 加入提醒池
+            Yii::$app->services->backendNotify->createRemind(
+                    $log->id,
+                    SubscriptionReasonEnum::SMS_CREATE,
+                    SubscriptionActionEnum::SMS_ERROR,
+                    $log['member_id'],
+                    MessageLevelEnum::getValue(MessageLevelEnum::ERROR) . "邮件：$log->error_data"
+                    );
+            
+            throw new UnprocessableEntityHttpException('邮件发送失败');
         }
 
         return false;

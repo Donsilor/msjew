@@ -22,6 +22,7 @@ class SubscriptionActionEnum
 
     /** @var string 短信发送失败 */
     const SMS_ERROR = 'sms_error';
+    const EMAIL_ERROR = 'email_error';
 
     /**
      * @var array
@@ -32,5 +33,6 @@ class SubscriptionActionEnum
         self::SMS_ERROR => '短信发送异常',
         self::LOG_WARNING => '请求警告',
         self::LOG_ERROR => '请求错误',
+        self::EMAIL_ERROR => '邮件发送异常',
     ];
 }

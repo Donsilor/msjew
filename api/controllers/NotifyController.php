@@ -132,7 +132,7 @@ class NotifyController extends Controller
         }
     }
 
-    public function actionPaypalHooks()
+    public function actionPaypal()
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
@@ -183,44 +183,44 @@ class NotifyController extends Controller
         return exit(Json::encode($result));
     }
 
-    public function actionPaypal()
-    {
-        if(empty($_GET['success']) || $_GET['success'] !== 'true') {
-            die('fail');
-        }
-
-        $paymentId = Yii::$app->request->get('paymentId');
-
-        $model = PayLog::find()->where(['transaction_id'=>$paymentId])->one();
-
-        if(!$model) {
-            exit('fail');
-        }
-
-        try {
-            $result = Yii::$app->pay->Paypal()->notify(['model'=>$model]);
-
-            if ($result) {
-
-                $message = [];//= Yii::$app->request->post();
-                $message['out_trade_no'] = $model->out_trade_no;
-
-                // 日志记录
-                $logPath = $this->getLogPath('paypal');
-                FileHelper::writeLog($logPath, Json::encode(ArrayHelper::toArray($message)));
-
-                if ($this->pay($message)) {
-                    die('success');
-                }
-            }
-
-        } catch (\Exception $e) {
-            // 记录报错日志
-            $logPath = $this->getLogPath('error');
-            FileHelper::writeLog($logPath, $e->getMessage());
-            die('fail'); // 通知响应
-        }
-    }
+//    public function actionPaypal()
+//    {
+//        if(empty($_GET['success']) || $_GET['success'] !== 'true') {
+//            die('fail');
+//        }
+//
+//        $paymentId = Yii::$app->request->get('paymentId');
+//
+//        $model = PayLog::find()->where(['transaction_id'=>$paymentId])->one();
+//
+//        if(!$model) {
+//            exit('fail');
+//        }
+//
+//        try {
+//            $result = Yii::$app->pay->Paypal()->notify(['model'=>$model]);
+//
+//            if ($result) {
+//
+//                $message = [];//= Yii::$app->request->post();
+//                $message['out_trade_no'] = $model->out_trade_no;
+//
+//                // 日志记录
+//                $logPath = $this->getLogPath('paypal');
+//                FileHelper::writeLog($logPath, Json::encode(ArrayHelper::toArray($message)));
+//
+//                if ($this->pay($message)) {
+//                    die('success');
+//                }
+//            }
+//
+//        } catch (\Exception $e) {
+//            // 记录报错日志
+//            $logPath = $this->getLogPath('error');
+//            FileHelper::writeLog($logPath, $e->getMessage());
+//            die('fail'); // 通知响应
+//        }
+//    }
 
     /**
      * 公用支付回调 - 微信

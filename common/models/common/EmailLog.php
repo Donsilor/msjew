@@ -31,6 +31,7 @@ class EmailLog extends \common\models\base\BaseModel
     const USAGE_LOGIN = 'login';
     const USAGE_REGISTER = 'register';
     const USAGE_UP_PWD = 'up-pwd';
+    const USAGE_ORDER_NOTIFICATION = 'order-notify';
     
     /**
      * @var array
@@ -39,11 +40,13 @@ class EmailLog extends \common\models\base\BaseModel
             self::USAGE_LOGIN => '登录验证码',
             self::USAGE_REGISTER => '注册验证码',
             self::USAGE_UP_PWD => '重置密码验证码',
+            self::USAGE_ORDER_NOTIFICATION => '订单通知邮件',
     ];
     public static $usageTemplates = [
             self::USAGE_LOGIN => 'loginCode',
             self::USAGE_REGISTER => 'registerCode',
             self::USAGE_UP_PWD => 'passwordResetCode',
+            self::USAGE_ORDER_NOTIFICATION => 'orderNotification',
     ];
     
     /**

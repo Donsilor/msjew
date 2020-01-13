@@ -5,9 +5,7 @@ namespace api\modules\web\forms;
 use common\enums\StatusEnum;
 use common\helpers\RegularHelper;
 use common\helpers\ResultHelper;
-use common\models\api\AccessToken;
 use common\models\member\Member;
-use PHPUnit\Util\RegularExpression;
 use yii\base\Model;
 
 /**

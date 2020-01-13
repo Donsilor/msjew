@@ -3,12 +3,10 @@
 namespace api\modules\web\controllers\goods;
 
 use common\enums\StatusEnum;
-use Yii;
 use api\controllers\OnAuthController;
 use common\models\goods\Style;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
-use common\helpers\ImageHelper;
 use yii\db\Exception;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
@@ -177,11 +175,11 @@ class StyleController extends OnAuthController
     {
         $id = \Yii::$app->request->post("goodsId");
         if(empty($id)) {
-            return ResultHelper::json(422,"id不能为空");
+            return ResultHelper::api(422,"id不能为空");
         }
         $model = Style::find()->where(['id'=>$id,'status'=>StatusEnum::ENABLED])->one();
         if(empty($model)) {
-            return ResultHelper::json(422,"商品信息不存在或者已经下架");
+            return ResultHelper::api(422,"商品信息不存在或者已经下架");
         }
         try{
             $style = \Yii::$app->services->goods->formatStyleGoodsById($id, $this->language);
@@ -214,7 +212,7 @@ class StyleController extends OnAuthController
 
         }catch (Exception $e){
             $error = $e->getMessage();
-            return ResultHelper::json(422, $error);
+            return ResultHelper::api(422, $error);
         }
 
     }

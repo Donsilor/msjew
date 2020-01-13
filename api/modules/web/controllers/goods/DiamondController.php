@@ -2,17 +2,13 @@
 
 namespace api\modules\web\controllers\goods;
 
-use api\modules\web\forms\AttrSpecForm;
 use common\enums\StatusEnum;
 use common\models\goods\Diamond;
 use common\models\goods\DiamondLang;
-use Yii;
 use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
-use common\models\goods\StyleLang;
-use common\helpers\ImageHelper;
 use yii\db\Expression;
-use common\models\goods\AttributeIndex;
+
 
 /**
  * Class ProvincesController
@@ -142,7 +138,7 @@ class DiamondController extends OnAuthController
 //        $type_id = 15;
         $id = \Yii::$app->request->post("goodsId");
         if(empty($id)) {
-            return ResultHelper::json(422,"id不能为空");
+            return ResultHelper::api(422,"id不能为空");
         }
         $query = Diamond::find()->alias('m')
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
@@ -150,7 +146,7 @@ class DiamondController extends OnAuthController
             ->where(['m.id'=>$id, 'm.status'=>StatusEnum::ENABLED]);
         $model = $query->one();
         if(empty($model)) {
-            return ResultHelper::json(422,"裸钻信息不存在或者已下架");
+            return ResultHelper::api(422,"裸钻信息不存在或者已下架");
         }
         $type_id = $model->type_id;
         $diamond_array = $query->asArray()->one();

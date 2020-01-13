@@ -4,7 +4,7 @@ namespace api\modules\web\controllers;
 
 use Yii;
 use api\controllers\OnAuthController;
-use api\modules\v1\forms\MiniProgramLoginForm;
+use api\modules\web\forms\MiniProgramLoginForm;
 use common\models\member\Member;
 use common\models\api\AccessToken;
 use common\helpers\ResultHelper;

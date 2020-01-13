@@ -2,10 +2,7 @@
 
 namespace api\modules\web\controllers\common;
 
-use common\enums\StatusEnum;
 use common\helpers\ResultHelper;
-use common\models\common\AdvertImages;
-use common\models\common\AdvertImagesLang;
 use common\models\common\WebSeo;
 use common\models\common\WebSeoLang;
 use wsl\ip2location\Ip2Location;

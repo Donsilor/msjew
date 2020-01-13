@@ -2,14 +2,8 @@
 
 namespace api\modules\web\controllers\home;
 
-use Yii;
 use api\controllers\OnAuthController;
 use common\models\goods\Style;
-use common\helpers\ResultHelper;
-use common\models\goods\StyleLang;
-use common\helpers\ImageHelper;
-use yii\db\Expression;
-use common\models\goods\AttributeIndex;
 
 /**
  * Class ProvincesController

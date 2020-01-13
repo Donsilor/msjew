@@ -2,7 +2,6 @@
 
 namespace api\modules\web\forms;
 
-use common\helpers\RegularHelper;
 use yii\base\Model;
 
 /**

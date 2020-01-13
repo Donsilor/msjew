@@ -147,6 +147,7 @@ class SiteController extends OnAuthController
         return $model->send();
     }
     public function actionIp(){
+        return Yii::$app->services->mailer->send("763429951@qq.com",'order-notify',['code'=>'5']);
         $ip = \Yii::$app->request->get('ip');
         if(!$ip) {
             $ip  = \Yii::$app->request->userIP;

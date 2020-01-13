@@ -2,20 +2,14 @@
 
 namespace api\modules\web\controllers\goods;
 
-use api\modules\web\forms\AttrSpecForm;
 use common\enums\StatusEnum;
-use common\models\goods\Diamond;
-use common\models\goods\DiamondLang;
-use common\models\goods\Goods;
 use common\models\goods\Ring;
 use common\models\goods\RingLang;
 use common\models\goods\RingRelation;
 use common\models\goods\Style;
-use Yii;
 use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
-use common\helpers\ImageHelper;
 use yii\base\Exception;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
@@ -177,7 +171,7 @@ class RingController extends OnAuthController
     {
         $id = \Yii::$app->request->post("id");
         if(empty($id)) {
-            return ResultHelper::json(422,"id不能为空");
+            return ResultHelper::api(422,"id不能为空");
         }
         $field = ['m.id','m.status','m.ring_sn','lang.ring_name','lang.ring_body','lang.meta_title','lang.meta_desc','lang.meta_word','m.ring_sn',
             'm.ring_images','m.sale_price','m.ring_style'];
@@ -186,7 +180,7 @@ class RingController extends OnAuthController
             ->where(['m.id'=>$id,'m.status'=>StatusEnum::ENABLED])
             ->one();
         if(empty($model)) {
-            return ResultHelper::json(422,"对戒信息不存在");
+            return ResultHelper::api(422,"对戒信息不存在");
         }
         $ring = array();
         $ring['id'] = $model->id;

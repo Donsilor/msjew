@@ -3,15 +3,10 @@
 namespace api\modules\web\controllers\common;
 
 use common\enums\StatusEnum;
-use Yii;
 use api\controllers\OnAuthController;
 use common\models\goods\Style;
-use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
-use common\helpers\ImageHelper;
-use yii\db\Exception;
-use yii\db\Expression;
-use common\models\goods\AttributeIndex;
+
 
 /**
  * Class ProvincesController

@@ -4,11 +4,9 @@ namespace api\modules\web\controllers\common;
 
 use common\enums\StatusEnum;
 use common\helpers\ResultHelper;
-use common\models\common\Advert;
 use common\models\common\AdvertImages;
 use common\models\common\AdvertImagesLang;
 use common\models\goods\StyleLang;
-use common\models\goods\Type;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 use Yii;
 use api\controllers\OnAuthController;

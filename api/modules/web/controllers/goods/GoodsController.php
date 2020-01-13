@@ -2,7 +2,6 @@
 
 namespace api\modules\web\controllers\goods;
 
-use Yii;
 use api\controllers\OnAuthController;
 use common\models\goods\Style;
 use common\helpers\ResultHelper;

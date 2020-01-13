@@ -59,9 +59,9 @@ class IpLocation extends Component {
             }else {
                 $area_id = AreaEnum::Other;
             }
-            $address = $country.' '.$province.' '.$city.' '.$area;
+            $address = trim($country.' '.$province.' '.$city.' '.$area);
         }
-        return [$area_id,trim($address),$country,$province,$city,$area];
+        return [$area_id,$address,$country,$province,$city,$area];
     }    
     /**
      * 获取IP区域

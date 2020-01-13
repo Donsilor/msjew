@@ -22,6 +22,22 @@ use common\models\order\OrderAccount;
 class PayService extends Service
 {
     /**
+     * 通过 TypeId 获取支付
+     * @param $typeId
+     * @param array $config
+     * @return mixed|null
+     */
+    public function getPayByType($typeId, $config=[])
+    {
+        $payType = PayEnum::$payTypeAction[$typeId]?:null;
+
+        if($payType && method_exists(Yii::$app->pay, $payType)) {
+            return call_user_func([Yii::$app->pay, $payType], $config);
+        }
+        return null;
+    }
+
+    /**
      * @param PayForm $payForm
      * @return mixed
      * @throws \yii\base\InvalidConfigException

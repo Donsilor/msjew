@@ -2,12 +2,20 @@
 
 namespace api\modules\web\controllers;
 
+use common\enums\StatusEnum;
+use common\helpers\ArrayHelper;
+use common\helpers\FileHelper;
+use common\models\common\PayLog;
 use Yii;
 use api\controllers\OnAuthController;
 use common\enums\PayEnum;
 use common\helpers\Url;
 use common\models\forms\PayForm;
 use common\helpers\ResultHelper;
+use yii\db\Exception;
+use yii\helpers\Json;
+use yii\web\UnprocessableEntityHttpException;
+use function GuzzleHttp\Psr7\parse_query;
 
 /**
  * 公用支付生成
@@ -46,5 +54,128 @@ class PayController extends OnAuthController
         }
 
         return $model->getConfig();
+    }
+
+    /**
+     * 通过回跳URL参数，查找支付记录
+     * @param $query
+     * @return array|\yii\db\ActiveRecord|null
+     */
+    private function getPayModelByReturnUrlQuery($query)
+    {
+        $where = [];
+
+        //paypal
+        if(!empty($query['paymentId'])) {
+            $where['transaction_id'] = $query['paymentId'];
+        }
+
+        //alipay
+
+
+        if(!empty($where) && ($model = PayLog::find()->where($where)->one())) {
+            return $model;
+        }
+
+        return null;
+    }
+
+    public function actionVerific()
+    {
+        //返回结果
+        $result = [
+            'verification_status' => 'false'
+        ];
+
+        //获取操作实例
+        $returnUrl = Yii::$app->request->post('return_url', null);
+
+        try {
+            $urlInfo = parse_url($returnUrl);
+            $query = parse_query($urlInfo['query']);
+
+            $model = $this->getPayModelByReturnUrlQuery($query);
+
+            if(empty($model)) {
+                throw new \Exception('数据异常');
+            }
+
+            //获取支付类
+            $pay = Yii::$app->services->pay->getPayByType($model->pay_type);
+
+            //验证是否支付
+            $notify = $pay->notify(array_merge($query, ['model'=>$model]));
+
+            if($notify) {
+                $message = [];
+                $message['out_trade_no'] = $model->out_trade_no;
+
+                // 日志记录
+                $logPath = $this->getLogPath(PayEnum::$payTypeAction[$model->pay_type]);
+                FileHelper::writeLog($logPath, Json::encode(ArrayHelper::toArray($message)));
+
+                //操作成功，则返回 true .
+                if ($this->pay($message)) {
+                    $result['verification_status'] = 'true';
+                }
+                else {
+                    throw new \Exception('数据库操作异常');
+                }
+            }
+        } catch (\Exception $e) {
+            // 记录报错日志
+            $logPath = $this->getLogPath('error');
+            FileHelper::writeLog($logPath, $e->getMessage());
+        }
+        return $result;
+    }
+
+    /**
+     * 此方法复制于 NotifyController.php
+     * @param $message
+     * @return bool
+     */
+    protected function pay($message)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if (!($payLog = Yii::$app->services->pay->findByOutTradeNo($message['out_trade_no']))) {
+                throw new UnprocessableEntityHttpException('找不到支付信息');
+            };
+
+            // 支付完成
+            if ($payLog->pay_status == StatusEnum::ENABLED) {
+                return true;
+            };
+
+            $payLog->attributes = $message;
+            $payLog->pay_status = StatusEnum::ENABLED;
+            $payLog->pay_time = time();
+            if (!$payLog->save()) {
+                throw new UnprocessableEntityHttpException('日志修改失败');
+            }
+
+            // 业务回调
+            Yii::$app->services->pay->notify($payLog, null);
+
+            $transaction->commit();
+            return true;
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+
+            // 记录报错日志
+            $logPath = $this->getLogPath('error');
+            FileHelper::writeLog($logPath, $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @param $type
+     * @return string
+     */
+    protected function getLogPath($type)
+    {
+        return Yii::getAlias('@runtime') . "/pay-logs/" . date('Y_m_d') . '/' . $type . '.txt';
     }
 }

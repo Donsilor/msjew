@@ -200,15 +200,15 @@ class AliPay
 
     /**
      * 异步/同步通知
-     *
+     * @param $info
      * @return \Omnipay\Alipay\Requests\AopCompletePurchaseRequest
      * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
-    public function notify()
+    public function notify($info=[])
     {
         $gateway = $this->create();
         $request = $gateway->completePurchase();
-        $request->setParams(array_merge(Yii::$app->request->post(), Yii::$app->request->get())); // Optional
+        $request->setParams(array_merge(Yii::$app->request->post(), Yii::$app->request->get(), $info)); // Optional
 
         return $request;
     }

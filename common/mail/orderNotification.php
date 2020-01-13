@@ -89,7 +89,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 								    <?php }?>
 								</dl>
 								<?php if($order->order_status == OrderStatusEnum::ORDER_UNPAID) {?>
-								<a href="http://www2.bddco.com/payment-options?orderId=<?= $order->id?>&price=<?= $order->account->order_amount?>&coinType=<?= $currency?>" style="text-decoration:none" target="_blank"><div class="btn">立即付款</div></a>
+								<a href="http://www2.bddco.com/payment-options?orderId=<?= $order->id?>&price=<?= sprintf("%.2f",bcmul($order->account->order_amount,$exchange_rate,3))?>&coinType=<?= $currency?>" style="text-decoration:none" target="_blank"><div class="btn">立即付款</div></a>
 							    <?php }?>
 							</li>
 						</ol>

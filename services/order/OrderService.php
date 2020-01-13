@@ -13,6 +13,8 @@ use common\models\order\OrderAddress;
 use common\enums\PayStatusEnum;
 use common\models\common\EmailLog;
 use common\enums\LanguageEnum;
+use common\models\member\Member;
+use common\helpers\RegularHelper;
 
 /**
  * Class OrderService
@@ -38,6 +40,8 @@ class OrderService extends Service
      */
     public function createOrder($cart_ids,$buyer_id, $buyer_address_id, $order_info)
     {
+        $buyer = Member::find()->where(['id'=>$buyer_id])->one();
+        
         if($cart_ids && !is_array($cart_ids)) {
             $cart_ids = explode(',', $cart_ids);
         }
@@ -113,13 +117,14 @@ class OrderService extends Service
         $orderAddress = new OrderAddress();
         $orderAddress->attributes = $buyerAddress->toArray();
         $orderAddress->order_id   = $order->id;
+
         if(false === $orderAddress->save()) {
             throw new UnprocessableEntityHttpException($this->getError($orderAddress));
         }  
         //清空购物车
         OrderCart::deleteAll(['id'=>$cart_ids,'member_id'=>$buyer_id]);
         //订单发送邮件
-        if($this->language != LanguageEnum::ZH_CN && $orderAddress->email) {
+        if(RegularHelper::verify('email',$buyer->username) && $orderAddress->email) {
             \Yii::$app->services->mailer->send($orderAddress->email,EmailLog::USAGE_ORDER_NOTIFICATION,['code'=>$order->id]);
         }
         

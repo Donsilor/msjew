@@ -34,12 +34,12 @@ class StyleController extends OnAuthController
             "sale_price"=>'m.sale_price',//价格
             "sale_volume"=>'m.sale_volume',//销量
         ];
-        $type_id = \Yii::$app->request->post("categoryId");//产品线ID
+        $type_id = \Yii::$app->request->get("categoryId");//产品线ID
         if(!$type_id){
             return ResultHelper::api(422, '产品线不能为空');
         }
-        $order_param = \Yii::$app->request->post("orderParam");//排序参数
-        $order_type = \Yii::$app->request->post("orderType", 1);//排序方式 1-升序；2-降序;
+        $order_param = \Yii::$app->request->get("sortBy");//排序参数
+        $order_type = \Yii::$app->request->get("sortType", 1);//排序方式 1-升序；2-降序;
 
         //排序
         $order = '';
@@ -53,25 +53,24 @@ class StyleController extends OnAuthController
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
 
-        $params = \Yii::$app->request->post("params");  //属性帅选
-
-//        $params = json_decode($params);
+        $ev = \Yii::$app->request->get("ev");  //属性帅选
+        $params = explode('^',$ev);
         if(!empty($params)){
 
             $subQuery = AttributeIndex::find()->alias('a')->select(['a.style_id'])->distinct("a.style_id");
             if($type_id) {
                 $query ->andWhere(['m.type_id'=>$type_id]);
             }
-
             $k = 0;
             foreach ($params as $param){
-                $value_type = $param['valueType'];
-
-                $param_name = $param['paramName'];
+                $param_arr = explode('=',$param);
+                $param_name = $param_arr[0];
+                $param_value = $param_arr[1];
                 //价格不是属性,直接查询主表
                 if($param_name == 'sale_price'){
-                    $min_price = $param['beginValue'];
-                    $max_price = $param['endValue'];
+                    $param_sale_price_arr = explode('-',$param_value);
+                    $min_price = $param_sale_price_arr[0];
+                    $max_price = $param_sale_price_arr[1];
                     if(is_numeric($min_price)){
                         $min_price = $this->exchangeAmount($min_price,2, 'CNY', $this->getCurrencySign());
                         $query->andWhere(['>','m.sale_price',$min_price]);
@@ -82,27 +81,23 @@ class StyleController extends OnAuthController
                     }
                     continue;
                 }
-                if(isset($param['paramId']) && is_numeric($param['paramId'])){
-                    $attr_id = $param['paramId'];
-                    $k++;
-                    $alias = "a".$k; //别名
-                    $on = "{$alias}.style_id = a.style_id and {$alias}.attr_id = $attr_id ";
+
+
+                if($param_name == 'engaged_style'){ //订婚戒指款式
+                    $attr_id = 40;
+                }elseif ($param_name == 'material'){  //成色
+                    $attr_id = 10;
                 }else{
                     continue;
                 }
+                $k++;
+                $alias = "a".$k; //别名
+                $on = "{$alias}.style_id = a.style_id and {$alias}.attr_id = $attr_id ";
+                $config_values = array_merge(array_diff(array($param_value), array(-1)));
+                if(empty($config_values)) continue;
+                $config_values_str = join(',',$config_values);
+                $subQuery->innerJoin(AttributeIndex::tableName().' '.$alias, $on." and {$alias}.attr_value_id in ({$config_values_str})");
 
-
-                if($value_type == 1){
-                    $config_values = $param['configValues'];
-                    $config_values = array_merge(array_diff($config_values, array(-1)));
-                    if(empty($config_values)) continue;
-                    $config_values_str = join(',',$config_values);
-                    $subQuery->innerJoin(AttributeIndex::tableName().' '.$alias, $on." and {$alias}.attr_value_id in ({$config_values_str})");
-                }else if($value_type == 2){
-                    $begin_value = $param['beginValue'];
-                    $end_value = $param['endValue'];
-                    $subQuery->innerJoin(AttributeIndex::tableName().' '.$alias, $on." and {$alias}.attr_value > {$begin_value} and {$alias}.attr_value <= {$end_value}");
-                }
             }
 //            echo $subQuery->createCommand()->getSql();exit;
 //            return $subQuery->asArray()->all();
@@ -151,16 +146,40 @@ class StyleController extends OnAuthController
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $webSite['moduleGoods'][] = $moduleGoods;
         }
+        $advert_list = \Yii::$app->services->advert->getTypeAdvertImage(0,3, $language);
+        $advert = array();
+        foreach ($advert_list as $val){
+            $advertImgModelList = array();
+            $advertImgModelList['addres'] = $val['adv_url'];
+            $advertImgModelList['image'] = $val['adv_image'];
+            $advertImgModelList['title'] = $val['title'];
+
+
+            $advert['advertImgModelList'][] = $advertImgModelList;
+        }
+        $advert['tdOpenType'] = 1;
+
+
+        $activity_list = \Yii::$app->services->advert->getTypeAdvertImage(0,4, $language);
+        $activity = array();
+        foreach ($activity_list as $val){
+            $moduleActivity = array();
+            $moduleActivity['wapUrl'] = $val['adv_url'];
+            $moduleActivity['wapImage'] = $val['adv_image'];
+            $moduleActivity['title'] = $val['title'];
+            $moduleActivity['showType'] = 2;
+
+
+            $activity['moduleActivity'][] = $moduleActivity;
+        }
+        $activity['moduleTitle'] = '精选订婚钻戒';
+
+
+
         $result = array();
-        $result['webSite'] = $webSite;
-        $result['advert'] = array(
-            'dsDesc' => '訂婚戒指——banner全屏',
-            'dsImg' => '/adt/image1566979840127.png',
-            'dsName' => '訂婚戒指——banner全屏',
-            'dsShowType' => 1,
-            'tdOpenType' => 1,
-            'tdStatus' => 1,
-        );
+        $result['webSite'][0] = $webSite;
+        $result['advert'][0] = $advert;
+        $result['webSite'][1] = $activity;
         return $result;
 
     }
@@ -173,7 +192,7 @@ class StyleController extends OnAuthController
      */
     public function actionDetail()
     {
-        $id = \Yii::$app->request->post("goodsId");
+        $id = \Yii::$app->request->get("goodsId");
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }

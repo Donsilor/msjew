@@ -43,12 +43,11 @@ class Contact extends BaseModel
         return [
             [['member_id', 'type_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['content'], 'string'],
-            [['book_time'], 'safe'],
+            [['book_time','ip_location'], 'safe'],
             [['language'], 'string', 'max' => 5],
             [['first_name', 'last_name', 'telphone'], 'string', 'max' => 30],
-            [['email'], 'string', 'max' => 60],
             [['mobile_code'], 'string', 'max' => 10],
-            [['ip', 'city'], 'string', 'max' => 20],
+            [['ip'], 'string', 'max' => 20],
         ];
     }
 
@@ -63,12 +62,11 @@ class Contact extends BaseModel
             'member_id' => '会员ID',
             'first_name' => '名',
             'last_name' => '姓',
-            'email' => Yii::t('member_book', '邮箱'),
             'telphone' => '电话',
             'mobile_code' => '手机区号',
             'type_id' => '留言类别',
             'ip' => Yii::t('member_book', 'Ip'),
-            'city' => Yii::t('member_book', '所属城市'),
+            'ip_location' => Yii::t('member_book', 'Ip地址'),
             'content' => '留言内容',
             'status' => Yii::t('member_book', '跟进状态'),
             'book_time' => '预约时间',

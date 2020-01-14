@@ -31,10 +31,7 @@ class DiamondController extends OnAuthController
     public function actionSearch(){
         $sort_map = [
             "sale_price"=>'m.sale_price',//价格
-            "carat"=>'m.carat',//石重
-            "clarity"=>'m.clarity',//净度
-            "cut"=>'m.cut',//切割
-            "color"=>'m.color',//颜色
+            "sale_volume"=>'m.sale_volume',//销量
         ];
         $params_map = [
             'shape'=>'m.shape',//形状
@@ -51,12 +48,13 @@ class DiamondController extends OnAuthController
             'fluorescence'=>'m.fluorescence',//荧光
         ];
 
-        $type_id = \Yii::$app->request->post("categoryId");//产品线ID
+        $type_id = \Yii::$app->request->get("categoryId");//产品线ID
         if(!$type_id){
             return ResultHelper::api(422, '产品线不能为空');
         }
-        $order_param = \Yii::$app->request->post("orderParam");//排序参数
-        $order_type = \Yii::$app->request->post("orderType", 1);//排序方式 1-升序；2-降序;
+        $order_param = \Yii::$app->request->get("sortBy");//排序参数
+        $selectGoodsId = \Yii::$app->request->get("selectGoodsId");//托ID
+        $order_type = \Yii::$app->request->get("sortType", 1);//排序方式 1-升序；2-降序;
 
         //排序
         $order = '';
@@ -73,9 +71,14 @@ class DiamondController extends OnAuthController
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
 
-        $params = \Yii::$app->request->post("params");  //属性帅选
+        $ev = \Yii::$app->request->get("ev");  //属性帅选
+        $params = explode('^',$ev);
         if(!empty($params)){
             foreach ($params as $param){
+                $param_arr = explode('=',$param);
+                $param_name = $param_arr[0];
+                $param_value = $param_arr[1];
+
                 $value_type = $param['valueType'];
                 $param_name = $param['paramName'];
                 if($value_type == 1){

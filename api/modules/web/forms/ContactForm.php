@@ -22,7 +22,7 @@ class ContactForm extends Model
     public $language;
     public $content;
     public $ip;
-    public $city;
+    public $ip_location;
 
     /**
      * @inheritdoc

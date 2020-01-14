@@ -90,9 +90,9 @@ HTML;
 //                'headerOptions' => ['width'=>'120'],
 //            ],
             [
-                'attribute' => 'city',
-                'value' => 'city',
-                'filter' => Html::activeTextInput($searchModel, 'city', [
+                'attribute' => 'ip_location',
+                'value' => 'ip_location',
+                'filter' => Html::activeTextInput($searchModel, 'ip_location', [
                     'class' => 'form-control',
                 ]),
                 'format' => 'raw',

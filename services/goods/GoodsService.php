@@ -586,6 +586,7 @@ class GoodsService extends Service
             ->asArray()
             ->all();
         $details = array();
+        $totalStock = 0;
         foreach ($goods_array  as $key => $val){
             $goods_spec = json_decode($val['goods_spec']);
             $goods_spec = (array)$goods_spec;
@@ -606,8 +607,8 @@ class GoodsService extends Service
 
             $details[$key]['barCode'] = null;
             $details[$key]['productNumber'] = null;
-            $details[$key]['stock'] = $val['goods_storage'];;
-            $details[$key]['warehouse'] = $val['warehouse'];;
+            $details[$key]['stock'] = $val['goods_storage'];
+            $details[$key]['warehouse'] = $val['warehouse'];
             $details[$key]['categoryId'] = $model['type_id'];
             $details[$key]['goodsDetailsCode'] = $val['goods_sn'];
             $details[$key]['retailMallPrice'] = $this->exchangeAmount($val['sale_price']);
@@ -615,10 +616,12 @@ class GoodsService extends Service
             $details[$key]['goodsId'] = $style_id;
             $details[$key]['id'] = $val['id'];
             $details[$key]['categoryId'] = $model['type_id'];
+            $totalStock += $val['goods_storage'];
 
         }
 
         $style['details'] = $details;
+        $style['totalStock'] = $totalStock;
 
         return $style;
 

@@ -72,10 +72,9 @@ class ContactController extends OnAuthController
         $ip = Yii::$app->request->getUserIP();
         $model->ip = $ip;
         //根据ip获取城市
-        $ipLocation = new Ip2Location();
-        $locationModel = $ipLocation->getLocation($ip);
-        $location = $locationModel->toArray();
-        $model->city = $location['country'];
+        list(,$address) = Yii::$app->ipLocation->getLocation($ip);
+
+        $model->ip_location = $address;
         $contact = new $this->modelClass();
         $contact->attributes = ArrayHelper::toArray($model);
         if (!$contact->save()) {

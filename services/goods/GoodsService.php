@@ -291,11 +291,11 @@ class GoodsService extends Service
             $query = Goods::find()->alias('g')
                     ->innerJoin(Style::tableName()." s","g.style_id=s.id")
                     ->innerJoin(StyleLang::tableName()." sl","s.id=sl.master_id and sl.language='{$language}'")
-                    ->select(['g.*','s.style_sn','sl.style_name as goods_name','sl.goods_body','s.style_attr as goods_attr'])
+                    ->select(['g.*','s.style_sn','s.status as style_status','sl.style_name as goods_name','sl.goods_body','s.style_attr as goods_attr'])
                     ->where(['g.id'=>$goods_id]);
             
             $goods = $query->asArray()->one();
-            
+            $goods['status'] = $goods['style_status'] == StatusEnum::ENABLED ? $goods['status']:StatusEnum::DISABLED;
        }  
        
        if($format_attr == true) { 

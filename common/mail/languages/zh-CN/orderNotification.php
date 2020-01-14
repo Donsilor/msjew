@@ -22,34 +22,34 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 			<div class="Mail" id="app">
 				<div class="Head">
 					<span class="logo">BDD Co.</span>
-					<em class="sign">品質優越鑽石網上店 | 首飾專家</em>
+					<em class="sign">质量优越钻石网上店 | 首饰专家</em>
 				</div>
 				<div class="Main">
 					<div class="info">
 						<dl>
-							<dt>尊敬的顧客：</dt>
+							<dt>尊敬的顾客：</dt>
 							<?php if($order->order_status == OrderStatusEnum::ORDER_UNPAID) {?>
-							<dd>感謝選擇BDD Co.。我們十分重視您的訂單。請細心閱讀所有有關訂單的郵件，如資料有誤，請立即聯絡我們發電郵至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>感谢选择BDD Co.。我们十分重视您的订单。请细心阅读所有有关订单的邮件，如数据有误，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
 							<?php } elseif($order->order_status == OrderStatusEnum::ORDER_PAID){?>
-							<dd>您的訂單已經支付成功！感謝選擇BDD Co.。我們十分重視您的訂單，已經盡快為您安排，產品檢測無誤第壹時間給您派送，如有任何疑問，請立即聯絡我們發電郵至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>您的订单已经支付成功！感谢选择BDD Co.。我们十分重视您的订单，已经尽快为您安排，产品检测无误第壹时间给您派送，如有任何疑问，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
 							<?php } elseif($order->order_status == OrderStatusEnum::ORDER_SEND){?>
-							<dd>您的訂單已經發貨成功！感謝選擇BDD Co.。如有任何疑問，請立即聯絡我們發電郵至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>您的订单已经发货成功！感谢选择BDD Co.。如有任何疑问，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
 							<?php }?>							
 						</dl>
 						<dl>
-							<dt>訂單詳情</dt>
+							<dt>订单详情</dt>
 							<dd>
-								<span>付款訊息：</span><span>在線支付<i><?= OrderStatusEnum::getValue($order->order_status) ?></i></span>
+								<span>付款信息：</span><span>在線支付<i><?= OrderStatusEnum::getValue($order->order_status) ?></i></span>
 							</dd>
-							<dd><span>訂單編號：</span><span class="orderno"><?= $order->order_sn ?></span></dd>							
+							<dd><span>订单编号：</span><span class="orderno"><?= $order->order_sn ?></span></dd>							
 							<?php if($order->order_status == OrderStatusEnum::ORDER_UNPAID) {?>
-							<dd><span>下單時間：</span><span><?= \Yii::$app->formatter->asDatetime($order->created_at); ?></span></dd>
+							<dd><span>下单时间：</span><span><?= \Yii::$app->formatter->asDatetime($order->created_at); ?></span></dd>
 							<?php }elseif($order->order_status == OrderStatusEnum::ORDER_PAID) {?>
-							<dd><span>付款時間：</span><span><?= \Yii::$app->formatter->asDatetime($order->payment_time); ?></span></dd>
+							<dd><span>付款时间：</span><span><?= \Yii::$app->formatter->asDatetime($order->payment_time); ?></span></dd>
 							<?php }elseif($order->order_status == OrderStatusEnum::ORDER_SEND) {?>
 							<dd><span>物流公司：</span><span><?= ExpressEnum::getValue($order->express_id); ?></span></dd>
-							<dd><span>物流單號：</span><span><?= $order->express_no; ?></span></dd>
-							<dd><span>發貨時間：</span><span><?= \Yii::$app->formatter->asDatetime($order->delivery_time); ?></span></dd>
+							<dd><span>物流单号：</span><span><?= $order->express_no; ?></span></dd>
+							<dd><span>发货时间：</span><span><?= \Yii::$app->formatter->asDatetime($order->delivery_time); ?></span></dd>
 							<?php }?>
 						</dl>
 					</div>
@@ -88,11 +88,11 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 						<ol>
 							<li>
 								<dl>
-									<dt class="sum"><span>商品總額：</span><em><?= $currency?>&nbsp;<?= number_format(bcmul($order->account->goods_amount,$exchange_rate,3),2)?></em></dt>
-									<dd class="num"><span>優惠：</span><em class="discount">-<?= $currency?>&nbsp;<?= number_format(bcmul($order->account->discount_amount,$exchange_rate,3),2)?></em></dd>
-									<dd class="num"><span>運費：</span><em>+<?= $currency?>&nbsp;<?= number_format(bcmul($order->account->shipping_fee,$exchange_rate,3),2)?></em></dd>
-									<dd class="num"><span>稅費：</span><em>+<?= $currency?>&nbsp;<?= number_format(bcmul($order->account->tax_fee,$exchange_rate,3),2)?></em></dd>
-									<dt class="count"><span>訂單總額：</span><em class="total"><?= $order->account->currency?>&nbsp;<?= number_format(bcmul($order->account->order_amount,$exchange_rate,3),2)?></em></dt>
+									<dt class="sum"><span>商品总额：</span><em><?= $currency?>&nbsp;<?= number_format(bcmul($order->account->goods_amount,$exchange_rate,3),2)?></em></dt>
+									<dd class="num"><span>优惠：</span><em class="discount">-<?= $currency?>&nbsp;<?= number_format(bcmul($order->account->discount_amount,$exchange_rate,3),2)?></em></dd>
+									<dd class="num"><span>运费：</span><em>+<?= $currency?>&nbsp;<?= number_format(bcmul($order->account->shipping_fee,$exchange_rate,3),2)?></em></dd>
+									<dd class="num"><span>税费：</span><em>+<?= $currency?>&nbsp;<?= number_format(bcmul($order->account->tax_fee,$exchange_rate,3),2)?></em></dd>
+									<dt class="count"><span>订单总额：</span><em class="total"><?= $order->account->currency?>&nbsp;<?= number_format(bcmul($order->account->order_amount,$exchange_rate,3),2)?></em></dt>
 									<?php if($order->order_status == OrderStatusEnum::ORDER_PAID) {?>
 									<dt class="count"><span>实际支付：</span><em class="total"><?= $order->account->currency?>&nbsp;<?= number_format(bcmul($order->account->pay_amount,$exchange_rate,3),2)?></em></dt>
 								    <?php }?>
@@ -100,7 +100,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 								<?php if($order->order_status == OrderStatusEnum::ORDER_UNPAID) {?>
 								<a href="<?= \Yii::$app->params['frontBaseUrl']?>/payment-options?orderId=<?= $order->id?>&price=<?= sprintf("%.2f",bcmul($order->account->order_amount,$exchange_rate,3))?>&coinType=<?= $currency?>" style="text-decoration:none" target="_blank"><div class="btn">立即付款</div></a>
 							    <?php } else {?>
-							    <a href="<?= \Yii::$app->params['frontBaseUrl']?>/account/order-details?orderId=<?= $order->id?>" style="text-decoration:none" target="_blank"><div class="btn">查看訂單</div></a>
+							    <a href="<?= \Yii::$app->params['frontBaseUrl']?>/account/order-details?orderId=<?= $order->id?>" style="text-decoration:none" target="_blank"><div class="btn">查看订单</div></a>
 							    <?php }?>
 							</li>
 						</ol>
@@ -109,8 +109,8 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 						<dl>
 							<dt>须知事项</dt>
 							<dd>
-								由於每一枚鑽石都獨一無二和我們每日的訂單量相當龐大，對於選購了鑽石的客戶，我們需要進一步確認檢查以確保該枚鑽石确有存貨。目前階段，您的訂單將會暫獲保留最長達48個營業小時。存貨情況一旦獲得確認，我們將會發送電郵通知您裝運的日期。
-								如果您是透過銀行電匯付款，存貨情況一旦獲得確認，我們將提供進一步的電匯指示。為確保運送不被延遲，請在收到電匯指示後盡快把款項匯出。請注意，款項從您匯出的銀行到達我們的銀行一般需時24個小時。貨品將在確認收到款項後發出。
+								由于每一枚钻石都独一无二和我们每日的订单量相当庞大，对于选购了钻石的客户，我们需要进一步确认检查以确保该枚钻石确有存货。
+								目前阶段，您的订单将会暂获保留最长达48个营业小时。存货情况一旦获得确认，我们将会发送电邮通知您装运的日期。如果您是透过银行电汇付款，存货情况一旦获得确认，我们将提供进一步的电汇指示。为确保运送不被延迟，请在收到电汇指示后尽快把款项导出。请注意，款项从您导出的银行到达我们的银行一般需时24个小时。货品将在确认收到款项后发出。
 							</dd>
 						</dl>
 					</div>
@@ -118,13 +118,13 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 				<div class="Foot">
 					<div class="intro">
 						<ul class="type">
-							<li>結婚戒指</li>
-							<li>訂婚戒指</li>
-							<li>飾品</li>
+							<li>结婚戒指</li>
+							<li>订婚戒指</li>
+							<li>饰品</li>
 						</ul>
 						<div class="copy">
-							<p>如果您對BDDCO的產品有任何反饋或建議，或者使用時遇到了什麼問题</p>
-							<p>歡迎隨時與我們聯繫：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
+							<p>如果您对BDDCO的产品有任何反馈或建议，或者使用时遇到了什么问题</p>
+							<p>欢迎随时与我们联系：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
 							<em>Copyright ©2012 - <?= date("Y")?> BDD Co., Ltd.</em>
 						</div>
 					</div>

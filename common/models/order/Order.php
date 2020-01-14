@@ -24,6 +24,8 @@ use Yii;
  * @property int $refund_status 退款状态:0是无退款,1是部分退款,2是全部退款
  * @property string $express_id 快递类型
  * @property string $express_no 快递单号
+ * @property int $delivery_status 发货状态
+ * @property int $delivery_time 发货时间
  * @property int $order_from 订单来源 1：web 2：mobile
  * @property int $order_type 订单类型(1普通订单,2预定订单,3门店自提订单)
  * @property int $api_pay_time 在线支付动作时间,只要向第三方支付平台提交就会更新
@@ -52,7 +54,7 @@ class Order extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id','ip_area_id','payment_type','payment_status', 'payment_time', 'member_id', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at', 'follower_id','followed_status' ,'followed_time', 'express_id'], 'integer'],
+            [['merchant_id','ip_area_id','payment_type','payment_status', 'payment_time', 'member_id', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at', 'follower_id','followed_status' ,'followed_time', 'express_id','delivery_time','delivery_status'], 'integer'],
             [['language'], 'safe'],
             [['order_sn','pay_sn'], 'string', 'max' => 20],
             [['express_no', 'trade_no'], 'string', 'max' => 50],
@@ -83,6 +85,8 @@ class Order extends \common\models\base\BaseModel
             'refund_status' => '退款状态',
             'express_id' => '快递方式',
             'express_no' => '快递单号',
+            'delivery_status' => '发货状态',
+            'delivery_time' => '发货时间',
             'order_from' => '订单来源',
             'order_type' => '订单类型',
             'api_pay_time' => 'Api支付时间',
@@ -99,6 +103,21 @@ class Order extends \common\models\base\BaseModel
             'created_at' => '下单时间',
             'updated_at' => '更新时间',
         ];
+    }
+
+    /**
+     * 获取不同状态的数据行数
+     * @param $orderStatus
+     * @return int
+     */
+    static public function getCountByOrderStatus($orderStatus=null)
+    {
+        $where = [];
+
+        if(!is_null($orderStatus))
+            $where['order_status'] = $orderStatus;
+
+        return (int)self::find()->where($where)->count('id');
     }
 
     /**

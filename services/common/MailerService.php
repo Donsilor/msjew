@@ -45,14 +45,16 @@ class MailerService extends Service
      * @param string $template 对应邮件模板
      * @throws \yii\base\InvalidConfigException
      */
-    public function send($email,$usage,$params = [])
-    {
+    public function send($email,$usage,$params = [],$language = null)
+    {        
         $usageExplains = EmailLog::$usageExplain;        
         $usageTemplates = EmailLog::$usageTemplates;
         
         $subject  = $usageExplains[$usage]??'';
         $template = $usageTemplates[$usage]??'';
-        
+        if($language) {
+            $template = 'languages/'.$language.'/'.$template;
+        }
         if ($this->queueSwitch == true) {
             $_params = array_merge($params,[
                     'email' => $email,

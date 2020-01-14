@@ -58,7 +58,9 @@
         "overtrue/wechat": "~4.2.2",
         "mingyoung/dingtalk": "2.0",
         "kartik-v/yii2-checkbox-x": "@dev",
-		"paypal/rest-api-sdk-php":"^1.14"
+		"paypal/rest-api-sdk-php":"^1.14",
+        "omnipay/paypal": "v3.0.2",
+        "lokielse/omnipay-global-alipay": "v3.0.4"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

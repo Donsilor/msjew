@@ -73,6 +73,9 @@ class PayController extends OnAuthController
         }
 
         //alipay
+        if(!empty($query['out_trade_no'])) {
+            $where['out_trade_no'] = $query['out_trade_no'];
+        }
 
 
         if(!empty($where) && ($model = PayLog::find()->where($where)->one())) {
@@ -112,6 +115,12 @@ class PayController extends OnAuthController
 
             //验证是否支付
             $notify = $pay->verify(array_merge($query, ['model'=>$model]));
+
+            //验证重试一次
+            if(!$notify) {
+                sleep(3);
+                $notify = $pay->verify(array_merge($query, ['model'=>$model]));
+            }
 
             if($notify) {
                 $message = [];

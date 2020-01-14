@@ -217,9 +217,17 @@ class AliPay
      * 验证支付是否成功
      * @param array $info
      * @return bool
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
     public function verify($info=[])
     {
-        return true;
+        unset($info['orderId']);
+        unset($info['model']);
+        $gateway = $this->create();
+        $request = $gateway->completePurchase();
+        $request->setAlipayPublicKey(Yii::$app->debris->config('alipay_notification_cert_path'));
+        $request->setParams($info); // Optional
+        $response = $request->send();
+        return $response->isPaid();
     }
 }

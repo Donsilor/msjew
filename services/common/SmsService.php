@@ -81,7 +81,7 @@ class SmsService extends Service
      * @return string|null
      * @throws UnprocessableEntityHttpException
      */
-    public function send($mobile, $usage, $parmas = [])
+    public function send($mobile, $usage, $params = [])
     {
         if ($this->queueSwitch == true) {
             
@@ -94,7 +94,7 @@ class SmsService extends Service
             return $messageId;
         }
 
-        return $this->realSend($mobile, $usage,$parmas);
+        return $this->realSend($mobile, $usage,$params);
     }
 
     /**
@@ -127,9 +127,7 @@ class SmsService extends Service
                 $easySms = new EasySms($this->config);
                 $result = $easySms->send($mobile, [
                     'template' => $templateID,
-                    'data' => [
-                        'code' => $code,
-                    ],
+                    'data' => $params,
                 ]); 
             } else {
                 $result = '测试：未设置模板'.$usage;

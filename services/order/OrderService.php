@@ -55,6 +55,9 @@ class OrderService extends Service
             throw new UnprocessableEntityHttpException("收货地址不能为空");
         }
         //$languages = $this->getLanguages();
+        if(empty($orderAccountTax['orderGoodsList'])) {
+            throw new UnprocessableEntityHttpException("商品信息为空");
+        }
         $buyerAddress = $orderAccountTax['buyerAddress'];
         $orderGoodsList   = $orderAccountTax['orderGoodsList'];
         $currency = $orderAccountTax['currency'];

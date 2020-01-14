@@ -40,7 +40,7 @@ class SmsLog extends \common\models\base\BaseModel
         self::USAGE_REGISTER => '用户注册验证码',
         self::USAGE_UP_PWD => '修改密码验证码',
         self::USAGE_ORDER_SEND => '订单发货通知',
-    ];
+    ];   
     /**
      * {@inheritdoc}
      */

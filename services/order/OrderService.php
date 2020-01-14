@@ -227,8 +227,11 @@ class OrderService extends Service
     public function sendOrderNotification($order_id)
     {
         $order = Order::find()->where(['id'=>$order_id])->one();
-        if(RegularHelper::verify('email',$order->member->username) && $order->address->email) {
-            \Yii::$app->services->mailer->send($order->address->email,EmailLog::USAGE_ORDER_NOTIFICATION,['code'=>$order->id]);
+        if(RegularHelper::verify('email',$order->member->username)) {
+            $usage = EmailLog::$orderStatusMap[$order->order_status] ?? '';
+            if($usage && $order->address->email) {
+                \Yii::$app->services->mailer->send($order->address->email,$usage,['code'=>$order->id]);
+            }
         }else if($order->address->mobile){
             if($order->order_status == OrderStatusEnum::ORDER_SEND) {
                 $params = [
@@ -236,7 +239,7 @@ class OrderService extends Service
                      'express_name' => ExpressEnum::getValue($order->express_id),
                      'express_no' =>$order->express_no,
                      'company_name'=>'BDD Co.', 
-                     'to_email' => 'admin@bddco.com'
+                     'company_email' => 'admin@bddco.com'
                 ];
                 \Yii::$app->services->sms->send($order->address->mobile,SmsLog::USAGE_ORDER_SEND,$params);
             }

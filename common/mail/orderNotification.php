@@ -2,6 +2,7 @@
 use common\models\order\Order;
 use common\enums\OrderStatusEnum;
 use common\helpers\ImageHelper;
+use common\enums\ExpressEnum;
 
 $order_id = $code;
 $order = Order::find()->where(['id'=>$order_id])->one();
@@ -40,8 +41,16 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 							<dd>
 								<span>付款訊息：</span><span>在線支付<i><?= OrderStatusEnum::getValue($order->order_status) ?></i></span>
 							</dd>
-							<dd><span>訂單編號：</span><span class="orderno"><?= $order->order_sn ?></span></dd>
+							<dd><span>訂單編號：</span><span class="orderno"><?= $order->order_sn ?></span></dd>							
+							<?php if($order->order_status == OrderStatusEnum::ORDER_UNPAID) {?>
 							<dd><span>下單時間：</span><span><?= \Yii::$app->formatter->asDatetime($order->created_at); ?></span></dd>
+							<?php }elseif($order->order_status == OrderStatusEnum::ORDER_PAID) {?>
+							<dd><span>付款時間：</span><span><?= \Yii::$app->formatter->asDatetime($order->payment_time); ?></span></dd>
+							<?php }elseif($order->order_status == OrderStatusEnum::ORDER_SEND) {?>
+							<dd><span>物流公司：</span><span><?= ExpressEnum::getValue($order->express_id); ?></span></dd>
+							<dd><span>物流單號：</span><span><?= $order->express_no; ?></span></dd>
+							<dd><span>發貨時間：</span><span><?= \Yii::$app->formatter->asDatetime($order->delivery_time); ?></span></dd>
+							<?php }?>
 						</dl>
 					</div>
 					<div class="list">
@@ -89,7 +98,9 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 								    <?php }?>
 								</dl>
 								<?php if($order->order_status == OrderStatusEnum::ORDER_UNPAID) {?>
-								<a href="http://www2.bddco.com/payment-options?orderId=<?= $order->id?>&price=<?= sprintf("%.2f",bcmul($order->account->order_amount,$exchange_rate,3))?>&coinType=<?= $currency?>" style="text-decoration:none" target="_blank"><div class="btn">立即付款</div></a>
+								<a href="<?= \Yii::$app->params['frontBaseUrl']?>/payment-options?orderId=<?= $order->id?>&price=<?= sprintf("%.2f",bcmul($order->account->order_amount,$exchange_rate,3))?>&coinType=<?= $currency?>" style="text-decoration:none" target="_blank"><div class="btn">立即付款</div></a>
+							    <?php } else {?>
+							    <a href="<?= \Yii::$app->params['frontBaseUrl']?>/account/order-details?orderId=<?= $order->id?>" style="text-decoration:none" target="_blank"><div class="btn">查看訂單</div></a>
 							    <?php }?>
 							</li>
 						</ol>

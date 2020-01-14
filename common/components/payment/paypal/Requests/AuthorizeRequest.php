@@ -139,12 +139,10 @@ class AuthorizeRequest extends AbstractPaypalRequest
         $capture = new Capture();
         $capture->setIsFinalCapture(true);
 
-        $capture->setAmount(new Amount(
-            sprintf('{
-            "total": "%s",
-            "currency": "%s"
-        }', $model->total_fee, $model->currency)
-        ));
+        $amount = new Amount();
+        $amount->setCurrency($model->currency)
+            ->setTotal($model->total_fee);
+        $capture->setAmount($amount);
 
         // ### Capture Order
         //通过传递我们创建的捕获对象来捕获订单。

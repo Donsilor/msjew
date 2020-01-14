@@ -113,6 +113,12 @@ class PayController extends OnAuthController
             //验证是否支付
             $notify = $pay->verify(array_merge($query, ['model'=>$model]));
 
+            //验证重试一次
+            if(!$notify) {
+                sleep(3);
+                $notify = $pay->verify(array_merge($query, ['model'=>$model]));
+            }
+
             if($notify) {
                 $message = [];
                 $message['out_trade_no'] = $model->out_trade_no;

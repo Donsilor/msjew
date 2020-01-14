@@ -217,9 +217,14 @@ class AliPay
      * 验证支付是否成功
      * @param array $info
      * @return bool
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
     public function verify($info=[])
     {
-        return true;
+        $gateway = $this->create();
+        $request = $gateway->completePurchase();
+        $request->setParams(array_merge(Yii::$app->request->post(), Yii::$app->request->get(), $info)); // Optional
+        $response = $request->send();
+        return $response->isPaid();
     }
 }

@@ -233,7 +233,7 @@ class OrderService extends Service
         if(RegularHelper::verify('email',$order->member->username)) {
             $usage = EmailLog::$orderStatusMap[$order->order_status] ?? '';
             if($usage && $order->address->email) {
-                \Yii::$app->services->mailer->send($order->address->email,$usage,['code'=>$order->id]);
+                \Yii::$app->services->mailer->send($order->address->email,$usage,['code'=>$order->id],$order->language);
             }
         }else if($order->address->mobile){
             if($order->order_status == OrderStatusEnum::ORDER_SEND) {
@@ -244,7 +244,7 @@ class OrderService extends Service
                      'company_name'=>'BDD Co.', 
                      'company_email' => 'admin@bddco.com'
                 ];
-                \Yii::$app->services->sms->send($order->address->mobile,SmsLog::USAGE_ORDER_SEND,$params);
+                \Yii::$app->services->sms->send($order->address->mobile,SmsLog::USAGE_ORDER_SEND,$params,$order->language);
             }
         }
     }

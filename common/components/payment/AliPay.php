@@ -221,9 +221,12 @@ class AliPay
      */
     public function verify($info=[])
     {
+        unset($info['orderId']);
+        unset($info['model']);
         $gateway = $this->create();
         $request = $gateway->completePurchase();
-        $request->setParams(array_merge(Yii::$app->request->post(), Yii::$app->request->get(), $info)); // Optional
+        $request->setAlipayPublicKey(Yii::$app->debris->config('alipay_notification_cert_path'));
+        $request->setParams($info); // Optional
         $response = $request->send();
         return $response->isPaid();
     }

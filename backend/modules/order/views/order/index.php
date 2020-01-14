@@ -15,10 +15,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
     <div class="col-sm-12">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-                <li<?php if (Yii::$app->request->get('order_status', -1) == -1) echo ' class="active"' ?>><a href="<?= Url::to(['order/index']) ?>"> 全部</a></li>
+                <li<?php if (Yii::$app->request->get('order_status', -1) == -1) echo ' class="active"' ?>><a href="<?= Url::to(['order/index']) ?>"> 全部（<?= \common\models\order\Order::getCountByOrderStatus() ?>）</a></li>
                 <?php foreach (common\enums\OrderStatusEnum::getMap() as $statusValue => $statusName) { ?>
                     <li<?php if (Yii::$app->request->get('order_status', -1) == $statusValue) echo ' class="active"' ?>>
-                        <a href="<?= Url::to(['order/index', 'order_status' => $statusValue]) ?>"><?= $statusName ?></a>
+                        <a href="<?= Url::to(['order/index', 'order_status' => $statusValue]) ?>"><?= $statusName ?>（<?= \common\models\order\Order::getCountByOrderStatus($statusValue) ?>）</a>
                     </li>
                 <?php } ?>
             </ul>

@@ -184,6 +184,7 @@ class OrderService extends Service
                     'promotions_id' => 0,
                     'goods_attr' =>$goods['goods_attr'],
                     'goods_spec' =>$goods['goods_spec'],
+                    'status' =>$goods['status']
             ];
         }
         //金额

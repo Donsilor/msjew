@@ -167,7 +167,7 @@ class OrderService extends Service
         foreach ($cart_list as $cart) {
             
             $goods = \Yii::$app->services->goods->getGoodsInfo($cart->goods_id,$cart->goods_type,false);
-            if(empty($goods) || $goods['status'] != 1) {
+            if(empty($goods) || $goods['status'] != StatusEnum::ENABLED) {
                 continue;
             }         
             $goods_amount += $goods['sale_price'];

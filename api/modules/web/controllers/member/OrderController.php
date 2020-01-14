@@ -65,8 +65,9 @@ class OrderController extends UserAuthController
                 'coinCode'=> $currencySign,
                 'payChannel'=>$orderRow['payment_type'],
                 'orderTime' =>$orderRow['created_at'],
-                'details'=>[],  
-           ];
+                'details'=>[],
+                'payment_type'=>$orderRow['payment_type'],
+            ];
            $orderGoodsList = OrderGoods::find()->where(['order_id'=>$order_id])->asArray()->all();
            foreach ($orderGoodsList as $key =>$goodsRow) {
                $id = $goodsRow['id'];

@@ -265,7 +265,10 @@ class DiamondController extends OnAuthController
         $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit,$order, $fields ,$language);
         $webSite = array();
         $webSite['moduleTitle'] = '最暢銷訂婚戒指';
+
+        $type_id = 12; //不要改动
         $webSite['type'] = $type_id;
+
         foreach ($style_list as $val){
             $moduleGoods = array();
             $moduleGoods['id'] = $val['id'];

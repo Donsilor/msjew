@@ -15,6 +15,9 @@ use common\models\common\EmailLog;
 use common\enums\LanguageEnum;
 use common\models\member\Member;
 use common\helpers\RegularHelper;
+use common\models\common\SmsLog;
+use common\enums\OrderStatusEnum;
+use common\enums\ExpressEnum;
 
 /**
  * Class OrderService
@@ -124,9 +127,7 @@ class OrderService extends Service
         //清空购物车
         OrderCart::deleteAll(['id'=>$cart_ids,'member_id'=>$buyer_id]);
         //订单发送邮件
-        if(RegularHelper::verify('email',$buyer->username) && $orderAddress->email) {
-            \Yii::$app->services->mailer->send($orderAddress->email,EmailLog::USAGE_ORDER_NOTIFICATION,['code'=>$order->id]);
-        }
+        $this->sendOrderNotification($order->id);
         
         return [
                 "currency" => $currency,
@@ -224,8 +225,22 @@ class OrderService extends Service
     public function sendOrderNotification($order_id)
     {
         $order = Order::find()->where(['id'=>$order_id])->one();
-        if(RegularHelper::verify('email',$order->member->username) && $order->address->email) {
-            \Yii::$app->services->mailer->send($order->address->email,EmailLog::USAGE_ORDER_NOTIFICATION,['code'=>$order->id]);
+        if(RegularHelper::verify('email',$order->member->username)) {
+            $usage = EmailLog::$orderStatusMap[$order->order_status] ?? '';
+            if($usage && $order->address->email) {
+                \Yii::$app->services->mailer->send($order->address->email,$usage,['code'=>$order->id]);
+            }
+        }else if($order->address->mobile){
+            if($order->order_status == OrderStatusEnum::ORDER_SEND) {
+                $params = [
+                     'code' =>$order->id,                       
+                     'express_name' => ExpressEnum::getValue($order->express_id),
+                     'express_no' =>$order->express_no,
+                     'company_name'=>'BDD Co.', 
+                     'company_email' => 'admin@bddco.com'
+                ];
+                \Yii::$app->services->sms->send($order->address->mobile,SmsLog::USAGE_ORDER_SEND,$params);
+            }
         }
     }
           

@@ -16,6 +16,7 @@ use yii\web\NotFoundHttpException;
 use common\enums\FollowStatusEnum;
 use common\enums\AuditStatusEnum;
 use backend\modules\order\forms\DeliveryForm;
+use common\enums\DeliveryStatusEnum;
 
 /**
  * Default controller for the `order` module
@@ -159,7 +160,8 @@ class OrderController extends BaseController
         // ajax 校验
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
-            
+            $model->delivery_time = time();
+            $model->delivery_status = DeliveryStatusEnum::SEND;
             $model->order_status = OrderStatusEnum::ORDER_SEND;//已发货
             $result = $model->save();
             //订单发送邮件

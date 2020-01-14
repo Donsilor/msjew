@@ -15,7 +15,7 @@ return [
     'currencySign' =>'CNY',//当前货币符号
     'cachePrefix'=>'common',//缓存前缀
     'goodsType.diamond'=>15,//裸钻产品线
-    
+    'frontBaseUrl' =>'https://www2.bddco.com',//前端地址
     // 是否在模块内
     'inAddon' => false,
     // 多商户开启

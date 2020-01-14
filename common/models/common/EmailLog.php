@@ -4,6 +4,7 @@ namespace common\models\common;
 
 use Yii;
 use common\behaviors\MerchantBehavior;
+use common\enums\OrderStatusEnum;
 
 /**
  * This is the model class for table "{{%common_sms_log}}".
@@ -31,8 +32,9 @@ class EmailLog extends \common\models\base\BaseModel
     const USAGE_LOGIN = 'login';
     const USAGE_REGISTER = 'register';
     const USAGE_UP_PWD = 'up-pwd';
-    const USAGE_ORDER_NOTIFICATION = 'order-notify';
-    
+    const USAGE_ORDER_UNPAID = 'order-unpaid';
+    const USAGE_ORDER_PAID = 'order-paid';
+    const USAGE_ORDER_SEND = 'order-send';
     /**
      * @var array
      */
@@ -40,15 +42,23 @@ class EmailLog extends \common\models\base\BaseModel
             self::USAGE_LOGIN => '登录验证码',
             self::USAGE_REGISTER => '注册验证码',
             self::USAGE_UP_PWD => '重置密码验证码',
-            self::USAGE_ORDER_NOTIFICATION => '订单通知邮件',
+            self::USAGE_ORDER_UNPAID => '待付款订单通知',
+            self::USAGE_ORDER_PAID => '已付款订单通知',
+            self::USAGE_ORDER_SEND => '已发货订单通知',
     ];
     public static $usageTemplates = [
             self::USAGE_LOGIN => 'loginCode',
             self::USAGE_REGISTER => 'registerCode',
             self::USAGE_UP_PWD => 'passwordResetCode',
-            self::USAGE_ORDER_NOTIFICATION => 'orderNotification',
+            self::USAGE_ORDER_UNPAID => 'orderNotification',
+            self::USAGE_ORDER_PAID => 'orderNotification',
+            self::USAGE_ORDER_SEND => 'orderNotification',
+    ];    
+    public static $orderStatusMap = [
+            OrderStatusEnum::ORDER_UNPAID =>self::USAGE_ORDER_UNPAID,
+            OrderStatusEnum::ORDER_PAID =>self::USAGE_ORDER_PAID,
+            OrderStatusEnum::ORDER_SEND =>self::USAGE_ORDER_SEND,
     ];
-    
     /**
      * {@inheritdoc}
      */

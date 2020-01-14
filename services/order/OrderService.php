@@ -76,9 +76,7 @@ class OrderService extends Service
         }
         //订单商品       
         foreach ($orderGoodsList as $goods) {
-            if($goods['status'] != StatusEnum::ENABLED) {
-                throw new UnprocessableEntityHttpException("[{$goods['goods_sn']}]商品不是售卖状态");
-            }
+
             $orderGoods = new OrderGoods();
             $orderGoods->attributes = $goods;
             $orderGoods->order_id = $order->id;
@@ -184,7 +182,6 @@ class OrderService extends Service
                     'promotions_id' => 0,
                     'goods_attr' =>$goods['goods_attr'],
                     'goods_spec' =>$goods['goods_spec'],
-                    'status' =>$goods['status']
             ];
         }
         //金额

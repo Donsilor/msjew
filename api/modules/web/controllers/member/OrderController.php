@@ -168,7 +168,7 @@ class OrderController extends UserAuthController
         if($order_id == null) {
             return ResultHelper::api(422, '请参入正确的订单号');
         }
-        $orderRow = Order::find()->select(["order.*",'account.*','address.*','member.*','address.firstname as a_firstname',
+        $orderRow = Order::find()->select(["order.*",'account.*','address.*','address.mobile as address_mobile','member.*','address.firstname as a_firstname',
         'address.lastname as a_lastname','address.country_id as a_country_id','address.province_id as a_province_id','address.city_id as a_city_id'])
             ->leftJoin(OrderAccount::tableName().' account','account.order_id=order.id')
             ->leftJoin(OrderAddress::tableName().' address','address.order_id=order.id')
@@ -251,7 +251,7 @@ class OrderController extends UserAuthController
             'userAccount' => $orderRow['username'],
             'userId' => $orderRow['member_id'],
             'userMail' => $orderRow['email'],
-            'userTel' => $orderRow['mobile'],
+            'userTel' => $orderRow['address_mobile'],
             'userTelCode' => $orderRow['mobile_code'],
             'zipCode'=> '',
         );

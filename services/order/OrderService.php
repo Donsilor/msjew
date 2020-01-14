@@ -18,6 +18,7 @@ use common\helpers\RegularHelper;
 use common\models\common\SmsLog;
 use common\enums\OrderStatusEnum;
 use common\enums\ExpressEnum;
+use common\enums\StatusEnum;
 
 /**
  * Class OrderService
@@ -54,6 +55,9 @@ class OrderService extends Service
             throw new UnprocessableEntityHttpException("收货地址不能为空");
         }
         //$languages = $this->getLanguages();
+        if(empty($orderAccountTax['orderGoodsList'])) {
+            throw new UnprocessableEntityHttpException("商品信息为空");
+        }
         $buyerAddress = $orderAccountTax['buyerAddress'];
         $orderGoodsList   = $orderAccountTax['orderGoodsList'];
         $currency = $orderAccountTax['currency'];
@@ -72,6 +76,7 @@ class OrderService extends Service
         }
         //订单商品       
         foreach ($orderGoodsList as $goods) {
+
             $orderGoods = new OrderGoods();
             $orderGoods->attributes = $goods;
             $orderGoods->order_id = $order->id;
@@ -160,7 +165,7 @@ class OrderService extends Service
         foreach ($cart_list as $cart) {
             
             $goods = \Yii::$app->services->goods->getGoodsInfo($cart->goods_id,$cart->goods_type,false);
-            if(empty($goods) || $goods['status'] != 1) {
+            if(empty($goods) || $goods['status'] != StatusEnum::ENABLED) {
                 continue;
             }         
             $goods_amount += $goods['sale_price'];

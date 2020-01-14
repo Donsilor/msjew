@@ -18,6 +18,7 @@ use common\helpers\RegularHelper;
 use common\models\common\SmsLog;
 use common\enums\OrderStatusEnum;
 use common\enums\ExpressEnum;
+use common\enums\StatusEnum;
 
 /**
  * Class OrderService
@@ -72,6 +73,9 @@ class OrderService extends Service
         }
         //订单商品       
         foreach ($orderGoodsList as $goods) {
+            if($goods['status'] != StatusEnum::ENABLED) {
+                throw new UnprocessableEntityHttpException("[{$goods['goods_sn']}]商品不是售卖状态");
+            }
             $orderGoods = new OrderGoods();
             $orderGoods->attributes = $goods;
             $orderGoods->order_id = $order->id;

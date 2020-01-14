@@ -52,7 +52,9 @@ class MailerService extends Service
         
         $subject  = $usageExplains[$usage]??'';
         $template = $usageTemplates[$usage]??'';
-        
+        if($this->language) {
+            $template = 'languages/'.$this->language.'/'.$template;
+        }
         if ($this->queueSwitch == true) {
             $_params = array_merge($params,[
                     'email' => $email,

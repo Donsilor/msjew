@@ -127,9 +127,7 @@ class OrderService extends Service
         //清空购物车
         OrderCart::deleteAll(['id'=>$cart_ids,'member_id'=>$buyer_id]);
         //订单发送邮件
-        if(RegularHelper::verify('email',$buyer->username) && $orderAddress->email) {
-            \Yii::$app->services->mailer->send($orderAddress->email,EmailLog::USAGE_ORDER_NOTIFICATION,['code'=>$order->id]);
-        }
+        $this->sendOrderNotification($order->id);
         
         return [
                 "currency" => $currency,

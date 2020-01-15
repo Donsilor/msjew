@@ -74,7 +74,7 @@ class PayEnum extends BaseEnum
     public static $payTypeAction = [
         self::PAY_TYPE_WECHAT => 'wechat',
         self::PAY_TYPE_ALI => 'alipay',
-        self::PAY_TYPE_GLOBAL_ALIPAY => 'globalAlipay',
+        self::PAY_TYPE_GLOBAL_ALIPAY => 'globalalipay',
         self::PAY_TYPE_UNION => 'union',
         self::PAY_TYPE_MINI_PROGRAM => 'miniProgram',
         self::PAY_TYPE_PAYPAL => 'paypal',

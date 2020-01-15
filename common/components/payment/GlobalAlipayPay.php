@@ -74,4 +74,33 @@ class GlobalAlipayPay
 
         return $response->getRedirectUrl();
     }
+
+    public function notify($params=[])
+    {
+        /** @var WebGateway $gateway */
+        $gateway = $this->create(self::PC);
+
+        $params = [
+            'request_params' => array_merge($_GET, $_POST, $params), //Don't use $_REQUEST for may contain $_COOKIE
+        ];
+
+        $response = $gateway->completePurchase($params)->send();
+
+        return $response;
+    }
+
+    /**
+     * 验证支付是否成功
+     * @param array $info
+     * @return bool
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
+     */
+    public function verify($info=[])
+    {
+        unset($info['orderId']);
+        unset($info['model']);
+        $gateway = $this->create();
+        $response = $gateway->completePurchase($info)->send();
+        return $response->isPaid();
+    }
 }

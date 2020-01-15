@@ -100,7 +100,7 @@ class PayService extends Service
      * @return mixed
      * @throws \yii\base\InvalidConfigException
      */
-    public function globalAlipay(PayForm $payForm, $baseOrder)
+    public function globalalipay(PayForm $payForm, $baseOrder)
     {
         // 配置
         $config = [

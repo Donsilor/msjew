@@ -86,6 +86,11 @@ class PayForm extends Model
                     $this->addError($attribute, 'PayPal交易类型不符');
                 }
                 break;
+            case PayEnum::PAY_TYPE_GLOBAL_ALIPAY :
+                if (!in_array($this->tradeType, ['pc', 'wap'])) {
+                    $this->addError($attribute, 'GlobalAlipay交易类型不符');
+                }
+                break;
         }
     }
 
@@ -123,12 +128,14 @@ class PayForm extends Model
                 // TODO 查询订单获取订单信息
                 $orderSn = $orderInfo['order_sn'];
                 $totalFee = $orderInfo['order_amount'] - $orderInfo['discount_amount'];
+                $currency = \Yii::$app->services->currency->getCurrency();
  
                 Order::updateAll(['payment_type'=>$this->payType],['id'=>$this->orderId]);//更改订单支付方式
                 
                 $order = [
                     'body' => "商品",
                     'total_fee' => $totalFee,
+                    'currency' => $currency,
                 ];
                 break;
             case PayEnum::ORDER_GROUP_GOODS :

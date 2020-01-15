@@ -2,6 +2,7 @@
 
 namespace common\components;
 
+use common\components\payment\GlobalAlipayPay;
 use common\components\payment\PaypalPay;
 use Yii;
 use yii\base\Component;
@@ -53,6 +54,25 @@ class Pay extends Component
             // 加密方式： ** RSA2 **
             'private_key' => $this->rfConfig['alipay_key_path'],
             'sandbox' => false
+        ], $config));
+    }
+
+    /**
+     * 支付宝国际版
+     * @param array $config
+     * @return GlobalAlipayPay
+     */
+    public function globalAlipay(array $config = [])
+    {
+        return new GlobalAlipayPay(ArrayHelper::merge([
+            'partner' => $this->rfConfig['global_alipay_partner'],
+            'key' => $this->rfConfig['global_alipay_key'],
+            'sign_type' => $this->rfConfig['global_alipay_sign_type'],
+            'private_key' => $this->rfConfig['global_alipay_private_key'],
+            'alipay_public_key' => $this->rfConfig['global_alipay_alipay_public_key'],
+            'return_url' => '',
+            'notify_url' => '',
+            'environment' => 'sandbox',
         ], $config));
     }
 

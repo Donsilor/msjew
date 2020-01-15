@@ -31,6 +31,7 @@ class PayEnum extends BaseEnum
     const PAY_TYPE_MINI_PROGRAM = 4;
     const PAY_TYPE_USER_MONEY = 5;
     const PAY_TYPE_PAYPAL = 6;
+    const PAY_TYPE_GLOBAL_ALIPAY = 7;
     const PAY_TYPE_OFFLINE = 100;
     
     /**
@@ -41,6 +42,7 @@ class PayEnum extends BaseEnum
         return [
                 self::PAY_TYPE_WECHAT => \Yii::t('common','微信'),
                 self::PAY_TYPE_ALI => '支付宝',
+                self::PAY_TYPE_GLOBAL_ALIPAY => '支付宝国际版',
                 self::PAY_TYPE_UNION => '银联',
                 self::PAY_TYPE_PAYPAL => 'Paypal',
                 //self::PAY_TYPE_MINI_PROGRAM => '小程序',
@@ -57,6 +59,7 @@ class PayEnum extends BaseEnum
     public static $payTypeExplain = [
         self::PAY_TYPE_WECHAT => '微信',
         self::PAY_TYPE_ALI => '支付宝',
+        self::PAY_TYPE_GLOBAL_ALIPAY => '支付宝国际版',
         self::PAY_TYPE_UNION => '银联',
         self::PAY_TYPE_PAYPAL => 'Paypal',
         self::PAY_TYPE_MINI_PROGRAM => '小程序',
@@ -71,6 +74,7 @@ class PayEnum extends BaseEnum
     public static $payTypeAction = [
         self::PAY_TYPE_WECHAT => 'wechat',
         self::PAY_TYPE_ALI => 'alipay',
+        self::PAY_TYPE_GLOBAL_ALIPAY => 'globalAlipay',
         self::PAY_TYPE_UNION => 'union',
         self::PAY_TYPE_MINI_PROGRAM => 'miniProgram',
         self::PAY_TYPE_PAYPAL => 'paypal',

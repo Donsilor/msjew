@@ -138,8 +138,11 @@ class PayService extends Service
         // 生成订单
         $order = [
             'out_trade_no' => $baseOrder['out_trade_no'],
-            'total_amount' => $baseOrder['total_fee'],
+
+            //转换成支付货币
+            'total_amount' => \Yii::$app->services->currency->exchangeAmount($baseOrder['total_fee'], 2, $baseOrder['currency']),
             'subject' => $baseOrder['body'],
+            'currency' => $baseOrder['currency'],
         ];
 
         // 交易类型

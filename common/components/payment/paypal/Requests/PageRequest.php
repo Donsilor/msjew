@@ -20,9 +20,9 @@ class PageRequest extends AbstractPaypalRequest
      * @param $value
      * @return PageRequest
      */
-    public function setSubject($value)
+    public function setCurrency($value)
     {
-        return $this->setParameter('subject', $value);
+        return $this->setParameter('currency', $value);
     }
 
     /**
@@ -69,7 +69,7 @@ class PageRequest extends AbstractPaypalRequest
         $clientSecret = $this->getParameter('clientSecret');
 
         $subject = $this->getParameter('subject');
-        $currency = \Yii::$app->params['currency'];
+        $currency = $this->getParameter('currency');
         $totalAmount = $this->getParameter('totalAmount');
         $outTradeNo = $this->getParameter('outTradeNo');
 

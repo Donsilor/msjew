@@ -82,7 +82,7 @@ class PayForm extends Model
                 }
                 break;
             case PayEnum::PAY_TYPE_PAYPAL :
-                if (!in_array($this->tradeType, ['pc'])) {
+                if (!in_array($this->tradeType, ['pc', 'wap'])) {
                     $this->addError($attribute, 'PayPal交易类型不符');
                 }
                 break;

@@ -85,6 +85,11 @@ class PaypalPay
         return $debug == true ? '' : $payment->getApprovalLink();
     }
 
+    public function wap($order, $debug = false)
+    {
+        return $this->pc($order, $debug);
+    }
+
     /**
      * 退款
      *

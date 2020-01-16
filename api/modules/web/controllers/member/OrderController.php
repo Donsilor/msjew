@@ -254,13 +254,13 @@ class OrderController extends UserAuthController
             'orderType' => $order->order_type,            
             'payChannel' => $order->payment_type,
             'productCount' => count($orderDetails),
-            'preferFee' => $this->exchangeAmount($order->account->discount_amount,2,$currency,$exchange_rate), //优惠金额
-            'productAmount' => $this->exchangeAmount($order->account->goods_amount,2,$currency,$exchange_rate),            
-            'logisticsFee' => $this->exchangeAmount($order->account->shipping_fee,2,$currency,$exchange_rate),
-            'orderAmount' => $this->exchangeAmount($order->account->order_amount,2,$currency,$exchange_rate),
-            'otherFee' => $this->exchangeAmount($order->account->other_fee,2,$currency,$exchange_rate),
-            'safeFee' => $this->exchangeAmount($order->account->safe_fee,2,$currency,$exchange_rate),
-            'taxFee' => $this->exchangeAmount($order->account->tax_fee,2,$currency,$exchange_rate),
+            'preferFee' => $this->exchangeAmount($order->account->discount_amount,2,$currency,null,$exchange_rate), //优惠金额
+            'productAmount' => $this->exchangeAmount($order->account->goods_amount,2,$currency,null,$exchange_rate),            
+            'logisticsFee' => $this->exchangeAmount($order->account->shipping_fee,2,$currency,null,$exchange_rate),
+            'orderAmount' => $this->exchangeAmount($order->account->order_amount,2,$currency,null,$exchange_rate),
+            'otherFee' => $this->exchangeAmount($order->account->other_fee,2,$currency,null,$exchange_rate),
+            'safeFee' => $this->exchangeAmount($order->account->safe_fee,2,$currency,null,$exchange_rate),
+            'taxFee' => $this->exchangeAmount($order->account->tax_fee,2,$currency,null,$exchange_rate),
             'userId' => $order->member_id,
             'details' => $orderDetails
         );

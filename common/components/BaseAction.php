@@ -106,9 +106,9 @@ trait BaseAction
      * @param unknown $currency
      * @return array
      */ 
-    public function exchangeAmount($amount , $format = 2, $toCurrency = null, $fromCurrency = null)
+    public function exchangeAmount($amount , $format = 2, $toCurrency = null, $fromCurrency = null,$toRate = null)
     {
-        return \Yii::$app->services->currency->exchangeAmount($amount,$format,$toCurrency,$fromCurrency);
+        return \Yii::$app->services->currency->exchangeAmount($amount,$format,$toCurrency,$fromCurrency,$toRate);
     }
     /**
      * 商户id

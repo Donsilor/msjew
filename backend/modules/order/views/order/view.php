@@ -112,6 +112,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                     <div class="row">
                         <div class="col-lg-3">
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.address_details') ?>：</label>
+                            <?= $model->address->address_details ?>
+                        </div>
+                        <div class="col-lg-3">
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.zip_code') ?>：</label>
+                            <?= $model->address->zip_code ?>
+                        </div>
+                        <div class="col-lg-3">
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.email') ?>：</label>
+                            <?= $model->address->email ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
                             <label class="col-sm-6 text-right"><?= $model->getAttributeLabel('buyer_remark') ?> ：</label>
                             <?= $model->buyer_remark ?>
                         </div>

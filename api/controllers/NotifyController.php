@@ -101,13 +101,11 @@ class NotifyController extends Controller
     {
         $this->payment = 'ali';
 
-        $request = Yii::$app->pay->alipay([
+        $response = Yii::$app->pay->alipay([
             'ali_public_key' => Yii::$app->debris->config('alipay_notification_cert_path'),
         ])->notify();
 
         try {
-            /** @var \Omnipay\Alipay\Responses\AopCompletePurchaseResponse $response */
-            $response = $request->send();
             if ($response->isPaid()) {
                 $message = Yii::$app->request->post();
                 $message['pay_fee'] = $message['total_amount'] * 100;
@@ -116,6 +114,37 @@ class NotifyController extends Controller
 
                 // 日志记录
                 $logPath = $this->getLogPath('alipay');
+                FileHelper::writeLog($logPath, Json::encode(ArrayHelper::toArray($message)));
+
+                if ($this->pay($message)) {
+                    die('success');
+                }
+            }
+
+            die('fail');
+        } catch (\Exception $e) {
+            // 记录报错日志
+            $logPath = $this->getLogPath('error');
+            FileHelper::writeLog($logPath, $e->getMessage());
+            die('fail'); // 通知响应
+        }
+    }
+
+    public function actionGlobalalipay()
+    {
+        $this->payment = 'ali';
+
+        try {
+            $response = Yii::$app->pay->globalAlipay()->notify();
+
+            if ($response->isPaid()) {
+                $message = Yii::$app->request->post();
+                $message['pay_fee'] = $message['total_amount'];
+                $message['transaction_id'] = $message['trade_no'];
+                $message['mch_id'] = $message['auth_app_id'];
+
+                // 日志记录
+                $logPath = $this->getLogPath('Globalalipay');
                 FileHelper::writeLog($logPath, Json::encode(ArrayHelper::toArray($message)));
 
                 if ($this->pay($message)) {

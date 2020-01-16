@@ -4,13 +4,17 @@
 namespace common\components\payment;
 
 
+use Omnipay\Common\AbstractGateway;
+use Omnipay\GlobalAlipay\WapGateway;
+use Omnipay\GlobalAlipay\WebGateway;
 use Omnipay\Omnipay;
 
 class GlobalAlipayPay
 {
     protected $config;
 
-    const PC = 'Paypal_Page';
+    const PC = 'GlobalAlipay_web';
+    const WAP = 'GlobalAlipay_wap';
 
     public function __construct($config)
     {
@@ -21,21 +25,82 @@ class GlobalAlipayPay
      * 实例化类
      *
      * @param string $type
-     * @return \Omnipay\Alipay\AopPageGateway
+     * @return AbstractGateway
      * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
     private function create($type = self::PC)
     {
-        /* @var $gateway \Omnipay\Alipay\AopPageGateway */
+        /* @var $gateway AbstractGateway */
         $gateway = Omnipay::create($type);
-        $gateway->setSignType('RSA2'); // RSA/RSA2/MD5
-        $gateway->setAppId($this->config['app_id']);
-        $gateway->setAlipayPublicKey(Yii::getAlias($this->config['ali_public_key']));
-        $gateway->setPrivateKey(Yii::getAlias($this->config['private_key']));
-        $gateway->setNotifyUrl($this->config['notify_url']);
-        !empty($this->config['return_url']) && $gateway->setReturnUrl($this->config['return_url']);
-        $this->config['sandbox'] === true && $gateway->sandbox();
+
+        //配置
+        $gateway->initialize($this->config);
 
         return $gateway;
+    }
+
+    /**
+     * 网页支付
+     * @param $order
+     * @param bool $debug
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
+     */
+    public function pc($order, $debug = false)
+    {
+        /** @var WebGateway $gateway */
+        $gateway = $this->create(self::PC);
+
+        $request = $gateway->purchase($order);
+
+        $response = $request->send();
+
+        return $response->getRedirectUrl();
+    }
+
+    /**
+     * 手机网站支付
+     * @param $order
+     * @param bool $debug
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
+     */
+    public function wap($order, $debug = false)
+    {
+        /** @var WapGateway $gateway */
+        $gateway = $this->create(self::WAP);
+
+        $request = $gateway->purchase($order);
+
+        $response = $request->send();
+
+        return $response->getRedirectUrl();
+    }
+
+    public function notify($params=[])
+    {
+        /** @var WebGateway $gateway */
+        $gateway = $this->create(self::PC);
+
+        $params = [
+            'request_params' => array_merge($_GET, $_POST, $params), //Don't use $_REQUEST for may contain $_COOKIE
+        ];
+
+        $response = $gateway->completePurchase($params)->send();
+
+        return $response;
+    }
+
+    /**
+     * 验证支付是否成功
+     * @param array $info
+     * @return bool
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
+     */
+    public function verify($info=[])
+    {
+        unset($info['orderId']);
+        unset($info['model']);
+        $gateway = $this->create();
+        $response = $gateway->completePurchase($info)->send();
+        return $response->isPaid();
     }
 }

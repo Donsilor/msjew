@@ -284,10 +284,13 @@ class OrderController extends UserAuthController
         return $order;
 
     }
-
+    /**
+     * 订单取消
+     * @return mixed|NULL|string
+     */
     public function actionCancel(){
         $order_id = \Yii::$app->request->post('orderId');
-        if($order_id == null) {
+        if(!$order_id) {
             return ResultHelper::api(422, '请参入正确的订单号');
         }
         $order = Order::find()->where(['member_id'=>$this->member_id,'id'=>$order_id])->one();
@@ -307,10 +310,13 @@ class OrderController extends UserAuthController
     }
 
 
-    //确认收货
+    /**
+     * 确认收货
+     * @return mixed|NULL|string
+     */
     public function actionConfirmReceipt(){
         $order_id = \Yii::$app->request->post('orderId');
-        if($order_id == null) {
+        if(!$order_id) {
             return ResultHelper::api(422, '请参入正确的订单号');
         }
         $order = Order::find()->where(['member_id'=>$this->member_id,'id'=>$order_id])->one();
@@ -327,10 +333,7 @@ class OrderController extends UserAuthController
             return ResultHelper::api(422, '取消订单失败');
         }
 
-    }
-
-
-    
+    }    
     /**
      * 订单金额税费信息
      * @return array

@@ -78,7 +78,7 @@ class PayService extends Service
         $config = [
             'notify_url' => $payForm->notifyUrl, // 支付通知回调地址
             'return_url' => $payForm->returnUrl, // 买家付款成功跳转地址
-            'sandbox' => true,  
+            'sandbox' => true,
         ];
 
         // 生成订单
@@ -95,6 +95,37 @@ class PayService extends Service
         ];
     }
 
+    /**
+     * @param PayForm $payForm
+     * @return mixed
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function globalalipay(PayForm $payForm, $baseOrder)
+    {
+        // 配置
+        $config = [
+            'notify_url' => $payForm->notifyUrl, // 支付通知回调地址
+            'return_url' => $payForm->returnUrl, // 买家付款成功跳转地址
+            'sandbox' => true,
+        ];
+
+        // 生成订单
+        $order = [
+            'out_trade_no' => $baseOrder['out_trade_no'],
+
+            //转换成支付货币
+            'total_fee' => \Yii::$app->services->currency->exchangeAmount($baseOrder['total_fee'], 2, $baseOrder['currency']),
+            'subject' => $baseOrder['body'],
+            'currency' => $baseOrder['currency'],
+        ];
+
+        // 交易类型
+        $tradeType = $payForm->tradeType;
+        return [
+            'config' => Yii::$app->pay->globalAlipay($config)->$tradeType($order)
+        ];
+    }
+
     public function paypal(PayForm $payForm, $baseOrder)
     {
         // 配置
@@ -107,8 +138,11 @@ class PayService extends Service
         // 生成订单
         $order = [
             'out_trade_no' => $baseOrder['out_trade_no'],
-            'total_amount' => $baseOrder['total_fee'] / 100,
+
+            //转换成支付货币
+            'total_amount' => \Yii::$app->services->currency->exchangeAmount($baseOrder['total_fee'], 2, $baseOrder['currency']),
             'subject' => $baseOrder['body'],
+            'currency' => $baseOrder['currency'],
         ];
 
         // 交易类型

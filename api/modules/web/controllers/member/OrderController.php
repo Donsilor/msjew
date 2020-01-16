@@ -70,7 +70,7 @@ class OrderController extends UserAuthController
                        'goodsDetailId' =>$orderGoods->goods_id,
                        'goodsCode' => $orderGoods->goods_sn,
                        'categoryId'=>$orderGoods->goods_type,
-                       'goodsName' => $orderGoods->lang->goods_name,
+                       'goodsName' => $orderGoods->lang->goods_name ?? $orderGoods->goods_name,
                        'goodsPrice'=>$this->exchangeAmount($orderGoods->goods_price,2,$orderGoods->currency,null,$orderGoods->exchange_rate),
                        'detailType'=>1,
                        'detailSpecs'=>null,

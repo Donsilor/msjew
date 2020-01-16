@@ -15,7 +15,7 @@ use Yii;
  * @property string $goods_attr 商品属性
  * @property string $goods_body 商品详情
  */
-class OrderGoodsLang extends \common\models\base\BaseModel
+class OrderGoodsLang extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -35,7 +35,7 @@ class OrderGoodsLang extends \common\models\base\BaseModel
             [['master_id'], 'integer'],
             [['goods_attr'], 'string'],
             [['language'], 'string', 'max' => 5],
-            [['goods_name',], 'safe', 'max' => 300],
+            [['goods_name'], 'string', 'max' => 300],
             [['goods_spec'], 'string', 'max' => 1024],
             [['goods_body'], 'string'],
         ];
@@ -47,7 +47,7 @@ class OrderGoodsLang extends \common\models\base\BaseModel
     public function attributeLabels()
     {
         return [
-            'id' => '订单商品表索引id',
+            'id' => 'id',
             'master_id' => '订单id',
             'language' => 'Language',
             'goods_name' => '商品名称',
@@ -56,4 +56,5 @@ class OrderGoodsLang extends \common\models\base\BaseModel
             'goods_body' => '商品详情',
         ];
     }
+    
 }

@@ -184,7 +184,7 @@ DOM;
                                     'label' => '优惠金额',
                                     'attribute'=>'goods_price',
                                     'value' => function($model) {
-                                        return $model->account->currency ." "."0";
+                                        return $model->currency ." "."0";
                                     }
                                 ],
                                 [

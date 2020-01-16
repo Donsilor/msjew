@@ -29,7 +29,7 @@ class SeoController extends OnAuthController
      */
     public function actionIndex()
     {
-        $id = Yii::$app->request->get('id',null);
+        $id = Yii::$app->request->get('type');
         if($id == null) return ResultHelper::api(422, '缺省参数');
         $language = Yii::$app->params['language'];
         $model = $this->modelClass::find()->alias('m')

@@ -31,7 +31,6 @@ class SearchController extends OnAuthController
             '2'=>'m.sale_volume asc ',//價格 - 從低到高
             '3'=>'m.sale_volume desc',//價格 - 從高到低
         ];
-        $type_id = \Yii::$app->request->get("categoryId");//产品线ID
         $keyword = \Yii::$app->request->get("text");//产品线ID
         $order_type = \Yii::$app->request->get("sortType", 1);//排序方式 1-升序；2-降序;
 
@@ -41,7 +40,7 @@ class SearchController extends OnAuthController
             $order = $sort_map[$order_type];
         }
 
-        $fields = ['m.id','lang.style_name','m.goods_images','m.sale_price'];
+        $fields = ['m.id','m.type_id','lang.style_name','m.goods_images','m.sale_price'];
         $query = Style::find()->alias('m')->select($fields)
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
@@ -56,7 +55,7 @@ class SearchController extends OnAuthController
         foreach($result['data'] as & $val) {
             $arr = array();
             $arr['id'] = $val['id'];
-            $arr['categoryId'] = $type_id;
+            $arr['categoryId'] = (int)$val['type_id'];
             $arr['coinType'] = $this->currency;
             $arr['goodsImages'] = $val['goods_images'];
             $arr['salePrice'] = $val['sale_price'];

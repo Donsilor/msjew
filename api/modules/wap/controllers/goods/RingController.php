@@ -56,11 +56,15 @@ class RingController extends OnAuthController
 
 
         //筛选条件
-        $ring_style = \Yii::$app->request->post("styleValue", 1);//对戒款式
+        $ring_style = \Yii::$app->request->post("styleValue");//对戒款式
         $begin_price = \Yii::$app->request->post("beginPrice",0);//开始价格
         $end_price = \Yii::$app->request->post("endPrice");//结束价格
         $material = \Yii::$app->request->post("materialValue");//成色Id
-        $query->andWhere(['=','m.ring_style', $ring_style]);
+        if(!empty($ring_style)){
+            $query->andWhere(['=','m.ring_style', $ring_style]);
+        }
+
+
         if($begin_price && $end_price){
             $begin_price = $this->exchangeAmount($begin_price,2, 'CNY', $this->getCurrencySign());
             $end_price = $this->exchangeAmount($end_price,2, 'CNY', $this->getCurrencySign());
@@ -82,12 +86,13 @@ class RingController extends OnAuthController
         foreach($result['data'] as & $val) {
             $arr = array();
             $arr['coinType'] = $this->getCurrencySign();
-            $arr['id'] = $val['id'];
-            $arr['ringCode'] = $val['ring_sn'];
-            $arr['ringImg'] = $val['ring_images'];
+            $arr['ringId'] = $val['id'];
+            $arr['goodsCode'] = $val['ring_sn'];
+            $arr['goodsImages'] = $val['ring_images'];
             $arr['ringStyle'] = $val['ring_style'];
+            $arr['goodsName'] = $val['ring_name'];
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
-            $arr['status'] = $val['status'];
+            $arr['goodsStatus'] = $val['status'];
             $val = $arr;
         }
         return $result;
@@ -116,7 +121,7 @@ class RingController extends OnAuthController
         }
         $style_list = $query->asArray()->select($fields)->all();
         $ring_web_site = array();
-        $ring_web_site['moduleTitle'] = '最暢銷訂婚戒指';
+        $ring_web_site['moduleTitle'] = '精选结婚对戒';
         $ring_web_site['id'] = $type_id;
         foreach ($style_list as $val){
             $moduleGoods = array();
@@ -145,19 +150,25 @@ class RingController extends OnAuthController
         $woman_web_site['title'] = '女士結婚戒指';
         $woman_web_site['id'] = $type_id;
 
+        $activity_list = \Yii::$app->services->advert->getTypeAdvertImage(0,5, $language);
+        $activity = array();
+        foreach ($activity_list as $val){
+            $advertImgModelList = array();
+            $advertImgModelList['wapUrl'] = $val['adv_url'];
+            $advertImgModelList['dsImg'] = $val['adv_image'];
+            $advertImgModelList['dsName'] = $val['title'];
+            $advertImgModelList['tdOpenType'] = 1;
+
+
+            $activity['advertImgModelList'][] = $advertImgModelList;
+        }
+
 
         $result = array();
         $result['webSite'][0] = $ring_web_site;
         $result['webSite'][1] = $woman_web_site;
         $result['webSite'][2] = $man_web_site;
-        $result['advert'] = array(
-            'dsDesc' => '訂婚戒指——banner全屏',
-            'dsImg' => '/adt/image1566979883784.png',
-            'dsName' => '訂婚戒指——banner全屏',
-            'dsShowType' => 1,
-            'tdOpenType' => 1,
-            'tdStatus' => 1,
-        );
+        $result['advert'][0] = $activity;
         return $result;
 
     }
@@ -169,7 +180,7 @@ class RingController extends OnAuthController
      */
     public function actionDetail()
     {
-        $id = \Yii::$app->request->post("id");
+        $id = \Yii::$app->request->get("ringId");
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
@@ -187,6 +198,7 @@ class RingController extends OnAuthController
         $ring['name'] = $model->lang->ring_name;
         $ring['ringImg'] = $model->ring_images;
         $ring['ringCode'] = $model->ring_sn;
+        $ring['ringDesc'] = $model->lang->ring_body;
         $ring['salePrice'] = $this->exchangeAmount($model->sale_price);
         $ring['coinType'] = $this->getCurrencySign();
         $ring['status'] = $model->status;
@@ -194,6 +206,7 @@ class RingController extends OnAuthController
         $ring['metaTitle'] = $model->lang->meta_title;
         $ring['metaWord'] = $model->lang->meta_word;
         $ring['ringStyle'] = $model->ring_style;
+        $ring['colletion'] = 0;
         try{
             $goodsModels = array();
             $searchGoodsModels = array();
@@ -216,7 +229,7 @@ class RingController extends OnAuthController
                 $searchGoodsModels[] = $searchGoods;
             }
 
-            $ring['goodsModels'] = $goodsModels;
+            $ring['simpleGoodsEntityList'] = $goodsModels;
             $ring['searchGoodsModels'] = $searchGoodsModels;
             $model->goods_clicks = new Expression("goods_clicks+1");
             $model->virtual_clicks = new Expression("virtual_clicks+1");

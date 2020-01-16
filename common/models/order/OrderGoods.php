@@ -2,7 +2,6 @@
 
 namespace common\models\order;
 
-use common\components\outputFormat;
 use Yii;
 
 /**
@@ -30,7 +29,6 @@ use Yii;
  */
 class OrderGoods extends \common\models\base\BaseModel
 {
-    use outputFormat;
 
     /**
      * {@inheritdoc}

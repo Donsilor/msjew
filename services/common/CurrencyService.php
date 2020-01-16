@@ -102,7 +102,7 @@ class CurrencyService extends Component
      * @throws UnprocessableEntityHttpException
      * @return array
      */
-    public function exchangeAmount($amount ,$format = 2, $toCurrency = null, $fromCurrency = null)
+    public function exchangeAmount($amount ,$format = 2, $toCurrency = null, $fromCurrency = null, $toRate = null)
     {
         if($toCurrency == null) {
             $toCurrency = \Yii::$app->params['currency'];
@@ -116,7 +116,9 @@ class CurrencyService extends Component
         } else {
             $fromRate = $this->getRate($fromCurrency);
         }
-        $toRate = $toInfo['rate'] ?? 1;
+        if($toRate == null ){
+            $toRate = $toInfo['rate'] ?? 1;
+        }        
         $amount = bcmul(bcdiv($amount,$fromRate,5),$toRate,$format);        
         return $amount;
     }

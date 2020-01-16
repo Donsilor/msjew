@@ -12,6 +12,7 @@ use common\enums\OrderStatusEnum;
 use common\models\order\OrderAccount;
 use common\models\order\OrderAddress;
 use common\models\order\OrderGoods;
+use services\order\OrderService;
 
 /**
  * 用户订单
@@ -31,74 +32,60 @@ class OrderController extends UserAuthController
     {
         $orderStatus = \Yii::$app->request->get('orderStatus',-1);
         
-        $query = Order::find()->select(["order.*",'account.*','address.*'])
-                    ->leftJoin(OrderAccount::tableName().' account','account.order_id=order.id')
-                    ->leftJoin(OrderAddress::tableName().' address','address.order_id=order.id')
-                    ->where(['order.member_id'=>$this->member_id]);
-        
+        $query = Order::find()->where(['member_id'=>$this->member_id]);        
         if($orderStatus && in_array($orderStatus,OrderStatusEnum::getKeys())) {
-            if($orderStatus == 30) {
-                $or = ['or'];
-                $or[] = ['=','order_status', 20];
-                $or[] = ['=','order_status', 30];
-                $query->andWhere($or);
-            }
-            else {
-                $query->andWhere(['=','order_status', $orderStatus]);
-            }
+            if($orderStatus == OrderStatusEnum::ORDER_CONFIRM){
+                $orderStatus = [OrderStatusEnum::ORDER_CONFIRM,OrderStatusEnum::ORDER_PAID];
+            }            
+            $query->andWhere(['order_status'=>$orderStatus]);            
         }
-
         $query->orderBy('id DESC');
         
-        $result = $this->pagination($query, $this->page, $this->pageSize);
-        
-        $currencySign = $this->getCurrencySign();
-        $order_list = array();
-        foreach ($result['data'] as $orderRow) {
-            $order_id = $orderRow['id'];
-            $order = [
-                'id' =>$order_id,
-                'orderNO' =>$orderRow['order_sn'],
-                'orderStatus'=> $orderRow['order_status'],
-                'orderAmount'=> $this->exchangeAmount($orderRow['order_amount']),
-                'productAmount'=> $this->exchangeAmount($orderRow['goods_amount']),
-                'coinCode'=> $currencySign,
-                'payChannel'=>$orderRow['payment_type'],
-                'orderTime' =>$orderRow['created_at'],
+        $result = $this->pagination($query, $this->page, $this->pageSize,false);
+
+        $orderList = array();
+        foreach ($result['data'] as $order) {
+            $exchange_rate = $order->account->exchange_rate;
+            $currency = $order->account->currency;
+            $orderInfo = [
+                'id' =>$order->id,
+                'orderNO' =>$order->order_sn,
+                'orderStatus'=> $order->order_status,
+                'orderAmount'=> $this->exchangeAmount($order->account->order_amount,2,$currency,null, $exchange_rate),
+                'productAmount'=> $this->exchangeAmount($order->account->goods_amount,2,$currency,null, $exchange_rate),
+                'coinCode'=> $currency,
+                'payChannel'=>$order->payment_type,
+                'orderTime' =>$order->created_at,
                 'details'=>[],
-                'paymentType'=>$orderRow['payment_type'],
+                'paymentType'=>$order->payment_type,
             ];
-           $orderGoodsList = OrderGoods::find()->where(['order_id'=>$order_id])->asArray()->all();
-           foreach ($orderGoodsList as $key =>$goodsRow) {
-               $id = $goodsRow['id'];
-               $goods_id   = $goodsRow['goods_id'];
-               $goods_type = $goodsRow['goods_type'];
-               $goods = \Yii::$app->services->goods->getGoodsInfo($goods_id, $goods_type,false);
+           $orderGoodsList = OrderGoods::find()->where(['order_id'=>$order->id])->all();
+           foreach ($orderGoodsList as $key =>$orderGoods) {
                $orderDetail = [
-                       'id' => $id,
-                       'orderId'=>$order_id,
+                       'id' => $orderGoods->id,
+                       'orderId'=>$order->id,
                        'groupId'=>null,
                        'groupType'=>null,
-                       'goodsId' => $goods['style_id'],
-                       'goodsDetailId' =>$goods_id,
-                       'goodsCode' => $goodsRow['goods_sn'],
-                       'categoryId'=>$goods_type,
-                       'goodsName' => $goodsRow['goods_name'],
-                       'goodsPrice'=>$this->exchangeAmount($goodsRow['goods_price']),
+                       'goodsId' => $orderGoods->style_id,
+                       'goodsDetailId' =>$orderGoods->goods_id,
+                       'goodsCode' => $orderGoods->goods_sn,
+                       'categoryId'=>$orderGoods->goods_type,
+                       'goodsName' => $orderGoods->lang->goods_name,
+                       'goodsPrice'=>$this->exchangeAmount($orderGoods->goods_price,2,$orderGoods->currency,null,$orderGoods->exchange_rate),
                        'detailType'=>1,
                        'detailSpecs'=>null,
                        'deliveryCount'=>1,
                        'detailCount' => 1,
-                       'createTime' => $orderRow['created_at'],
-                       'joinCartTime'=>$orderRow['created_at'],
-                       'goodsImages'=>$goodsRow['goods_image'],
+                       'createTime' => $orderGoods->created_at,
+                       'joinCartTime'=>$orderGoods->created_at,
+                       'goodsImages'=>$orderGoods->goods_image,
                        'mainGoodsCode'=>null,
                        'ringName'=>"",
                        'ringImg'=>"",
                        'baseConfig'=>null
                ];
-               if(!empty($goods['goods_attr'])) {
-                   $goods_attr = \Yii::$app->services->goods->formatGoodsAttr($goodsRow['goods_attr'], $goods_type);
+               if(!empty($orderGoods->goods_attr)) {
+                   $goods_attr = \Yii::$app->services->goods->formatGoodsAttr($orderGoods->goods_attr, $orderGoods->goods_type);
                    $baseConfig = [];
                    foreach ($goods_attr as $vo){
                        $baseConfig[] = [
@@ -110,9 +97,9 @@ class OrderController extends UserAuthController
                    }
                    $orderDetail['baseConfig'] = $baseConfig;
                }
-               if(!empty($goods['goods_spec'])) {
+               if(!empty($orderGoods->goods_spec)) {
                    $detailSpecs = [];
-                   $goods_spec = \Yii::$app->services->goods->formatGoodsSpec($goodsRow['goods_spec']);
+                   $goods_spec = \Yii::$app->services->goods->formatGoodsSpec($orderGoods->goods_spec);
                    foreach ($goods_spec as $vo){                       
                        $detailSpecs[] = [
                                'name' =>$vo['attr_name'],
@@ -121,11 +108,11 @@ class OrderController extends UserAuthController
                    }
                    $orderDetail['detailSpecs'] = json_encode($detailSpecs);
                }
-               $order['details'][] = $orderDetail;
+               $orderInfo['details'][] = $orderDetail;
            }
-           $order_list[] = $order;
+           $orderList[] = $orderInfo;
         }
-        $result['data'] = $order_list;        
+        $result['data'] = $orderList;        
         return $result;
     }
     /**
@@ -168,8 +155,8 @@ class OrderController extends UserAuthController
         if($order_id == null) {
             return ResultHelper::api(422, '请参入正确的订单号');
         }
-        $orderRow = Order::find()->select(["order.*",'account.*','address.*','address.mobile as address_mobile','member.*','address.realname as a_realname',
-        'address.country_id as a_country_id','address.province_id as a_province_id','address.city_id as a_city_id'])
+        $orderRow = Order::find()->select(["order.*",'account.*','address.*','address.mobile as address_mobile','member.*','address.firstname as a_firstname',
+        'address.lastname as a_lastname','address.country_id as a_country_id','address.province_id as a_province_id','address.city_id as a_city_id'])
             ->leftJoin(OrderAccount::tableName().' account','account.order_id=order.id')
             ->leftJoin(OrderAddress::tableName().' address','address.order_id=order.id')
             ->leftJoin(Member::tableName().' member','member.id=order.member_id')
@@ -242,7 +229,8 @@ class OrderController extends UserAuthController
             'cityName' => $orderRow['city_name'],
             'countryId' => $orderRow['a_country_id'],
             'countryName' => $orderRow['country_name'],
-            'realname' => $orderRow['a_realname'],
+            'firstName' => $orderRow['a_firstname'],
+            'lastName' => $orderRow['a_lastname'],
             'id' => $orderRow['order_id'],
             'orderId' => $orderRow['order_id'],
             'provinceId' => $orderRow['a_province_id'],

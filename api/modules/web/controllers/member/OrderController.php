@@ -168,8 +168,8 @@ class OrderController extends UserAuthController
         if($order_id == null) {
             return ResultHelper::api(422, '请参入正确的订单号');
         }
-        $orderRow = Order::find()->select(["order.*",'account.*','address.*','address.mobile as address_mobile','member.*','address.firstname as a_firstname',
-        'address.lastname as a_lastname','address.country_id as a_country_id','address.province_id as a_province_id','address.city_id as a_city_id'])
+        $orderRow = Order::find()->select(["order.*",'account.*','address.*','address.mobile as address_mobile','member.*','address.realname as a_realname',
+        'address.country_id as a_country_id','address.province_id as a_province_id','address.city_id as a_city_id'])
             ->leftJoin(OrderAccount::tableName().' account','account.order_id=order.id')
             ->leftJoin(OrderAddress::tableName().' address','address.order_id=order.id')
             ->leftJoin(Member::tableName().' member','member.id=order.member_id')
@@ -242,8 +242,7 @@ class OrderController extends UserAuthController
             'cityName' => $orderRow['city_name'],
             'countryId' => $orderRow['a_country_id'],
             'countryName' => $orderRow['country_name'],
-            'firstName' => $orderRow['a_firstname'],
-            'lastName' => $orderRow['a_lastname'],
+            'realname' => $orderRow['a_realname'],
             'id' => $orderRow['order_id'],
             'orderId' => $orderRow['order_id'],
             'provinceId' => $orderRow['a_province_id'],

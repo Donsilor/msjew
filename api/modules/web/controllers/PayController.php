@@ -47,7 +47,7 @@ class PayController extends OnAuthController
 
         //支付宝，非人民币业务使用国际版
         if(!empty($data['payType']) && $data['payType'] == PayEnum::PAY_TYPE_ALI && Yii::$app->params['currency'] != 'CNY') {
-            $data['payType'] = 7;
+            $data['payType'] = PayEnum::PAY_TYPE_GLOBAL_ALIPAY;
         }
 
         /* @var $model PayForm */

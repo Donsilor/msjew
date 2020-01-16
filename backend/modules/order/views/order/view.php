@@ -222,31 +222,31 @@ DOM;
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.shipping_fee') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::outputAmount($model->shipping_fee, $this->exchange_rate) ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::outputAmount($model->account->shipping_fee, $model->account->exchange_rate) ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.discount_amount') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::outputAmount($model->discount_amount, $this->exchange_rate) ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::outputAmount($model->account->discount_amount, $model->account->exchange_rate) ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.tax_fee') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::outputAmount($model->tax_fee, $this->exchange_rate) ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::outputAmount($model->account->tax_fee, $model->account->exchange_rate) ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.safe_fee') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::outputAmount($model->safe_fee, $this->exchange_rate) ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::outputAmount($model->account->safe_fee, $model->account->exchange_rate) ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.order_amount') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::outputAmount($model->order_amount, $this->exchange_rate) ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::outputAmount($model->account->order_amount, $model->account->exchange_rate) ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label style="font-weight:bold"><?= $model->getAttributeLabel('account.pay_amount') ?>：</label></div>
-                                <div class="col-lg-7 text-red"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::outputAmount($model->pay_amount, $this->exchange_rate) ?></div>
+                                <div class="col-lg-7 text-red"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::outputAmount($model->account->pay_amount, $model->account->exchange_rate) ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label style="font-weight:bold">参考支付RMB金额：</label></div>

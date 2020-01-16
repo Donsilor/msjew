@@ -177,7 +177,7 @@ DOM;
                                 [
                                     'attribute'=>'goods_price',
                                     'value' => function($model) {
-                                        return $model->account->currency ." ".$model->asAmount('goods_price', $model->account->exchange_rate);
+                                        return $model->currency ." ".$model->asAmount('goods_price', $model->exchange_rate);
                                     }
                                 ],
                                 [
@@ -190,7 +190,7 @@ DOM;
                                 [
                                     'attribute'=>'goods_pay_price',
                                     'value' => function($model) {
-                                        return $model->account->currency ." ".$model->asAmount('goods_pay_price', $model->account->exchange_rate);
+                                        return $model->currency ." ".$model->asAmount('goods_pay_price', $model->exchange_rate);
                                     }
                                 ],
                             ]

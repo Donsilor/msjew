@@ -43,9 +43,16 @@ class PayController extends OnAuthController
      */
     public function actionCreate()
     {
+        $data = Yii::$app->request->post();
+
+        //支付宝，非人民币业务使用国际版
+        if(!empty($data['payType']) && $data['payType'] == PayEnum::PAY_TYPE_ALI && Yii::$app->params['currency'] != 'CNY') {
+            $data['payType'] = PayEnum::PAY_TYPE_GLOBAL_ALIPAY;
+        }
+
         /* @var $model PayForm */
         $model = new $this->modelClass();
-        $model->attributes = Yii::$app->request->post();
+        $model->attributes = $data;
         $model->memberId = $this->member_id;
          
         if (isset(PayEnum::$payTypeAction[$model->payType])) {

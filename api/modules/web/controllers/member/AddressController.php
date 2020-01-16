@@ -23,27 +23,27 @@ class AddressController extends UserAuthController
 
     public function actionIndex()
     {
-        
-        $models = $this->findModels([
-                "id",
-                "firstname",
-                "lastname",
-                'realname',
-                "address_name",
-                'country_name',
-                'province_name',
-                'city_name',
-                "address_details",                
-                "country_id",
-                "province_id",
-                "city_id", 
-                "member_id",
-                "email",
-                "mobile",
-                "mobile_code",
-                "zip_code",                
-                "is_default",
-        ]);
+        $fields = [
+            "id",
+            "firstname",
+            "lastname",
+            'realname',
+            "address_name",
+            'country_name',
+            'province_name',
+            'city_name',
+            "address_details",
+            "country_id",
+            "province_id",
+            "city_id",
+            "member_id",
+            "email",
+            "mobile",
+            "mobile_code",
+            "zip_code",
+            "is_default",
+        ];
+        $models = $this->modelClass::find()->select($fields)->where(['member_id'=>$this->member_id])->orderBy('is_default desc, id desc')->all();
         return $models;      
         
     }

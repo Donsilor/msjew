@@ -95,8 +95,8 @@ class DiamondController extends OnAuthController
                     $begin_value = $param_value_arr[0];
                     $end_value = $param_value_arr[1];
                     if($param_name == 'sale_price'){
-                        $begin_value = $this->exchangeAmount($begin_value,2, 'CNY', $this->getCurrencySign());
-                        $end_value = $this->exchangeAmount($end_value,2, 'CNY', $this->getCurrencySign());
+                        $begin_value = $this->exchangeAmount($begin_value,2, 'CNY', $this->getCurrency());
+                        $end_value = $this->exchangeAmount($end_value,2, 'CNY', $this->getCurrency());
                     }
                     $query->andWhere(['between',$params_map[$param_name], $begin_value, $end_value]);
                 }elseif(strpos($param_value,'||') !== false){
@@ -171,7 +171,7 @@ class DiamondController extends OnAuthController
 
         $diamond = array();
         $diamond['id'] = $model->id;
-        $diamond['categoryId'] = 1;
+        $diamond['categoryId'] = $model->type_id;
         $diamond['coinType'] = $this->getCurrencySign();
         $diamond['goodsName'] = $model->lang->goods_name;
         $diamond['goodsCode'] = $model->goods_sn;
@@ -203,7 +203,7 @@ class DiamondController extends OnAuthController
           [
               'id' => $model->goods_id,
               'barCode' => null,
-              'categoryId' => $type_id,
+              'categoryId' => $model->type_id,
               'goodsDetailsCode' => $model->goods_sn,
               'goodsId' => $model->id,
               'stock' => $model->goods_num,

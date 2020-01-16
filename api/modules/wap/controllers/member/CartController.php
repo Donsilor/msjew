@@ -59,6 +59,7 @@ class CartController extends UserAuthController
             $cart['collectionStatus'] = null;
             $cart['localSn'] = null;
             $cart['groupType'] = $model->group_type;
+            $cart['goodsType'] = $model->goods_type;
             $cart['groupId'] = $model->group_id;
             $simpleGoodsEntity = [
                     "goodId"=>$goods['style_id'],

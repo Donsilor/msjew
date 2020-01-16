@@ -615,7 +615,6 @@ class GoodsService extends Service
             $details[$key]['retailPrice'] = null;
             $details[$key]['goodsId'] = $style_id;
             $details[$key]['id'] = $val['id'];
-            $details[$key]['categoryId'] = $model['type_id'];
             $totalStock += $val['goods_storage'];
 
         }

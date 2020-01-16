@@ -18,7 +18,7 @@ class AttrIdEnum
     const FINENESS = 10;//成色
     const GRAM_WEIGHT = 11;//克重
     const PRODUC_CUSTOMIZATION = 12;//商品定制
-    const SALE_SERVICES = 25;//售后服务
+    const SALE_SERVICES = 52;//售后服务
     const FOR_PEOPLE = 26;//适用人群
     const USE = 27;//用途
     const POLISH = 28;//光泽（抛光）

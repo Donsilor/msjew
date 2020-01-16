@@ -32,6 +32,7 @@ class DiamondController extends OnAuthController
         $sort_map = [
             "sale_price"=>'m.sale_price',//价格
             "sale_volume"=>'m.sale_volume',//销量
+            "carat"=>'m.carat',//价格
         ];
         $params_map = [
             'shape'=>'m.shape',//形状
@@ -47,6 +48,14 @@ class DiamondController extends OnAuthController
             'table'=>'m.table_lv',//石面--台宽
             'fluorescence'=>'m.fluorescence',//荧光
         ];
+
+//        $type_1_map = [
+//            'color','clarity','cut','polish','symmetry'
+//        ];
+//        $type_2_map = [
+//            'carat','sale_price'
+//        ];
+
 
         $type_id = \Yii::$app->request->get("categoryId");//产品线ID
         if(!$type_id){
@@ -72,28 +81,33 @@ class DiamondController extends OnAuthController
             ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
 
         $ev = \Yii::$app->request->get("ev");  //属性帅选
-        $params = explode('^',$ev);
-        if(!empty($params)){
+        if(!empty($ev)){
+            $params = explode('^',$ev);
             foreach ($params as $param){
+                if(empty($param)){
+                    continue;
+                }
                 $param_arr = explode('=',$param);
                 $param_name = $param_arr[0];
                 $param_value = $param_arr[1];
-
-                $value_type = $param['valueType'];
-                $param_name = $param['paramName'];
-                if($value_type == 1){
-                    $config_values = $param['configValues'];
-                    $query->andWhere(['in',$params_map[$param_name], $config_values]);
-                }else if($value_type == 2){
-                    $begin_value = $param['beginValue'];
-                    $end_value = $param['endValue'];
+                if(strpos($param_value,'-') !== false){
+                    $param_value_arr = explode('-',$param_value);
+                    $begin_value = $param_value_arr[0];
+                    $end_value = $param_value_arr[1];
                     if($param_name == 'sale_price'){
                         $begin_value = $this->exchangeAmount($begin_value,2, 'CNY', $this->getCurrencySign());
                         $end_value = $this->exchangeAmount($end_value,2, 'CNY', $this->getCurrencySign());
                     }
-
                     $query->andWhere(['between',$params_map[$param_name], $begin_value, $end_value]);
+                }elseif(strpos($param_value,'||') !== false){
+                    $param_value_arr = explode('||',$param_value);
+                    $begin_value = min($param_value_arr);
+                    $end_value = max($param_value_arr);
+                    $query->andWhere(['and',['>=',$params_map[$param_name],$begin_value],['<=',$params_map[$param_name],$end_value]]);
+                }else{
+                    $query->andWhere(['=',$params_map[$param_name], $param_value]);
                 }
+
             }
         }
         $result = $this->pagination($query,$this->page,$this->pageSize);
@@ -139,7 +153,7 @@ class DiamondController extends OnAuthController
     public function actionDetail()
     {
 //        $type_id = 15;
-        $id = \Yii::$app->request->post("goodsId");
+        $id = \Yii::$app->request->get("goodsId");
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
@@ -193,7 +207,7 @@ class DiamondController extends OnAuthController
               'goodsDetailsCode' => $model->goods_sn,
               'goodsId' => $model->id,
               'stock' => $model->goods_num,
-              'retailMallPrice' => $this->exchangeAmount($model->sale_price),
+              'retailMallPrice' => (float)$this->exchangeAmount($model->sale_price),
               'productNumber' => null,
               'warehouse' => null,
               'material' => null,
@@ -202,7 +216,7 @@ class DiamondController extends OnAuthController
 
           ]
         );
-
+        $diamond['totalStock'] = $model->goods_num;
 
         $diamond_attr = array(
             '5'=>'carat',
@@ -238,9 +252,9 @@ class DiamondController extends OnAuthController
                 }
                 $specs[] = [
                     'categoryId'=>$type_id,
-                    'configAttrId'=>$configAttrId,
+                    'configAttrId'=>(int)$configAttrId,
                     'configAttrVal'=>$configAttrVal,
-                    'configId'=>$arrt_id,
+                    'configId'=>(int)$arrt_id,
                     //'configInputType'=>1,
                     'configName'=>$value['attr_name'],
                     'queryColumn'=>$diamond_attr[$value['id']],
@@ -293,6 +307,8 @@ class DiamondController extends OnAuthController
         return $result;
 
     }
+
+
 
 
 

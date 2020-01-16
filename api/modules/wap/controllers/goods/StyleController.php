@@ -40,6 +40,7 @@ class StyleController extends OnAuthController
         }
         $order_param = \Yii::$app->request->get("sortBy");//排序参数
         $order_type = \Yii::$app->request->get("sortType", 1);//排序方式 1-升序；2-降序;
+        $ev = \Yii::$app->request->get("ev");  //属性帅选
 
         //排序
         $order = '';
@@ -53,14 +54,17 @@ class StyleController extends OnAuthController
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
 
-        $ev = \Yii::$app->request->get("ev");  //属性帅选
-        $params = explode('^',$ev);
-        if(!empty($params)){
 
+        if($type_id) {
+            $query ->andWhere(['m.type_id'=>$type_id]);
+        }
+
+
+        $params = explode('^',$ev);
+        $params = array_filter($params);//删除空成员
+
+        if(!(empty($params))){
             $subQuery = AttributeIndex::find()->alias('a')->select(['a.style_id'])->distinct("a.style_id");
-            if($type_id) {
-                $query ->andWhere(['m.type_id'=>$type_id]);
-            }
             $k = 0;
             foreach ($params as $param){
                 $param_arr = explode('=',$param);
@@ -82,18 +86,33 @@ class StyleController extends OnAuthController
                     continue;
                 }
 
-
                 if($param_name == 'engaged_style'){ //订婚戒指款式
                     $attr_id = 40;
+
                 }elseif ($param_name == 'material'){  //成色
                     $attr_id = 10;
+                }elseif ($param_name == 'marry_style_man'){
+                    $attr_id = 55;
+                    if($param_value == -1){
+                        $marry_style_man_attr = \Yii::$app->attr->valueList(55);
+                        $param_value = array_column($marry_style_man_attr,'id');
+                    }
+                }elseif ($param_name == 'marry_style_wom'){
+                    $attr_id = 54;
+                    if($param_value == -1){
+                        $marry_style_man_attr = \Yii::$app->attr->valueList(54);
+                        $param_value = array_column($marry_style_man_attr,'id');
+                    }
                 }else{
                     continue;
+                }
+                if(!is_array($param_value)){
+                    $param_value = array($param_value);
                 }
                 $k++;
                 $alias = "a".$k; //别名
                 $on = "{$alias}.style_id = a.style_id and {$alias}.attr_id = $attr_id ";
-                $config_values = array_merge(array_diff(array($param_value), array(-1)));
+                $config_values = array_merge(array_diff($param_value, array(-1)));
                 if(empty($config_values)) continue;
                 $config_values_str = join(',',$config_values);
                 $subQuery->innerJoin(AttributeIndex::tableName().' '.$alias, $on." and {$alias}.attr_value_id in ({$config_values_str})");

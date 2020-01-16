@@ -85,15 +85,15 @@ class Attr
             }
             $models = AttributeValue::find()->alias("val")
                 ->leftJoin(AttributeValueLang::tableName()." lang","val.id=lang.master_id")
-                ->select(['val.id',"lang.attr_value_name",'lang.language'])
+                ->select(['lang.master_id',"lang.attr_value_name",'lang.language'])
                 ->where(['val.attr_id'=>$attr_id,'val.status'=>StatusEnum::ENABLED])
                 ->orderBy('val.sort asc,val.id asc')
                 ->asArray()->all();
-            
+
             $value_list = [];
             foreach ($models as $row) {
                 $value_list[$row['language']][] = [
-                    'id'=>$row['id'],
+                    'id'=>$row['master_id'],
                     'name'=>$row['attr_value_name'],
                 ];
             }

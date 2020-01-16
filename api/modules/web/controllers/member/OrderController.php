@@ -230,6 +230,7 @@ class OrderController extends UserAuthController
                 'countryName' => $order->address->country_name,
                 'firstName' => $order->address->firstname,
                 'lastName' => $order->address->lastname,
+                'realName' => $order->address->realname,
                 'provinceId' => $order->address->province_id,
                 'provinceName' => $order->address->province_name,
                 'userAccount' => $order->member->username,

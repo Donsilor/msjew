@@ -78,6 +78,15 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                         ],
 
                         [
+                            'label' => '注册时间',
+                            'attribute' => 'created_at',
+                            'filter' => false,
+                            'value' => function($model) {
+                                return Yii::$app->getFormatter()->asDatetime($model->created_at);
+                            }
+                        ],
+
+                        [
                             'label' => '用户信息',
                             'filter' => false, //不显示搜索框
                             'value' => function ($model) {

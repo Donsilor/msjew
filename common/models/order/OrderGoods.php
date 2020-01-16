@@ -2,7 +2,6 @@
 
 namespace common\models\order;
 
-use common\components\outputFormat;
 use Yii;
 
 /**
@@ -12,7 +11,7 @@ use Yii;
  * @property int $merchant_id 商户ID
  * @property int $order_id 订单id
  * @property int $goods_id --商品id
- * @property string $style_sn 款式编号
+ * @property string $style_id 款式id
  * @property string $goods_sn 商品编号
  * @property int $goods_type 产品线（商品类型）
  * @property string $goods_name 商品名称
@@ -20,15 +19,16 @@ use Yii;
  * @property int $goods_num 商品数量
  * @property string $goods_image 商品图片
  * @property string $goods_pay_price 商品实际成交价
- * @property int $promotions_id 促销活动ID（抢购ID/限时折扣ID/优惠套装ID）与goods_type搭配使用
+ * @property int $promotions_id 
  * @property string $goods_spec 商品规格
- * @property string $goods_attr
+ * @property string $goods_attr 商品属性
+ * @property float $exchange_rate 交易汇率
+ * @property string $currency 货币
  * @property int $created_at 创建时间
  * @property int $updated_at 更新时间
  */
 class OrderGoods extends \common\models\base\BaseModel
 {
-    use outputFormat;
 
     /**
      * {@inheritdoc}
@@ -44,11 +44,11 @@ class OrderGoods extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id', 'order_id', 'goods_id', 'goods_type', 'goods_num', 'promotions_id', 'created_at', 'updated_at'], 'integer'],
+            [['merchant_id', 'order_id','style_id', 'goods_id', 'goods_type', 'goods_num', 'promotions_id', 'created_at', 'updated_at'], 'integer'],
             [['order_id', 'goods_id'], 'required'],
             [['goods_price', 'goods_pay_price','exchange_rate'], 'number'],
             [['goods_attr'], 'string'],
-            [['style_sn', 'goods_sn', 'goods_name'], 'string', 'max' => 50],
+            [['goods_sn', 'goods_name'], 'string', 'max' => 50],
             [['goods_image'], 'string', 'max' => 100],
             [['goods_spec'], 'string', 'max' => 255],
             [['currency'], 'string','max'=>5],
@@ -65,7 +65,7 @@ class OrderGoods extends \common\models\base\BaseModel
             'merchant_id' => '商户ID',
             'order_id' => '订单id',
             'goods_id' => '--商品id',
-            'style_sn' => '款式编号',
+            'style_id' => '款式id',
             'goods_sn' => '商品编号',
             'goods_type' => '产品线',
             'goods_name' => '商品名称',
@@ -88,13 +88,12 @@ class OrderGoods extends \common\models\base\BaseModel
     {
         return new OrderGoodsLang();
     }
-
     /**
-     * 对应金额表信息
+     * 语言包
      * @return \yii\db\ActiveQuery
      */
-    public function getAccount()
+    public function getLang()
     {
-        return $this->hasOne(OrderAccount::class, ['order_id'=>'order_id']);
-    }
+        return $this->hasOne(OrderGoodsLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->params['language']]);
+    }    
 }

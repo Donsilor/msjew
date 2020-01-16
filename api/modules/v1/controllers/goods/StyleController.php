@@ -180,6 +180,7 @@ class StyleController extends OnAuthController
         $info = [
                 'id' =>$model->id,
                 'type_id'=>$model->type_id,
+                'style_sn'=>$model->style_sn,
                 'style_name'=>$model->lang->style_name,
                 'style_moq'=>$model->goods_storage,
                 'sale_price'=>$model->sale_price,

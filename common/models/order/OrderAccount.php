@@ -2,7 +2,6 @@
 
 namespace common\models\order;
 
-use common\components\outputFormat;
 use Yii;
 
 /**
@@ -22,7 +21,6 @@ use Yii;
  */
 class OrderAccount extends \common\models\base\BaseModel
 {
-    use outputFormat;
 
     public function behaviors()
     {

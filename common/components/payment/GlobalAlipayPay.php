@@ -13,8 +13,8 @@ class GlobalAlipayPay
 {
     protected $config;
 
-    const PC = 'GlobalAlipay_web';
-    const WAP = 'GlobalAlipay_wap';
+    const PC = 'GlobalAlipay_Web';
+    const WAP = 'GlobalAlipay_Wap';
 
     public function __construct($config)
     {

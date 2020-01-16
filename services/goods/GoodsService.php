@@ -276,7 +276,7 @@ class GoodsService extends Service
         if($goods_type == \Yii::$app->params['goodsType.diamond']) {
             $goods = Diamond::find()->alias('g')
                         ->where(['goods_id'=>$goods_id])
-                        ->innerJoin(DiamondLang::tableName().' lang','g.id=lang.master_id')
+                        ->innerJoin(DiamondLang::tableName().' lang',"g.id=lang.master_id and lang.language='{$language}'")
                         ->select(['g.*','g.goods_sn as style_sn','g.id as style_id','lang.goods_name','lang.goods_body','g.goods_num as goods_storage'])->asArray()->one();
              $goods_attr = [
                     DiamondEnum::CARAT=>$goods['carat'],
@@ -291,7 +291,7 @@ class GoodsService extends Service
             $query = Goods::find()->alias('g')
                     ->innerJoin(Style::tableName()." s","g.style_id=s.id")
                     ->innerJoin(StyleLang::tableName()." sl","s.id=sl.master_id and sl.language='{$language}'")
-                    ->select(['g.*','s.style_sn','s.status as style_status','sl.style_name as goods_name','sl.goods_body','s.style_attr as goods_attr'])
+                    ->select(['sl.style_name as goods_name','g.*','s.style_sn','s.status as style_status','sl.goods_body','s.style_attr as goods_attr'])
                     ->where(['g.id'=>$goods_id]);
             
             $goods = $query->asArray()->one();

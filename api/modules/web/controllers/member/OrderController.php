@@ -148,55 +148,52 @@ class OrderController extends UserAuthController
     {
         return $this->edit();
     }
-    
+    /**
+     * 订单详情
+     * @return array
+     */
     public function actionDetail()
     {
         $order_id = \Yii::$app->request->get('orderId');
-        if($order_id == null) {
-            return ResultHelper::api(422, '请参入正确的订单号');
-        }
-        $orderRow = Order::find()->select(["order.*",'account.*','address.*','address.mobile as address_mobile','member.*','address.firstname as a_firstname',
-        'address.lastname as a_lastname','address.country_id as a_country_id','address.province_id as a_province_id','address.city_id as a_city_id'])
-            ->leftJoin(OrderAccount::tableName().' account','account.order_id=order.id')
-            ->leftJoin(OrderAddress::tableName().' address','address.order_id=order.id')
-            ->leftJoin(Member::tableName().' member','member.id=order.member_id')
-            ->where(['order.member_id'=>$this->member_id, 'order.id'=>$order_id])->asArray()->one();
-        if(!$orderRow){
+        if(!$order_id) {
+            return ResultHelper::api(422, '参数错误:orderId不能为空');
+        }      
+        $order = Order::find()->where(['id'=>$order_id,'member_id'=>$this->member_id])->one();
+        if(!$order){
             return ResultHelper::api(422, '此订单不存在');
-        }
+        }    
+        $currency = $order->account->currency;
+        $exchange_rate = $order->account->exchange_rate;
+        
+        $orderGoodsList = OrderGoods::find()->where(['order_id'=>$order_id])->all();
+        $orderDetails = array();
+        foreach ($orderGoodsList as $key =>$orderGoods) {
 
-        $orderGoodsList = OrderGoods::find()->where(['order_id'=>$order_id])->asArray()->all();
-        $order_goods_list = array();
-        foreach ($orderGoodsList as $key =>$goodsRow) {
-            $id = $goodsRow['id'];
-            $goods_id   = $goodsRow['goods_id'];
-            $goods_type = $goodsRow['goods_type'];
-            $goods = \Yii::$app->services->goods->getGoodsInfo($goods_id, $goods_type,false);
             $orderDetail = [
-                'id' => $id,
-                'orderId'=>$order_id,
+                'id' => $orderGoods->id,
+                'orderId'=>$order->id,
                 'groupId'=>null,
                 'groupType'=>null,
-                'goodsId' => $goods['style_id'],
-                'goodsDetailId' =>$goods_id,
-                'goodsCode' => $goodsRow['goods_sn'],
-                'categoryId'=>$goods_type,
-                'goodsName' => $goodsRow['goods_name'],
-                'goodsPrice'=>$this->exchangeAmount($goodsRow['goods_price']),
+                'goodsId' => $orderGoods->style_id,
+                'goodsDetailId' =>$orderGoods->goods_id,
+                'goodsCode' => $orderGoods->goods_sn,
+                'categoryId'=>$orderGoods->goods_type,
+                'goodsName' => $orderGoods->lang ? $orderGoods->lang->goods_name : $orderGoods->goods_name,
+                'goodsPrice'=>$this->exchangeAmount($orderGoods->goods_price,2,$orderGoods->currency,null,$orderGoods->exchange_rate),
                 'detailType'=>1,
                 'detailSpecs'=>null,
                 'deliveryCount'=>1,
                 'detailCount' => 1,
-                'createTime' => $orderRow['created_at'],
-                'joinCartTime'=>$orderRow['created_at'],
-                'goodsImages'=>$goodsRow['goods_image'],
+                'createTime' => $orderGoods->created_at,
+                'joinCartTime'=>$orderGoods->created_at,
+                'goodsImages'=>$orderGoods->goods_image,
                 'mainGoodsCode'=>null,
                 'ringName'=>"",
                 'ringImg'=>"",
                 'baseConfig'=>null
             ];
-            if(!empty($goods['goods_attr'])) {
-                $goods_attr = \Yii::$app->services->goods->formatGoodsAttr($goodsRow['goods_attr'], $goods_type);
+            if(!empty($orderGoods->goods_attr)) {
+                $goods_attr = \Yii::$app->services->goods->formatGoodsAttr($orderGoods->goods_attr, $orderGoods->goods_type);
                 $baseConfig = [];
                 foreach ($goods_attr as $vo){
                     $baseConfig[] = [
@@ -208,9 +205,9 @@ class OrderController extends UserAuthController
                 }
                 $orderDetail['baseConfig'] = $baseConfig;
             }
-            if(!empty($goods['goods_spec'])) {
+            if(!empty($orderGoods->goods_spec)) {
                 $detailSpecs = [];
-                $goods_spec = \Yii::$app->services->goods->formatGoodsSpec($goodsRow['goods_spec']);
+                $goods_spec = \Yii::$app->services->goods->formatGoodsSpec($orderGoods->goods_spec);
                 foreach ($goods_spec as $vo){
                     $detailSpecs[] = [
                         'name' =>$vo['attr_name'],
@@ -219,53 +216,53 @@ class OrderController extends UserAuthController
                 }
                 $orderDetail['detailSpecs'] = json_encode($detailSpecs);
             }
-            $order_goods_list[] = $orderDetail;
+            $orderDetails[] = $orderDetail;
         }
 
 
         $address = array(
-            'address' => $orderRow['address_details'],
-            'cityId' => $orderRow['a_city_id'],
-            'cityName' => $orderRow['city_name'],
-            'countryId' => $orderRow['a_country_id'],
-            'countryName' => $orderRow['country_name'],
-            'firstName' => $orderRow['a_firstname'],
-            'lastName' => $orderRow['a_lastname'],
-            'id' => $orderRow['order_id'],
-            'orderId' => $orderRow['order_id'],
-            'provinceId' => $orderRow['a_province_id'],
-            'provinceName' => $orderRow['province_name'],
-            'userAccount' => $orderRow['username'],
-            'userId' => $orderRow['member_id'],
-            'userMail' => $orderRow['email'],
-            'userTel' => $orderRow['address_mobile'],
-            'userTelCode' => $orderRow['mobile_code'],
-            'zipCode'=> '',
+                'id' => $order->id,
+                'orderId' => $order->id,
+                'address' => $order->address->address_details,
+                'cityId' => $order->address->city_id,
+                'cityName' => $order->address->city_name,
+                'countryId' => $order->address->country_id,
+                'countryName' => $order->address->country_name,
+                'firstName' => $order->address->firstname,
+                'lastName' => $order->address->lastname,
+                'provinceId' => $order->address->province_id,
+                'provinceName' => $order->address->province_name,
+                'userAccount' => $order->member->username,
+                'userId' => $order->member_id,
+                'userMail' => $order->address->email,
+                'userTel' => $order->address->mobile,
+                'userTelCode' => $order->address->mobile_code,
+                'zipCode'=> $order->address->zip_code,
         );
 
         $order = array(
+            'id' => $order->id,
             'address' => $address,
-            'addressId' => $orderRow['order_id'],
-            'afterMail' => $orderRow['email'],
-            'coinCode' => $orderRow['currency'],
-            'allSend' => 1,
-            'id' => $orderRow['order_id'],
-            'isInvoice'=> 2,
-            'logisticsFee' => $this->exchangeAmount($orderRow['shipping_fee']),
-            'orderAmount' => $this->exchangeAmount($orderRow['order_amount']),
-            'orderNo' => $orderRow['order_sn'],
-            'orderStatus' => $orderRow['order_status'],
-            'orderTime' => $orderRow['created_at'],
-            'orderType' => $orderRow['order_type'],
-            'otherFee' => $this->exchangeAmount($orderRow['other_fee']),
-            'payChannel' => $orderRow['payment_type'],
-            'preferFee' => $this->exchangeAmount($orderRow['discount_amount']), //优惠金额
-            'productAmount' => $this->exchangeAmount($orderRow['goods_amount']),
-            'productCount' => count($order_goods_list),
-            'safeFee' => $this->exchangeAmount($orderRow['safe_fee']),
-            'taxFee' => $this->exchangeAmount($orderRow['tax_fee']),
-            'userId' => $orderRow['member_id'],
-            'details' => $order_goods_list
+            'addressId' => $address['id'],
+            'afterMail' => $order->address->email,
+            'coinCode' => $currency,
+            'allSend' => 1,            
+            'isInvoice'=> 2,            
+            'orderNo' => $order->order_sn,
+            'orderStatus' => $order->order_status,
+            'orderTime' => $order->created_at,
+            'orderType' => $order->order_type,            
+            'payChannel' => $order->payment_type,
+            'productCount' => count($orderDetails),
+            'preferFee' => $this->exchangeAmount($order->account->discount_amount,2,$currency,$exchange_rate), //优惠金额
+            'productAmount' => $this->exchangeAmount($order->account->goods_amount,2,$currency,$exchange_rate),            
+            'logisticsFee' => $this->exchangeAmount($order->account->shipping_fee,2,$currency,$exchange_rate),
+            'orderAmount' => $this->exchangeAmount($order->account->order_amount,2,$currency,$exchange_rate),
+            'otherFee' => $this->exchangeAmount($order->account->other_fee,2,$currency,$exchange_rate),
+            'safeFee' => $this->exchangeAmount($order->account->safe_fee,2,$currency,$exchange_rate),
+            'taxFee' => $this->exchangeAmount($order->account->tax_fee,2,$currency,$exchange_rate),
+            'userId' => $order->member_id,
+            'details' => $orderDetails
         );
 
         return $order;
@@ -280,7 +277,7 @@ class OrderController extends UserAuthController
         if(!$order_id) {
             return ResultHelper::api(422, '请参入正确的订单号');
         }
-        $order = Order::find()->where(['member_id'=>$this->member_id,'id'=>$order_id])->one();
+        $order = Order::find()->where(['id'=>$order_id,'member_id'=>$this->member_id])->one();
         if(!$order){
             return ResultHelper::api(422, '此订单不存在');
         }
@@ -306,7 +303,7 @@ class OrderController extends UserAuthController
         if(!$order_id) {
             return ResultHelper::api(422, '请参入正确的订单号');
         }
-        $order = Order::find()->where(['member_id'=>$this->member_id,'id'=>$order_id])->one();
+        $order = Order::find()->where(['id'=>$order_id,'member_id'=>$this->member_id])->one();
         if(!$order){
             return ResultHelper::api(422, '此订单不存在');
         }

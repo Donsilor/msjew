@@ -86,6 +86,7 @@ class RingController extends OnAuthController
             $arr['ringCode'] = $val['ring_sn'];
             $arr['ringImg'] = $val['ring_images'];
             $arr['ringStyle'] = $val['ring_style'];
+            $arr['name'] = $val['ring_name'];
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $arr['status'] = $val['status'];
             $val = $arr;

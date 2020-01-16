@@ -96,6 +96,10 @@ class OrderGoods extends \common\models\base\BaseModel
      */
     public function getLang()
     {
-        return $this->hasOne(OrderGoodsLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->params['language']]);
+        $query = $this->hasOne(OrderGoodsLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->params['language']]);
+        if(!$query) {
+            $query = $this->langModel();
+        }
+        return $query;    
     }    
 }

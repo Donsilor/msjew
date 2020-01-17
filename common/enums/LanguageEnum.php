@@ -26,4 +26,5 @@ class LanguageEnum extends BaseEnum
 				self::EN_US => 'English',
 		];
 	}
+
 }

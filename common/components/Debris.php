@@ -13,6 +13,7 @@ use common\enums\CacheEnum;
  */
 class Debris
 {
+    public $config = [];
     /**
      * 返回配置名称
      *
@@ -23,8 +24,7 @@ class Debris
      */
     public function config($name, $noCache = false, $merchant_id = '')
     {
-        // 获取缓存信息
-        $info = $this->getConfigInfo($noCache, $merchant_id);
+        $info = $this->configAll($noCache, $merchant_id);
         return isset($info[$name]) ? trim($info[$name]) : null;
     }
 
@@ -36,8 +36,10 @@ class Debris
      */
     public function configAll($noCache = false, $merchant_id = '')
     {
-        $info = $this->getConfigInfo($noCache, $merchant_id);
-        return $info ? $info : [];
+        if(!$this->config) {
+            $this->config = $this->getConfigInfo($noCache, $merchant_id);
+        }
+        return $this->config;     
     }
 
     /**

@@ -39,6 +39,6 @@ class AmountHelper
      */
     public static function calcMarkupPrice($amount, $markup_rate, $markup_value, $scale = 2,$sep = '')
     {
-        return number_format(bcadd(bcmul($amount, $markup_rate, $scale+2),$markup_value,$scale+2), '.', $sep);
+        return number_format(bcadd(bcmul($amount, $markup_rate, $scale+2),$markup_value,$scale+2),$scale, '.', $sep);
     }
 }

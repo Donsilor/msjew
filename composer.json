@@ -25,6 +25,8 @@
         "lokielse/omnipay-alipay": "^3.0",
         "lokielse/omnipay-wechatpay": "^3.0",
         "lokielse/omnipay-unionpay": "^3.0",
+		"lokielse/omnipay-global-alipay": "v3.0.4"
+		"paypal/rest-api-sdk-php":"^1.14",
         "kartik-v/yii2-widget-datepicker": "@dev",
         "kartik-v/yii2-widget-timepicker": "*",
         "kartik-v/yii2-widget-colorinput": "*",
@@ -57,10 +59,7 @@
         "jaeger/querylist": "^4.1",
         "overtrue/wechat": "~4.2.2",
         "mingyoung/dingtalk": "2.0",
-        "kartik-v/yii2-checkbox-x": "@dev",
-		"paypal/rest-api-sdk-php":"^1.14",
-        "omnipay/paypal": "v3.0.2",
-        "lokielse/omnipay-global-alipay": "v3.0.4"
+        "kartik-v/yii2-checkbox-x": "@dev",       
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

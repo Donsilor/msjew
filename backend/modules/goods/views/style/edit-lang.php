@@ -8,6 +8,8 @@ use common\widgets\skutable\SkuTable;
 use common\helpers\Url;
 use common\helpers\ArrayHelper;
 use common\enums\StatusEnum;
+use common\helpers\AmountHelper;
+use common\enums\AreaEnum;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\goods\Style */
@@ -29,7 +31,7 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
      <h2 class="page-header">商品发布</h2>
      <?php 
      $tab_list = [0=>'全部',1=>'基础信息',2=>'商品属性',3=>'图文信息',4=>'SEO优化'];
-     if(\Yii::$app->debris->config("goods_markup_rate")) {
+     if(AreaEnum::isMarkupRate()) {
          $tab_list[5] = '地区价格';
      }
      ?>
@@ -271,26 +273,26 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
             <!-- ./box-body -->
       </div>
       <!-- ./row -->
-    <?php if(\Yii::$app->debris->config("goods_markup_rate")) {?>  
+    <?php if(AreaEnum::isMarkupRate())  {?>  
     <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_5">
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[5]??'';?></li>
             </ul>
-            <div class="box-body nav-tabs-custom none-shadow col-lg-9" style="margin-left:10px">
+            <div class="box-body nav-tabs-custom none-shadow col-lg-10" style="margin-left:10px">
          
         		  <div class="tab-content">            
                     <?php 
                     $styleSalepolicy = json_decode($model->style_salepolicy,true) ??[]; 
-                    $areaList = common\enums\AreaEnum::getMap();
                     $areaValues = []; 
-                    foreach ($areaList as $area_id=>$area_name) {                        
+                    foreach (AreaEnum::getMap() as $area_id=>$area_name) {                        
                         $area = $styleSalepolicy[$area_id] ?? [];
-                        $markup_rate  = isset($area['markup_rate']) ? $area['markup_rate']:1;
+                        $markup_rate  = isset($area['markup_rate']) ? abs($area['markup_rate']):1;
                         $markup_value =  isset($area['markup_value']) ? $area['markup_value']:0;
+                        $sale_price = AmountHelper::calcMarkupPrice($model->sale_price,$markup_rate,$markup_value,2);
                         $areaValues[$area_id] = [
                                 'area_id' =>$area_id,
                                 'area_name'=>$area_name,
-                                'sale_price'=>$style->sale_price*
+                                'sale_price'=>$sale_price,
                                 'markup_rate' => $markup_rate,
                                 'markup_value'=> $markup_value,
                                 'status'=> isset($area['status']) ? $area['status']:1,
@@ -320,7 +322,8 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
                                     'title'=>"加价销售价",
                                     'enableError'=>false,
                                     'options' => [
-                                            'class' => 'input-priority'
+                                            'class' => 'input-priority',
+                                            'readonly' =>'true',
                                     ]
                             ],
                             [

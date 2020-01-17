@@ -31,7 +31,7 @@ class AdvertImagesController extends OnAuthController
      */
     public function actionIndex()
     {
-        $adv_id = Yii::$app->request->get('adv_id',null);
+        $adv_id = Yii::$app->request->get('acdv_id',null);
         if($adv_id == null) return ResultHelper::api(400, '缺省参数');
         $language = Yii::$app->params['language'];
         $time = date('Y-m-d H:i:s', time());
@@ -54,10 +54,10 @@ class AdvertImagesController extends OnAuthController
      * @param int $pid
      * @return array|yii\data\ActiveDataProvider
      */
-    public function actionBanner()
+    public function actionBaner()
     {
         $type_id = Yii::$app->request->get('type_id');
-        $adv_id = Yii::$app->request->get('adv_id');
+        $adv_id = Yii::$app->request->get('acdv_id');
         if($type_id == null) {
             return ResultHelper::api(400, '产品线不能为空');
         }

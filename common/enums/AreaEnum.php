@@ -29,5 +29,21 @@ class AreaEnum extends BaseEnum
                 self::Other => '国外',
         ];
     }  
+    /**
+     * 是否开启  地区加价率
+     * @return int 1|0
+     */
+    public static function isMarkupRate()
+    {
+        return \Yii::$app->debris->config("goods_markup_rate",true) ?? 0;
+    }
+    /**
+     * 是否开启  地区广告位
+     * @return number
+     */
+    public static function isAdvert()
+    {
+        return 1;
+    }
     
 }

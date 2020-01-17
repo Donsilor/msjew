@@ -22,7 +22,7 @@ class AdvertImagesController extends OnAuthController
      * @var Provinces
      */
     public $modelClass = AdvertImages::class;
-    protected $authOptional = ['index','banner'];
+    protected $authOptional = ['index','baner'];
     /**
      * 根据分类ID获取广告图
      *

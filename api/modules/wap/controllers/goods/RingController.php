@@ -66,8 +66,8 @@ class RingController extends OnAuthController
 
 
         if($begin_price && $end_price){
-            $begin_price = $this->exchangeAmount($begin_price,2, 'CNY', $this->getCurrencySign());
-            $end_price = $this->exchangeAmount($end_price,2, 'CNY', $this->getCurrencySign());
+            $begin_price = $this->exchangeAmount($begin_price,2, 'CNY', $this->getCurrency());
+            $end_price = $this->exchangeAmount($end_price,2, 'CNY', $this->getCurrency());
             $query->andWhere(['between','m.sale_price', $begin_price, $end_price]);
         }
 

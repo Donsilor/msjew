@@ -144,6 +144,9 @@ class AdvertImagesController extends BaseController
             if($model->save()){
                 //多语言编辑
                 $this->editLang($model,true);
+
+                //更新区域
+                \Yii::$app->services->advert->createAdverArea($model->id);
                 return $this->redirect(['advert-images/index']);
             }else{
                 return $this->message($this->getError($model), $this->redirect(['advert-images/index']), 'error');

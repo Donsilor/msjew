@@ -25,7 +25,7 @@ class AmountHelper
      * @param string $sep sep
      * @return string
      */
-    public static function outputAmount($amount, $rate = 1, $scale = 2, $sep = ',')
+    public static function rateAmount($amount, $rate = 1, $scale = 2, $sep = ',')
     {
         return number_format(bcmul($amount, $rate, ($scale+1)), $scale, '.', $sep);
     }    

@@ -30,8 +30,9 @@ class ContactForm extends Model
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'telphone','mobile_code','book_time','book_date','type_id'], 'required'],
+            [['first_name', 'last_name', 'telphone','mobile_code','book_time','book_date','type_id','content'], 'required'],
             [['first_name','last_name'], 'string', 'max' => 30],
+            [['content'], 'safe'],
             //['telphone', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号'],
         ];
     }
@@ -46,6 +47,7 @@ class ContactForm extends Model
             'book_time' => '预约时间',
             'book_date' => '预约日期',
             'type_id' => '产品需求',
+            'content' => '内容',
 
         ];
     }

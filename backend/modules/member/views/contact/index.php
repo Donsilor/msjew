@@ -49,18 +49,18 @@ HTML;
             ],
 
 
-            [
-                'attribute'=>'language',
-                'format' => 'raw',
-                'headerOptions' => ['class' => 'col-md-1'],
-                'value' => function ($model){
-                    return \Yii::$app->params['languages'][$model->language];
-                },
-                'filter' => Html::activeDropDownList($searchModel, 'language',\Yii::$app->params['languages'], [
-                    'prompt' => '全部',
-                    'class' => 'form-control'
-                ]),
-            ],
+//            [
+//                'attribute'=>'language',
+//                'format' => 'raw',
+//                'headerOptions' => ['class' => 'col-md-1'],
+//                'value' => function ($model){
+//                    return \Yii::$app->params['languages'][$model->language];
+//                },
+//                'filter' => Html::activeDropDownList($searchModel, 'language',\Yii::$app->params['languages'], [
+//                    'prompt' => '全部',
+//                    'class' => 'form-control'
+//                ]),
+//            ],
             //'member_id',
             [
                 'attribute'=>'姓名',
@@ -123,34 +123,42 @@ HTML;
                 'value'=>'book_time',
 
             ],
-//            [
-//                'attribute' => 'created_at',
-//                'filter' => DateRangePicker::widget([    // 日期组件
-//                    'model' => $searchModel,
-//                    'attribute' => 'created_at',
-//                    'value' => $searchModel->created_at,
-//                    'options' => ['readonly' => true,'class'=>'form-control','style'=>'background-color:#fff;width:190px;'],
-//                    'pluginOptions' => [
-//                        'format' => 'yyyy-mm-dd',
-//                        'locale' => [
-//                            'separator' => '/',
-//                        ],
-//                        'endDate' => date('Y-m-d',time()),
-//                        'todayHighlight' => true,
-//                        'autoclose' => true,
-//                        'todayBtn' => 'linked',
-//                        'clearBtn' => true,
-//
-//
-//                    ],
-//
-//                ]),
-//                'value' => function ($model) {
-//                    return Yii::$app->formatter->asDate($model->created_at);
-//                },
-//                'format' => 'raw',
-//
-//            ],
+            [
+                'attribute' => 'created_at',
+                'filter' => DateRangePicker::widget([    // 日期组件
+                    'model' => $searchModel,
+                    'attribute' => 'created_at',
+                    'value' => $searchModel->created_at,
+                    'options' => ['readonly' => true,'class'=>'form-control','style'=>'background-color:#fff;width:190px;'],
+                    'pluginOptions' => [
+                        'format' => 'yyyy-mm-dd',
+                        'locale' => [
+                            'separator' => '/',
+                        ],
+                        'endDate' => date('Y-m-d',time()),
+                        'todayHighlight' => true,
+                        'autoclose' => true,
+                        'todayBtn' => 'linked',
+                        'clearBtn' => true,
+
+
+                    ],
+
+                ]),
+                'value' => function ($model) {
+                    return Yii::$app->formatter->asDate($model->created_at);
+                },
+                'format' => 'raw',
+
+            ],
+            [
+                'attribute' => 'content',
+                'value' => 'content',
+                'filter' => false,
+                'format' => 'raw',
+                'headerOptions' => ['width'=>'200'],
+            ],
+
             [
                 'attribute' => 'status',
                 'format' => 'raw',

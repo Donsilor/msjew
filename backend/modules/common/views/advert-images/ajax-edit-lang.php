@@ -36,29 +36,19 @@ $form = ActiveForm::begin([
                 ],
             ]);?>
 
-            <?php
-            echo common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
-                'fields'=>
-                    [
-                        'title'=>['type'=>'textInput'],
-                        'adv_image'=>[
-                            //'label'=>Yii::t("common","商品介绍"),
-                            'type'=>'widget',
-                            'class'=> Files::class,
-                            'options'=>[
-                                'config' => [
-                                    // 可设置自己的上传地址, 不设置则默认地址
-                                    // 'server' => '',
-                                    'pick' => [
-                                        'multiple' => false,
-                                    ],
-                                ]
-                            ],//end options
-                        ],//end goods_body
-
-                    ]]);
-            ?>
         </div>
+
+        <?= $form->field($model, 'adv_image')->widget(common\widgets\webuploader\Files::class, [
+            'config' => [
+                'pick' => [
+                    'multiple' => false,
+                ],
+                'formData' => [],
+            ]
+        ]); ?>
+
+        <?php $model->area_ids = !empty($model->area_ids)?explode(',', $model->area_ids):null;?>
+        <?= $form->field($model, 'area_ids')->checkboxList(common\enums\AreaEnum::getMap()) ?>
         <?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
             'data' => $type,
             'options' => ['placeholder' => '请选择'],

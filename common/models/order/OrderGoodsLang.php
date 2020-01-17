@@ -33,10 +33,8 @@ class OrderGoodsLang extends \yii\db\ActiveRecord
         return [
             [['master_id', 'language'], 'required'],
             [['master_id'], 'integer'],
-            [['goods_attr'], 'string'],
             [['language'], 'string', 'max' => 5],
             [['goods_name'], 'string', 'max' => 300],
-            [['goods_spec'], 'string', 'max' => 1024],
             [['goods_body'], 'string'],
         ];
     }
@@ -51,8 +49,6 @@ class OrderGoodsLang extends \yii\db\ActiveRecord
             'master_id' => '订单id',
             'language' => 'Language',
             'goods_name' => '商品名称',
-            'goods_spec' => '商品规格',
-            'goods_attr' => '商品属性',
             'goods_body' => '商品详情',
         ];
     }

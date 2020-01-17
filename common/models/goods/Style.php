@@ -70,16 +70,14 @@ class Style extends BaseModel
                 ['market_price','compare','compareValue' => 1000000000, 'operator' => '<'],
                 ['sale_price','compare','compareValue' => 1000000000, 'operator' => '<'],
                 ['cost_price','compare','compareValue' => 1000000000, 'operator' => '<'],
-                [['goods_body','mobile_body'], 'string'],
                 [['style_sn'], 'string', 'max' => 50],
                 [['style_image','style_3ds'], 'string', 'max' => 100],
                 [['verify_remark'], 'string', 'max' => 255],
-                [['attr_require','attr_custom'],'parseStyleAttr'],
-    
+                [['attr_require','attr_custom'],'parseStyleAttr'],    
                 [['style_spec'],'parseStyleSpec'],
                 [['goods_images'],'parseGoodsImages'],
-                [['style_sn'],'unique'],
-                
+                [['style_salepolicy'],'parseStyleSalepolicy'],//销售政策
+                [['style_sn'],'unique'],                
                 [['attr_require'], 'required','isEmpty'=>function($value){
                     return false;
                 }], 
@@ -139,7 +137,15 @@ class Style extends BaseModel
         if(is_array($this->goods_images)){
             $this->goods_images = implode(',',$this->goods_images);
         }
-        return $this->goods_images;
+    }
+    /**
+     * 销售政策（地区价格）
+     */
+    public function parseStyleSalepolicy()
+    {
+        if(is_array($this->style_salepolicy)){
+            $this->style_salepolicy = json_encode($this->style_salepolicy);
+        } 
     }
 
 
@@ -159,9 +165,8 @@ class Style extends BaseModel
             'style_3ds' => Yii::t('goods', '360主图'),
             'goods_images' => Yii::t('goods', '商品图片'),
             'style_attr' => Yii::t('goods', '款式属性'),            
-            'style_custom' => Yii::t('goods', 'Style Custom'),
-            'goods_body' => Yii::t('goods', '图文描述'),
-            'mobile_body' => Yii::t('goods', '图文描述'),
+            'style_spec' => Yii::t('goods', '款式规格'),
+            'style_salepolicy' => Yii::t('goods', '销售政策'),
             'sale_price' => Yii::t('goods', '销售价')."({$currency})",
             'sale_volume' => Yii::t('goods', '销量'),
             'virtual_volume'=>  Yii::t('goods', '虚拟销量'),

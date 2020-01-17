@@ -36,10 +36,10 @@ class StyleLang extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['master_id'], 'integer'],
+            [['master_id'], 'integer'],            
             [['style_name'], 'required'],
-            [['style_attr', 'style_custom', 'goods_body', 'mobile_body'], 'string'],
             [['language'], 'string', 'max' => 5],
+            [['goods_body', 'mobile_body'], 'string'],         
             [['style_name'], 'string', 'max' => 300],
             [['style_desc'], 'string', 'max' => 1000],
             [['meta_title', 'meta_word'], 'string', 'max' => 255],
@@ -58,8 +58,6 @@ class StyleLang extends \yii\db\ActiveRecord
             'language' => Yii::t('common', '语言类型'),
             'style_name' => Yii::t('goods', '商品名称'),
             'style_desc' => Yii::t('goods', '商品描述'),
-            'style_attr' => Yii::t('goods', 'Style Attr'),
-            'style_custom' => Yii::t('goods', 'Style Custom'),
             'goods_body' => Yii::t('goods', '商品详情'),
             'mobile_body' => Yii::t('goods', 'Mobile Body'),
             'meta_title' => Yii::t('goods', 'SEO标题'),

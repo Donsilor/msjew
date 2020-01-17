@@ -3,6 +3,7 @@
 namespace services\common;
 
 use common\models\common\Advert;
+use common\models\common\AdvertArea;
 use common\models\common\AdvertImages;
 use common\models\common\AdvertImagesLang;
 use PHPUnit\Util\Type;
@@ -56,7 +57,7 @@ class AdvertService extends Service
             ->where([ 'm.status'=>StatusEnum::ENABLED, 'm.adv_id'=>$adv_id])
             ->andWhere(['or',['and',['<=','m.start_time',$time], ['>=','m.end_time',$time]],['m.end_time'=>null]])
             ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
-            ->select(['lang.title as title','lang.adv_image','adv_url'])
+            ->select(['lang.title as title','ifnull(lang.adv_image,m.adv_image) as adv_image','adv_url'])
             ->orderby('m.sort desc, m.created_at desc');
 
         if($type_id == 0){
@@ -72,6 +73,29 @@ class AdvertService extends Service
             return $this->getTypeAdvertImage($type_id, $adv_id, $language);
         }else{
             return $model;
+        }
+    }
+
+
+
+    //更新广告区域
+    public function createAdverArea($adver_image_id){
+        $adver_image = AdvertImages::find()->where(['id'=>$adver_image_id])->one();
+        $adv_area_str = $adver_image->area_ids;
+        // 先删除
+        AdvertArea::deleteAll(['adv_image_id'=>$adver_image_id]);
+        if(!empty($adv_area_str)){
+            $adv_area_arr = explode(',',$adv_area_str);
+            foreach ($adv_area_arr as $area_id){
+                $model = new AdvertArea();
+                $attributes['adv_id'] = $adver_image->adv_id;
+                $attributes['area_id'] = $area_id;
+                $attributes['adv_image_id'] = $adver_image_id;
+                $model->attributes = $attributes;
+                $model->save(false);
+            }
+
+
         }
     }
 

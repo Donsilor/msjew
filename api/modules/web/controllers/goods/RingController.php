@@ -53,7 +53,7 @@ class RingController extends OnAuthController
         $query = Ring::find()->alias('m')->select($fields)
             ->innerJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'");
 
-
+       $query->where(['m.status'=>StatusEnum::ENABLED]);
 
         //筛选条件
         $ring_style = \Yii::$app->request->post("styleValue", 1);//对戒款式

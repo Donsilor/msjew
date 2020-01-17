@@ -32,6 +32,7 @@ class ContactForm extends Model
         return [
             [['first_name', 'last_name', 'telphone','mobile_code','book_time','book_date','type_id'], 'required'],
             [['first_name','last_name'], 'string', 'max' => 30],
+            [['content'], 'safe'],
             //['telphone', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号'],
         ];
     }

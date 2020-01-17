@@ -114,10 +114,12 @@ class CartController extends UserAuthController
                 $ring = Ring::find()->alias('r')
                     ->where(['r.id'=>$model->group_id])
                     ->innerJoin(RingLang::tableName().' lang','r.id=lang.master_id')
-                    ->select(['r.id','r.ring_style as ringStyle','r.sale_price as salePrice','r.status','r.ring_images as ringImg','r.ring_sn as ringCode','lang.ring_name as name'])->asArray()->one();
+                    ->select(['r.id','r.ring_style as ringStyle','r.sale_price','r.status','r.ring_images as ringImg','r.ring_sn as ringCode','lang.ring_name as name'])->asArray()->one();
                 $ring['coinType'] = $this->getCurrencySign();
                 $ring['simpleGoodsEntity'] = $simpleGoodsEntity;
+                $ring['salePrice'] = $this->exchangeAmount($ring['sale_price']);
                 $cart['ringsSimpleGoodsEntity'] = $ring;
+
             }else{
                 $cart['simpleGoodsEntity'] = $simpleGoodsEntity;
             }

@@ -50,7 +50,7 @@ use yii\widgets\ActiveForm;
                 'label' => '图片',
                 "format"=>'raw',
                 'value' => function($model) {
-                    return Html::img($model->lang->adv_image,["width"=>"100",]);
+                    return Html::img($model->adv_image,["width"=>"100",]);
                  },
              ],
             [

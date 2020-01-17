@@ -35,7 +35,7 @@ class AreaEnum extends BaseEnum
      */
     public static function isMarkupRate()
     {
-        return \Yii::$app->debris->config("goods_markup_rate",true) ?? 0;
+        return \Yii::$app->debris->config("goods_markup_rate") ?? 0;
     }
     /**
      * 是否开启  地区广告位

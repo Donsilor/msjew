@@ -36,7 +36,7 @@ class Debris
      */
     public function configAll($noCache = false, $merchant_id = '')
     {
-        if(!$this->config) {
+        if(!$this->config || $noCache == true) {
             $this->config = $this->getConfigInfo($noCache, $merchant_id);
         }
         return $this->config;     
@@ -60,7 +60,6 @@ class Debris
             foreach ($config as $row) {
                 $info[$row['name']] = $row['value']['data'] ?? $row['default_value'];
             }
-
             // 设置缓存
             Yii::$app->cache->set($cacheKey, $info, 60 * 60);
         }

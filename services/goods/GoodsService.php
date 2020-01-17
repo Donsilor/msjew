@@ -80,14 +80,6 @@ class GoodsService extends Service
             $goodsModel->goods_storage = $goods['goods_storage']??0;//库存
             $goodsModel->status = $goods['status']??0;//上下架状态 
             $goodsModel->spec_key = $key;
-            /* 
-             * 备用
-             * if(!empty($specb_list[$key]['ids'])){
-                $spec_ids = explode(",",$specb_list[$key]['ids']);
-                $spec_vids = explode(",",$specb_list[$key]['vids']);
-                $goods_spec = array_combine($spec_ids, $spec_vids);
-                $goodsModel->goods_spec = json_encode($goods_spec);
-            } */
             
             if(!empty($default_data['style_spec_b'][$key])){
                 $goods_specs = $default_data['style_spec_b'][$key];
@@ -95,8 +87,9 @@ class GoodsService extends Service
             }
             
             $goodsModel->save(false);  
-           
+            
             //商品多语言保存更新 goods_lang
+            /*
             $languages = \Yii::$app->params['languages']??[];
             foreach ($languages as $lang_key=>$lang_name){
                 if($lang_key == \Yii::$app->language){
@@ -115,8 +108,11 @@ class GoodsService extends Service
                 $goods_spec = $format_data['style_spec_b'][$key]??[];
                 $langModel->goods_spec = !empty($goods_spec)?json_encode($goods_spec) : null;
                 $langModel->save(false);
-            }
+              
+            }*/
         }
+        
+        //按款价格
 
     }
     /**
@@ -403,82 +399,6 @@ class GoodsService extends Service
         return $data;
     }
     
-    /**
-     * 格式化商品属性数据
-     * @param unknown $goods
-     * @param unknown $language
-     * @return unknown
-     */
-    public function formatGoodsAttr222($goods, $language = null)
-    {
-        if(!$language) {
-            $language = \Yii::$app->params['language'];
-        }
-        if(empty($goods)) {
-           return false;
-        }
-        $goods_attr = $goods['goods_attr']??[];
-        $goods_type = $goods['type_id'] ?? ($goods['goods_type'] ?? 0);        
-        
-        if(!is_array($goods_attr)) {
-            $goods_attr = json_decode($goods_attr,true);
-        }        
-        
-        $attr_ids = array_keys($goods_attr);        
-        $attr_list = \Yii::$app->services->goodsAttribute->getSpecAttrList($attr_ids,$goods_type,StatusEnum::ENABLED,$language);
-        
-        $attr_data = [];
-        foreach ($attr_list as $attr){
-            $attr_id = $attr['id'];
-            $value = $goods_attr[$attr_id];
-            if($value == ""){
-                continue;
-            }
-            $is_text = InputTypeEnum::isText($attr['input_type']);
-            $is_single = InputTypeEnum::isSingle($attr['input_type']);
-            
-            if(!$is_text){
-                if(is_array($value)) {
-                    foreach ($value as $value_id) {
-                        $attr['value'][$value_id] = \Yii::$app->attr->valueName($value_id ,$language);
-                    }
-                }else {
-                    $attr['value'][$value] = \Yii::$app->attr->valueName($value ,$language);
-                }
-            } else {
-                $attr['value'] = [$attr_id=>$value];
-            }
-            $attr_data[$attr_id] = $attr;
-        }
-        $goods['goods_attr'] = $attr_data;  
-                
-        $goods_spec = $goods['goods_spec']??[];
-        if(!is_array($goods_spec)) {
-            $goods_spec = json_decode($goods_spec,true);
-        }  
-        //print_r($goods);exit;
-        $spec_data = [];
-        foreach ($goods_spec as $attr_id=>$value_id){
-            $attr_name = \Yii::$app->attr->attrName($attr_id ,$language);
-            $value_name = \Yii::$app->attr->valueName($value_id ,$language);            
-            $spec_data[] = [
-                    'attr_id'=>$attr_id,
-                    'value_id'=>$value_id,
-                    'attr_name'=>$attr_name,
-                    'attr_value'=>$value_name,
-            ];
-        }         
-        $goods['goods_spec'] = $spec_data;
-        //print_r($goods);exit;
-        return $goods;
-    }
-
-
-
-
-
-
-
     //获取款和对应的商品
     public function formatStyleGoodsById($style_id, $language=null){
         if(empty($language)){

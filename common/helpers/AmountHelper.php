@@ -25,7 +25,7 @@ class AmountHelper
      * @param string $sep sep
      * @return string
      */
-    public static function rateAmount($amount, $rate = 1, $scale = 2, $sep = ',')
+    public static function rateAmount($amount, $rate = 1, $scale = 2, $sep = null)
     {
         $amount = bcmul($amount, $rate, ($scale+1));
         if(! $sep ){
@@ -42,7 +42,7 @@ class AmountHelper
      * @param unknown $scale
      * @param string $sep
      */
-    public static function calcMarkupPrice($amount, $markup_rate, $markup_value, $scale = 2,$sep = '')
+    public static function calcMarkupPrice($amount, $markup_rate, $markup_value, $scale = 2,$sep = null)
     {
         $amount = bcadd(bcmul($amount, $markup_rate, $scale+2),$markup_value,$scale+2);
         if(! $sep ){

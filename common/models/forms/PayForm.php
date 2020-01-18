@@ -137,7 +137,7 @@ class PayForm extends Model
                     'body' => "商品",
                     'total_fee' => $totalFee,
                     'currency' => $currency,
-                    'exchangeRate'=>$exchangeRate
+                    'exchange_rate'=>$exchangeRate
                 ];
                 break;
             case PayEnum::ORDER_GROUP_GOODS :

@@ -13,6 +13,7 @@ use common\models\order\Order;
 use common\enums\OrderStatusEnum;
 use common\enums\PayStatusEnum;
 use common\models\order\OrderAccount;
+use common\helpers\AmountHelper;
 
 /**
  * Class PayService
@@ -112,7 +113,7 @@ class PayService extends Service
             'out_trade_no' => $baseOrder['out_trade_no'],
 
             //转换成支付货币
-            'total_fee' => \Yii::$app->services->currency->exchangeAmount($baseOrder['total_fee'], 2, $baseOrder['currency'],null,$baseOrder['exchangeRate']),
+            'total_fee' => AmountHelper::rateAmount($baseOrder['total_fee'], $baseOrder['exchange_rate'],2),
             'subject' => $baseOrder['body'],
             'currency' => $baseOrder['currency'],
         ];
@@ -123,7 +124,12 @@ class PayService extends Service
             'config' => Yii::$app->pay->globalAlipay($config)->$tradeType($order)
         ];
     }
-
+    /**
+     * Paypal支付
+     * @param PayForm $payForm
+     * @param unknown $baseOrder
+     * @return NULL[]
+     */
     public function paypal(PayForm $payForm, $baseOrder)
     {
         // 配置
@@ -137,7 +143,7 @@ class PayService extends Service
             'out_trade_no' => $baseOrder['out_trade_no'],
 
             //转换成支付货币
-            'total_amount' => \Yii::$app->services->currency->exchangeAmount($baseOrder['total_fee'], 2, $baseOrder['currency'],null,$baseOrder['exchangeRate']),
+            'total_amount' => AmountHelper::rateAmount($baseOrder['total_fee'], $baseOrder['exchange_rate'],2),
             'subject' => $baseOrder['body'],
             'currency' => $baseOrder['currency'],
         ];

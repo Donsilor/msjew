@@ -20,7 +20,6 @@ use common\components\Service;
 class AdvertService extends Service
 {
 
-
     public function findOne($id, $language)
     {
         return Advert::find()->alias('m')
@@ -78,23 +77,23 @@ class AdvertService extends Service
 
 
 
-    //更新广告区域
+    /**
+     * 更新广告位关系表
+     * @param unknown $adver_image_id
+     */
     public function createAdverArea($adver_image_id){
         $adver_image = AdvertImages::find()->where(['id'=>$adver_image_id])->one();
-        $adv_area_str = $adver_image->area_ids;
         // 先删除
         AdvertArea::deleteAll(['adv_image_id'=>$adver_image_id]);
-        if(!empty($adv_area_str)){
-            $adv_area_arr = explode(',',$adv_area_str);
+        if(!$adver_image->area_ids){
+            $adv_area_arr = explode(',',$adver_image->area_ids);
             foreach ($adv_area_arr as $area_id){
                 $model = new AdvertArea();
-                $attributes['adv_id'] = $adver_image->adv_id;
-                $attributes['area_id'] = $area_id;
-                $attributes['adv_image_id'] = $adver_image_id;
-                $model->attributes = $attributes;
+                $model->adv_id = $adver_image->adv_id;
+                $model->area_id = $area_id;
+                $model->adv_image_id = $adver_image_id;
                 $model->save(false);
             }
-
 
         }
     }

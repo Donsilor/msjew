@@ -380,7 +380,6 @@ $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
 <?php ActiveForm::end(); ?>
 <script type="text/javascript">
 $(function(){ 
-	$(".js-input-remove").hid();
 	$(document).on("click",'.control-label',function(){
          var checked = false; 
 		 if(!$(this).hasClass('checked')){

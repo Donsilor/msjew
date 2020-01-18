@@ -31,7 +31,7 @@ class PayForm extends Model
     public function rules()
     {
         return [
-            [['orderGroup', 'payType', 'tradeType', 'memberId','currency'], 'required'],
+            [['orderGroup', 'payType', 'tradeType', 'memberId','coinType'], 'required'],
             [['orderGroup'], 'in', 'range' => array_keys(PayEnum::$orderGroupExplain)],
             [['payType'], 'in', 'range' => array_keys(PayEnum::$payTypeExplain)],
             [['notifyUrl', 'returnUrl','coinType'], 'string'],

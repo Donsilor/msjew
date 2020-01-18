@@ -13,6 +13,7 @@ use common\models\common\AdvertImages;
 use common\components\Curd;
 use common\models\base\SearchModel;
 use backend\controllers\BaseController;
+use yii\base\Exception;
 
 /**
 * AdvertImages
@@ -22,21 +23,18 @@ use backend\controllers\BaseController;
 */
 class AdvertImagesController extends BaseController
 {
-    protected $adv_id;
     use Curd;
-
+    
     /**
     * @var AdvertImages
     */
     public $modelClass = AdvertImages::class;
-
+    public $adv_id;
     public function init()
     {
-        $this->adv_id = Yii::$app->request->get('adv_id');
-
+        $this->adv_id = Yii::$app->request->get('adv_id');        
         parent::init();
     }
-
     /**
     * 首页
     *
@@ -54,9 +52,7 @@ class AdvertImagesController extends BaseController
             ],
             'pageSize' => $this->pageSize
         ]);
-
-
-
+        
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams,['title','start_end','adv_type']);
         $dataProvider->query->joinWith(['lang']);
@@ -68,65 +64,12 @@ class AdvertImagesController extends BaseController
         if(!empty($adv_type)){
             $dataProvider->query->andWhere(['=','adv_type',$searchModel->adv_type]);
         }
-
-        $AdvertService = new AdvertService();
-        //获取广告位
-        $advert = $AdvertService->getDropDown(Yii::$app->language);
-
-        //获取产品线
-        $type = Type::getDropDown();
-
         return $this->render('index', [
             'dataProvider' => $dataProvider,
-            'adv_id' => $this->adv_id,
-            'advert' =>$advert,
-            'type' =>$type,
             'searchModel' => $searchModel,
-
         ]);
     }
-
-    /**
-     * 首页
-     *
-     * @return string
-     * @throws \yii\web\NotFoundHttpException
-     */
-    public function actionBanner()
-    {
-        $searchModel = new SearchModel([
-            'model' => $this->modelClass,
-            'scenario' => 'default',
-            'partialMatchAttributes' => [], // 模糊查询
-            'defaultOrder' => [
-                'id' => SORT_DESC
-            ],
-            'pageSize' => $this->pageSize
-        ]);
-
-        $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams,['title','start_end']);
-        $dataProvider->query->andWhere(['type'=>2]);
-        $dataProvider->query->joinWith(['lang']);
-        $dataProvider->query->andFilterWhere(['like', 'lang.title',$searchModel->title]) ;
-
-        $dataProvider->query->andWhere(['>','status',-1]);
-
-
-        //获取产品线
-        $type = Type::getDropDown();
-
-
-        return $this->render('banner', [
-            'dataProvider' => $dataProvider,
-            'adv_id' => $this->adv_id,
-            'type' =>$type,
-            'searchModel' => $searchModel,
-
-        ]);
-    }
-
-
+    
     /**
      * ajax编辑/创建
      *
@@ -136,67 +79,31 @@ class AdvertImagesController extends BaseController
     public function actionAjaxEditLang()
     {
         $id = Yii::$app->request->get('id');
-        //$trans = Yii::$app->db->beginTransaction();
+        
         $model = $this->findModel($id);
         // ajax 校验
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
-            if($model->save()){
-                //多语言编辑
-                $this->editLang($model,true);
-
-                //更新区域
+            try{
+                $trans = Yii::$app->db->beginTransaction();
+                if(false === $model->save()){
+                    throw new Exception($this->getError($model));
+                }
+                $this->editLang($model);
+                
                 \Yii::$app->services->advert->createAdverArea($model->id);
+                $trans->commit();
                 return $this->redirect(['advert-images/index']);
-            }else{
-                return $this->message($this->getError($model), $this->redirect(['advert-images/index']), 'error');
+            }catch (Exception $e){
+                $trans->rollBack();
+                $error = $e->getMessage();
+                return $this->message($error, $this->redirect(['advert-images/index']), 'error');
             }
         }
-        //获取产品线
-        $type = Type::getDropDown();
-
-        $AdvertService = new AdvertService();
-        $advert = $AdvertService->getDropDown(Yii::$app->language);
         return $this->renderAjax($this->action->id, [
             'model' => $model,
-            'advert' =>$advert,
-            'type' =>$type,
         ]);
     }
-
-
-
-    /**
-     * ajax编辑/创建
-     *
-     * @return mixed|string|\yii\web\Response
-     * @throws \yii\base\ExitException
-     */
-    public function actionBannerEditLang()
-    {
-        $id = Yii::$app->request->get('id');
-        //$trans = Yii::$app->db->beginTransaction();
-        $model = $this->findModel($id);
-        // ajax 校验
-        $this->activeFormValidate($model);
-        if ($model->load(Yii::$app->request->post())) {
-            $model->type = 2;
-            if($model->save()){
-                //多语言编辑
-                $this->editLang($model,true);
-                return $this->redirect(['advert-images/banner']);
-            }else{
-                return $this->message($this->getError($model), $this->redirect(['advert-images/banner']), 'error');
-            }
-        }
-
-        return $this->renderAjax($this->action->id, [
-            'model' => $model,
-            'type' =>Type::getDropDown(),
-        ]);
-    }
-
-
     /**
      * 删除
      * @param unknown $id
@@ -212,41 +119,4 @@ class AdvertImagesController extends BaseController
 
         return $this->message("删除失败", $this->redirect(['index', 'id' => $model->id]), 'error');
     }
-
-
-    //重写批量删除方式
-    public function batchDelete($ids = [],$status = -1){
-        foreach ($ids as $k=>$v){
-            $model = $this->findModel($v);
-            $model->status = $status;
-            if(!$model->save(false))
-                return new BadRequestHttpException('操作失败！');
-        }
-        return true;
-    }
-
-
-
-    /**
-     * 返回模型
-     *
-     * @param $id
-     * @return mixed
-     */
-    protected function findModel($id)
-    {
-        if (empty($id) || empty(($model = AdvertImages::findOne($id)))) {
-            $model = new AdvertImages;
-            $model = $model->loadDefaultValues();
-            $model->adv_id = $this->adv_id;
-            return $model;
-        }
-
-        return $model;
-    }
-
-
-
-
-
 }

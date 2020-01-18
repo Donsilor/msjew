@@ -8,6 +8,7 @@ use common\enums\StatusEnum;
 use common\helpers\ArrayHelper;
 use common\models\goods\Type;
 use common\models\goods\TypeLang;
+use common\models\goods\GoodsTypeLang;
 
 
 /**
@@ -36,7 +37,7 @@ class TypeService extends Service
             $pid = 0;
         }
         
-        $models =$query->leftJoin('{{%goods_type_lang}} b', 'b.master_id = a.id and b.language = "'.$language.'"')
+        $models = $query->leftJoin(GoodsTypeLang::tableName().' b', 'b.master_id = a.id and b.language = "'.$language.'"')
             ->select(['a.*', 'b.type_name'])
             ->orderBy('sort asc,created_at asc')
             ->asArray()

@@ -2,15 +2,16 @@
 
 namespace services\common;
 
+use Yii;
 use common\models\common\Advert;
 use common\models\common\AdvertArea;
 use common\models\common\AdvertImages;
 use common\models\common\AdvertImagesLang;
-use PHPUnit\Util\Type;
-use Yii;
 use common\enums\StatusEnum;
 use common\helpers\ArrayHelper;
 use common\components\Service;
+use common\models\common\AdvertLang;
+use common\models\goods\GoodsType;
 
 /**
  * Class MemberService
@@ -20,11 +21,14 @@ use common\components\Service;
 class AdvertService extends Service
 {
 
-    public function findOne($id, $language)
+    public function findOne($id, $language = null)
     {
+        if($language == null) {
+            $language = \Yii::$app->params['language'];
+        }
         return Advert::find()->alias('m')
             ->where(['m.id'=>$id])
-            ->leftJoin('{{%common_advert_lang}} lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
+            ->leftJoin(AdvertLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
             ->select(['lang.adv_name as name','m.*'])
             ->asArray()
             ->one();
@@ -32,31 +36,48 @@ class AdvertService extends Service
     /**
      * @return array|\yii\db\ActiveRecord[]
      */
-    public function findAll($language)
+    public function findAll($language = null)
     {
+        if($language == null) {
+            $language = \Yii::$app->params['language'];
+        }
         return Advert::find()->alias('m')
             ->where(['status' => StatusEnum::ENABLED])
-            ->leftJoin('{{%common_advert_lang}} lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
+            ->leftJoin(AdvertLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
             ->select(['lang.adv_name as name','m.*'])
             ->asArray()
             ->all();
     }
 
-
-    public function getDropDown($language){
+    /**
+     * 下拉框
+     * @param unknown $language
+     * @return array
+     */
+    public function getDropDown($language = null){
         $models = $this->findAll($language);
         return ArrayHelper::map($models, 'id', 'name');
 
     }
 
-
-    public function getTypeAdvertImage($type_id,$adv_id,$language){
+    /**
+     * 
+     * @param unknown $type_id
+     * @param unknown $adv_id
+     * @param unknown $language
+     * @return array|\yii\db\ActiveRecord[]|unknown|array|\yii\db\ActiveRecord[]
+     */
+    public function getTypeAdvertImage($type_id, $adv_id, $language = null){
+        
+        if($language == null) {
+            $language = \Yii::$app->params['language'];
+        }
         $time = date('Y-m-d H:i:s', time());
         $query =  AdvertImages::find()->alias('m')
+            ->select(['lang.title as title','m.adv_image','adv_url'])
+            ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
             ->where([ 'm.status'=>StatusEnum::ENABLED, 'm.adv_id'=>$adv_id])
             ->andWhere(['or',['and',['<=','m.start_time',$time], ['>=','m.end_time',$time]],['m.end_time'=>null]])
-            ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
-            ->select(['lang.title as title','ifnull(lang.adv_image,m.adv_image) as adv_image','adv_url'])
             ->orderby('m.sort desc, m.created_at desc');
 
         if($type_id == 0){
@@ -67,9 +88,8 @@ class AdvertService extends Service
         $model = $query ->andWhere(['m.type_id'=>$type_id])->asArray()->all();
         if(empty($model)){
             //获取父级生产线图片
-            $parent = Type::find()->where(['id'=>$type_id])->asArray()->one();
-            $type_id = $parent['pid'];
-            return $this->getTypeAdvertImage($type_id, $adv_id, $language);
+            $goodsType = GoodsType::find()->select(['pid'])->where(['id'=>$type_id])->one();
+            return $this->getTypeAdvertImage($goodsType->pid, $adv_id, $language);
         }else{
             return $model;
         }
@@ -82,10 +102,10 @@ class AdvertService extends Service
      * @param unknown $adver_image_id
      */
     public function createAdverArea($adver_image_id){
+        
         $adver_image = AdvertImages::find()->where(['id'=>$adver_image_id])->one();
-        // 先删除
         AdvertArea::deleteAll(['adv_image_id'=>$adver_image_id]);
-        if(!$adver_image->area_ids){
+        if(!$adver_image->area_ids){            
             $adv_area_arr = explode(',',$adver_image->area_ids);
             foreach ($adv_area_arr as $area_id){
                 $model = new AdvertArea();

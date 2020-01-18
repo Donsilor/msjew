@@ -63,6 +63,8 @@ abstract class AbstractPaypalRequest extends AbstractRequest
         // OAuthTokenCredential class can be retrieved from
         // developer.paypal.com
 
+        $sandbox = $this->getParameter('sandbox');
+
         $apiContext = new ApiContext(
             new OAuthTokenCredential(
                 $clientId,
@@ -76,7 +78,7 @@ abstract class AbstractPaypalRequest extends AbstractRequest
 
         $apiContext->setConfig(
             array(
-                'mode' => 'sandbox',
+                'mode' => $sandbox ? 'sandbox' : 'live',
                 'log.LogEnabled' => true,
                 'log.FileName' => '../PayPal.log',
                 'log.LogLevel' => 'DEBUG', // PLEASE USE `INFO` LEVEL FOR LOGGING IN LIVE ENVIRONMENTS

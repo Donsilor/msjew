@@ -78,7 +78,6 @@ class PayService extends Service
         $config = [
             'notify_url' => $payForm->notifyUrl, // 支付通知回调地址
             'return_url' => $payForm->returnUrl, // 买家付款成功跳转地址
-            'sandbox' => true,
         ];
 
         // 生成订单
@@ -106,7 +105,6 @@ class PayService extends Service
         $config = [
             'notify_url' => $payForm->notifyUrl, // 支付通知回调地址
             'return_url' => $payForm->returnUrl, // 买家付款成功跳转地址
-            'sandbox' => true,
         ];
 
         // 生成订单
@@ -132,7 +130,6 @@ class PayService extends Service
         $config = [
             'notify_url' => $payForm->notifyUrl, // 支付通知回调地址
             'return_url' => $payForm->returnUrl, // 买家付款成功跳转地址
-            'sandbox' => true
         ];
 
         // 生成订单

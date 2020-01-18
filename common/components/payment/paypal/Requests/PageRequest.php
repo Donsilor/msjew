@@ -77,7 +77,7 @@ class PageRequest extends AbstractPaypalRequest
         echo "totalAmount:";
         var_dump($totalAmount);
         echo "currency:";
-        var_dump($currency);exit;
+        var_dump($currency);
         $returnUrl = $this->getParameter('returnUrl');
         $cancelUrl = $this->getParameter('cancelUrl');
 
@@ -106,7 +106,9 @@ class PageRequest extends AbstractPaypalRequest
                 ->setPayer($payer)
                 ->setRedirectUrls($redirectUrls)
                 ->setTransactions(array($transaction));
-            $payment->create($apiContext);
+            print_r($payment);
+            $r = $payment->create($apiContext);
+            print_r($r);
         } catch (\Exception $ex) {
             $logPath = \Yii::getAlias('@runtime') . "/paypal-create/" . date('Y_m_d') . '/error.txt';
             FileHelper::writeLog($logPath, $ex->getMessage());

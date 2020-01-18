@@ -4,7 +4,6 @@ namespace common\models\forms;
 
 use Yii;
 use yii\base\Model;
-use yii\helpers\Json;
 use yii\web\UnprocessableEntityHttpException;
 use common\enums\PayEnum;
 use common\enums\OrderStatusEnum;
@@ -25,16 +24,17 @@ class PayForm extends Model
     public $returnUrl;
     public $notifyUrl;
     public $orderId;
+    public $currency;
     /**
      * @return array
      */
     public function rules()
     {
         return [
-            [['orderGroup', 'payType', 'tradeType', 'memberId'], 'required'],
+            [['orderGroup', 'payType', 'tradeType', 'memberId','currency'], 'required'],
             [['orderGroup'], 'in', 'range' => array_keys(PayEnum::$orderGroupExplain)],
             [['payType'], 'in', 'range' => array_keys(PayEnum::$payTypeExplain)],
-            [['notifyUrl', 'returnUrl'], 'string'],
+            [['notifyUrl', 'returnUrl','currency'], 'string'],
             [['tradeType'], 'verifyTradeType'],
             [['orderId'],'integer']
         ];
@@ -53,6 +53,7 @@ class PayForm extends Model
             'memberId' => '用户id',
             'returnUrl' => '跳转地址',
             'notifyUrl' => '回调地址',
+            'currency' => '货币',
         ];
     }
 
@@ -84,6 +85,9 @@ class PayForm extends Model
             case PayEnum::PAY_TYPE_PAYPAL :
                 if (!in_array($this->tradeType, ['pc', 'wap'])) {
                     $this->addError($attribute, 'PayPal交易类型不符');
+                }
+                if($this->currency == 'CNY') {
+                    $this->addError($attribute, \Yii::t('payment', 'NOT_SUPPORT_PAYPAL'));
                 }
                 break;
             case PayEnum::PAY_TYPE_GLOBAL_ALIPAY :
@@ -130,7 +134,7 @@ class PayForm extends Model
                 $totalFee = $order->account->order_amount - $order->account->discount_amount;
                 $currency = $order->account->currency;
                 $exchangeRate = $order->account->exchange_rate;
- 
+                
                 Order::updateAll(['payment_type'=>$this->payType],['id'=>$order->id]);//更改订单支付方式
                 
                 $order = [

@@ -218,8 +218,9 @@ class PayService extends Service
      * @param string $tradeType 支付方式
      * @return string
      */
-    public function getOutTradeNo($totalFee, string $orderSn, int $payType, $tradeType = 'JSAPI', $orderGroup = 1)
+    public function getOutTradeNo($totalFee, string $orderSn, int $payType, $tradeType = 'JSAPI', $orderGroup = 1,$currency = null,$exchangeRate = null)
     {
+
         $payModel = new PayLog();
         $payModel->out_trade_no = StringHelper::randomNum(time());
         $payModel->total_fee = $totalFee;
@@ -227,8 +228,8 @@ class PayService extends Service
         $payModel->order_group = $orderGroup;
         $payModel->pay_type = $payType;
         $payModel->trade_type = $tradeType;
-        $payModel->currency = $this->getCurrency();
-        $payModel->exchange_rate = $this->getExchangeRate();
+        $payModel->currency = $currency;
+        $payModel->exchange_rate = $exchangeRate;
         $payModel->save();
 
         return $payModel->out_trade_no;

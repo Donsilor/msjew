@@ -86,7 +86,7 @@ class PayController extends OnAuthController
 
 
         if(!empty($where) && ($model = PayLog::find()->where($where)->one())) {
-            $model->total_fee = AmountHelper::rateAmount($model->total_fee,$model->exchange_rate,2,'');
+            $model->total_fee = AmountHelper::rateAmount($model->total_fee,$model->exchange_rate,2);
             return $model;
         }
 

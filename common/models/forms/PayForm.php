@@ -159,7 +159,9 @@ class PayForm extends Model
             $orderSn,
             $this->payType,
             $this->tradeType,
-            $this->orderGroup
+            $this->orderGroup,
+            $currency,
+            $exchangeRate
         );
 
         // 必须返回 body、total_fee、out_trade_no

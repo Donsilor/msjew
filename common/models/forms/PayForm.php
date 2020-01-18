@@ -120,22 +120,24 @@ class PayForm extends Model
         //$data = $this->data;        
         switch ($this->orderGroup) {
             case PayEnum::ORDER_GROUP :
-                
-                $orderInfo = \Yii::$app->services->order->getOrderAccount($this->orderId,$this->memberId);                
-                if(empty($orderInfo) || $orderInfo['order_status'] != OrderStatusEnum::ORDER_UNPAID) {
+
+                $order = Order::find()->where(['id'=>$this->orderId,'member_id'=>$this->memberId]);
+                if(empty($order) || $order->order_status != OrderStatusEnum::ORDER_UNPAID) {
                     throw new UnprocessableEntityHttpException("支付失败,订单状态已变更");
                 }
                 // TODO 查询订单获取订单信息
-                $orderSn = $orderInfo['order_sn'];
-                $totalFee = $orderInfo['order_amount'] - $orderInfo['discount_amount'];
-                $currency = \Yii::$app->services->currency->getCurrency();
+                $orderSn = $order->order_sn;
+                $totalFee = $order->account->order_amount - $order->account->discount_amount;
+                $currency = $order->account->currency;
+                $exchangeRate = $order->account->exchange_rate;
  
-                Order::updateAll(['payment_type'=>$this->payType],['id'=>$this->orderId]);//更改订单支付方式
+                Order::updateAll(['payment_type'=>$this->payType],['id'=>$order->id]);//更改订单支付方式
                 
                 $order = [
                     'body' => "商品",
                     'total_fee' => $totalFee,
                     'currency' => $currency,
+                    'exchangeRate'=>$exchangeRate
                 ];
                 break;
             case PayEnum::ORDER_GROUP_GOODS :

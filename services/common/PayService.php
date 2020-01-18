@@ -112,7 +112,7 @@ class PayService extends Service
             'out_trade_no' => $baseOrder['out_trade_no'],
 
             //转换成支付货币
-            'total_fee' => \Yii::$app->services->currency->exchangeAmount($baseOrder['total_fee'], 2, $baseOrder['currency']),
+            'total_fee' => \Yii::$app->services->currency->exchangeAmount($baseOrder['total_fee'], 2, $baseOrder['currency'],null,$baseOrder['exchangeRate']),
             'subject' => $baseOrder['body'],
             'currency' => $baseOrder['currency'],
         ];
@@ -137,7 +137,7 @@ class PayService extends Service
             'out_trade_no' => $baseOrder['out_trade_no'],
 
             //转换成支付货币
-            'total_amount' => \Yii::$app->services->currency->exchangeAmount($baseOrder['total_fee'], 2, $baseOrder['currency']),
+            'total_amount' => \Yii::$app->services->currency->exchangeAmount($baseOrder['total_fee'], 2, $baseOrder['currency'],null,$baseOrder['exchangeRate']),
             'subject' => $baseOrder['body'],
             'currency' => $baseOrder['currency'],
         ];

@@ -121,7 +121,7 @@ class PayForm extends Model
         switch ($this->orderGroup) {
             case PayEnum::ORDER_GROUP :
 
-                $order = Order::find()->where(['id'=>$this->orderId,'member_id'=>$this->memberId]);
+                $order = Order::find()->where(['id'=>$this->orderId,'member_id'=>$this->memberId])->one();
                 if(empty($order) || $order->order_status != OrderStatusEnum::ORDER_UNPAID) {
                     throw new UnprocessableEntityHttpException("支付失败,订单状态已变更");
                 }

@@ -141,7 +141,7 @@ class PayService extends Service
             'subject' => $baseOrder['body'],
             'currency' => $baseOrder['currency'],
         ];
-
+print_r($order);
         // 交易类型
         $tradeType = $payForm->tradeType;
         return [

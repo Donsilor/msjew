@@ -74,7 +74,10 @@ class PageRequest extends AbstractPaypalRequest
         $currency = $this->getParameter('currency');
         $totalAmount = $this->getParameter('totalAmount');
         $outTradeNo = $this->getParameter('outTradeNo');
-
+        echo "totalAmount:";
+        var_dump($totalAmount);
+        echo "currency:";
+        var_dump($currency);exit;
         $returnUrl = $this->getParameter('returnUrl');
         $cancelUrl = $this->getParameter('cancelUrl');
 

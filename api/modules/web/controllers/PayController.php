@@ -104,9 +104,9 @@ class PayController extends OnAuthController
             'verification_status' => 'false'
         ];
 
-        //测试不验证结果
-        $result['verification_status'] = 'true';
-        return $result;
+//        //测试不验证结果
+//        $result['verification_status'] = 'true';
+//        return $result;
 
         //获取操作实例
         $returnUrl = Yii::$app->request->post('return_url', null);

@@ -61,7 +61,6 @@ class PayController extends OnAuthController
         if (!$model->validate()) {
             return ResultHelper::api(422, $this->getError($model));
         }
-        print_r($model->getConfig());exit;
         return $model->getConfig();
     }
 
@@ -86,6 +85,7 @@ class PayController extends OnAuthController
 
 
         if(!empty($where) && ($model = PayLog::find()->where($where)->one())) {
+            $model->total_fee = \Yii::$app->services->currency->exchangeAmount($model->total_fee, 2, $model->currency,null,$model->exchange_rate);
             return $model;
         }
 

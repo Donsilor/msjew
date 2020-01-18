@@ -103,6 +103,7 @@ class PageRequest extends AbstractPaypalRequest
                 ->setPayer($payer)
                 ->setRedirectUrls($redirectUrls)
                 ->setTransactions(array($transaction));
+
             $payment->create($apiContext);
         } catch (\Exception $ex) {
             $logPath = \Yii::getAlias('@runtime') . "/paypal-create/" . date('Y_m_d') . '/error.txt';

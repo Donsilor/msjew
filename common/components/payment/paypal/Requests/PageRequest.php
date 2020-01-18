@@ -4,6 +4,7 @@
 namespace Omnipay\Paypal\Requests;
 
 
+use common\helpers\FileHelper;
 use Omnipay\Common\Message\AbstractRequest;
 use PayPal\Api\Amount;
 use PayPal\Api\Payer;
@@ -61,7 +62,8 @@ class PageRequest extends AbstractPaypalRequest
     /**
      * 发送数据
      * @param $data getData的返回结果
-     * @inheritDoc
+     * @return \Omnipay\Common\Message\ResponseInterface|Payment
+     * @throws \Exception
      */
     public function sendData($data)
     {
@@ -103,9 +105,9 @@ class PageRequest extends AbstractPaypalRequest
                 ->setTransactions(array($transaction));
             $payment->create($apiContext);
         } catch (\Exception $ex) {
-            // NOTE: PLEASE DO NOT USE RESULTPRINTER CLASS IN YOUR ORIGINAL CODE. FOR SAMPLE ONLY
-            //ResultPrinter::printError("Executed Payment", "Payment", null, null, $ex);
-            exit(1);
+            $logPath = \Yii::getAlias('@runtime') . "/paypal-create/" . date('Y_m_d') . '/error.txt';
+            FileHelper::writeLog($logPath, $ex->getMessage());
+            throw new \Exception('paypal创建订单异常~！');
         }
 
         // TODO: Implement sendData() method.

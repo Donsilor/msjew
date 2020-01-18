@@ -48,10 +48,10 @@ class PaypalPay
     /**
      * 电脑网站支付
      *
-     * @param $config
+     * @param $order
      *
      * 参数说明
-     * $config = [
+     * $order = [
      *     'subject'      => 'test',
      *     'out_trade_no' => date('YmdHis') . mt_rand(1000, 9999),
      *     'total_amount' => '0.01',

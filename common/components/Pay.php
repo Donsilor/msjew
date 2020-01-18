@@ -53,7 +53,7 @@ class Pay extends Component
             'ali_public_key' => $this->rfConfig['alipay_cert_path'],
             // 加密方式： ** RSA2 **
             'private_key' => $this->rfConfig['alipay_key_path'],
-            'sandbox' => !empty($this->rfConfig['pay_sandbox'])
+            'sandbox' => !empty($this->rfConfig['alipay_sandbox'])
         ], $config));
     }
 
@@ -72,7 +72,7 @@ class Pay extends Component
             'alipay_public_key' => $this->rfConfig['global_alipay_alipay_public_key'],
             'return_url' => '',
             'notify_url' => '',
-            'environment' => !empty($this->rfConfig['pay_sandbox']) ? 'sandbox' : '',
+            'environment' => !empty($this->rfConfig['global_alipay_sandbox']) ? 'sandbox' : '',
         ], $config));
     }
 
@@ -124,7 +124,7 @@ class Pay extends Component
 
             'client_id' => $this->rfConfig['paypal_client_id'],
             'client_secret' => $this->rfConfig['paypal_client_secret'],
-            'sandbox' => !empty($this->rfConfig['pay_sandbox'])
+            'sandbox' => !empty($this->rfConfig['paypal_sandbox'])
         ], $config));
     }
 

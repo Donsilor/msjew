@@ -86,7 +86,7 @@ class PayForm extends Model
                 if (!in_array($this->tradeType, ['pc', 'wap'])) {
                     $this->addError($attribute, 'PayPal交易类型不符');
                 }
-                if($this->currency == 'CNY') {
+                if($this->coinType == 'CNY') {
                     $this->addError($attribute, \Yii::t('payment', 'NOT_SUPPORT_PAYPAL'));
                 }
                 break;

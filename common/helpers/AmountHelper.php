@@ -27,7 +27,12 @@ class AmountHelper
      */
     public static function rateAmount($amount, $rate = 1, $scale = 2, $sep = ',')
     {
-        return number_format(bcmul($amount, $rate, ($scale+1)), $scale, '.', $sep);
+        $amount = bcmul($amount, $rate, ($scale+1));
+        if(! $sep ){
+            return  round($amount,$scale);
+        } else {
+            return number_format($amount, $scale, '.', $sep);
+        }
     }    
     /**
      * 加价率计算
@@ -39,6 +44,11 @@ class AmountHelper
      */
     public static function calcMarkupPrice($amount, $markup_rate, $markup_value, $scale = 2,$sep = '')
     {
-        return number_format(bcadd(bcmul($amount, $markup_rate, $scale+2),$markup_value,$scale+2),$scale, '.', $sep);
+        $amount = bcadd(bcmul($amount, $markup_rate, $scale+2),$markup_value,$scale+2);
+        if(! $sep ){
+            return  round($amount,$scale);
+        } else {
+            return number_format($amount, $scale, '.', $sep);
+        }
     }
 }

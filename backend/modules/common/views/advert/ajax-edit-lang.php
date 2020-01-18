@@ -24,7 +24,7 @@ if(!isset($model->status)){
 $form = ActiveForm::begin([
     'id' => $model->formName(),
     'enableAjaxValidation' => true,
-    'validationUrl' => Url::to(['ajax-edit','id' => $model['id']]),
+    'validationUrl' => Url::to(['ajax-edit-lang','id' => $model['id']]),
     'fieldConfig' => [
         'template' => "<div class='col-sm-2 text-right'>{label}</div><div class='col-sm-10'>{input}{hint}\n{error}</div>",
     ]
@@ -51,9 +51,7 @@ $form = ActiveForm::begin([
                     ]]);
             ?>
         </div>
-
-
-
+        
         <?= $form->field($model, 'adv_type')->radioList(SettingEnum::$advTypeAction) ?>
         <?= $form->field($model, 'show_type')->radioList(SettingEnum::$showTypeAction) ?>
         <?= $form->field($model, 'adv_height')->textInput(['style'=>'width:100px;'])?>

@@ -4,6 +4,7 @@ use common\helpers\Html;
 use common\helpers\Url;
 use yii\grid\GridView;
 use yii\widgets\ActiveForm;
+use common\helpers\ImageHelper;
 
 
 /* @var $this yii\web\View */
@@ -50,14 +51,13 @@ use yii\widgets\ActiveForm;
                 'label' => '图片',
                 "format"=>'raw',
                 'value' => function($model) {
-                    return Html::img($model->adv_image,["width"=>"100",]);
+                    return ImageHelper::fancyBox($model->adv_image,120,'auto');
                  },
              ],
             [
                 'attribute' => 'adv_id',
                 'value' => 'cate.lang.adv_name',
-                'headerOptions' => ['width'=>'200'],
-                'filter' => Html::activeDropDownList($searchModel, 'adv_id', $advert, [
+                'filter' => Html::activeDropDownList($searchModel, 'adv_id', \Yii::$app->services->advert->getDropDown(), [
                         'prompt' => '全部',
                         'class' => 'form-control'
                     ]
@@ -67,7 +67,7 @@ use yii\widgets\ActiveForm;
                 'attribute' => 'type_id',
                 'value' => 'types.lang.type_name',
                 'headerOptions' => ['width'=>'120'],
-                'filter' => Html::activeDropDownList($searchModel, 'type_id', $type, [
+                    'filter' => Html::activeDropDownList($searchModel, 'type_id',\Yii::$app->services->goodsType->getDropDown(), [
                         'prompt' => '全部',
                         'class' => 'form-control'
                     ]

@@ -85,12 +85,8 @@ class AdvertController extends BaseController
                 return $this->message($this->getError($model), $this->redirect(['index']), 'error');
             }
         }
-
-        //获取产品线
-        $type = Type::getDropDown();
         return $this->renderAjax($this->action->id, [
             'model' => $model,
-            'type' => $type,
         ]);
     }
 

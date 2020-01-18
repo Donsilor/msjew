@@ -4,9 +4,7 @@ use yii\widgets\ActiveForm;
 use common\helpers\Url;
 use common\helpers\Html;
 use kartik\select2\Select2;
-
-
-
+use common\enums\AreaEnum;
 
 $form = ActiveForm::begin([
     'id' => $model->formName(),
@@ -28,16 +26,13 @@ $form = ActiveForm::begin([
         <?php echo Html::langTab('tab')?>
 
         <div class="tab-content">
-            <?= $form->field($model, 'adv_id')->widget(Select2::class, [
-                'data' => $advert,
-                'options' => ['placeholder' => '请选择'],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]);?>
-
-        </div>
-
+        <?= $form->field($model, 'adv_id')->widget(Select2::class, [
+            'data' => \Yii::$app->services->advert->getDropDown(),
+            'options' => ['placeholder' => '请选择'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ]);?>
         <?= $form->field($model, 'adv_image')->widget(common\widgets\webuploader\Files::class, [
             'config' => [
                 'pick' => [
@@ -46,23 +41,25 @@ $form = ActiveForm::begin([
                 'formData' => [],
             ]
         ]); ?>
-
+        <?php
+            echo common\widgets\langbox\LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab',
+                'fields'=>
+                    [
+                         'title'=> ['type'=>'textInput'],                        
+                    ]]);
+            ?>
+        </div>
         <?php $model->area_ids = !empty($model->area_ids)?explode(',', $model->area_ids):null;?>
         <?= $form->field($model, 'area_ids')->checkboxList(common\enums\AreaEnum::getMap()) ?>
         <?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
-            'data' => $type,
+            'data' => \Yii::$app->services->goodsType->getDropDown(),
             'options' => ['placeholder' => '请选择'],
             'pluginOptions' => [
                 'allowClear' => true,
                 'width'=>'200'
             ],
         ]);?>
-
-
-
-
         <?= $form->field($model, 'adv_url')->textInput(['maxlength' => true]) ?>
-
         <?= $form->field($model, 'start_time')->widget(kartik\date\DatePicker::class, [
             'language' => 'zh-CN',
             'layout'=>'{picker}{input}',
@@ -98,8 +95,6 @@ $form = ActiveForm::begin([
     </div>
     <!-- /.tab-content -->
     </div>
-
-
 
     <div class="modal-footer">
         <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>

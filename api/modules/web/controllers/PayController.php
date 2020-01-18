@@ -85,6 +85,7 @@ class PayController extends OnAuthController
 
 
         if(!empty($where) && ($model = PayLog::find()->where($where)->one())) {
+            $model->total_fee = \Yii::$app->services->currency->exchangeAmount($model->total_fee, 2, $model->currency,null,$model->exchange_rate);
             return $model;
         }
 
@@ -101,10 +102,6 @@ class PayController extends OnAuthController
         $result = [
             'verification_status' => 'false'
         ];
-
-        //测试不验证结果
-        $result['verification_status'] = 'true';
-        return $result;
 
         //获取操作实例
         $returnUrl = Yii::$app->request->post('return_url', null);

@@ -61,7 +61,7 @@ class PayController extends OnAuthController
         if (!$model->validate()) {
             return ResultHelper::api(422, $this->getError($model));
         }
-
+        print_r($model->getConfig());exit;
         return $model->getConfig();
     }
 

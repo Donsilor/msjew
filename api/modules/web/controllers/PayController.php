@@ -16,6 +16,7 @@ use yii\db\Exception;
 use yii\helpers\Json;
 use yii\web\UnprocessableEntityHttpException;
 use function GuzzleHttp\Psr7\parse_query;
+use common\helpers\AmountHelper;
 
 /**
  * 公用支付生成
@@ -85,7 +86,7 @@ class PayController extends OnAuthController
 
 
         if(!empty($where) && ($model = PayLog::find()->where($where)->one())) {
-            $model->total_fee = \Yii::$app->services->currency->exchangeAmount($model->total_fee, 2, $model->currency,null,$model->exchange_rate);
+            $model->total_fee = AmountHelper::rateAmount($model->total_fee,$model->exchange_rate,2);
             return $model;
         }
 

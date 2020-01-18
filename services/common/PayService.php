@@ -13,6 +13,7 @@ use common\models\order\Order;
 use common\enums\OrderStatusEnum;
 use common\enums\PayStatusEnum;
 use common\models\order\OrderAccount;
+use common\helpers\AmountHelper;
 
 /**
  * Class PayService
@@ -112,7 +113,7 @@ class PayService extends Service
             'out_trade_no' => $baseOrder['out_trade_no'],
 
             //转换成支付货币
-            'total_fee' => \Yii::$app->services->currency->exchangeAmount($baseOrder['total_fee'], 2, $baseOrder['currency'],null,$baseOrder['exchangeRate']),
+            'total_fee' => AmountHelper::rateAmount($baseOrder['total_fee'], $baseOrder['exchange_rate'],2),
             'subject' => $baseOrder['body'],
             'currency' => $baseOrder['currency'],
         ];
@@ -123,7 +124,12 @@ class PayService extends Service
             'config' => Yii::$app->pay->globalAlipay($config)->$tradeType($order)
         ];
     }
-
+    /**
+     * Paypal支付
+     * @param PayForm $payForm
+     * @param unknown $baseOrder
+     * @return NULL[]
+     */
     public function paypal(PayForm $payForm, $baseOrder)
     {
         // 配置
@@ -137,7 +143,7 @@ class PayService extends Service
             'out_trade_no' => $baseOrder['out_trade_no'],
 
             //转换成支付货币
-            'total_amount' => \Yii::$app->services->currency->exchangeAmount($baseOrder['total_fee'], 2, $baseOrder['currency'],null,$baseOrder['exchangeRate']),
+            'total_amount' => AmountHelper::rateAmount($baseOrder['total_fee'], $baseOrder['exchange_rate'],2),
             'subject' => $baseOrder['body'],
             'currency' => $baseOrder['currency'],
         ];
@@ -212,8 +218,9 @@ class PayService extends Service
      * @param string $tradeType 支付方式
      * @return string
      */
-    public function getOutTradeNo($totalFee, string $orderSn, int $payType, $tradeType = 'JSAPI', $orderGroup = 1)
+    public function getOutTradeNo($totalFee, string $orderSn, int $payType, $tradeType = 'JSAPI', $orderGroup = 1,$currency = null,$exchangeRate = null)
     {
+
         $payModel = new PayLog();
         $payModel->out_trade_no = StringHelper::randomNum(time());
         $payModel->total_fee = $totalFee;
@@ -221,8 +228,8 @@ class PayService extends Service
         $payModel->order_group = $orderGroup;
         $payModel->pay_type = $payType;
         $payModel->trade_type = $tradeType;
-        $payModel->currency = $this->getCurrency();
-        $payModel->exchange_rate = $this->getExchangeRate();
+        $payModel->currency = $currency;
+        $payModel->exchange_rate = $exchangeRate;
         $payModel->save();
 
         return $payModel->out_trade_no;

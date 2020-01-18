@@ -11,6 +11,7 @@ use common\enums\StatusEnum;
 use common\helpers\ArrayHelper;
 use common\helpers\FileHelper;
 use common\helpers\WechatHelper;
+use common\helpers\AmountHelper;
 
 /**
  * 支付回调
@@ -187,6 +188,8 @@ class NotifyController extends Controller
             }
 
             try {
+                
+                $model->total_fee = AmountHelper::rateAmount($model->total_fee,$model->exchange_rate,2);
                 $notify = Yii::$app->pay->Paypal()->notify(['model'=>$model]);
 
                 if ($notify) {

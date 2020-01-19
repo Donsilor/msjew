@@ -57,6 +57,7 @@ class MailerService extends Service
         if($language) {
             $template = 'languages/'.$language.'/'.$template;
         }
+        $subject = Yii::t('mail', $subject);
         if ($this->queueSwitch == true) {
             $_params = array_merge($params,[
                     'email' => $email,

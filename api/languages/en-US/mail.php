@@ -1,7 +1,7 @@
 <?php
 return [
     '登录验证码' =>'Login verification code',
-    '注册验证码' =>'Registration verification code',
+    '注册验证码' =>'Registration verification code222',
     '重置密码验证码' =>'Reset password verification code',
     '待付款订单通知' =>'Notice of order to be paid',
     '已付款订单通知' =>'Paid order notice',

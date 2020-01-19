@@ -4,6 +4,7 @@ use yii\grid\GridView;
 use common\helpers\Html;
 use common\enums\StatusEnum;
 use common\enums\PayEnum;
+use common\helpers\AmountHelper;
 
 $this->title = '支付日志';
 $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
@@ -29,8 +30,8 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
                             'value' => function ($model) {
                                 $total_fee = $model->total_fee > 0 ? $model->total_fee  : 0;
                                 $pay_fee = $model->pay_fee > 0 ? $model->pay_fee  : 0;
-                                $str = '应付金额：' . $total_fee . '<br>';
-                                $str .= '实际支付：' . $pay_fee;
+                                $str = '应付金额：' . AmountHelper::outputAmount($total_fee) . '<br>';
+                                $str .= '实际支付：' . AmountHelper::outputAmount($pay_fee,2,$model->currency);
                                 return $str;
                             },
                             'format' => 'raw',

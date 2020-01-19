@@ -31,7 +31,7 @@ class SearchController extends OnAuthController
             '2'=>'m.sale_volume asc ',//價格 - 從低到高
             '3'=>'m.sale_volume desc',//價格 - 從高到低
         ];
-        $keyword = \Yii::$app->request->get("text");//产品线ID
+        $keyword = \Yii::$app->request->get("keyword");//产品线ID
         $order_type = \Yii::$app->request->get("sortType", 1);//排序方式 1-升序；2-降序;
 
         //排序
@@ -58,7 +58,7 @@ class SearchController extends OnAuthController
             $arr['categoryId'] = (int)$val['type_id'];
             $arr['coinType'] = $this->currency;
             $arr['goodsImages'] = $val['goods_images'];
-            $arr['salePrice'] = $val['sale_price'];
+            $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $arr['goodsName'] = $val['style_name'];
             $arr['isJoin'] = null;
             $arr['specsModels'] = null;

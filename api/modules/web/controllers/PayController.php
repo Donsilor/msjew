@@ -135,9 +135,9 @@ class PayController extends OnAuthController
             }
 
             if($notify) {
-                $message = [];
+                $message = [];                
                 $message['out_trade_no'] = $model->out_trade_no;
-
+                $message['pay_fee'] = $model->total_fee;
                 // 日志记录
                 $logPath = $this->getLogPath(PayEnum::$payTypeAction[$model->pay_type]);
                 FileHelper::writeLog($logPath, Json::encode(ArrayHelper::toArray($message)));

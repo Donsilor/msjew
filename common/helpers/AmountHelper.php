@@ -51,4 +51,21 @@ class AmountHelper
             return number_format($amount, $scale, '.', $sep);
         }
     }
+    /**
+     * 金额带单位输出
+     * @param unknown $amount
+     * @param number $scale
+     * @param unknown $currency
+     * @param string $sep
+     * @return number|unknown
+     */
+    public static function outputAmount($amount,$scale = 2,$currency = 'CNY' ,$sep = ',') 
+    {
+        if(! $sep ){
+            $amount =  round($amount,$scale);
+        } else {
+            $amount = number_format($amount, $scale, '.', $sep);
+        }
+        return $currency.$amount;
+    }
 }

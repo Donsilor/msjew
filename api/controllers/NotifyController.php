@@ -109,7 +109,7 @@ class NotifyController extends Controller
         try {
             if ($response->isPaid()) {
                 $message = Yii::$app->request->post();
-                $message['pay_fee'] = $message['total_amount'] * 100;
+                $message['pay_fee'] = $message['total_amount'];
                 $message['transaction_id'] = $message['trade_no'];
                 $message['mch_id'] = $message['auth_app_id'];
 
@@ -196,7 +196,7 @@ class NotifyController extends Controller
 
                     $message = [];//= Yii::$app->request->post();
                     $message['out_trade_no'] = $model->out_trade_no;
-
+                    $message['pay_fee'] = $model->total_fee;
                     // 日志记录
                     $logPath = $this->getLogPath('paypal_hooks');
                     FileHelper::writeLog($logPath, Json::encode(ArrayHelper::toArray($message)));

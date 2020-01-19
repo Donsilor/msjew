@@ -49,7 +49,9 @@ class MailerService extends Service
     {        
         $usageExplains = EmailLog::$usageExplain;        
         $usageTemplates = EmailLog::$usageTemplates;
-        
+        if(!$language) {
+             $language = \Yii::$app->params['language'];
+        }
         $subject  = $usageExplains[$usage]??'';
         $template = $usageTemplates[$usage]??'';
         if($language) {

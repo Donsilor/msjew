@@ -4,7 +4,7 @@
 /* @var $user common\models\base\User */
 ?>
 <div class="password-reset">
-    <p>BDD CO会员</p>
-    <p>您在bddco.com 重置密码的验证码为：<?php echo $code??''?></p>
-    <p>15分钟内有效</p>
+    <p>BDD CO member</p>
+    <p>The verification code of your password reset at bddco.com is：<?php echo $code??''?></p>
+    <p>Valid for 15 minutes</p>
 </div>

@@ -39,7 +39,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 						<dl>
 							<dt>订单详情</dt>
 							<dd>
-								<span>付款信息：</span><span>在線支付<i><?= OrderStatusEnum::getValue($order->order_status) ?></i></span>
+								<span>付款信息：</span><span>在线支付<i><?= OrderStatusEnum::getValue($order->order_status) ?></i></span>
 							</dd>
 							<dd><span>订单编号：</span><span class="orderno"><?= $order->order_sn ?></span></dd>							
 							<?php if($order->order_status == OrderStatusEnum::ORDER_UNPAID) {?>

@@ -31,7 +31,7 @@ class SearchController extends OnAuthController
             '2'=>'m.sale_volume asc ',//價格 - 從低到高
             '3'=>'m.sale_volume desc',//價格 - 從高到低
         ];
-        $keyword = \Yii::$app->request->get("text");//产品线ID
+        $keyword = \Yii::$app->request->get("keyword");//产品线ID
         $order_type = \Yii::$app->request->get("sortType", 1);//排序方式 1-升序；2-降序;
 
         //排序

@@ -103,6 +103,9 @@ class PayController extends OnAuthController
      */
     public function actionVerify()
     {
+        ignore_user_abort(true);
+        set_time_limit(300);
+
         //返回结果
         $result = [
             'verification_status' => 'false'

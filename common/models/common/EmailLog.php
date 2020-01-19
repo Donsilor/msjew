@@ -39,12 +39,12 @@ class EmailLog extends \common\models\base\BaseModel
      * @var array
      */
     public static $usageExplain = [
-            self::USAGE_LOGIN => '登录验证码',
-            self::USAGE_REGISTER => '注册验证码',
-            self::USAGE_UP_PWD => '重置密码验证码',
-            self::USAGE_ORDER_UNPAID => '待付款订单通知',
-            self::USAGE_ORDER_PAID => '已付款订单通知',
-            self::USAGE_ORDER_SEND => '已发货订单通知',
+            self::USAGE_LOGIN => Yii::t('mail','登录验证码'),
+            self::USAGE_REGISTER => Yii::t('mail','注册验证码'),
+            self::USAGE_UP_PWD => Yii::t('mail','重置密码验证码'),
+            self::USAGE_ORDER_UNPAID => Yii::t('mail','待付款订单通知'),
+            self::USAGE_ORDER_PAID => Yii::t('mail','已付款订单通知'),
+            self::USAGE_ORDER_SEND => Yii::t('mail','已发货订单通知'),
     ];
     public static $usageTemplates = [
             self::USAGE_LOGIN => 'loginCode',

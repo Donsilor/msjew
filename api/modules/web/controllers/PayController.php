@@ -44,25 +44,29 @@ class PayController extends OnAuthController
      */
     public function actionCreate()
     {
-        $data = Yii::$app->request->post();
-
-        //支付宝，非人民币业务使用国际版
-        if(!empty($data['payType']) && $data['payType'] == PayEnum::PAY_TYPE_ALI && Yii::$app->params['currency'] != 'CNY') {
-            $data['payType'] = PayEnum::PAY_TYPE_GLOBAL_ALIPAY;
-        }
-
         /* @var $model PayForm */
         $model = new $this->modelClass();
-        $model->attributes = $data;
+        $model->attributes = Yii::$app->request->post();
         $model->memberId = $this->member_id;
-         
+        //支付宝，非人民币业务使用国际版
+        if($model->payType == PayEnum::PAY_TYPE_ALI && $model->coinType != 'CNY'){
+            $model->payType = PayEnum::PAY_TYPE_GLOBAL_ALIPAY;
+        }
         if (isset(PayEnum::$payTypeAction[$model->payType])) {
             $model->notifyUrl = Url::removeMerchantIdUrl('toFront', ['notify/' . PayEnum::$payTypeAction[$model->payType]]);
         }
         if (!$model->validate()) {
             return ResultHelper::api(422, $this->getError($model));
         }
-        return $model->getConfig();
+        try {            
+            $trans = \Yii::$app->db->beginTransaction();
+            $config = $model->getConfig();
+            $trans->commit();            
+            return $config;
+        }catch (Exception $e) {
+            $trans->rollBack();
+            throw  $e;
+        }
     }
 
     /**

@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="box-tools">
                     <?= Html::create(['ajax-edit-lang'], '创建', [
                         'data-toggle' => 'modal',
-                        'data-target' => '#ajaxModal',
+                        'data-target' => '#ajaxModalLg',
                     ])?>
                 </div>
             </div>

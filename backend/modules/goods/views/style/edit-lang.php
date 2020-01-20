@@ -499,11 +499,15 @@ $(function(){
 	//库存批量填充
 	$(document).on("click",'.batch-goods_storage',function(){
 		var hasEdit = false;
-		var fromValue = $("#style-goods_storage").val();
-		var r = /^\+?[1-9][0-9]*$/;
-		if((fromValue = prompt("<?= Yii::t("goods","请输入库存数量")?>","10")) && !r.test(fromValue)){
-             alert("<?= Yii::t("goods","库存数量不合法")?>");
-             return false;
+		var fromValue = $("#style-goods_storage").val();		
+		if(fromValue = prompt("<?= Yii::t("goods","请输入库存数量")?>","10")){
+			var r = /^\+?[1-9][0-9]*$/;
+			if(!r.test(fromValue)) {
+                 alert("<?= Yii::t("goods","库存数量不合法")?>");
+                 return false;
+			}
+		}else {
+            return false; 
 		}
 		$("#skuTable tr[class*='sku_table_tr']").each(function(){
 			var skuValue = $(this).find(".setsku-goods_storage").val();

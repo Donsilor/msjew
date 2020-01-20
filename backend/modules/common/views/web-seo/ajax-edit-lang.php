@@ -21,9 +21,7 @@ $form = ActiveForm::begin([
         <h4 class="modal-title">基本信息</h4>
     </div>
     <div class="modal-body">
-
         <?php echo Html::langTab('tab')?>
-
         <div class="tab-content">
             <?php if($model->isNewRecord){ ?>
                 <?= $form->field($model, 'page_name')->textInput(['maxlength' => true]) ?>

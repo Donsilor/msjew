@@ -32,9 +32,9 @@ class OrderService extends Service
      * @param unknown $order_id
      * @param string $prefix
      */
-    public function createOrderSn($order_id = 0,$prefix = 'BDD')
+    public function createOrderSn($prefix = 'BDD')
     {
-        return $prefix.time();
+        return $prefix.date('Ymd').mt_rand(3,9).str_pad(mt_rand(1, 99999),6,'1',STR_PAD_LEFT);
     }
     /**
      * 创建订单

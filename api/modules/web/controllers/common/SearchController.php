@@ -42,7 +42,7 @@ class SearchController extends OnAuthController
             $order = $sort_map[$order_type];
         }
 
-        $fields = ['m.id','lang.style_name','m.goods_images','m.sale_price'];
+        $fields = ['m.id','m.type_id','lang.style_name','m.goods_images','m.sale_price'];
         $query = Style::find()->alias('m')->select($fields)
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
@@ -57,7 +57,7 @@ class SearchController extends OnAuthController
         foreach($result['data'] as & $val) {
             $arr = array();
             $arr['id'] = $val['id'];
-            $arr['categoryId'] = $type_id;
+            $arr['categoryId'] = $val['type_id'];
             $arr['coinType'] = $this->currency;
             $arr['goodsImages'] = $val['goods_images'];
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);

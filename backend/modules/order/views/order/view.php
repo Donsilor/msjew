@@ -177,7 +177,7 @@ DOM;
                                 [
                                     'attribute'=>'goods_price',
                                     'value' => function($model) {
-                                        return $model->currency . " " . \common\helpers\AmountHelper::rateAmount($model->goods_price, $model->exchange_rate, 2, ',');
+                                        return $model->currency . " " . \common\helpers\AmountHelper::rateAmount($model->goods_price, 1, 2, ',');
                                     }
                                 ],
                                 [
@@ -190,7 +190,7 @@ DOM;
                                 [
                                     'attribute'=>'goods_pay_price',
                                     'value' => function($model) {
-                                        return $model->currency . " " . \common\helpers\AmountHelper::rateAmount($model->goods_pay_price, $model->exchange_rate, 2, ',');
+                                        return $model->currency . " " . \common\helpers\AmountHelper::rateAmount($model->goods_pay_price, 1, 2, ',');
                                     }
                                 ],
                             ]
@@ -222,27 +222,27 @@ DOM;
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.shipping_fee') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->shipping_fee, $model->account->exchange_rate, 2, ',') ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->shipping_fee, 1, 2, ',') ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.discount_amount') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->discount_amount, $model->account->exchange_rate, 2, ',') ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->discount_amount, 1, 2, ',') ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.tax_fee') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->tax_fee, $model->account->exchange_rate, 2, ',') ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->tax_fee, 1, 2, ',') ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.safe_fee') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->safe_fee, $model->account->exchange_rate, 2, ',') ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->safe_fee, 1, 2, ',') ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label><?= $model->getAttributeLabel('account.order_amount') ?>
                                         ：</label></div>
-                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->order_amount, $model->account->exchange_rate, 2, ',') ?></div>
+                                <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->order_amount, 1, 2, ',') ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label style="font-weight:bold"><?= $model->getAttributeLabel('account.pay_amount') ?>：</label></div>
@@ -250,7 +250,7 @@ DOM;
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label style="font-weight:bold">参考支付RMB金额：</label></div>
-                                <div class="col-lg-7 text-red"><?= \Yii::$app->services->currency->getSign() ?>&nbsp;<?=$model->account->pay_amount?></div>
+                                <div class="col-lg-7 text-red"><?= \Yii::$app->services->currency->getSign() ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->pay_amount, $model->account->exchange_rate, 2, ',') ?></div>
                             </div>
                         </div>
                     </div>

@@ -38,6 +38,8 @@ class OrderController extends BaseController
     public function actionIndex()
     {
         $orderStatus = Yii::$app->request->get('order_status', -1);
+        $SearchModel = Yii::$app->request->get('SearchModel', null);
+
         $searchModel = new SearchModel([
             'model' => $this->modelClass,
             'scenario' => 'default',
@@ -53,7 +55,26 @@ class OrderController extends BaseController
                 'follower' => ['username']
             ]
         ]);
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, ['created_at', 'address.mobile', 'address.email']);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, ['created_at', 'address.mobile', 'address.email', 'address.country_id']);
+
+        //国家区域搜索
+        if(!empty($SearchModel['address.country_id'])) {
+            $area = [
+                1 => 7,
+                2 => 279,
+                3 => 280,
+                4 => 278,
+//                99 => 7,
+            ];
+
+            $country_id = $SearchModel['address.country_id'];
+            if(!empty($area[$country_id])) {
+                $dataProvider->query->andWhere(['=', 'order_address.country_id', $area[$country_id]]);
+            }
+            else {
+                $dataProvider->query->andWhere(['NOT IN', 'order_address.country_id', $area]);
+            }
+        }
 
         //订单状态
         if ($orderStatus !== -1)

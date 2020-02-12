@@ -163,7 +163,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             [
                                 'attribute' => 'address.country_id',
                                 'headerOptions' => ['class' => 'col-md-1'],
-                                'filter' => Html::activeDropDownList($searchModel, 'address.country_id', \Yii::$app->services->area->getDropDown(0), [
+                                'filter' => Html::activeDropDownList($searchModel, 'address.country_id', \common\enums\AreaEnum::getMap(), [
                                     'prompt' => '全部',
                                     'class' => 'form-control',
                                 ]),

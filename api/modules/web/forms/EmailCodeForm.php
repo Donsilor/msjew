@@ -33,7 +33,7 @@ class EmailCodeForm extends Model
         return [
                 [['email', 'usage'], 'required'],
                 [['usage'], 'in', 'range' => array_keys(EmailLog::$usageExplain)],
-                ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => '请输入正确的邮箱地址'],
+                ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => "请输入正确的邮箱地址"],
                 ['email', 'validateEmail'],
         ];
     }

@@ -3,6 +3,7 @@ use common\models\order\Order;
 use common\enums\OrderStatusEnum;
 use common\helpers\ImageHelper;
 use common\enums\ExpressEnum;
+use common\helpers\AmountHelper;
 
 $order_id = $code;
 $order = Order::find()->where(['id'=>$order_id])->one();
@@ -77,7 +78,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 								<dl>
 									<dd class="good"><?= $goods->goods_name?></dd>
 									<dd class="attr"><?= $goods_attr?></dd>
-									<dd class="price"><?= $currency?>&nbsp;<?= number_format(bcmul($goods->goods_price,$exchange_rate,3),2)?></dd>
+									<dd class="price"><?= AmountHelper::outputAmount($goods->goods_price,2,$currency)?></dd>
 								</dl>
 							</li>
 						</ul>
@@ -88,17 +89,17 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 						<ol>
 							<li>
 								<dl>
-									<dt class="sum"><span>商品总额：</span><em><?= $currency?>&nbsp;<?= number_format(bcmul($order->account->goods_amount,$exchange_rate,3),2)?></em></dt>
-									<dd class="num"><span>优惠：</span><em class="discount">-<?= $currency?>&nbsp;<?= number_format(bcmul($order->account->discount_amount,$exchange_rate,3),2)?></em></dd>
-									<dd class="num"><span>运费：</span><em>+<?= $currency?>&nbsp;<?= number_format(bcmul($order->account->shipping_fee,$exchange_rate,3),2)?></em></dd>
-									<dd class="num"><span>税费：</span><em>+<?= $currency?>&nbsp;<?= number_format(bcmul($order->account->tax_fee,$exchange_rate,3),2)?></em></dd>
-									<dt class="count"><span>订单总额：</span><em class="total"><?= $order->account->currency?>&nbsp;<?= number_format(bcmul($order->account->order_amount,$exchange_rate,3),2)?></em></dt>
+									<dt class="sum"><span>商品总额：</span><em><?= AmountHelper::outputAmount($order->account->goods_amount,2,$currency)?></em></dt>
+									<dd class="num"><span>优惠：</span><em class="discount">-<?= AmountHelper::outputAmount($order->account->discount_amount,2,$currency)?></em></dd>
+									<dd class="num"><span>运费：</span><em>+<?= AmountHelper::outputAmount($order->account->shipping_fee,2,$currency)?></em></dd>
+									<dd class="num"><span>税费：</span><em>+<?= AmountHelper::outputAmount($order->account->tax_fee,2,$currency)?></em></dd>
+									<dt class="count"><span>订单总额：</span><em class="total"><?= AmountHelper::outputAmount($order->account->order_amount,2,$currency)?></em></dt>
 									<?php if($order->order_status == OrderStatusEnum::ORDER_PAID) {?>
-									<dt class="count"><span>实际支付：</span><em class="total"><?= $order->account->currency?>&nbsp;<?= number_format(bcmul($order->account->pay_amount,$exchange_rate,3),2)?></em></dt>
+									<dt class="count"><span>实际支付：</span><em class="total"><?= AmountHelper::outputAmount($order->account->pay_amount,2,$currency)?></em></dt>
 								    <?php }?>
 								</dl>
 								<?php if($order->order_status == OrderStatusEnum::ORDER_UNPAID) {?>
-								<a href="<?= \Yii::$app->params['frontBaseUrl']?>/payment-options?orderId=<?= $order->id?>&price=<?= sprintf("%.2f",bcmul($order->account->order_amount,$exchange_rate,3))?>&coinType=<?= $currency?>" style="text-decoration:none" target="_blank"><div class="btn">立即付款</div></a>
+								<a href="<?= \Yii::$app->params['frontBaseUrl']?>/payment-options?orderId=<?= $order->id?>&price=<?= sprintf("%.2f",$order->account->order_amount)?>&coinType=<?= $currency?>" style="text-decoration:none" target="_blank"><div class="btn">立即付款</div></a>
 							    <?php } else {?>
 							    <a href="<?= \Yii::$app->params['frontBaseUrl']?>/account/order-details?orderId=<?= $order->id?>" style="text-decoration:none" target="_blank"><div class="btn">查看订单</div></a>
 							    <?php }?>

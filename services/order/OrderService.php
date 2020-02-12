@@ -160,16 +160,17 @@ class OrderService extends Service
             $goods = \Yii::$app->services->goods->getGoodsInfo($cart->goods_id,$cart->goods_type,false);
             if(empty($goods) || $goods['status'] != StatusEnum::ENABLED) {
                 continue;
-            }         
-            $goods_amount += $goods['sale_price'];
+            }
+            $sale_price = $this->exchangeAmount($goods['sale_price']);
+            $goods_amount += $sale_price;
             $orderGoodsList[] = [
                     'goods_id' => $cart->goods_id,
                     'goods_sn' => $goods['goods_sn'],
                     'style_id' => $goods['style_id'],
                     'style_sn' => $goods['style_sn'],
                     'goods_name' => $goods['goods_name'],
-                    'goods_price' => $goods['sale_price'],
-                    'goods_pay_price' => $goods['sale_price'],
+                    'goods_price' => $sale_price,
+                    'goods_pay_price' => $sale_price,
                     'goods_num' => $cart->goods_num,
                     'goods_type' => $cart->goods_type,
                     'goods_image' => $goods['goods_image'],
@@ -179,11 +180,11 @@ class OrderService extends Service
             ];
         }
         //金额
-        $discount_amount = 0;//优惠金额 RMB
-        $shipping_fee = 0;//运费 RMB
-        $tax_fee = 0;//税费 RMB
-        $safe_fee = 0;//保险费 RMB
-        $other_fee = 0;//其他费用 RMB
+        $discount_amount = 0;//优惠金额 
+        $shipping_fee = 0;//运费 
+        $tax_fee = 0;//税费 
+        $safe_fee = 0;//保险费 
+        $other_fee = 0;//其他费用 
         
         $order_amount = $goods_amount + $shipping_fee + $tax_fee + $safe_fee + $other_fee;//订单总金额 
 

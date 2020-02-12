@@ -189,7 +189,6 @@ class NotifyController extends Controller
 
             try {
                 
-                $model->total_fee = AmountHelper::rateAmount($model->total_fee,$model->exchange_rate,2);
                 $notify = Yii::$app->pay->Paypal()->notify(['model'=>$model]);
 
                 if ($notify) {

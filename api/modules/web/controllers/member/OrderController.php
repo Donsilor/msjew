@@ -51,8 +51,8 @@ class OrderController extends UserAuthController
                 'id' =>$order->id,
                 'orderNO' =>$order->order_sn,
                 'orderStatus'=> $order->order_status,
-                'orderAmount'=> $this->exchangeAmount($order->account->order_amount,2,$currency,null, $exchange_rate),
-                'productAmount'=> $this->exchangeAmount($order->account->goods_amount,2,$currency,null, $exchange_rate),
+                'orderAmount'=> $order->account->order_amount,
+                'productAmount'=> $order->account->goods_amount,
                 'coinCode'=> $currency,
                 'payChannel'=>$order->payment_type,
                 'orderTime' =>$order->created_at,
@@ -71,7 +71,7 @@ class OrderController extends UserAuthController
                        'goodsCode' => $orderGoods->goods_sn,
                        'categoryId'=>$orderGoods->goods_type,
                        'goodsName' => $orderGoods->lang ? $orderGoods->lang->goods_name: $orderGoods->goods_name,
-                       'goodsPrice'=>$this->exchangeAmount($orderGoods->goods_price,2,$orderGoods->currency,null,$orderGoods->exchange_rate),
+                       'goodsPrice'=>$orderGoods->goods_price,
                        'detailType'=>1,
                        'detailSpecs'=>null,
                        'deliveryCount'=>1,
@@ -179,7 +179,7 @@ class OrderController extends UserAuthController
                 'goodsCode' => $orderGoods->goods_sn,
                 'categoryId'=>$orderGoods->goods_type,
                 'goodsName' => $orderGoods->lang ? $orderGoods->lang->goods_name : $orderGoods->goods_name,
-                'goodsPrice'=>$this->exchangeAmount($orderGoods->goods_price,2,$orderGoods->currency,null,$orderGoods->exchange_rate),
+                'goodsPrice'=>$orderGoods->goods_price,
                 'detailType'=>1,
                 'detailSpecs'=>null,
                 'deliveryCount'=>1,
@@ -255,13 +255,13 @@ class OrderController extends UserAuthController
             'orderType' => $order->order_type,            
             'payChannel' => $order->payment_type,
             'productCount' => count($orderDetails),
-            'preferFee' => $this->exchangeAmount($order->account->discount_amount,2,$currency,null,$exchange_rate), //优惠金额
-            'productAmount' => $this->exchangeAmount($order->account->goods_amount,2,$currency,null,$exchange_rate),            
-            'logisticsFee' => $this->exchangeAmount($order->account->shipping_fee,2,$currency,null,$exchange_rate),
-            'orderAmount' => $this->exchangeAmount($order->account->order_amount,2,$currency,null,$exchange_rate),
-            'otherFee' => $this->exchangeAmount($order->account->other_fee,2,$currency,null,$exchange_rate),
-            'safeFee' => $this->exchangeAmount($order->account->safe_fee,2,$currency,null,$exchange_rate),
-            'taxFee' => $this->exchangeAmount($order->account->tax_fee,2,$currency,null,$exchange_rate),
+            'preferFee' => $order->account->discount_amount, //优惠金额
+            'productAmount' => $order->account->goods_amount,            
+            'logisticsFee' => $order->account->shipping_fee,
+            'orderAmount' => $order->account->order_amount,
+            'otherFee' => $order->account->other_fee,
+            'safeFee' => $order->account->safe_fee,
+            'taxFee' => $order->account->tax_fee,
             'userId' => $order->member_id,
             'details' => $orderDetails
         );
@@ -332,11 +332,11 @@ class OrderController extends UserAuthController
         }
         $taxInfo = \Yii::$app->services->order->getOrderAccountTax($cartIds, $this->member_id, $addressId); 
         return [
-                'logisticsFee' => $this->exchangeAmount($taxInfo['shipping_fee']),
-                'orderAmount'  => $this->exchangeAmount($taxInfo['order_amount']),
-                'productAmount' => $this->exchangeAmount($taxInfo['goods_amount']),
-                'safeFee'=> $this->exchangeAmount($taxInfo['safe_fee']),
-                'taxFee'  => $this->exchangeAmount($taxInfo['tax_fee']),
+                'logisticsFee' => $taxInfo['shipping_fee'],
+                'orderAmount'  => $taxInfo['order_amount'],
+                'productAmount' => $taxInfo['goods_amount'],
+                'safeFee'=> $taxInfo['safe_fee'],
+                'taxFee'  => $taxInfo['tax_fee'],
                 'planDays' => $taxInfo['plan_days'],
                 'currency' => $taxInfo['currency'],
                 'exchangeRate'=> $taxInfo['exchange_rate']

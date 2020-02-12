@@ -48,6 +48,20 @@ class PayController extends OnAuthController
         $model = new $this->modelClass();
         $model->attributes = Yii::$app->request->post();
         $model->memberId = $this->member_id;
+
+        //临时添加，处理支付回跳URL
+        $domain = Yii::$app->debris->config('web_domain');
+        $returnUrl = Yii::$app->request->post('returnUrl', null);
+
+        if($domain && $returnUrl) {
+            $url = parse_url($returnUrl);
+            if(!empty($url['host'])) {
+                $returnUrl = str_replace($url['host'], $domain, $returnUrl);
+            }
+        }
+
+        $model->returnUrl = $returnUrl;
+
         //支付宝，非人民币业务使用国际版
         if($model->payType == PayEnum::PAY_TYPE_ALI && $model->coinType != 'CNY'){
             $model->payType = PayEnum::PAY_TYPE_GLOBAL_ALIPAY;

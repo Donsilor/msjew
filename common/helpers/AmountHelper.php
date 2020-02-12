@@ -13,9 +13,13 @@ class AmountHelper
      * @param string $sep
      * @return string
      */
-    public static function formatAmount($amount, $scale = 2, $sep = ',')
+    public static function formatAmount($amount, $scale = 2, $sep = null)
     {
-        return number_format($amount, $scale, '.', $sep);
+        if(! $sep ){
+            return round($amount,$scale);
+        } else {
+            return number_format($amount, $scale, '.', $sep);
+        }
     }
     /**
      * 汇率计算
@@ -28,11 +32,7 @@ class AmountHelper
     public static function rateAmount($amount, $rate = 1, $scale = 2, $sep = null)
     {
         $amount = bcmul($amount, $rate, ($scale+1));
-        if(! $sep ){
-            return  round($amount,$scale);
-        } else {
-            return number_format($amount, $scale, '.', $sep);
-        }
+        return self::formatAmount($amount, $scale, $sep);
     }    
     /**
      * 加价率计算
@@ -45,11 +45,7 @@ class AmountHelper
     public static function calcMarkupPrice($amount, $markup_rate, $markup_value, $scale = 2,$sep = null)
     {
         $amount = bcadd(bcmul($amount, $markup_rate, $scale+2),$markup_value,$scale+2);
-        if(! $sep ){
-            return  round($amount,$scale);
-        } else {
-            return number_format($amount, $scale, '.', $sep);
-        }
+        return self::formatAmount($amount, $scale, $sep);
     }
     /**
      * 金额带单位输出
@@ -61,11 +57,7 @@ class AmountHelper
      */
     public static function outputAmount($amount,$scale = 2,$currency = 'CNY' ,$sep = ',') 
     {
-        if(! $sep ){
-            $amount =  round($amount,$scale);
-        } else {
-            $amount = number_format($amount, $scale, '.', $sep);
-        }
+        $amount = self::formatAmount($amount, $scale, $sep);
         return $currency.$amount;
     }
 }

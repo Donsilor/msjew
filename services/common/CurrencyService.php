@@ -119,8 +119,8 @@ class CurrencyService extends Component
         if($toRate == null ){
             $toRate = $toInfo['rate'] ?? 1;
         }        
-        $amount = bcmul(bcdiv($amount,$fromRate,5),$toRate,$format);        
-        return $amount;
+        $amount = bcmul(bcdiv($amount,$fromRate,5),$toRate,$format+1);        
+        return round($amount,$format);
     }
     /**
      * 货币代号

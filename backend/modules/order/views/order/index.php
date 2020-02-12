@@ -156,6 +156,9 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                         'class' => 'form-control',
                                 ]),
                                 'format' => 'raw',
+                                'value' => function ($model) {
+                                    return sprintf('(%s)%s', $model->account->currency, $model->account->order_amount);
+                                }
                             ],
                             [
                                 'attribute' => 'address.country_id',

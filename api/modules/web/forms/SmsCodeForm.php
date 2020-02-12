@@ -58,12 +58,12 @@ class SmsCodeForm extends Model
         $count = Member::find()->where(['mobile'=>$this->attributes])->count();
         if($this->usage == SmsLog::USAGE_UP_PWD || $this->usage == SmsLog::USAGE_LOGIN) {
              if(!$count){
-                 $this->addError($attribute,"手机号码未绑定账号");
+                 $this->addError($attribute,"手机号未绑定账号");
                  return false;
              }
         }else if($this->usage == SmsLog::USAGE_REGISTER){
             if($count){
-                $this->addError($attribute,"手机号码已绑定过账号");
+                $this->addError($attribute,"手机号已绑定过账号");
                 return false;
             }
         }

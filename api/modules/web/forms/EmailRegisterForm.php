@@ -38,7 +38,7 @@ class EmailRegisterForm extends Model
                         'unique',
                         'targetClass' => Member::class,
                         'targetAttribute' => 'email',
-                        'message' => '邮箱已存在。'
+                        'message' => '邮箱已存在'
                 ],                
                 ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => '请输入正确的邮箱'],
                 ['code', EmailCodeValidator::class, 'usage' => EmailLog::USAGE_REGISTER],

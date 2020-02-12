@@ -103,8 +103,7 @@ class OrderService extends Service
             }  
         }
         //金额校验
-        $order_amount = $this->exchangeAmount($orderAccountTax['order_amount']);
-        if($order_info['order_amount'] != $order_amount) {
+        if($order_info['order_amount'] != $orderAccountTax['order_amount']) {
             throw new UnprocessableEntityHttpException("订单金额校验失败：订单金额有变动，请刷新页面查看");
         }
                 

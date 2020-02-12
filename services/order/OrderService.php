@@ -59,6 +59,7 @@ class OrderService extends Service
         if(empty($orderAccountTax['orderGoodsList'])) {
             throw new UnprocessableEntityHttpException("商品信息为空");
         }
+        $order_amount = $orderAccountTax['order_amount'];
         $buyerAddress = $orderAccountTax['buyerAddress'];
         $orderGoodsList   = $orderAccountTax['orderGoodsList'];
         $currency = $orderAccountTax['currency'];
@@ -103,7 +104,7 @@ class OrderService extends Service
             }  
         }
         //金额校验
-        if($order_info['order_amount'] != $orderAccountTax['order_amount']) {
+        if($order_info['order_amount'] != $order_amount) {
             throw new UnprocessableEntityHttpException("订单金额校验失败：订单金额有变动，请刷新页面查看");
         }
                 

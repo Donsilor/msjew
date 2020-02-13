@@ -132,7 +132,7 @@ class GoodsController extends OnAuthController
         }
         $model = Style::find()->where(['id'=>$id])->one();
         if(empty($model)) {
-            return ResultHelper::api(422,"商品信息不存在");
+            return ResultHelper::api(422,"商品信息不存在或者已经下架");
         }
         $attr_data = \Yii::$app->services->goods->formatStyleAttrs($model);
         $attr_list = [];

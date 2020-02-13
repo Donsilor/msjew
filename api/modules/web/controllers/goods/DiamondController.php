@@ -264,7 +264,7 @@ class DiamondController extends OnAuthController
         $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
         $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit,$order, $fields ,$language);
         $webSite = array();
-        $webSite['moduleTitle'] = '最暢銷訂婚戒指';
+        $webSite['moduleTitle'] = '最畅销订婚戒指';
 
         $type_id = 12; //不要改动
         $webSite['type'] = $type_id;
@@ -283,7 +283,7 @@ class DiamondController extends OnAuthController
         $result = array();
         $result['webSite'] = $webSite;
         $result['advert'] = array(
-            'dsDesc' => '鑽石——banner全屏',
+            'dsDesc' => '钻石——banner全屏',
             'dsImg' => '/adt/image1566005633802.png',
             'dsName' => '鑽石——banner全屏',
             'dsShowType' => 1,

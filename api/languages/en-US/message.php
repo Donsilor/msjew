@@ -24,4 +24,15 @@ return [
     "退出失败"=>"Exit successfully",
     "原始密码错误"=>"Original password is wrong",
     "两次输入密码不一致"=>"The two passwords are inconsistent",    
+	
+	
+	"裸钻信息不存在或者已下架" => "Naked drilling information does not exist or has been removed",
+	"最畅销订婚戒指" => "Best selling engagement ring",
+	"商品信息不存在" => "Product information does not exist or has been removed from the market",
+	"自由搭配 爱我所爱" => "Love what I love",
+	"男士结婚戒指" => "Men's wedding ring",
+	"女士结婚戒指" => "Lady's wedding ring",
+	"对戒信息不存在" => "Warning information does not exist",
+	"精选结婚对戒" => "Selected wedding ring",
+	"精选订婚钻戒" => "Selected engagement diamond ring",
 ];

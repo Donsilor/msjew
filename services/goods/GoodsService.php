@@ -15,6 +15,7 @@ use common\models\goods\Diamond;
 use common\models\goods\DiamondLang;
 use common\enums\DiamondEnum;
 use function GuzzleHttp\json_encode;
+use yii\db\Expression;
 
 
 /**
@@ -399,7 +400,12 @@ class GoodsService extends Service
         return $data;
     }
     
-    //获取款和对应的商品
+    /**
+     * 获取款和对应的商品 （前端api专用）
+     * @param unknown $style_id
+     * @param unknown $language
+     * @return 
+     */
     public function formatStyleGoodsById($style_id, $language=null){
         if(empty($language)){
             $language = \Yii::$app->params['language'];
@@ -544,12 +550,25 @@ class GoodsService extends Service
 
         return $style;
 
+    }    
+    /**
+     * 下单商品库存更改
+     * @param unknown $goods_id  商品ID
+     * @param unknown $quantity  变化数量
+     * @param unknown $for_sale 销售
+     */
+    public function updateGoodsStorageForOrder($goods_id,$quantity,$goods_type)
+    {        
+        if($goods_type == \Yii::$app->params['goodsType.diamond']){
+            \Yii::$app->services->diamond->updateGoodsStorageForOrder($goods_id, $quantity);
+        }else {
+            $data = [
+                'goods_storage'=> new Expression("goods_storage+{$quantity}"),
+                'sale_volume'  =>new Expression("sale_volume+{$quantity}")
+            ];            
+            Goods::updateAll($data,['id'=>$goods_id]);
+            Style::updateAll($data,['in','id',Goods::find()->select(['style_id'])->where(['id'=>$goods_id])]);
+        }
     }
-
-
-
-
-
-
 
 }

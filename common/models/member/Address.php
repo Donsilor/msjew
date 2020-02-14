@@ -47,7 +47,7 @@ class Address extends \common\models\base\BaseModel
         return [
             [['province_id', 'city_id',  'address_details'], 'required'],
             ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号'],
-            ['email', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的邮箱'],
+            ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => '请输入正确的邮箱'],
             [['merchant_id', 'member_id','country_id', 'province_id', 'city_id', 'area_id', 'is_default', 'zip_code', 'status', 'created_at', 'updated_at'], 'integer'],
             [['address_name', 'address_details'], 'string', 'max' => 200],
             [['realname'], 'string', 'max' => 60],

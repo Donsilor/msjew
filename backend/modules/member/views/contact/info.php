@@ -99,6 +99,14 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="help-block"></div>
                         </div>
                     </div>
+
+                    <div class="form-group field-contact-content">
+                        <div class="col-sm-1 text-right"><label class="control-label" for="contact-remark"><?=Yii::t('remark', '备注')?>: </label></div>
+                        <div class="col-sm-11">
+                            <?=$model->remark?? '&nbsp; ';?>
+                            <div class="help-block"></div>
+                        </div>
+                    </div>
 <!--                    <div class="form-group field-contact-updated_at">-->
 <!--                        <div class="col-sm-1 text-right"><label class="control-label" for="contact-updated_at">--><?//=Yii::t('updated_at', '更新时间')?><!--</label></div>-->
 <!--                        <div class="col-sm-11">-->

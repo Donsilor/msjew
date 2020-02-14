@@ -43,7 +43,7 @@ class Contact extends BaseModel
         return [
             [['member_id', 'type_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['content'], 'string'],
-            [['book_time','ip_location'], 'safe'],
+            [['book_time','ip_location','remark'], 'safe'],
             [['language'], 'string', 'max' => 5],
             [['first_name', 'last_name', 'telphone'], 'string', 'max' => 30],
             [['mobile_code'], 'string', 'max' => 10],
@@ -65,6 +65,7 @@ class Contact extends BaseModel
             'telphone' => '电话',
             'mobile_code' => '手机区号',
             'type_id' => '留言类别',
+            'remark'=> '备注',
             'ip' => Yii::t('member_book', 'Ip'),
             'ip_location' => Yii::t('member_book', 'Ip地址'),
             'content' => '留言内容',

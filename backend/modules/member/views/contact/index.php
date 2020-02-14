@@ -10,9 +10,13 @@ use kartik\daterange\DateRangePicker;
 $this->title = Yii::t('web_seo', '客户留言');
 $this->params['breadcrumbs'][] = $this->title;
 
-$start_time = Yii::$app->request->post('start_time', date('Y-m-d', strtotime("-60 day")));
-$end_time = Yii::$app->request->post('end_time', date('Y-m-d', strtotime("+1 day")));
-$title = Yii::$app->request->post('title');
+
+$telphone = $searchModel->telphone;
+$status = $searchModel->status;
+$created_at = $searchModel->created_at;
+$book_time = $searchModel->book_time;
+
+
 $addon = <<< HTML
 <span class="input-group-addon">
     <i class="glyphicon glyphicon-calendar"></i>
@@ -26,7 +30,7 @@ HTML;
             <div class="box-header">
                 <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
                 <div class="box-tools">
-<!--                    --><?//= Html::create(['edit']) ?>
+                    <a href="<?= Url::to(['export?telphone='.$telphone.'&status='.$status.'&created_at='.$created_at.'&book_time='.$book_time])?>" class="blue">导出Excel</a>
                 </div>
             </div>
             <div class="box-body table-responsive">
@@ -64,9 +68,7 @@ HTML;
             //'member_id',
             [
                 'attribute'=>'姓名',
-                'filter' => Html::activeTextInput($searchModel, 'first_name', [
-                    'class' => 'form-control',
-                ]),
+                'filter' => false,
                 'value'=>function($model){
                     return $model->first_name . $model->last_name;
                 },
@@ -92,9 +94,7 @@ HTML;
             [
                 'attribute' => 'ip_location',
                 'value' => 'ip_location',
-                'filter' => Html::activeTextInput($searchModel, 'ip_location', [
-                    'class' => 'form-control',
-                ]),
+                'filter' => false,
                 'format' => 'raw',
                 'headerOptions' => ['width'=>'120'],
             ],
@@ -104,7 +104,7 @@ HTML;
                     'model' => $searchModel,
                     'attribute' => 'book_time',
                     'value' => $searchModel->created_at,
-                    'options' => ['readonly' => true,'class'=>'form-control','style'=>'background-color:#fff;'],
+                    'options' => ['readonly' => true,'class'=>'form-control','style'=>'background-color:#fff;width:100px;'],
                     'pluginOptions' => [
                         'format' => 'yyyy-mm-dd',
                         'locale' => [
@@ -129,7 +129,7 @@ HTML;
                     'model' => $searchModel,
                     'attribute' => 'created_at',
                     'value' => $searchModel->created_at,
-                    'options' => ['readonly' => true,'class'=>'form-control','style'=>'background-color:#fff;width:190px;'],
+                    'options' => ['readonly' => true,'class'=>'form-control','style'=>'background-color:#fff;width:100px;'],
                     'pluginOptions' => [
                         'format' => 'yyyy-mm-dd',
                         'locale' => [
@@ -178,10 +178,11 @@ HTML;
                 'value' => function ($model){
                     return \common\enums\ContactEnum::getMap()[$model->type_id];
                 },
-                'filter' => Html::activeDropDownList($searchModel, 'type_id',\common\enums\ContactEnum::getMap(), [
-                    'prompt' => '全部',
-                    'class' => 'form-control'
-                ]),
+                'filter' => false,
+//                'filter' => Html::activeDropDownList($searchModel, 'type_id',\common\enums\ContactEnum::getMap(), [
+//                    'prompt' => '全部',
+//                    'class' => 'form-control'
+//                ]),
             ],
             //'content:ntext',
             //'status',
@@ -190,20 +191,23 @@ HTML;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{status} {info}',
+                'template' => '{edit}{info}',
                 'buttons' => [
-                'edit' => function($url, $model, $key){
-                        return Html::edit(['edit', 'id' => $model->id]);
-                },
-                'info' => function($url, $model, $key){
-                    return Html::a('查看',['info', 'id' => $model->id],['class'=>'btn btn-info btn-sm']);
-                },
-               'status' => function($url, $model, $key){
-                        return Html::status($model['status'],[],\common\enums\FollowStatusEnum::getMap());
-                  },
-                'delete' => function($url, $model, $key){
-                        return Html::delete(['delete', 'id' => $model->id]);
-                },
+                    'edit' => function ($url, $model, $key) {
+                        return Html::edit(['ajax-edit','id' => $model->id], '跟进', [
+                            'data-toggle' => 'modal',
+                            'data-target' => '#ajaxModalLg',
+                        ]);
+                    },
+                    'info' => function($url, $model, $key){
+                        return Html::a('查看',['info', 'id' => $model->id],['class'=>'btn btn-info btn-sm']);
+                    },
+                   'status' => function($url, $model, $key){
+                            return Html::status($model['status'],[],\common\enums\FollowStatusEnum::getMap());
+                      },
+                    'delete' => function($url, $model, $key){
+                            return Html::delete(['delete', 'id' => $model->id]);
+                    },
                 ]
             ]
     ]

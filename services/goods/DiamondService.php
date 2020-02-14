@@ -23,7 +23,7 @@ class DiamondService extends Service
     {
         $data = [
             'goods_storage'=> new Expression("goods_storage+{$quantity}"),
-            'sale_volume'  => new Expression("sale_volume+{$quantity}")
+            'sale_volume'  => new Expression("sale_volume-{$quantity}")
         ];
         Diamond::updateAll($data,['goods_id'=>$goods_id]);
     }    

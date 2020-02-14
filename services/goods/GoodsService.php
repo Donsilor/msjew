@@ -564,7 +564,7 @@ class GoodsService extends Service
         }else {
             $data = [
                 'goods_storage'=> new Expression("goods_storage+{$quantity}"),
-                'sale_volume'  =>new Expression("sale_volume+{$quantity}")
+                'sale_volume'  =>new Expression("sale_volume-{$quantity}")
             ];            
             Goods::updateAll($data,['id'=>$goods_id]);
             Style::updateAll($data,['in','id',Goods::find()->select(['style_id'])->where(['id'=>$goods_id])]);

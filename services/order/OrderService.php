@@ -101,7 +101,9 @@ class OrderService extends Service
                 if(false === $langModel->save()){
                     throw new UnprocessableEntityHttpException($this->getError($langModel));
                 }
-            }  
+            } 
+            
+            \Yii::$app->services->goods->updateGoodsStorageForOrder($orderGoods->goods_id,-($orderGoods->goods_num), $orderGoods->goods_type);
         }
         //金额校验
         if($order_info['order_amount'] != $order_amount) {
@@ -124,6 +126,7 @@ class OrderService extends Service
         }  
         //清空购物车
         OrderCart::deleteAll(['id'=>$cart_ids,'member_id'=>$buyer_id]);
+
         //订单发送邮件
         $this->sendOrderNotification($order->id);
         

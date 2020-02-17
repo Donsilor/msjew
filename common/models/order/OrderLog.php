@@ -3,6 +3,7 @@
 namespace common\models\order;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%order_log}}".
@@ -14,10 +15,13 @@ use Yii;
  * @property int $log_time 处理时间
  * @property string $log_role 操作角色
  * @property string $log_user 操作人
- * @property int $log_order_status 订单状态
+ * @property int $order_status 订单状态
  */
-class OrderLog extends \common\models\base\BaseModel
+class OrderLog extends ActiveRecord
 {
+    const ROLE_BUYER = 'buyer';
+    const ROLE_SELLER = 'seller';
+    const ROLE_SYSTEM = 'system';
     /**
      * {@inheritdoc}
      */
@@ -32,9 +36,9 @@ class OrderLog extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id', 'order_id', 'log_time', 'log_order_status'], 'integer'],
+            [['merchant_id', 'order_id', 'log_time', 'order_status'], 'integer'],
             [['order_id', 'log_time', 'log_role'], 'required'],
-            [['log_msg'], 'string', 'max' => 150],
+            [['log_msg'], 'string', 'max' => 500],
             [['log_role'], 'string', 'max' => 10],
             [['log_user'], 'string', 'max' => 30],
         ];
@@ -53,7 +57,7 @@ class OrderLog extends \common\models\base\BaseModel
             'log_time' => '处理时间',
             'log_role' => '操作角色',
             'log_user' => '操作人',
-            'log_order_status' => '订单状态',
+            'order_status' => '订单状态',
         ];
     }
 }

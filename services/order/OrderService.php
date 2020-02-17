@@ -92,7 +92,13 @@ class OrderService extends Service
                 $goods = \Yii::$app->services->goods->getGoodsInfo($orderGoods->goods_id,$orderGoods->goods_type,false,$language);
                 if(empty($goods) || $goods['status'] != 1) {
                     continue;
-                } 
+                }
+
+                //验证库存
+                if($orderGoods->goods_num>$goods['goods_storage']) {
+                    throw new UnprocessableEntityHttpException(sprintf("[%s]商品库存不足", $goods['goods_sn']));
+                }
+
                 $langModel = $orderGoods->langModel();
                 $langModel->master_id = $orderGoods->id;
                 $langModel->language = $language;

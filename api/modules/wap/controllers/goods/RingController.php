@@ -53,13 +53,15 @@ class RingController extends OnAuthController
         $query = Ring::find()->alias('m')->select($fields)
             ->innerJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'");
 
-
+        $query->where(['m.status'=>StatusEnum::ENABLED]);
 
         //筛选条件
         $ring_style = \Yii::$app->request->post("styleValue");//对戒款式
         $begin_price = \Yii::$app->request->post("beginPrice",0);//开始价格
         $end_price = \Yii::$app->request->post("endPrice");//结束价格
         $material = \Yii::$app->request->post("materialValue");//成色Id
+
+
         if(!empty($ring_style)){
             $query->andWhere(['=','m.ring_style', $ring_style]);
         }
@@ -79,7 +81,7 @@ class RingController extends OnAuthController
 
         //排序
         if($order != '')  $query->orderby($order);
-        $query->distinct('m.id');
+//        $query->distinct('m.id');
 
         $result = $this->pagination($query,$this->page,$this->pageSize);
 

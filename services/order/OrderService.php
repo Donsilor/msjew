@@ -70,6 +70,7 @@ class OrderService extends Service
         $order->member_id = $buyer_id;
         $order->order_sn  = $this->createOrderSn();
         $order->payment_status = PayStatusEnum::UNPAID;
+        $order->order_status = OrderStatusEnum::ORDER_UNPAID;
         $order->ip = \Yii::$app->request->userIP;  //用户下单ip
         list($order->ip_area_id,$order->ip_location) = \Yii::$app->ipLocation->getLocation($order->ip);
         if(false === $order->save()){

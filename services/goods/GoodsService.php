@@ -1,7 +1,9 @@
 <?php
 
 namespace services\goods;
+use common\components\Attr;
 use common\components\Service;
+use common\models\goods\Attribute;
 use common\models\goods\Style;
 use common\enums\InputTypeEnum;
 use common\models\goods\Goods;
@@ -458,6 +460,7 @@ class GoodsService extends Service
                     foreach ($format_style_spec[$key]['value'] as $k => $v){
                         $attr = array();
                         $attr['id'] = $k;
+                        $attr['image'] = \Yii::$app->services->goodsAttribute->getAttrImageByValueId($k);
                         $attr['name'] = $v;
                         $style[$val['attr_name']][] = $attr;
                     }

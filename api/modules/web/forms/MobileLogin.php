@@ -69,7 +69,7 @@ class MobileLogin extends Model
     public function validateMobile($attribute)
     {
         if (!$this->getUser()) {
-            $this->addError($attribute, '找不到用户');
+            $this->addError($attribute, '手机号未注册');
         }
     }
 

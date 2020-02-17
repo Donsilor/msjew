@@ -97,7 +97,7 @@ class Order extends \common\models\base\BaseModel
             'followed_status' => '跟进状态',
             'followed_time' => '跟进时间',            
             'ip' => 'IP',
-            'ip_area_id' => '国家区域',
+            'ip_area_id' => '归属地区',
             'ip_location' => 'IP位置',
             'status' => '审核状态',
             'created_at' => '下单时间',

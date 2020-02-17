@@ -48,6 +48,7 @@ class PayController extends OnAuthController
         $model = new $this->modelClass();
         $model->attributes = Yii::$app->request->post();
         $model->memberId = $this->member_id;
+
         //支付宝，非人民币业务使用国际版
         if($model->payType == PayEnum::PAY_TYPE_ALI && $model->coinType != 'CNY'){
             $model->payType = PayEnum::PAY_TYPE_GLOBAL_ALIPAY;
@@ -90,7 +91,6 @@ class PayController extends OnAuthController
 
 
         if(!empty($where) && ($model = PayLog::find()->where($where)->one())) {
-            $model->total_fee = AmountHelper::rateAmount($model->total_fee,$model->exchange_rate,2);
             return $model;
         }
 

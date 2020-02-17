@@ -38,6 +38,7 @@ class OrderController extends BaseController
     public function actionIndex()
     {
         $orderStatus = Yii::$app->request->get('order_status', -1);
+
         $searchModel = new SearchModel([
             'model' => $this->modelClass,
             'scenario' => 'default',

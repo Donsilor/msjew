@@ -32,11 +32,11 @@ class CartForm extends Model
     public function attributeLabels()
     {
         return [
-                'goods_id' => 'goodsCartList.goods_id',
-                'goods_type' => 'goodsCartList.goods_type',
-                'goods_num' => 'goodsCartList.goods_num', 
-                'group_type' => 'goodsCartList.group_type',
-                'group_id' => 'goodsCartList.group_id',
+                'goods_id' => 'goods_id',
+                'goods_type' => 'goods_type',
+                'goods_num' => 'goods_num', 
+                'group_type' => 'group_type',
+                'group_id' => 'group_id',
         ];
     }
     

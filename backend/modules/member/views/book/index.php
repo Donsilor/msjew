@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-header">
                 <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
                 <div class="box-tools">
-                    <a href="<?= Url::to(['export?title='.$title.'&=start_time'.$start_time.'&end_time='.$end_time])?>" class="blue">导出Excel</a>
+                    <a href="<?= Url::to(['export?title='.$title.'&start_time='.$start_time.'&end_time='.$end_time])?>" class="blue">导出Excel</a>
                 </div>
             </div>
             <div class="row">

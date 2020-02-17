@@ -33,7 +33,7 @@ class EmailCodeForm extends Model
         return [
                 [['email', 'usage'], 'required'],
                 [['usage'], 'in', 'range' => array_keys(EmailLog::$usageExplain)],
-                ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => '请输入正确的邮箱地址'],
+                ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => "请输入正确的邮箱"],
                 ['email', 'validateEmail'],
         ];
     }
@@ -59,12 +59,12 @@ class EmailCodeForm extends Model
         $count = Member::find()->where(['email'=>$this->attributes])->count();
         if($this->usage == EmailLog::USAGE_UP_PWD || $this->usage == EmailLog::USAGE_LOGIN) {
             if(!$count){
-                $this->addError($attribute,"邮箱地址未绑定账号");
+                $this->addError($attribute,"邮箱未绑定账号");
                 return false;
             }
         }else if($this->usage == EmailLog::USAGE_REGISTER){
             if($count){
-                $this->addError($attribute,"邮箱地址已绑定过账号");
+                $this->addError($attribute,"邮箱已绑定过账号");
                 return false;
             }
         }

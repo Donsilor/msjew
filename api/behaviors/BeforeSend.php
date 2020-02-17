@@ -60,7 +60,8 @@ class BeforeSend extends Behavior
                 $response->data['message'] == $response->data['data'] && $response->data['data'] = [];
             }
         }
-
+        //语言翻译
+        $response->data['message'] = \Yii::t('message',$response->data['message']);
         // 加入ip黑名单
         $response->statusCode == 429 && Yii::$app->services->ipBlacklist->create(Yii::$app->request->userIP, '请求频率过高');
 

@@ -113,7 +113,7 @@ class PayService extends Service
             'out_trade_no' => $baseOrder['out_trade_no'],
 
             //转换成支付货币
-            'total_fee' => AmountHelper::rateAmount($baseOrder['total_fee'], $baseOrder['exchange_rate'],2),
+            'total_fee' => $baseOrder['total_fee'],
             'subject' => $baseOrder['body'],
             'currency' => $baseOrder['currency'],
         ];
@@ -143,7 +143,7 @@ class PayService extends Service
             'out_trade_no' => $baseOrder['out_trade_no'],
 
             //转换成支付货币
-            'total_amount' => AmountHelper::rateAmount($baseOrder['total_fee'], $baseOrder['exchange_rate'],2),
+            'total_amount' => $baseOrder['total_fee'],
             'subject' => $baseOrder['body'],
             'currency' => $baseOrder['currency'],
         ];

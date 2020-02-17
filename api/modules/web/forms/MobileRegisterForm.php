@@ -39,10 +39,10 @@ class MobileRegisterForm extends Model
                         'unique',
                         'targetClass' => Member::class,
                         'targetAttribute' => 'mobile',
-                        'message' => '手机号码已存在。'
+                        'message' => '手机号已存在'
                 ],
                 ['code', SmsCodeValidator::class, 'usage' => SmsLog::USAGE_REGISTER],
-                ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号码'],
+                ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号'],
                 [['password_repetition'], 'compare', 'compareAttribute' => 'password','message'=>'两次输入密码不一致'],// 验证新密码和重复密码是否相等
                 ['group', 'in', 'range' => AccessToken::$ruleGroupRnage],
                 [['firstname','lastname'], 'string', 'max' => 60],

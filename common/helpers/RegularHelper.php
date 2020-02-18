@@ -30,9 +30,17 @@ class RegularHelper
      */
     public static function mobile()
     {
+        return '/^[0-9]+$/';
+        //return '/^[1][3456789][0-9]{9}$/';
+    }
+    /**
+     * 大陆手机号码验证
+     * @return string
+     */
+    public static function chinaMobile()
+    {
         return '/^[1][3456789][0-9]{9}$/';
     }
-
     /**
      * 邮箱正则
      *

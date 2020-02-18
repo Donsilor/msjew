@@ -13,6 +13,7 @@ return [
     "邮箱已存在"=>"Email already exists",
     
     "请输入正确的手机号"=>"Please input the correct mobile number",
+    "不是一个有效的手机号码"=>"Not a valid mobile number",
     "手机号未注册"=>"Mobile number not registered",
     "手机号未绑定账号"=>"Mobile number is not bound to account",
     "手机号已绑定过账号"=>"Mobile number has been bound to account",

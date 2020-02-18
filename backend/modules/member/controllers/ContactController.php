@@ -97,6 +97,7 @@ class ContactController extends BaseController
             ['留言时间', 'created_at', 'date', 'Y-m-d'],
             ['留言内容', 'content', 'text'],
             ['跟进状态', 'status', 'selectd', [0 => '未跟进', 1 => '已跟进']],
+            ['备注', 'remark', 'text'],
             ['留言类别', 'type_id', 'selectd', [1 => '订婚戒指', 2 => '结婚对戒',3 => '时尚饰品']],
 
         ];
@@ -120,7 +121,7 @@ class ContactController extends BaseController
 
         $list = $searchModel
             ->orderBy('created_at desc')
-            ->select(['id','concat(`first_name`,`last_name`) as all_name','telphone','ip_location','book_time','created_at','content','status','type_id'])
+            ->select(['id','concat(`first_name`,`last_name`) as all_name','telphone','ip_location','book_time','created_at','content','status','type_id','remark'])
             ->asArray()
             ->all();
 

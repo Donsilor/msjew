@@ -38,5 +38,10 @@ return [
     'noAuthRoute' => [
         '/main/index',// 系统主页
         '/main/system',// 系统首页
-    ],	
+    ],
+
+    /**
+     * web域名
+     */
+    'webUrl' =>"http://www.bdd.bddia.com",
 ];

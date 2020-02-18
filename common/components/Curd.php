@@ -58,9 +58,10 @@ trait Curd
     public function actionEdit()
     {
         $id = Yii::$app->request->get('id', null);
+        $returnUrl = Yii::$app->request->get('returnUrl',['index']);
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect($returnUrl);
         }
 
         return $this->render($this->action->id, [
@@ -139,14 +140,15 @@ trait Curd
     public function actionAjaxEdit()
     {
         $id = Yii::$app->request->get('id');
+        $returnUrl = Yii::$app->request->get('returnUrl',['index']);
         $model = $this->findModel($id);
 
         // ajax 校验
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
             return $model->save()
-                ? $this->redirect(['index'])
-                : $this->message($this->getError($model), $this->redirect(['index']), 'error');
+                ? $this->redirect($returnUrl)
+                : $this->message($this->getError($model), $this->redirect($returnUrl), 'error');
         }
 
         return $this->renderAjax($this->action->id, [
@@ -178,11 +180,13 @@ trait Curd
     public function actionEditLang()
     {
           $id = Yii::$app->request->get('id', null);
+          $returnUrl = Yii::$app->request->get('returnUrl',['index']);
+
           //$trans = Yii::$app->db->beginTransaction();
           $model = $this->findModel($id);
           if ($model->load(Yii::$app->request->post()) && $model->save()) {
               $this->editLang($model,false);
-              return $this->redirect(['index']);
+              return $this->redirect($returnUrl);
           }
           
           return $this->render($this->action->id, [

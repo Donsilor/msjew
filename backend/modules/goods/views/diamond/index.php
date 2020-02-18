@@ -144,7 +144,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{edit} {status} {view}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
-                        return Html::edit(['edit-lang', 'id' => $model->id]);
+                        return Html::edit(['edit-lang', 'id' => $model->id, 'returnUrl' => Url::getReturnUrl()]);
                 },
                'status' => function($url, $model, $key){
                         return Html::status($model['status']);
@@ -153,7 +153,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::delete(['delete', 'id' => $model->id]);
                 },
                 'view'=> function($url, $model, $key){
-                    return Html::a('预览', '',['class'=>'btn btn-info btn-sm']);
+                    return Html::a('预览', \Yii::$app->params['webUrl'].'/diamond-details/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
                 },
                 ]
             ]

@@ -171,15 +171,21 @@ class RingController extends OnAuthController
     public function actionDetail()
     {
         $id = \Yii::$app->request->post("id");
+        $backend = \Yii::$app->request->post("backend");
+
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
         $field = ['m.id','m.status','m.ring_sn','lang.ring_name','lang.ring_body','lang.meta_title','lang.meta_desc','lang.meta_word','m.ring_sn',
             'm.ring_images','m.sale_price','m.ring_style'];
-        $model = $result = Ring::find()->alias('m')->select($field)
+        $query = $result = Ring::find()->alias('m')->select($field)
             ->leftJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->where(['m.id'=>$id,'m.status'=>StatusEnum::ENABLED])
-            ->one();
+            ->where(['m.id'=>$id]);
+        if($backend != 1){
+            $query->andWhere(['m.status'=>StatusEnum::ENABLED]);
+        }
+        $model = $query->one();
+
         if(empty($model)) {
             return ResultHelper::api(422,"对戒信息不存在");
         }

@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{edit} {status} {view}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
-                        return Html::edit(['edit', 'id' => $model->id]);
+                        return Html::edit(['edit', 'id' => $model->id,'returnUrl' => Url::getReturnUrl()]);
                 },
                'status' => function($url, $model, $key){
                         return Html::status($model['status']);

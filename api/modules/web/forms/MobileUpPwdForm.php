@@ -31,7 +31,7 @@ class MobileUpPwdForm extends \common\models\forms\LoginForm
                 [['mobile', 'group', 'code', 'password', 'password_repetition'], 'required'],
                 [['password'], 'string', 'min' => 6],
                 ['code', SmsCodeValidator::class, 'usage' => SmsLog::USAGE_UP_PWD],
-                ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号'],
+                ['mobile', 'match', 'pattern' => RegularHelper::chinaMobile(), 'message' => '请输入正确的手机号'],
                 [['password_repetition'], 'compare', 'compareAttribute' => 'password','message'=>'两次输入密码不一致'],// 验证新密码和重复密码是否相等
                 ['group', 'in', 'range' => AccessToken::$ruleGroupRnage],
                 ['password', 'validateMobile'],

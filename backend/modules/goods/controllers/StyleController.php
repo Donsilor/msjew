@@ -74,6 +74,7 @@ class StyleController extends BaseController
     {
         $id = Yii::$app->request->get('id', null);
         $type_id = Yii::$app->request->get('type_id', 0);
+        $returnUrl = Yii::$app->request->get('returnUrl',['index','type_id'=>$type_id]);
         $model = $this->findModel($id);
         
         $status = $model ? $model->status:0;        
@@ -99,7 +100,7 @@ class StyleController extends BaseController
             
             //商品更新
             \Yii::$app->services->goods->createGoods($model->id);
-            return $this->message("保存成功", $this->redirect(['index','type_id'=>$type_id]), 'success');
+            return $this->message("保存成功", $this->redirect($returnUrl), 'success');
         }
         return $this->render($this->action->id, [
                 'model' => $model,

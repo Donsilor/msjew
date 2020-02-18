@@ -71,13 +71,14 @@ class RingController extends BaseController
     public function actionEditLang()
     {
         $id = Yii::$app->request->get('id', null);
+        $returnUrl = Yii::$app->request->get('returnUrl',['index']);
         //$trans = Yii::$app->db->beginTransaction();
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $this->editRingRelation($model->id);
             $this->editLang($model,true);
 
-            return $this->redirect(['index']);
+            return $this->redirect($returnUrl);
         }
         $style_ids = array();
         if($id){

@@ -33,7 +33,7 @@ class SmsCodeForm extends Model
         return [
             [['mobile', 'usage'], 'required'],
             [['usage'], 'in', 'range' => array_keys(SmsLog::$usageExplain)],
-            ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号'],
+            ['mobile', 'match', 'pattern' => RegularHelper::chinaMobile(), 'message' => '请输入正确的手机号'],
             ['mobile', 'validateMobile'],
         ];
     }

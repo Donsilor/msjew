@@ -174,10 +174,15 @@ class StyleController extends OnAuthController
     public function actionDetail()
     {
         $id = \Yii::$app->request->post("goodsId");
+        $backend = \Yii::$app->request->post("backend");
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
-        $model = Style::find()->where(['id'=>$id,'status'=>StatusEnum::ENABLED])->one();
+        $query = Style::find()->where(['id'=>$id]);
+        if($backend != 1){
+            $query->andWhere(['status'=>StatusEnum::ENABLED]);
+        }
+        $model = $query->one();
         if(empty($model)) {
             return ResultHelper::api(422,"商品信息不存在或者已经下架");
         }

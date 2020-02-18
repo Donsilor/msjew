@@ -70,6 +70,7 @@ class OrderService extends Service
         $order->member_id = $buyer_id;
         $order->order_sn  = $this->createOrderSn();
         $order->payment_status = PayStatusEnum::UNPAID;
+        $order->order_status = OrderStatusEnum::ORDER_UNPAID;
         $order->ip = \Yii::$app->request->userIP;  //用户下单ip
         list($order->ip_area_id,$order->ip_location) = \Yii::$app->ipLocation->getLocation($order->ip);
         if(false === $order->save()){
@@ -91,7 +92,13 @@ class OrderService extends Service
                 $goods = \Yii::$app->services->goods->getGoodsInfo($orderGoods->goods_id,$orderGoods->goods_type,false,$language);
                 if(empty($goods) || $goods['status'] != 1) {
                     continue;
-                } 
+                }
+
+                //验证库存
+                if($orderGoods->goods_num>$goods['goods_storage']) {
+                    throw new UnprocessableEntityHttpException(sprintf("[%s]商品库存不足", $goods['goods_sn']));
+                }
+
                 $langModel = $orderGoods->langModel();
                 $langModel->master_id = $orderGoods->id;
                 $langModel->language = $language;
@@ -102,7 +109,7 @@ class OrderService extends Service
                 }
             } 
             
-            \Yii::$app->services->goods->updateGoodsStorageForOrder($orderGoods->goods_id,-$orderGoods->goods_num, $orderGoods->goods_type);
+            //\Yii::$app->services->goods->updateGoodsStorageForOrder($orderGoods->goods_id,-$orderGoods->goods_num, $orderGoods->goods_type);
         }
         //金额校验
         if($order_info['order_amount'] != $order_amount) {

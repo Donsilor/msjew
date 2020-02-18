@@ -137,13 +137,17 @@ class DiamondController extends OnAuthController
     {
 //        $type_id = 15;
         $id = \Yii::$app->request->post("goodsId");
+        $backend = \Yii::$app->request->post("backend");
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
         $query = Diamond::find()->alias('m')
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->select(['m.*','lang.goods_name', 'lang.meta_title','lang.meta_word','lang.meta_desc'])
-            ->where(['m.id'=>$id, 'm.status'=>StatusEnum::ENABLED]);
+            ->where(['m.id'=>$id]);
+        if($backend != 1){
+            $query->andWhere(['m.status'=>StatusEnum::ENABLED]);
+        }
         $model = $query->one();
         if(empty($model)) {
             return ResultHelper::api(422,"裸钻信息不存在或者已下架");

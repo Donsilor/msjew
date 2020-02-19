@@ -408,7 +408,7 @@ class GoodsService extends Service
      * @param unknown $language
      * @return 
      */
-    public function formatStyleGoodsById($style_id, $language=null){
+    public function formatStyleGoodsById($style_id, $language = null){
         if(empty($language)){
             $language = \Yii::$app->params['language'];
         }

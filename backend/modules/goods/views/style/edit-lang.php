@@ -10,6 +10,7 @@ use common\helpers\ArrayHelper;
 use common\enums\StatusEnum;
 use common\helpers\AmountHelper;
 use common\enums\AreaEnum;
+use common\models\goods\Goods;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\goods\Style */
@@ -20,6 +21,23 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('goods', 'Styles'), 'url' =>
 $this->params['breadcrumbs'][] = $this->title;
 $model->style_attr = $model->style_attr?json_decode($model->style_attr,true):[];
 $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
+//查询goods表数据，覆盖 style_spec['c']
+if($model->style_spec['c']) {
+    $style_spec = $model->style_spec;
+    foreach ($style_spec['c'] as $spec_key => $spec_val){
+        $goods = Goods::find()->select(['id','goods_sn','sale_price','cost_price','market_price','goods_storage','status'])->where(['spec_key'=>$spec_key,'style_id'=>$model->id])->one();
+        if($goods) {
+            $spec_val['goods_sn'] = $goods->goods_sn??'';
+            $spec_val['sale_price'] = $goods->sale_price??'';
+            $spec_val['cost_price'] = $goods->cost_price??'';
+            $spec_val['market_price'] = $goods->market_price??'';
+            $spec_val['goods_storage'] = $goods->goods_storage??'';
+            $spec_val['status'] = $goods->status;
+            $style_spec['c'][$spec_key] = $spec_val;
+        }
+    }
+    $model->style_spec = $style_spec;
+}
 //
 ?>
 <?php $form = ActiveForm::begin([

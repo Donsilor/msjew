@@ -80,10 +80,11 @@ class SalepolicyService extends Service
             $markup_id = $markup->id;
             $markup_rate  = $markup->markup_rate;
             $markup_value = $markup->markup_value;
+            $area_id = $markup->area_id;
             
             $sale_price = AmountHelper::calcMarkupPrice($base_price, $markup_rate, $markup_value,2);
             
-            $goodsMarkup = GoodsMarkup::find()->where(['goods_id'=>$goods_id,'area_id'=>$markup_id])->one();
+            $goodsMarkup = GoodsMarkup::find()->where(['goods_id'=>$goods_id,'area_id'=>$area_id])->one();
             if(!$goodsMarkup) {
                  $goodsMarkup = new GoodsMarkup();
                  $goodsMarkup->markup_id = $markup_id;

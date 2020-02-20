@@ -28,11 +28,11 @@ class GoodsService extends Service
 {    
     
     /**
-     * 创建商品列表
+     * 款式信息 分解 同步到goods
      * @param int $style_id
      * @param Goods $goodsModel
      */
-    public function createGoods($style_id){
+    public function syncStyleToGoods($style_id){
         
         $styleModel = Style::find()->where(['id'=>$style_id])->one();
         $spec_array = json_decode($styleModel->style_spec,true);

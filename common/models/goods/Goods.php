@@ -50,7 +50,7 @@ class Goods extends BaseModel
     public function rules()
     {
         return [
-            [['style_id', 'type_id','status', 'verify_status', 'created_at', 'updated_at'], 'required'],
+            [['style_id', 'type_id','status'], 'required'],
             [['style_id', 'type_id', 'merchant_id', 'type_id','promotion_type', 'storage_alarm', 'goods_clicks', 'sale_volume', 'goods_collects', 'goods_comments', 'goods_stars', 'goods_storage', 'status', 'verify_status', 'created_at', 'updated_at'], 'integer'],
             [['sale_price', 'market_price', 'promotion_price'], 'number'],
             ['sale_price','compare','compareValue' => 0, 'operator' => '>'],

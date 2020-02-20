@@ -49,8 +49,8 @@ class Diamond extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id','goods_num', 'shape', 'source_id', 'is_stock', 'status', 'created_at', 'updated_at'], 'integer'],
-            [[ 'sale_price','source_id','shape','goods_num','goods_sn', 'carat', 'clarity', 'cut', 'color', 'symmetry', 'polish', 'fluorescence'], 'required'],
+            [['id','goods_num', 'shape', 'source_id', 'is_stock', 'status', 'created_at', 'updated_at','onsale_time'], 'integer'],
+            [['sale_price','source_id','shape','goods_num','goods_sn', 'carat', 'clarity', 'cut', 'color', 'symmetry', 'polish', 'fluorescence'], 'required'],
             [['goods_num','market_price', 'sale_price', 'cost_price', 'carat', 'source_discount','length','width','aspect_ratio'], 'number'],
             ['sale_price','compare','compareValue' => 0, 'operator' => '>'],
             ['market_price','compare','compareValue' => 0, 'operator' => '>'],
@@ -103,7 +103,7 @@ class Diamond extends \yii\db\ActiveRecord
     {
         $currency = \Yii::$app->params['currency'];
         return [
-            'id' => Yii::t('goods_diamond', 'ID'),
+            'id' => "ID",
             'goods_sn' => '商品编码',
             'goods_image' => '主图',
             'goods_num' => '库存',
@@ -133,6 +133,7 @@ class Diamond extends \yii\db\ActiveRecord
             'source_id' => '货品来源 ',
             'source_discount' => '来源折扣',
             'is_stock' => '库存类型',
+            'onsale_time' => '上架时间',
             'status' => '上架状态',
             'created_at' => Yii::t('common', '创建时间'),
             'updated_at' => Yii::t('common', '更新时间'),

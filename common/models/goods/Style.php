@@ -131,11 +131,12 @@ class Style extends BaseModel
      */
     public function parseGoodsImages()
     {
-        if(!empty($this->goods_images[0])){
-            $this->style_image = $this->goods_images[0];
+        $goods_images = $this->goods_images;
+        if(!empty($goods_images[0]) && is_array($goods_images)){
+            $this->style_image = $goods_images[0];
         }
-        if(is_array($this->goods_images)){
-            $this->goods_images = implode(',',$this->goods_images);
+        if(is_array($goods_images)){
+            $this->goods_images = implode(',',$goods_images);
         }
     }
     /**

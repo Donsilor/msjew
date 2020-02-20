@@ -259,10 +259,10 @@ class OrderService extends Service
     }
     /**
      * 取消订单
-     * @param unknown $order_id 订单ID
-     * @param unknown $remark 操作备注
-     * @param unknown $log_role 用户角色
-     * @param unknown $log_user 用户名
+     * @param int $order_id 订单ID
+     * @param string $remark 操作备注
+     * @param string $log_role 用户角色
+     * @param string $log_user 用户名
      * @return boolean
      */
     public function changeOrderStatusCancel($order_id,$remark, $log_role, $log_user)
@@ -273,9 +273,10 @@ class OrderService extends Service
         }
         $order_goods_list = OrderGoods::find()->select(['id','goods_id','goods_type','goods_num'])->where(['order_id'=>$order_id])->all();
         foreach ($order_goods_list as $goods) {
-            \Yii::$app->services->goods->updateGoodsStorageForOrder($goods->goods_id, $goods->goods_num, $goods->goods_type);
+            //\Yii::$app->services->goods->updateGoodsStorageForOrder($goods->goods_id, $goods->goods_num, $goods->goods_type);
         }
         //更改订单状态
+        $order->seller_remark = $remark;
         $order->order_status = OrderStatusEnum::ORDER_CANCEL;
         $order->save(false);
         //订单日志

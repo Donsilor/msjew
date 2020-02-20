@@ -54,6 +54,7 @@ use common\components\Service;
  * @property \services\goods\DiamondService $diamond 裸钻
  * @property \services\goods\DiamondSourceService $diamondSource 裸钻来源
  * @property \services\goods\GoodsService $goods 商品
+ * @property \services\goods\SalepolicyService $salepolicy 销售政策
  * @property \services\goods\StyleService $goodsStyle 款式
  * @property \services\common\AdvertService $advert 广告位
  * @property \services\common\CurrencyService $currency 货币汇率
@@ -132,6 +133,7 @@ class Application extends Service
         'goodsType' => 'services\goods\TypeService',        
         'goodsStyle' => 'services\goods\StyleService',
         'goods' => 'services\goods\GoodsService',
+        'salepolicy' => 'services\goods\SalepolicyService',
         
         'diamond' => 'services\goods\DiamondService',
         'diamondSource' => 'services\goods\DiamondSourceService',

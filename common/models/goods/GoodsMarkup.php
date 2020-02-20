@@ -1,8 +1,9 @@
 <?php
 
-namespace common\models;
+namespace common\models\goods;
 
 use Yii;
+use common\models\base\BaseModel;
 
 /**
  * This is the model class for table "goods_markup".
@@ -15,7 +16,7 @@ use Yii;
  * @property int $created_at
  * @property int $updated_at
  */
-class GoodsMarkup extends \yii\db\ActiveRecord
+class GoodsMarkup extends BaseModel
 {
     /**
      * {@inheritdoc}

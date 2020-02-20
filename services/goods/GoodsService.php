@@ -62,6 +62,8 @@ class GoodsService extends Service
               $model->attributes = $attributes;
               $model->save(false);
         }
+        //计算更新款号加价销售价
+        \Yii::$app->services->salepolicy->createStyleMarkup($style_id);
         //商品更新
         foreach ($goods_list as $key=>$goods){
             //禁用没有填写商品编号的，过滤掉
@@ -90,7 +92,8 @@ class GoodsService extends Service
             }
             
             $goodsModel->save(false);  
-            
+            //计算更新商品加价销售价
+            \Yii::$app->services->salepolicy->createGoodsMarkup($goodsModel->id,$goodsModel->style_id,$goodsModel->sale_price);
             //商品多语言保存更新 goods_lang
             /*
             $languages = \Yii::$app->params['languages']??[];

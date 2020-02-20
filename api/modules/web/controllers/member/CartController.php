@@ -254,7 +254,7 @@ class CartController extends UserAuthController
             $cart['createTime'] = $cartGoods['createTime'];
             $cart['collectionId'] = null;
             $cart['collectionStatus'] = null;
-            $cart['localSn'] = null;
+            $cart['localSn'] = $cart['createTime'];
             $cart['groupType'] = $model->group_type;
             $cart['goodsType'] = $model->goods_type;
             $cart['groupId'] = $model->group_id;

@@ -46,6 +46,7 @@ class OrderTourist extends \common\models\base\BaseModel
             [['merchant_id', 'store_id', 'tourist_key', 'status', 'created_at', 'updated_at'], 'integer'],
             [['order_amount', 'goods_amount', 'discount_amount', 'pay_amount', 'refund_amount', 'shipping_fee', 'tax_fee', 'safe_fee', 'other_fee', 'exchange_rate'], 'number'],
             [['currency'], 'string', 'max' => 3],
+            [['language'], 'safe'],
             [['ip'], 'string', 'max' => 30],
         ];
     }
@@ -71,6 +72,7 @@ class OrderTourist extends \common\models\base\BaseModel
             'other_fee' => Yii::t('app', '附加费'),
             'currency' => Yii::t('app', '货币'),
             'exchange_rate' => Yii::t('app', '汇率'),
+            'language' => Yii::t('app', '下单时语言'),
             'ip' => Yii::t('app', '下单时IP'),
             'status' => Yii::t('app', '状态：0未支付，1已支付，2已同步到标准订单'),
             'created_at' => Yii::t('app', '创建时间'),

@@ -2,6 +2,7 @@
 
 namespace common\models\forms;
 
+use common\models\order\OrderTourist;
 use Yii;
 use yii\base\Model;
 use yii\web\UnprocessableEntityHttpException;
@@ -142,6 +143,21 @@ class PayForm extends Model
                     'total_fee' => $totalFee,
                     'currency' => $currency,
                     'exchange_rate'=>$exchangeRate
+                ];
+                break;
+            case PayEnum::ORDER_TOURIST :
+                // 游客订单支付
+                $order = OrderTourist::find()->where(['id'=>$this->orderId])->one();
+
+                $orderSn = $order->order_sn;
+                $totalFee = $order->order_amount - $order->discount_amount;
+                $currency = $order->currency;
+                $exchangeRate = $order->exchange_rate;
+                $order = [
+                    'body' => "商品",
+                    'total_fee' => $totalFee,
+                    'currency' => $currency,
+                    'exchange_rate' => $exchangeRate
                 ];
                 break;
             case PayEnum::ORDER_GROUP_GOODS :

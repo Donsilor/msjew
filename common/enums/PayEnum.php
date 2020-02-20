@@ -10,6 +10,7 @@ namespace common\enums;
 class PayEnum extends BaseEnum
 {
     const ORDER_GROUP = 'default';
+    const ORDER_TOURIST = 'order_tourist';
     const ORDER_GROUP_GOODS = 'goods';
     const ORDER_GROUP_RECHARGE = 'recharge';
 

@@ -58,6 +58,7 @@ use common\components\Service;
  * @property \services\common\AdvertService $advert 广告位
  * @property \services\common\CurrencyService $currency 货币汇率
  * @property \services\order\OrderService $order 订单
+ * @property \services\order\OrderTouristService $orderTourist 订单
  */
 class Application extends Service
 {

@@ -12,6 +12,14 @@ use Yii;
  * @property int $store_id 店铺id
  * @property int $tourist_key 游客的KEY
  * @property string $order_amount 订单金额
+ * @property string $goods_amount 商品总金额
+ * @property string $discount_amount 优惠金额
+ * @property string $pay_amount 实际支付金额
+ * @property string $refund_amount 退款金额
+ * @property string $shipping_fee 运费
+ * @property string $tax_fee 税费
+ * @property string $safe_fee 保险费
+ * @property string $other_fee 附加费
  * @property string $currency 货币
  * @property double $exchange_rate 汇率
  * @property string $ip 下单时IP
@@ -36,7 +44,7 @@ class OrderTourist extends \common\models\base\BaseModel
     {
         return [
             [['merchant_id', 'store_id', 'tourist_key', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['order_amount', 'exchange_rate'], 'number'],
+            [['order_amount', 'goods_amount', 'discount_amount', 'pay_amount', 'refund_amount', 'shipping_fee', 'tax_fee', 'safe_fee', 'other_fee', 'exchange_rate'], 'number'],
             [['currency'], 'string', 'max' => 3],
             [['ip'], 'string', 'max' => 30],
         ];
@@ -53,6 +61,14 @@ class OrderTourist extends \common\models\base\BaseModel
             'store_id' => Yii::t('app', '店铺id'),
             'tourist_key' => Yii::t('app', '游客的KEY'),
             'order_amount' => Yii::t('app', '订单金额'),
+            'goods_amount' => Yii::t('app', '商品总金额'),
+            'discount_amount' => Yii::t('app', '优惠金额'),
+            'pay_amount' => Yii::t('app', '实际支付金额'),
+            'refund_amount' => Yii::t('app', '退款金额'),
+            'shipping_fee' => Yii::t('app', '运费'),
+            'tax_fee' => Yii::t('app', '税费'),
+            'safe_fee' => Yii::t('app', '保险费'),
+            'other_fee' => Yii::t('app', '附加费'),
             'currency' => Yii::t('app', '货币'),
             'exchange_rate' => Yii::t('app', '汇率'),
             'ip' => Yii::t('app', '下单时IP'),

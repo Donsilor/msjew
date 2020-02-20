@@ -21,6 +21,7 @@ class PayEnum extends BaseEnum
      */
     public static $orderGroupExplain = [
         self::ORDER_GROUP => '统一支付',
+        self::ORDER_TOURIST => '游客订单支付',
         self::ORDER_GROUP_GOODS => '订单商品',
         self::ORDER_GROUP_RECHARGE => '充值',
     ];

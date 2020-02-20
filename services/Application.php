@@ -138,7 +138,7 @@ class Application extends Service
         'diamondSource' => 'services\goods\DiamondSourceService',
         'advert' => 'services\common\AdvertService',    
         /*********订单相关*********/
-        'order' => 'services\order\OrderService', 
-
+        'order' => 'services\order\OrderService',
+        'orderTourist' => 'services\order\OrderTouristService',
     ];
 }

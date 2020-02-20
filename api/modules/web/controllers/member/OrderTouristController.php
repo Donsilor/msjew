@@ -17,7 +17,7 @@ use yii\web\UnprocessableEntityHttpException;
 /**
  * 游客订单
  *
- * Class SiteController
+ * Class OrderTouristController
  * @package api\modules\v1\controllers
  */
 class OrderTouristController extends OnAuthController
@@ -61,6 +61,7 @@ class OrderTouristController extends OnAuthController
             $payForm->attributes = \Yii::$app->request->post();
             $payForm->orderId = $orderId;//订单ID
             $payForm->payType = 6;//支付方式使用paypal
+            $payForm->memberId = 0;//支付方式使用paypal
             $payForm->notifyUrl = Url::removeMerchantIdUrl('toFront', ['notify/' . PayEnum::$payTypeAction[$payForm->payType]]);//支付通知URL,paypal不需要,加上只是为了数据的完整性
             $payForm->orderGroup = PayEnum::ORDER_TOURIST;//游客订单
 

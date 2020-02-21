@@ -68,7 +68,7 @@ class OrderTouristService extends OrderBaseService
         //保存订单信息
         $order = new OrderTourist();
         $order->order_sn  = $this->createOrderSn();//生成订单号
-        $order->merchant_id = null;//商铺ID
+//        $order->merchant_id = null;//商铺ID
         $order->store_id = null;//店铺ID
         $order->tourist_key = null;//游客的KEY
 

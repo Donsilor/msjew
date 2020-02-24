@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $model->style_attr = $model->style_attr?json_decode($model->style_attr,true):[];
 $model->style_spec = $model->style_spec?json_decode($model->style_spec,true):[];
 //查询goods表数据，覆盖 style_spec['c']
-if($model->style_spec['c']) {
+if(!empty($model->style_spec['c'])) {
     $style_spec = $model->style_spec;
     foreach ($style_spec['c'] as $spec_key => $spec_val){
         $goods = Goods::find()->select(['id','goods_sn','sale_price','cost_price','market_price','goods_storage','status'])->where(['spec_key'=>$spec_key,'style_id'=>$model->id])->one();

@@ -38,6 +38,19 @@ class AuthorizeRequest extends AbstractPaypalRequest
     }
 
     /**
+     * 获取订单信息
+     * @return Payment
+     */
+    public function getPayment()
+    {
+        $this->getData();
+
+        $model = $this->getParameter('model');
+        $apiContext = $this->getParameter('apiContext');
+        return Payment::get($model->transaction_id, $apiContext);
+    }
+
+    /**
      * @inheritDoc
      */
     public function sendData($data)
@@ -71,7 +84,7 @@ class AuthorizeRequest extends AbstractPaypalRequest
 
             //如果已捕获，则跳过
             //需下载状态列表到备注
-            if ($order->state != "COMPLETED") {
+            if ($order->state != "COMPLETED" && $order->state!="PENDING") {
                 //捕获订单
                 //需下载状态列表到备注
                 $result = $this->capture($order)->state == 'completed';

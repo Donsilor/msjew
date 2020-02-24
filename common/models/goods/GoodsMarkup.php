@@ -49,9 +49,18 @@ class GoodsMarkup extends BaseModel
             'area_id' => '地区ID',
             'markup_id' => '加价率ID',
             'sale_price' => '商品销售价',
-            'status' => '状态 1启用 0禁用 -1删除',
+            'status' => '状态',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    /**
+     * 对应款式模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStyleMarkup()
+    {
+        return $this->hasOne(StyleMarkup::class, ['id'=>'markup_id']);
     }
 }

@@ -87,7 +87,7 @@ class Goods extends BaseModel
             'goods_comments' => Yii::t('goods', 'Goods Comments'),
             'goods_stars' => Yii::t('goods', 'Goods Stars'),
             'goods_storage' => Yii::t('goods', 'Goods Storage'),
-            'status' => Yii::t('goods', 'Status'),
+            'status' => Yii::t('goods', '上架状态'),
             'verify_status' => Yii::t('goods', 'Verify Status'),
             'verify_remark' => Yii::t('goods', 'Verify Remark'),
             'created_at' => Yii::t('goods', 'Created At'),
@@ -121,6 +121,6 @@ class Goods extends BaseModel
      */
     public function getMarkup()
     {
-        return $this->hasOne(GoodsMarkup::class, ['goods_id'=>'id'])->alias('markup')->where(['markup.area_id'=>Yii::$app->params['language']]);
+        return $this->hasOne(GoodsMarkup::class, ['goods_id'=>'id']);
     }
 }

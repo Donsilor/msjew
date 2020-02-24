@@ -65,18 +65,75 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'headerOptions' => ['width'=>'100'],
             ],
-            'sale_price',
+
+            [
+                'attribute'=>'sale_price',
+                'filter' => false,
+                'value' => function ($model) {
+                    return $model->sale_price;
+                },
+                'headerOptions' => ['width'=>'100'],
+            ],
             [
                 'attribute'=>'markup.sale_price',
                 'filter' => false,
                 'value' => function ($model) {
+        print_r($model->markup);
                     return $model->markup['sale_price'];
                 },
                 'headerOptions' => ['width'=>'100'],
             ],
-            'status',
+            [
+                'attribute'=>'markup.area_id',
+                'filter' => Html::activeDropDownList($searchModel, 'markup.area_id',\common\enums\AreaEnum::getMap(), [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'value' => function ($model) {
+                    return \common\enums\AreaEnum::getValue($model->markup['area_id']);
+                },
+                'headerOptions' => ['width'=>'100'],
+            ],
 
-            'created_at',
+            [
+                'attribute'=>'markup.styleMarkup.markup_rate',
+                'filter' => false,
+                'value' => function ($model) {
+                    return $model->markup->styleMarkup['markup_rate'];
+                },
+                'headerOptions' => ['width'=>'100'],
+            ],
+
+            [
+                'attribute'=>'markup.styleMarkup.markup_value',
+                'filter' => false,
+                'value' => function ($model) {
+                    return $model->markup->styleMarkup['markup_value'];
+                },
+                'headerOptions' => ['width'=>'100'],
+            ],
+
+            [
+                'attribute'=>'markup.status',
+                'filter' => false,
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->markup['status']);
+                },
+                'headerOptions' => ['width'=>'100'],
+            ],
+
+            [
+                'attribute' => 'status',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model){
+                    return \common\enums\FrameEnum::getValue($model->status);
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\FrameEnum::getMap(), [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+            ],
 
             [
                 'class' => 'yii\grid\ActionColumn',

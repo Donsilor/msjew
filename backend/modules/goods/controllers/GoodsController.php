@@ -45,7 +45,7 @@ class GoodsController extends BaseController
             'relations' => [
                 'style' => ['style_sn'],
                 'styleLang' => ['style_name'],
-                'markup' => ['area_id','sale_price','status']
+                'markup' => ['sale_price','area_id','status']
             ]
         ]);
 

@@ -13,6 +13,9 @@ use common\models\order\OrderAddress;
 use common\models\order\OrderGoods;
 use common\models\order\OrderTourist;
 use common\models\order\OrderTouristDetails;
+use PayPal\Api\PayerInfo;
+use PayPal\Api\Payment;
+use PayPal\Api\ShippingAddress;
 use yii\web\UnprocessableEntityHttpException;
 
 /**
@@ -106,19 +109,39 @@ class OrderTouristService extends OrderBaseService
         return $order->id;
     }
 
-    //同步一个游客订单到标准订单
+    /**
+     * 同步一个游客订单到标准订单
+     * @param $orderTourist
+     * @param $payLog
+     * @throws UnprocessableEntityHttpException|void
+     */
     public function sync($orderTourist, $payLog) {
+        //获取支付信息
+        $pay = \Yii::$app->services->pay->getPayByType($payLog->pay_type);
+
+        /** @var Payment $payment */
+        $payment = $pay->getPayment(['model'=>$payLog]);
+//        $payment->getPayer();
+
+        /** @var PayerInfo $payerInfo */
+        $payerInfo = $payment->getPayer()->getPayerInfo();
+
+        /** @var ShippingAddress $shippingAddressInfo */
+        $shippingAddressInfo = $payerInfo->getShippingAddress();
+
         //创建用户信息
         $member = new Member();
         $member->attributes = [
-            'username' => '',
-            'password_hash' => '',
-            'firstname' => '',
-            'lastname' => '',
-            'email' => '',
-            'last_ip' => '',
-            'first_ip' => '',
-            'first_ip_location' => '',
+            'username' => '游客-'.$payerInfo->getPayerId(),
+            'password_hash' => 'password_hash',
+            'firstname' => $payerInfo->getFirstName(),
+            'lastname' => $payerInfo->getLastName(),
+            'realname' => $shippingAddressInfo->getRecipientName(),
+            'email' => $payerInfo->getEmail(),
+//            'last_ip' => '',
+//            'first_ip' => '',
+//            'first_ip_location' => '',
+//            'mobile' => $payerInfo->getPhone()
         ];
         if(false === $member->save()) {
             throw new UnprocessableEntityHttpException($this->getError($member));
@@ -170,20 +193,20 @@ class OrderTouristService extends OrderBaseService
             'order_id' => $order->id,
             'merchant_id' => $orderTourist->merchant_id,
             'member_id' => $member->id,
-            'country_id' => '',
-            'province_id' => '',
-            'city_id' => '',
-            'firstname' => '',
-            'lastname' => '',
-            'realname' => '',
-            'country_name' => '',
-            'province_name' => '',
-            'city_name' => '',
-            'address_details' => '',
-            'zip_code' => '',
-            'mobile' => '',
-            'mobile_code' => '',
-            'email' => '',
+//            'country_id' => '',
+//            'province_id' => '',
+//            'city_id' => '',
+            'firstname' => $payerInfo->getFirstName(),
+            'lastname' => $payerInfo->getLastName(),
+            'realname' => $shippingAddressInfo->getRecipientName(),
+            'country_name' => $shippingAddressInfo->getCountryCode(),
+            'province_name' => $shippingAddressInfo->getState(),
+            'city_name' => $shippingAddressInfo->getCity(),
+            'address_details' => $shippingAddressInfo->getLine1() . ' ' . $shippingAddressInfo->getLine2(),
+            'zip_code' => $shippingAddressInfo->getPostalCode(),
+            'mobile' => $payerInfo->getPhone(),
+//            'mobile_code' => '',
+            'email' => $payerInfo->getEmail(),
         ];
         if(false === $orderAddress->save()) {
             throw new UnprocessableEntityHttpException($this->getError($orderAddress));

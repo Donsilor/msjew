@@ -2,8 +2,6 @@
 
 namespace services\common;
 
-use common\enums\OrderTouristStatusEnum;
-use common\models\order\OrderTourist;
 use Yii;
 use common\enums\PayEnum;
 use common\components\Service;
@@ -276,19 +274,6 @@ class PayService extends Service
                     }
                 }
                 // TODO 处理订单
-                return true;
-                break;
-            case PayEnum::ORDER_TOURIST :
-                if($log->pay_status == 1 && ($orderTourist = OrderTourist::find()->where(['order_sn'=>$log->order_sn, 'order_status'=>OrderTouristStatusEnum::ORDER_UNPAID])->one())) {
-
-                    //保存游客支付订单状态
-                    $orderTourist->status = OrderStatusEnum::ORDER_PAID;
-                    $orderTourist->pay_amount = $log->total_fee;
-                    if($orderTourist->save()) {
-                        //同步游客订单到标准订单
-                        \Yii::$app->services->orderTourist->sync($orderTourist, $log);
-                    }
-                }
                 return true;
                 break;
             case PayEnum::ORDER_GROUP_RECHARGE :

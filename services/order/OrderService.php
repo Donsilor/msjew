@@ -24,17 +24,8 @@ use common\models\order\OrderLog;
  * Class OrderService
  * @package services\order
  */
-class OrderService extends Service
+class OrderService extends OrderBaseService
 {
-    /**
-     * 生成订单号
-     * @param unknown $order_id
-     * @param string $prefix
-     */
-    public function createOrderSn($prefix = 'BDD')
-    {
-        return $prefix.date('Ymd').mt_rand(3,9).str_pad(mt_rand(1, 99999),6,'1',STR_PAD_LEFT);
-    }
     /**
      * 创建订单
      * @param array $cart_ids

@@ -8,6 +8,7 @@ use common\models\goods\GoodsMarkup;
 use common\enums\StatusEnum;
 use common\helpers\AmountHelper;
 use common\enums\AreaEnum;
+use common\models\goods\Goods;
 
 /**
  * 销售政策(加价率)
@@ -93,8 +94,60 @@ class SalepolicyService extends Service
             }
             $goodsMarkup->sale_price = $sale_price;
             $goodsMarkup->save(false);
+        }       
+        
+    }
+    /**
+     * 商品实际销售价
+     * @param int $goods_id
+     * @param int $area_id
+     * return number  -1代表不可销售
+     */
+    public function getGoodsSalePrice($goods_id,$area_id = null) 
+    {
+        if(!$area_id) {
+            $area_id = \Yii::$app->ipLocation->getAreaId();
         }
         
+        $info = Goods::find()
+            ->select(['goods.id','goods.sale_price as base_price','markup.sale_price'])
+            ->leftJoin(GoodsMarkup::tableName().' markup','goods.id = markup.goods_id and markup.area_id='.$area_id)
+            ->where(['goods.id'=>$goods_id,'markup.status'=>StatusEnum::ENABLED])
+            ->asArray()
+            ->one();
         
+        if(!empty($info)) {
+            $sale_price = $info['sale_price'] ? $info['sale_price'] : $info['base_price'];
+        }else {
+            $sale_price = -1;
+        }
+        return $sale_price;
+    }
+    
+    /**
+     * 款实际销售价（地区销售价格）
+     * @param int $style_id 款式ID
+     * @param int $area_id  地区ID
+     * return number  -1代表不可销售
+     */
+    public function getStyleSalePrice($style_id,$area_id = null)
+    {
+        if(!$area_id) {
+            $area_id = \Yii::$app->ipLocation->getAreaId();
+        }
+        
+        $info = Style::find()
+            ->select(['style.id','style.sale_price as base_price','markup.sale_price'])
+            ->leftJoin(StyleMarkup::tableName().' markup','style.id = markup.style_id and markup.area_id='.$area_id)
+            ->where(['style.id'=>$style_id,'markup.status'=>StatusEnum::ENABLED])
+            ->asArray()
+            ->one();
+        
+        if(!empty($info)) {
+            $sale_price = $info['sale_price'] ? $info['sale_price'] : $info['base_price'];
+        }else {
+            $sale_price = -1;
+        }
+        return $sale_price;
     }
 }

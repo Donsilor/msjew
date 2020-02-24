@@ -58,7 +58,7 @@ class Goods extends BaseModel
             ['cost_price','compare','compareValue' => 0, 'operator' => '>'],
             [['goods_sn'], 'string', 'max' => 50],
             [['goods_image', 'verify_remark'], 'string', 'max' => 100],
-            [['spec_key'], 'safe'],
+            [['spec_key','id'], 'safe'],
         ];
     }
 
@@ -70,13 +70,13 @@ class Goods extends BaseModel
         return [
             'id' => Yii::t('goods', 'ID'),
             'merchant_id' => Yii::t('goods', 'Merchant ID'),
-            'style_id' => Yii::t('goods', 'Style ID'),
-            'goods_sn' => Yii::t('goods', 'Goods Sn'),
+            'style_id' => Yii::t('goods', '款式ID'),
+            'goods_sn' => Yii::t('goods', '商品编号'),
             'type_id' => Yii::t('goods', 'Goods Type'),
-            'goods_image' => Yii::t('goods', 'Goods Image'),            
+            'goods_image' => Yii::t('goods', '商品图片'),
             'type_id' => Yii::t('goods', 'Type ID'),
             'cost_price' => Yii::t('goods', 'Cost Price'),
-            'sale_price' => Yii::t('goods', 'Sale Price'),
+            'sale_price' => Yii::t('goods', '基础销售价'),
             'market_price' => Yii::t('goods', 'Market Price'),
             'promotion_price' => Yii::t('goods', 'Promotion Price'),
             'promotion_type' => Yii::t('goods', 'Promotion Type'),
@@ -93,5 +93,34 @@ class Goods extends BaseModel
             'created_at' => Yii::t('goods', 'Created At'),
             'updated_at' => Yii::t('goods', 'Updated At'),
         ];
+    }
+
+
+    /**
+     * 对应款式模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStyle()
+    {
+        return $this->hasOne(Style::class, ['id'=>'style_id']);
+    }
+
+    /**
+     * 对应款式多语言模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStyleLang()
+    {
+        return $this->hasOne(StyleLang::class, ['master_id'=>'style_id'])->alias('lang')->where(['lang.language'=>Yii::$app->params['language']]);
+    }
+
+
+    /**
+     * 对应款式加价率模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMarkup()
+    {
+        return $this->hasOne(GoodsMarkup::class, ['goods_id'=>'id'])->alias('markup')->where(['markup.area_id'=>Yii::$app->params['language']]);
     }
 }

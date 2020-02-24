@@ -3,6 +3,7 @@
 use common\helpers\Html;
 use common\helpers\Url;
 use yii\grid\GridView;
+use common\helpers\ImageHelper;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -27,6 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php echo Html::batchButtons(false)?>         
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'table table-hover'],
         'columns' => [
             [
@@ -36,35 +38,50 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             //'style_id',
+            [
+                'attribute' => 'goods_image',
+                'value' => function ($model) {
+                    return ImageHelper::fancyBox($model->goods_image);
+                },
+                'filter' => false,
+                'format' => 'raw',
+                'headerOptions' => ['width'=>'80'],
+            ],
+            [
+                'attribute'=>'styleLang.style_name',
+                'filter' => false,
+                'value' => function ($model) {
+                    return $model->styleLang['style_name'];
+                },
+                'headerOptions' => ['width'=>'100'],
+            ],
+
             'goods_sn',
-            'type_id',
-            //'goods_image',
-            //'merchant_id',
-            //'cat_id',
-            //'cat_id1',
-            //'cat_id2',
+            [
+                'attribute'=>'style.style_sn',
+                'filter' => false,
+                'value' => function ($model) {
+                    return $model->style['style_sn'];
+                },
+                'headerOptions' => ['width'=>'100'],
+            ],
             'sale_price',
-            //'sale_volume',
-            'market_price',
-            //'promotion_price',
-            //'promotion_type',
-            //'storage_alarm',
-            //'goods_clicks',
-            //'goods_collects',
-            //'goods_comments',
-            //'goods_stars',
-            //'goods_storage',
-            'is_stock',
-            //'goods_id',
+            [
+                'attribute'=>'markup.sale_price',
+                'filter' => false,
+                'value' => function ($model) {
+                    return $model->markup['sale_price'];
+                },
+                'headerOptions' => ['width'=>'100'],
+            ],
             'status',
-            //'verify_status',
-            //'verify_remark',
+
             'created_at',
-            //'updated_at',
+
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{edit} {status} {view}',
+                'template' => '{status} {view}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
                         return Html::edit(['edit', 'id' => $model->id,'returnUrl' => Url::getReturnUrl()]);

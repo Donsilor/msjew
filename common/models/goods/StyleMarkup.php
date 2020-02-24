@@ -49,7 +49,7 @@ class StyleMarkup extends BaseModel
             'id' => 'ID',
             'style_id' => '款式ID',
             'area_id' => '地区ID',
-            'sale_price' => '款式销售价',
+            'sale_price' => '加价销售价',
             'markup_rate' => '加价率',
             'markup_value' => '规定值',
             'status' => '状态 1启用 0禁用 -1删除',

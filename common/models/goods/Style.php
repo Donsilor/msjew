@@ -237,4 +237,13 @@ class Style extends BaseModel
     {
         return new Images();
     }
+
+    /**
+     * 对应加价率模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMarkup()
+    {
+        return $this->hasOne(Style::class, ['style_id'=>'id']);
+    }
 }

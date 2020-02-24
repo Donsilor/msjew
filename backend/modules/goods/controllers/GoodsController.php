@@ -41,7 +41,12 @@ class GoodsController extends BaseController
             'defaultOrder' => [
                 'id' => SORT_DESC
             ],
-            'pageSize' => $this->pageSize
+            'pageSize' => $this->pageSize,
+            'relations' => [
+                'style' => ['style_sn'],
+                'styleLang' => ['style_name'],
+                'markup' => ['area_id','sale_price','status']
+            ]
         ]);
 
         $typeModel = Yii::$app->services->goodsType->getAllTypesById($type_id,null);

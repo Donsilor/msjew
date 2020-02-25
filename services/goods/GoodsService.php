@@ -415,7 +415,9 @@ class GoodsService extends Service
      */
     public function formatStyleGoodsById($style_id, $language = null){
 
+        $ip = \Yii::$app->request->userIP;
         $area_id = \Yii::$app->ipLocation->getAreaId();
+
         if(empty($language)){
             $language = \Yii::$app->params['language'];
         }
@@ -460,6 +462,8 @@ class GoodsService extends Service
         $style['qrCode'] = '';
         $style['recommends'] = null;
         $style['templateId'] = null;
+        $style['ip'] = $ip;
+        $style['area_id'] = $area_id;
 
         if(isset($format_style_attrs['style_spec_a'])){
             $format_style_spec = $format_style_attrs['style_spec_a'];

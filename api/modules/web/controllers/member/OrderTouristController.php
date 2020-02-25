@@ -25,7 +25,7 @@ class OrderTouristController extends OnAuthController
 
     public $modelClass = Order::class;
 
-    protected $authOptional = ['create', 'tax'];
+    protected $authOptional = ['create', 'tax', 'detail'];
 
     /**
      * 创建订单
@@ -79,128 +79,127 @@ class OrderTouristController extends OnAuthController
             throw $e;
         }
     }
-//
-//    /**
-//     * 订单详情
-//     * @return array
-//     */
-//    public function actionDetail()
-//    {
-//        $order_id = \Yii::$app->request->get('orderId');
-//        if (!$order_id) {
-//            return ResultHelper::api(422, '参数错误:orderId不能为空');
-//        }
-//        $order = Order::find()->where(['id' => $order_id, 'member_id' => $this->member_id])->one();
-//        if (!$order) {
-//            return ResultHelper::api(422, '此订单不存在');
-//        }
-//        $currency = $order->account->currency;
-//        $exchange_rate = $order->account->exchange_rate;
-//
-//        $orderGoodsList = OrderGoods::find()->where(['order_id' => $order_id])->all();
-//        $orderDetails = array();
-//        foreach ($orderGoodsList as $key => $orderGoods) {
-//
-//            $orderDetail = [
-//                'id' => $orderGoods->id,
-//                'orderId' => $order->id,
-//                'groupId' => null,
-//                'groupType' => null,
-//                'goodsId' => $orderGoods->style_id,
-//                'goodsDetailId' => $orderGoods->goods_id,
-//                'goodsCode' => $orderGoods->goods_sn,
-//                'categoryId' => $orderGoods->goods_type,
-//                'goodsName' => $orderGoods->lang ? $orderGoods->lang->goods_name : $orderGoods->goods_name,
-//                'goodsPrice' => $orderGoods->goods_price,
-//                'detailType' => 1,
-//                'detailSpecs' => null,
-//                'deliveryCount' => 1,
-//                'detailCount' => 1,
-//                'createTime' => $orderGoods->created_at,
-//                'joinCartTime' => $orderGoods->created_at,
-//                'goodsImages' => $orderGoods->goods_image,
-//                'mainGoodsCode' => null,
-//                'ringName' => "",
-//                'ringImg' => "",
-//                'baseConfig' => null
-//            ];
-//            if (!empty($orderGoods->goods_attr)) {
-//                $goods_attr = \Yii::$app->services->goods->formatGoodsAttr($orderGoods->goods_attr, $orderGoods->goods_type);
-//                $baseConfig = [];
-//                foreach ($goods_attr as $vo) {
-//                    $baseConfig[] = [
-//                        'configId' => $vo['id'],
-//                        'configAttrId' => 0,
-//                        'configVal' => $vo['attr_name'],
-//                        'configAttrIVal' => implode('/', $vo['value']),
-//                    ];
-//                }
-//                $orderDetail['baseConfig'] = $baseConfig;
-//            }
-//            if (!empty($orderGoods->goods_spec)) {
-//                $detailSpecs = [];
-//                $goods_spec = \Yii::$app->services->goods->formatGoodsSpec($orderGoods->goods_spec);
-//                foreach ($goods_spec as $vo) {
-//                    $detailSpecs[] = [
-//                        'name' => $vo['attr_name'],
-//                        'value' => $vo['attr_value'],
-//                    ];
-//                }
-//                $orderDetail['detailSpecs'] = json_encode($detailSpecs);
-//            }
-//            $orderDetails[] = $orderDetail;
-//        }
-//
-//
-//        $address = array(
-//            'id' => $order->id,
-//            'orderId' => $order->id,
-//            'address' => $order->address->address_details,
-//            'cityId' => $order->address->city_id,
-//            'cityName' => $order->address->city_name,
-//            'countryId' => $order->address->country_id,
-//            'countryName' => $order->address->country_name,
-//            'firstName' => $order->address->firstname,
-//            'lastName' => $order->address->lastname,
-//            'realName' => $order->address->realname,
-//            'provinceId' => $order->address->province_id,
-//            'provinceName' => $order->address->province_name,
-//            'userAccount' => $order->member->username,
-//            'userId' => $order->member_id,
-//            'userMail' => $order->address->email,
-//            'userTel' => $order->address->mobile,
-//            'userTelCode' => $order->address->mobile_code,
-//            'zipCode' => $order->address->zip_code,
-//        );
-//
-//        $order = array(
-//            'id' => $order->id,
-//            'address' => $address,
-//            'addressId' => $address['id'],
-//            'afterMail' => $order->address->email,
-//            'coinCode' => $currency,
-//            'allSend' => 1,
-//            'isInvoice' => 2,
-//            'orderNo' => $order->order_sn,
-//            'orderStatus' => $order->order_status,
-//            'orderTime' => $order->created_at,
-//            'orderType' => $order->order_type,
-//            'payChannel' => $order->payment_type,
-//            'productCount' => count($orderDetails),
-//            'preferFee' => $order->account->discount_amount, //优惠金额
-//            'productAmount' => $order->account->goods_amount,
-//            'logisticsFee' => $order->account->shipping_fee,
-//            'orderAmount' => $order->account->order_amount,
-//            'otherFee' => $order->account->other_fee,
-//            'safeFee' => $order->account->safe_fee,
-//            'taxFee' => $order->account->tax_fee,
-//            'userId' => $order->member_id,
-//            'details' => $orderDetails
-//        );
-//
-//        return $order;
-//
-//    }
+
+    /**
+     * 订单详情
+     * @return array
+     */
+    public function actionDetail()
+    {
+        $order_sn = \Yii::$app->request->get('order_sn');
+        if (!$order_sn) {
+            return ResultHelper::api(422, '参数错误:orderId不能为空');
+        }
+        $order = Order::find()->where(['order_sn' => $order_sn])->one();
+        if (!$order) {
+            return ResultHelper::api(422, '此订单不存在');
+        }
+        $currency = $order->account->currency;
+        $exchange_rate = $order->account->exchange_rate;
+
+        $orderGoodsList = OrderGoods::find()->where(['order_id' => $order->id])->all();
+        $orderDetails = array();
+        foreach ($orderGoodsList as $key => $orderGoods) {
+            $orderDetail = [
+                'id' => $orderGoods->id,
+                'orderId' => $order->id,
+                'groupId' => null,
+                'groupType' => null,
+                'goodsId' => $orderGoods->style_id,
+                'goodsDetailId' => $orderGoods->goods_id,
+                'goodsCode' => $orderGoods->goods_sn,
+                'categoryId' => $orderGoods->goods_type,
+                'goodsName' => $orderGoods->lang ? $orderGoods->lang->goods_name : $orderGoods->goods_name,
+                'goodsPrice' => $orderGoods->goods_price,
+                'detailType' => 1,
+                'detailSpecs' => null,
+                'deliveryCount' => 1,
+                'detailCount' => 1,
+                'createTime' => $orderGoods->created_at,
+                'joinCartTime' => $orderGoods->created_at,
+                'goodsImages' => $orderGoods->goods_image,
+                'mainGoodsCode' => null,
+                'ringName' => "",
+                'ringImg' => "",
+                'baseConfig' => null
+            ];
+            if (!empty($orderGoods->goods_attr)) {
+                $goods_attr = \Yii::$app->services->goods->formatGoodsAttr($orderGoods->goods_attr, $orderGoods->goods_type);
+                $baseConfig = [];
+                foreach ($goods_attr as $vo) {
+                    $baseConfig[] = [
+                        'configId' => $vo['id'],
+                        'configAttrId' => 0,
+                        'configVal' => $vo['attr_name'],
+                        'configAttrIVal' => implode('/', $vo['value']),
+                    ];
+                }
+                $orderDetail['baseConfig'] = $baseConfig;
+            }
+            if (!empty($orderGoods->goods_spec)) {
+                $detailSpecs = [];
+                $goods_spec = \Yii::$app->services->goods->formatGoodsSpec($orderGoods->goods_spec);
+                foreach ($goods_spec as $vo) {
+                    $detailSpecs[] = [
+                        'name' => $vo['attr_name'],
+                        'value' => $vo['attr_value'],
+                    ];
+                }
+                $orderDetail['detailSpecs'] = json_encode($detailSpecs);
+            }
+            $orderDetails[] = $orderDetail;
+        }
+
+
+        $address = array(
+            'id' => $order->id,
+            'orderId' => $order->id,
+            'address' => $order->address->address_details,
+            'cityId' => $order->address->city_id,
+            'cityName' => $order->address->city_name,
+            'countryId' => $order->address->country_id,
+            'countryName' => $order->address->country_name,
+            'firstName' => $order->address->firstname,
+            'lastName' => $order->address->lastname,
+            'realName' => $order->address->realname,
+            'provinceId' => $order->address->province_id,
+            'provinceName' => $order->address->province_name,
+            'userAccount' => $order->member->username,
+            'userId' => $order->member_id,
+            'userMail' => $order->address->email,
+            'userTel' => $order->address->mobile,
+            'userTelCode' => $order->address->mobile_code,
+            'zipCode' => $order->address->zip_code,
+        );
+
+        $order = array(
+            'id' => $order->id,
+            'address' => $address,
+            'addressId' => $address['id'],
+            'afterMail' => $order->address->email,
+            'coinCode' => $currency,
+            'allSend' => 1,
+            'isInvoice' => 2,
+            'orderNo' => $order->order_sn,
+            'orderStatus' => $order->order_status,
+            'orderTime' => $order->created_at,
+            'orderType' => $order->order_type,
+            'payChannel' => $order->payment_type,
+            'productCount' => count($orderDetails),
+            'preferFee' => $order->account->discount_amount, //优惠金额
+            'productAmount' => $order->account->goods_amount,
+            'logisticsFee' => $order->account->shipping_fee,
+            'orderAmount' => $order->account->order_amount,
+            'otherFee' => $order->account->other_fee,
+            'safeFee' => $order->account->safe_fee,
+            'taxFee' => $order->account->tax_fee,
+            'userId' => $order->member_id,
+            'details' => $orderDetails
+        );
+
+        return $order;
+
+    }
 
     /**
      * 订单金额税费信息

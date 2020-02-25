@@ -301,7 +301,7 @@ class GoodsService extends Service
                     ->select(['sl.style_name as goods_name','IFNULL(m.sale_price,g.sale_price) as sale_price','g.*','s.style_sn','s.status as style_status','sl.goods_body','s.style_attr as goods_attr'])
                     ->innerJoin(Style::tableName()." s","g.style_id=s.id")
                     ->innerJoin(StyleLang::tableName()." sl","s.id=sl.master_id and sl.language='{$language}'")
-                    ->leftJoin(GoodsMarkup::tableName().' m','g.goods_id=m.goods_id and m.area_id='.$area_id)                    
+                    ->leftJoin(GoodsMarkup::tableName().' m','g.id=m.goods_id and m.area_id='.$area_id)                    
                     ->where(['g.id'=>$goods_id]);
             
             $goods = $query->asArray()->one();

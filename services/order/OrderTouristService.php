@@ -237,6 +237,9 @@ class OrderTouristService extends OrderBaseService
             throw new UnprocessableEntityHttpException($this->getError($orderAccount));
         }
 
+        //
+        $languages = $this->getLanguages();
+
         //保存订单商品信息
         foreach ($orderTourist->details as $detail) {
             $orderTouristDetails = new OrderGoods();
@@ -260,6 +263,27 @@ class OrderTouristService extends OrderBaseService
             ];
             if(false === $orderTouristDetails->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($orderTouristDetails));
+            }
+
+            foreach (array_keys($languages) as $language) {
+                $goods = \Yii::$app->services->goods->getGoodsInfo($orderTouristDetails->goods_id,$orderTouristDetails->goods_type,false,$language);
+                if(empty($goods) || $goods['status'] != 1) {
+                    continue;
+                }
+
+                //验证库存
+                if($orderTouristDetails->goods_num>$goods['goods_storage']) {
+                    throw new UnprocessableEntityHttpException(sprintf("[%s]商品库存不足", $goods['goods_sn']));
+                }
+
+                $langModel = $orderTouristDetails->langModel();
+                $langModel->master_id = $orderTouristDetails->id;
+                $langModel->language = $language;
+                $langModel->goods_name = $goods['goods_name'];
+                $langModel->goods_body = $goods['goods_body'];
+                if(false === $langModel->save()){
+                    throw new UnprocessableEntityHttpException($this->getError($langModel));
+                }
             }
         }
 

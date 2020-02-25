@@ -20,6 +20,7 @@ use api\modules\web\forms\EmailRegisterForm;
 use api\modules\web\forms\EmailUpPwdForm;
 use api\modules\web\forms\MobileUpPwdForm;
 use Zhuzhichao\IpLocationZh\Ip;
+use common\enums\AreaEnum;
 
 
 /**
@@ -41,7 +42,7 @@ class SiteController extends OnAuthController
      *
      * @var array
      */
-    protected $authOptional = ['ip','login', 'refresh', 'mobile-login', 'sms-code','email-code', 'mobile-register','email-register', 'mobile-up-pwd','email-up-pwd'];
+    protected $authOptional = ['setting','login', 'refresh', 'mobile-login', 'sms-code','email-code', 'mobile-register','email-register', 'mobile-up-pwd','email-up-pwd'];
     
     /**
      * 登录根据用户信息返回accessToken
@@ -289,7 +290,32 @@ class SiteController extends OnAuthController
             throw $e;
         }
     }
-
+    /**
+     * 站点默认配置（默认语言和货币）
+     */
+    public function actionSetting()
+    {
+        
+        $area_id = \Yii::$app->ipLocation->getAreaId();
+        
+        $language = 'zh_CN';
+        $currrency = 'CNY';        
+        if(in_array($area_id,[AreaEnum::HongKong,AreaEnum::TaiWan,AreaEnum::MaCao])) {
+            $language = 'zh_TW';
+        }elseif($area_id == AreaEnum::Other) {
+            $language = 'en_US';
+        }
+        if($language == 'zh_TW') {
+            $currrency = 'HKD';
+        } elseif ($language == 'en_US'){
+            $currrency = 'USD';
+        }
+        return [
+            'area_id'  =>$area_id,
+            'language' =>$language,
+            'currency' =>$currrency,
+        ];
+    }
     /**
      * 权限验证
      *
@@ -316,13 +342,5 @@ class SiteController extends OnAuthController
         $member->first_ip  = $member->last_ip;
         list(,$member->first_ip_location) = \Yii::$app->ipLocation->getLocation($member->first_ip);
     }
-     /**
-     * 用户首次注册ip
-     * @param Member $member
-     */
-    private function buildLastIpLocation(& $member)
-    {
-        $member->last_ip  = \Yii::$app->request->getRemoteIP();
-        $member->last_time = time();
-    }
+    
 }

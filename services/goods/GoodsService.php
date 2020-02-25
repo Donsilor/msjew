@@ -432,12 +432,12 @@ class GoodsService extends Service
         ];
         $query = Style::find()->alias('m')
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
-            ->innerJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
             ->where(['m.id'=>$style_id]);
         $style_model =  $query->one();
         $format_style_attrs = $this->formatStyleAttrs($style_model);
 //        return $format_style_attrs;
-        $model = $query ->select(['m.id','m.style_sn','m.status','m.goods_images','m.type_id','m.style_3ds','m.style_image','markup.sale_price','lang.goods_body','lang.style_name','lang.meta_title','lang.meta_word','lang.meta_desc'])
+        $model = $query ->select(['m.id','m.style_sn','m.status','m.goods_images','m.type_id','m.style_3ds','m.style_image','IFNULL(markup.sale_price,m.sale_price) as sale_price','lang.goods_body','lang.style_name','lang.meta_title','lang.meta_word','lang.meta_desc'])
             ->asArray()->one();
 
         //规格属性
@@ -520,9 +520,9 @@ class GoodsService extends Service
         //商品
 
         $goods_array = Goods::find()->alias('g')
-            ->innerJoin(GoodsMarkup::tableName().' markup', 'g.id=markup.goods_id and markup.status=1 and markup.area_id='.$area_id)
+            ->leftJoin(GoodsMarkup::tableName().' markup', 'g.id=markup.goods_id and markup.status=1 and markup.area_id='.$area_id)
             ->where(['g.style_id'=>$style_id ,'g.status'=>StatusEnum::ENABLED])
-            ->select(['g.id','type_id','goods_sn','markup.sale_price','goods_storage','warehouse','goods_spec'])
+            ->select(['g.id','type_id','goods_sn','IFNULL(markup.sale_price,g.sale_price) as sale_price','goods_storage','warehouse','goods_spec'])
             ->asArray()
             ->all();
         $details = array();

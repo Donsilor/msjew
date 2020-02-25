@@ -244,11 +244,11 @@ class RingController extends OnAuthController
         $type_id = 2;
         $limit = 3;
         $order = 'goods_clicks desc';
-        $fields =  ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','markup.sale_price'];
+        $fields =  ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $language = $this->language;
         $query = Style::find()->alias('m')
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
-            ->innerJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
             ->leftJoin(AttributeIndex::tableName().' a','a.style_id=m.id')
             ->where(['m.status'=>StatusEnum::ENABLED,'m.type_id'=>$type_id]);
 

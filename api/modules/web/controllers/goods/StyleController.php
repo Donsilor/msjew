@@ -51,10 +51,10 @@ class StyleController extends OnAuthController
 
 
         $area_id = \Yii::$app->services->area->getAreaIdByIP();
-        $fields = ['m.id','lang.style_name','m.goods_images','markup.sale_price'];
+        $fields = ['m.id','lang.style_name','m.goods_images','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $query = Style::find()->alias('m')->select($fields)
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->innerJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
             ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
 
         $params = \Yii::$app->request->post("params");  //属性帅选
@@ -78,11 +78,11 @@ class StyleController extends OnAuthController
                     $max_price = $param['endValue'];
                     if(is_numeric($min_price)){
                         $min_price = $this->exchangeAmount($min_price,2, 'CNY', $this->getCurrency());
-                        $query->andWhere(['>','markup.sale_price',$min_price]);
+                        $query->andWhere(['>','IFNULL(markup.sale_price,m.sale_price) as sale_price',$min_price]);
                     }
                     if(is_numeric($max_price) && $max_price>0){
                         $max_price = $this->exchangeAmount($max_price,2, 'CNY', $this->getCurrency());
-                        $query->andWhere(['<=','markup.sale_price',$max_price]);
+                        $query->andWhere(['<=','IFNULL(markup.sale_price,m.sale_price) as sale_price',$max_price]);
                     }
                     continue;
                 }
@@ -140,7 +140,7 @@ class StyleController extends OnAuthController
         $limit = 6;
         $language = $this->language;
         $order = 'sale_volume desc';
-        $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','markup.sale_price'];
+        $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit,$order, $fields ,$language);
         $webSite = array();
         $webSite['moduleTitle'] = '最畅销订婚戒指';
@@ -195,10 +195,10 @@ class StyleController extends OnAuthController
             $style = \Yii::$app->services->goods->formatStyleGoodsById($id, $this->language);
             $recommend_style = Style::find()->alias('m')
                 ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-                ->innerJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
+                ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
                 ->where(['and',['m.status'=>StatusEnum::ENABLED],['<>','m.id',$id],['=','m.type_id',$model->type_id]])
                 ->orderBy('m.goods_clicks desc')
-                ->select(['m.id','m.goods_images','markup.sale_price','lang.style_name'])
+                ->select(['m.id','m.goods_images','IFNULL(markup.sale_price,m.sale_price) as sale_price','lang.style_name'])
                 ->limit(4)->all();
 
             foreach ($recommend_style as $val){

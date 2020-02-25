@@ -46,7 +46,7 @@ class OrderBaseService extends Service
             $detail->goods_price = $sale_price;//价格
             $detail->goods_num = $item['goods_num'];//数量
             $detail->goods_image = $goods['goods_image'];//商品图片
-            $detail->promotions_id = $item['promotions_id'];//促销活动ID
+            $detail->promotions_id = 0;//$item['promotions_id'];//促销活动ID
             $detail->group_id = $item['group_id'];//组ID
             $detail->group_type = $item['group_type'];//分组类型
             $detail->goods_spec = json_encode($goods['goods_spec']);//商品规格

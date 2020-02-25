@@ -90,7 +90,7 @@ class OrderTouristController extends OnAuthController
         if (!$order_sn) {
             return ResultHelper::api(422, '参数错误:orderId不能为空');
         }
-        $order = Order::find()->where(['order_sn' => $order_sn])->one();
+        $order = Order::find()->where(['order_sn' => $order_sn, 'is_tourist'=>1])->one();
         if (!$order) {
             return ResultHelper::api(422, '此订单不存在');
         }

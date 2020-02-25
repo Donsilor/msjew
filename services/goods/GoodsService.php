@@ -415,8 +415,7 @@ class GoodsService extends Service
      */
     public function formatStyleGoodsById($style_id, $language = null){
 
-        $area_id = \Yii::$app->services->area->getAreaIdByIP();
-
+        $area_id = \Yii::$app->ipLocation->getAreaId();
         if(empty($language)){
             $language = \Yii::$app->params['language'];
         }

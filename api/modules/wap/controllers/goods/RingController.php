@@ -248,7 +248,7 @@ class RingController extends OnAuthController
 
     //获取商品信息
     public function getAdvertStyle($where=null){
-        $area_id = \Yii::$app->services->area->getAreaIdByIP();
+        $area_id = \Yii::$app->ipLocation->getAreaId();
         $type_id = 2;
         $limit = 3;
         $order = 'goods_clicks desc';

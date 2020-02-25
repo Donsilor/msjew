@@ -49,10 +49,14 @@ class GoodsController extends BaseController
             ]
         ]);
 
-        $typeModel = Yii::$app->services->goodsType->getAllTypesById($type_id,null);
+        $typeModel= Yii::$app->services->goodsType->getAllTypesById($type_id,null);
          
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
+        
+        if($typeModel){
+            $dataProvider->query->andFilterWhere(['in', 'goods.type_id',$typeModel['ids']]);
+        }
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,

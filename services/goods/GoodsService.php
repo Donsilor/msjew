@@ -282,7 +282,7 @@ class GoodsService extends Service
         //如果是裸钻
         if($goods_type == \Yii::$app->params['goodsType.diamond']) {
             $goods = Diamond::find()->alias('g')
-                        ->select(['IFNULL(m.sale_price,g.sale_price) as sale_price','g.*','g.goods_sn as style_sn','g.id as style_id','lang.goods_name','lang.goods_body','g.goods_num as goods_storage'])
+                        ->select(['g.*','IFNULL(m.sale_price,g.sale_price) as sale_price','g.goods_sn as style_sn','g.id as style_id','lang.goods_name','lang.goods_body','g.goods_num as goods_storage'])
                         ->innerJoin(DiamondLang::tableName().' lang',"g.id=lang.master_id and lang.language='{$language}'")
                         ->leftJoin(GoodsMarkup::tableName().' m','g.goods_id=m.goods_id and m.area_id='.$area_id)
                         ->where(['goods_id'=>$goods_id])
@@ -298,7 +298,7 @@ class GoodsService extends Service
             
         }else {
             $query = Goods::find()->alias('g')
-                    ->select(['sl.style_name as goods_name','IFNULL(m.sale_price,g.sale_price) as sale_price','g.*','s.style_sn','s.status as style_status','sl.goods_body','s.style_attr as goods_attr'])
+            ->select(['g.*','sl.style_name as goods_name','IFNULL(m.sale_price,g.sale_price) as sale_price','s.style_sn','s.status as style_status','sl.goods_body','s.style_attr as goods_attr'])
                     ->innerJoin(Style::tableName()." s","g.style_id=s.id")
                     ->innerJoin(StyleLang::tableName()." sl","s.id=sl.master_id and sl.language='{$language}'")
                     ->leftJoin(GoodsMarkup::tableName().' m','g.id=m.goods_id and m.area_id='.$area_id)                    

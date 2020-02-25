@@ -10,6 +10,7 @@ use common\models\goods\Style;
 use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
+use common\models\goods\StyleMarkup;
 use yii\base\Exception;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
@@ -239,13 +240,15 @@ class RingController extends OnAuthController
 
     //获取商品信息
     public function getAdvertStyle($where=null){
+        $area_id = \Yii::$app->services->area->getAreaIdByIP();
         $type_id = 2;
         $limit = 3;
         $order = 'goods_clicks desc';
-        $fields =  ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
+        $fields =  ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','markup.sale_price'];
         $language = $this->language;
         $query = Style::find()->alias('m')
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
+            ->innerJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
             ->leftJoin(AttributeIndex::tableName().' a','a.style_id=m.id')
             ->where(['m.status'=>StatusEnum::ENABLED,'m.type_id'=>$type_id]);
 

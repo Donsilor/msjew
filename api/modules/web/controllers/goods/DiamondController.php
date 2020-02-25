@@ -7,6 +7,7 @@ use common\models\goods\Diamond;
 use common\models\goods\DiamondLang;
 use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
+use common\models\goods\StyleMarkup;
 use yii\db\Expression;
 
 
@@ -30,7 +31,7 @@ class DiamondController extends OnAuthController
 
     public function actionSearch(){
         $sort_map = [
-            "sale_price"=>'m.sale_price',//价格
+            "sale_price"=>'markup.sale_price',//价格
             "carat"=>'m.carat',//石重
             "clarity"=>'m.clarity',//净度
             "cut"=>'m.cut',//切割
@@ -38,7 +39,7 @@ class DiamondController extends OnAuthController
         ];
         $params_map = [
             'shape'=>'m.shape',//形状
-            'sale_price'=>'m.sale_price',//销售价
+            'sale_price'=>'markup.sale_price',//销售价
             'carat'=>'m.carat',//石重
             'cut'=>'m.cut',//切工
             'color'=>'m.color',//颜色
@@ -66,11 +67,14 @@ class DiamondController extends OnAuthController
         }
 
 
-        $fields = ['m.id','m.goods_id','m.goods_sn','lang.goods_name','m.goods_image','m.sale_price'
+        $fields = ['m.id','m.goods_id','m.goods_sn','lang.goods_name','m.goods_image','markup.sale_price'
                     ,'m.carat','m.cert_id','m.depth_lv','m.table_lv','m.clarity','m.cert_type','m.color'
                     ,'m.cut','m.fluorescence','m.polish','m.shape','m.symmetry'];
+
+        $area_id = \Yii::$app->services->area->getAreaIdByIP();
         $query = Diamond::find()->alias('m')->select($fields)
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
+            ->innerJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
             ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
 
         $params = \Yii::$app->request->post("params");  //属性帅选
@@ -136,6 +140,7 @@ class DiamondController extends OnAuthController
     public function actionDetail()
     {
 //        $type_id = 15;
+        $area_id = \Yii::$app->services->area->getAreaIdByIP();
         $id = \Yii::$app->request->post("goodsId");
         $backend = \Yii::$app->request->post("backend");
         if(empty($id)) {
@@ -143,7 +148,8 @@ class DiamondController extends OnAuthController
         }
         $query = Diamond::find()->alias('m')
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->select(['m.*','lang.goods_name', 'lang.meta_title','lang.meta_word','lang.meta_desc'])
+            ->innerJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
+            ->select(['m.*','markup.sale_price','lang.goods_name', 'lang.meta_title','lang.meta_word','lang.meta_desc'])
             ->where(['m.id'=>$id]);
         if($backend != 1){
             $query->andWhere(['m.status'=>StatusEnum::ENABLED]);
@@ -265,7 +271,7 @@ class DiamondController extends OnAuthController
         $limit = 5;
         $language = $this->language;
         $order = 'sale_volume desc';
-        $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
+        $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','markup.sale_price'];
         $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit,$order, $fields ,$language);
         $webSite = array();
         $webSite['moduleTitle'] = '最畅销订婚戒指';

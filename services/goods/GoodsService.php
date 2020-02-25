@@ -4,6 +4,7 @@ namespace services\goods;
 use common\components\Attr;
 use common\components\Service;
 use common\models\goods\Attribute;
+use common\models\goods\GoodsMarkup;
 use common\models\goods\Style;
 use common\enums\InputTypeEnum;
 use common\models\goods\Goods;
@@ -16,6 +17,7 @@ use common\models\goods\StyleLang;
 use common\models\goods\Diamond;
 use common\models\goods\DiamondLang;
 use common\enums\DiamondEnum;
+use common\models\goods\StyleMarkup;
 use function GuzzleHttp\json_encode;
 use yii\db\Expression;
 
@@ -412,6 +414,9 @@ class GoodsService extends Service
      * @return 
      */
     public function formatStyleGoodsById($style_id, $language = null){
+
+        $area_id = \Yii::$app->services->area->getAreaIdByIP();
+
         if(empty($language)){
             $language = \Yii::$app->params['language'];
         }
@@ -427,11 +432,12 @@ class GoodsService extends Service
         ];
         $query = Style::find()->alias('m')
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
+            ->innerJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
             ->where(['m.id'=>$style_id]);
         $style_model =  $query->one();
         $format_style_attrs = $this->formatStyleAttrs($style_model);
 //        return $format_style_attrs;
-        $model = $query ->select(['m.id','m.style_sn','m.status','m.goods_images','m.type_id','m.style_3ds','m.style_image','sale_price','lang.goods_body','lang.style_name','lang.meta_title','lang.meta_word','lang.meta_desc'])
+        $model = $query ->select(['m.id','m.style_sn','m.status','m.goods_images','m.type_id','m.style_3ds','m.style_image','markup.sale_price','lang.goods_body','lang.style_name','lang.meta_title','lang.meta_word','lang.meta_desc'])
             ->asArray()->one();
 
         //规格属性
@@ -512,9 +518,11 @@ class GoodsService extends Service
         }
 
         //商品
-        $goods_array = Goods::find()
-            ->where(['style_id'=>$style_id ,'status'=>StatusEnum::ENABLED])
-            ->select(['id','type_id','goods_sn','sale_price','goods_storage','warehouse','goods_spec'])
+
+        $goods_array = Goods::find()->alias('g')
+            ->innerJoin(GoodsMarkup::tableName().' markup', 'g.id=markup.goods_id and markup.status=1 and markup.area_id='.$area_id)
+            ->where(['g.style_id'=>$style_id ,'g.status'=>StatusEnum::ENABLED])
+            ->select(['g.id','type_id','goods_sn','markup.sale_price','goods_storage','warehouse','goods_spec'])
             ->asArray()
             ->all();
         $details = array();

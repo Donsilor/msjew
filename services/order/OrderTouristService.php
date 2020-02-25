@@ -116,6 +116,9 @@ class OrderTouristService extends OrderBaseService
      * @throws UnprocessableEntityHttpException|void
      */
     public function sync($orderTourist, $payLog) {
+        //IP区域ID与地址
+        list($ip_area_id, $ip_location) = \Yii::$app->ipLocation->getLocation($orderTourist->ip);
+
         //获取支付信息
         $pay = \Yii::$app->services->pay->getPayByType($payLog->pay_type);
 
@@ -138,9 +141,9 @@ class OrderTouristService extends OrderBaseService
             'lastname' => $payerInfo->getLastName(),
             'realname' => $shippingAddressInfo->getRecipientName(),
             'email' => $payerInfo->getEmail(),
-//            'last_ip' => '',
-//            'first_ip' => '',
-//            'first_ip_location' => '',
+            'last_ip' => $orderTourist->ip,
+            'first_ip' => $orderTourist->ip,
+            'first_ip_location' => $ip_location,
 //            'mobile' => $payerInfo->getPhone()
         ];
         if(false === $member->save()) {
@@ -177,12 +180,11 @@ class OrderTouristService extends OrderBaseService
 //            'follower_id' => '',
 //            'followed_time' => '',
 //            'followed_status' => '',
-            'ip' => $orderTourist->id,
-//            'ip_area_id' => '',
-//            'ip_location' => '',
+            'ip' => $orderTourist->ip,
+            'ip_location' => $ip_location,
+            'ip_area_id' => $ip_area_id,
 //            'status' => '',
         ];
-        list($order->ip_area_id, $order->ip_location) = \Yii::$app->ipLocation->getLocation($order->ip);
         if(false === $order->save()) {
             throw new UnprocessableEntityHttpException($this->getError($order));
         }

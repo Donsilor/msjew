@@ -149,6 +149,8 @@ class PayForm extends Model
                 // 游客订单支付
                 $order = OrderTourist::find()->where(['id'=>$this->orderId])->one();
 
+                $this->returnUrl = str_replace('{order_sn}', $order->order_sn, $this->returnUrl);
+
                 $orderSn = $order->order_sn;
                 $totalFee = $order->order_amount - $order->discount_amount;
                 $currency = $order->currency;

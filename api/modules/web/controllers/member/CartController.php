@@ -223,6 +223,7 @@ class CartController extends UserAuthController
      */
     public function actionLocal()
     {
+        $addType = \Yii::$app->request->post("addType");
         $goodsCartList = \Yii::$app->request->post('goodsCartList');
         if(empty($goodsCartList)){
             return ResultHelper::api(422,"goodsCartList不能为空");
@@ -230,7 +231,7 @@ class CartController extends UserAuthController
 
         $cart_list = array();
         foreach ($goodsCartList as  $cartGoods) {
-
+            $cartGoods['add_type'] = $addType;
             $model = new CartForm();
             $model->attributes = $cartGoods;
             if (!$model->validate()) {

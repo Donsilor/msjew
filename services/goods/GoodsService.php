@@ -287,14 +287,16 @@ class GoodsService extends Service
                         ->leftJoin(GoodsMarkup::tableName().' m','g.goods_id=m.goods_id and m.area_id='.$area_id)
                         ->where(['g.goods_id'=>$goods_id])
                         ->asArray()->one();
-             $goods_attr = [
-                    DiamondEnum::CARAT=>$goods['carat'],
-                    DiamondEnum::COLOR=>$goods['color'],
-                    DiamondEnum::CLARITY=>$goods['clarity'],
-                    DiamondEnum::CUT=>$goods['cut']                                
-            ];
-            $goods['goods_attr'] = json_encode($goods_attr); 
-            $goods['goods_spec'] = null;
+            if($goods) {
+                 $goods_attr = [
+                        DiamondEnum::CARAT=>$goods['carat'],
+                        DiamondEnum::COLOR=>$goods['color'],
+                        DiamondEnum::CLARITY=>$goods['clarity'],
+                        DiamondEnum::CUT=>$goods['cut']                                
+                ];
+                $goods['goods_attr'] = json_encode($goods_attr); 
+                $goods['goods_spec'] = null;
+            }
             
         }else {
             $query = Goods::find()->alias('g')
@@ -308,10 +310,10 @@ class GoodsService extends Service
             $goods['status'] = $goods['style_status'] == StatusEnum::ENABLED ? $goods['status']:StatusEnum::DISABLED;
        }  
        
-       if($format_attr == true) { 
+       if(!empty($goods) && $format_attr == true ) { 
            
            $goods['lang'] = [
-                 'goods_attr' => $this->formatGoodsAttr($goods['goods_attr'],$goods['type_id'],$language),
+                 'goods_attr' => $this->formatGoodsAttr($goods['goods_attr'], $goods['type_id'],$language),
                  'goods_spec' => $this->formatGoodsSpec($goods['goods_spec'], $language)
            ];
        }

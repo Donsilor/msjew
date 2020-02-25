@@ -27,14 +27,14 @@ class OrderTouristService extends OrderBaseService
 
 
     /**
-     * @param $cart_list
+     * @param $cartList
      */
-    public function createOrder($cart_list)
+    public function createOrder($cartList)
     {
 
         $goods_amount = 0;
         $details = [];
-        foreach ($cart_list as $item) {
+        foreach ($cartList as $item) {
             $goods = \Yii::$app->services->goods->getGoodsInfo($item['goods_id'], $item['goods_type']);
 
             //商品价格

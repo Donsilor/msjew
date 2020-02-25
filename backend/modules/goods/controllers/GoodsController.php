@@ -53,7 +53,6 @@ class GoodsController extends BaseController
          
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,

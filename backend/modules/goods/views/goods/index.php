@@ -78,7 +78,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'markup.sale_price',
                 'filter' => false,
                 'value' => function ($model) {
-        print_r($model->markup);
                     return $model->markup['sale_price'];
                 },
                 'headerOptions' => ['width'=>'100'],

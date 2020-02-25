@@ -325,8 +325,8 @@ class OrderController extends UserAuthController
      */
     public function actionTax()
     {
-        $cartIds = \Yii::$app->request->get("cartIds");
-        $addressId = \Yii::$app->request->get("addressId");
+        $cartIds = \Yii::$app->request->post("cartIds");
+        $addressId = \Yii::$app->request->post("addressId");
         if(empty($cartIds)) {
             return ResultHelper::api(422,"cartIds不能为空");
         }

@@ -50,7 +50,7 @@ class StyleController extends OnAuthController
             $order = $sort_map[$order_param]. " ".$order_type;
         }
 
-        $area_id = \Yii::$app->services->area->getAreaIdByIP();
+        $area_id = \Yii::$app->ipLocation->getAreaId();
         $fields = ['m.id','lang.style_name','m.goods_images','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $query = Style::find()->alias('m')->select($fields)
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
@@ -80,11 +80,11 @@ class StyleController extends OnAuthController
                     $max_price = $param_sale_price_arr[1];
                     if(is_numeric($min_price)){
                         $min_price = $this->exchangeAmount($min_price,2, 'CNY', $this->getCurrency());
-                        $query->andWhere(['>','IFNULL(markup.sale_price,m.sale_price) as sale_price',$min_price]);
+                        $query->andWhere(['>','IFNULL(markup.sale_price,m.sale_price)',$min_price]);
                     }
                     if(is_numeric($max_price) && $max_price>0){
                         $max_price = $this->exchangeAmount($max_price,2, 'CNY', $this->getCurrency());
-                        $query->andWhere(['<=','IFNULL(markup.sale_price,m.sale_price) as sale_price',$max_price]);
+                        $query->andWhere(['<=','IFNULL(markup.sale_price,m.sale_price)',$max_price]);
                     }
                     continue;
                 }
@@ -223,7 +223,7 @@ class StyleController extends OnAuthController
             return ResultHelper::api(422,"商品信息不存在或者已经下架");
         }
         try{
-            $area_id = \Yii::$app->services->area->getAreaIdByIP();
+            $area_id = \Yii::$app->ipLocation->getAreaId();
             $style = \Yii::$app->services->goods->formatStyleGoodsById($id, $this->language);
             $recommend_style = Style::find()->alias('m')
                 ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")

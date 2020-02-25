@@ -37,7 +37,7 @@ class DiamondController extends OnAuthController
         ];
         $params_map = [
             'shape'=>'m.shape',//形状
-            'sale_price'=>'IFNULL(markup.sale_price,m.sale_price) as sale_price',//销售价
+            'sale_price'=>'IFNULL(markup.sale_price,m.sale_price)',//销售价
             'carat'=>'m.carat',//石重
             'cut'=>'m.cut',//切工
             'color'=>'m.color',//颜色
@@ -78,7 +78,7 @@ class DiamondController extends OnAuthController
                     ,'m.carat','m.cert_id','m.depth_lv','m.table_lv','m.clarity','m.cert_type','m.color'
                     ,'m.cut','m.fluorescence','m.polish','m.shape','m.symmetry'];
 
-        $area_id = \Yii::$app->services->area->getAreaIdByIP();
+        $area_id = \Yii::$app->ipLocation->getAreaId();
         $query = Diamond::find()->alias('m')->select($fields)
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->leftJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
@@ -162,7 +162,7 @@ class DiamondController extends OnAuthController
             return ResultHelper::api(422,"id不能为空");
         }
 
-        $area_id = \Yii::$app->services->area->getAreaIdByIP();
+        $area_id = \Yii::$app->ipLocation->getAreaId();
         $query = Diamond::find()->alias('m')
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->leftJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)

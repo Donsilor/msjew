@@ -59,7 +59,7 @@ class StyleService extends Service
 
     //获取商品信息
     public function getStyleList($type_id=null, $limit=null, $order=null, $fields=['*'],$language=null ){
-        $area_id = \Yii::$app->services->area->getAreaIdByIP();
+        $area_id = \Yii::$app->ipLocation->getAreaId();
         if(empty($language)){
             $language = Yii::$app->params['language'];
         }

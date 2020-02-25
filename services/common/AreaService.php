@@ -79,11 +79,5 @@ class AreaService extends Service
     }
 
 
-    public function getAreaIdByIP(){
-        $ip = \Yii::$app->request->getUserIP();
-        $area_id = \Yii::$app->ipLocation->getAreaId($ip);
-        return $area_id;
-    }
-
     
 }

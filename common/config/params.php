@@ -13,6 +13,7 @@ return [
     'currency' =>'CNY',//当前货币代号
     'currencyBase' =>'CNY',//基础货币代号
     'currencySign' =>'CNY',//当前货币符号
+    'area_id' =>1,//默认区域
     'cachePrefix'=>'common',//缓存前缀
     'goodsType.diamond'=>15,//裸钻产品线
     'frontBaseUrl' =>'https://www.bddco.com',//前端地址

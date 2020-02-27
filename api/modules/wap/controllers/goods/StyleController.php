@@ -50,7 +50,7 @@ class StyleController extends OnAuthController
             $order = $sort_map[$order_param]. " ".$order_type;
         }
 
-        $area_id = \Yii::$app->ipLocation->getAreaId();
+        $area_id = \Yii::$app->params['area_id'];
         $fields = ['m.id','lang.style_name','m.goods_images','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $query = Style::find()->alias('m')->select($fields)
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
@@ -223,7 +223,7 @@ class StyleController extends OnAuthController
             return ResultHelper::api(422,"商品信息不存在或者已经下架");
         }
         try{
-            $area_id = \Yii::$app->ipLocation->getAreaId();
+            $area_id = \Yii::$app->params['area_id'];
             $style = \Yii::$app->services->goods->formatStyleGoodsById($id, $this->language);
             $recommend_style = Style::find()->alias('m')
                 ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")

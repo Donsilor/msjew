@@ -28,6 +28,8 @@ trait BaseAction
     protected $language;
     //当前货币符号
     protected $currencySign;
+    //当前货币符号
+    protected $area_id;
     
     /**
      * 初始化通用参数
@@ -56,7 +58,17 @@ trait BaseAction
         if(!$this->currencySign) {
             \Yii::$app->params['currencySign'] = \Yii::$app->services->currency->getSign();
         }
-        $this->currencySign = \Yii::$app->params['currencySign'];      
+        $this->currencySign = \Yii::$app->params['currencySign'];
+
+        //
+        $area_id = \Yii::$app->request->get("area_id");
+        if(!$area_id) {
+            $area_id = \Yii::$app->request->headers->get("x-api-area");
+        }
+        if($area_id) {
+            \Yii::$app->params['area_id'] = $area_id;
+        }
+        $this->area_id = \Yii::$app->params['area_id'];
         
     }    
     /**

@@ -50,7 +50,7 @@ class StyleController extends OnAuthController
         }
 
 
-        $area_id = \Yii::$app->ipLocation->getAreaId();
+        $area_id = \Yii::$app->params['area_id'];
         $fields = ['m.id','lang.style_name','m.goods_images','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $query = Style::find()->alias('m')->select($fields)
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
@@ -178,6 +178,7 @@ class StyleController extends OnAuthController
     public function actionDetail()
     {
         $id = \Yii::$app->request->post("goodsId");
+        $area_id = \Yii::$app->params['area_id'];
         $backend = \Yii::$app->request->post("backend");
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
@@ -191,8 +192,7 @@ class StyleController extends OnAuthController
             return ResultHelper::api(422,"商品信息不存在或者已经下架");
         }
         try{
-            $area_id = \Yii::$app->ipLocation->getAreaId();
-            $style = \Yii::$app->services->goods->formatStyleGoodsById($id, $this->language);
+            $style = \Yii::$app->services->goods->formatStyleGoodsById($id, $this->language,$area_id);
             $recommend_style = Style::find()->alias('m')
                 ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
                 ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)

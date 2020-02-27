@@ -295,7 +295,7 @@ class SiteController extends OnAuthController
      */
     public function actionSetting()
     {
-        
+
         $area_id = \Yii::$app->ipLocation->getAreaId();
         
         $language = 'zh_CN';

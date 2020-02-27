@@ -20,6 +20,7 @@ use api\modules\web\forms\EmailRegisterForm;
 use api\modules\web\forms\EmailUpPwdForm;
 use api\modules\web\forms\MobileUpPwdForm;
 use Zhuzhichao\IpLocationZh\Ip;
+use common\enums\AreaEnum;
 
 
 /**
@@ -289,7 +290,32 @@ class SiteController extends OnAuthController
             throw $e;
         }
     }
-
+    /**
+     * 站点默认配置（默认语言和货币）
+     */
+    public function actionSetting()
+    {
+        
+        $area_id = \Yii::$app->ipLocation->getAreaId();
+        
+        $language = 'zh_CN';
+        $currrency = 'HKD';
+        if(in_array($area_id,[AreaEnum::HongKong,AreaEnum::TaiWan,AreaEnum::MaCao])) {
+            $language = 'zh_TW';
+        }elseif($area_id == AreaEnum::Other) {
+            $language = 'en_US';
+        }
+        if($language == 'zh_TW') {
+            $currrency = 'HKD';
+        } elseif ($language == 'en_US'){
+            $currrency = 'USD';
+        }
+        return [
+            'area_id'  =>$area_id,
+            'language' =>$language,
+            'currency' =>$currrency,
+        ];
+    }
     /**
      * 权限验证
      *

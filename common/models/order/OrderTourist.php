@@ -3,6 +3,8 @@
 namespace common\models\order;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%order_tourist}}".
@@ -29,6 +31,21 @@ use Yii;
  */
 class OrderTourist extends \common\models\base\BaseModel
 {
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+//                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */

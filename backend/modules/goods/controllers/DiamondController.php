@@ -62,12 +62,12 @@ class DiamondController extends BaseController
      */
     public function actionEditLang()
     {
-        $id = Yii::$app->request->get('id', null);
+        $id = Yii::$app->request->get('id');
         $returnUrl = Yii::$app->request->get('returnUrl',['index']);
         
         $model = $this->findModel($id);
         $status = $model ? $model->status:0;
-        if ($model->load(Yii::$app->request->post())) {            
+        if ($model->load(Yii::$app->request->post())) { 
             try{
                 $trans = Yii::$app->db->beginTransaction();
                 if($model->status == 1 && $status == 0){

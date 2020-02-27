@@ -47,6 +47,7 @@ class DiamondService extends Service
         $style->style_image = $diamond->goods_image;
         $style->goods_images = $diamond->parame_images;
         $style->style_3ds = $diamond->goods_3ds;
+        $style->style_salepolicy = $diamond->sale_policy;
         $style->goods_storage = $diamond->goods_num;
         $style->sale_price = $diamond->sale_price;
         $style->cost_price = $diamond->cost_price;
@@ -100,6 +101,9 @@ class DiamondService extends Service
         $diamond->style_id = $style_id;
         $diamond->goods_id = $goods_id;
         $diamond->save(false);
+        
+        \Yii::$app->services->salepolicy->createStyleMarkup($style_id);        
+        \Yii::$app->services->salepolicy->createGoodsMarkup($goods_id,$style_id,$diamond->sale_price);
     }
     
 

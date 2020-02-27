@@ -13,6 +13,7 @@ use Yii;
  * @property int $goods_num 商品数量
  * @property string $cert_type 证书类型
  * @property string $cert_id 证书号
+ * @property string $sale_policy 销售政策
  * @property string $market_price 市场价
  * @property string $sale_price 销售价
  * @property string $cost_price
@@ -68,6 +69,7 @@ class Diamond extends \yii\db\ActiveRecord
             [['cert_id'], 'unique'],
             [['parame_images'],'parseParameImages'],
             [['sale_services'],'parseSaleServices'],
+            [['sale_policy'],'parseSalePolicy'],//销售政策
             [['goods_name','language'],'safe'],
             [['cert_type', 'cert_id'], 'unique', 'targetAttribute' => ['cert_type', 'cert_id']],
         ];
@@ -95,7 +97,16 @@ class Diamond extends \yii\db\ActiveRecord
         return $this->sale_services;
     }
 
-
+    /**
+     * 销售政策（地区价格）
+     */
+    public function parseSalePolicy()
+    {
+        if(is_array($this->sale_policy)){
+            $this->sale_policy = json_encode($this->sale_policy);
+        }
+        return $this->sale_policy;
+    }
     /**
      * {@inheritdoc}
      */
@@ -125,6 +136,7 @@ class Diamond extends \yii\db\ActiveRecord
             'length' => '长度',
             'width' => '宽度',
             'aspect_ratio' => '长宽比(%)',
+            'sale_policy' =>'销售政策',
             'sale_services' => '售后服务',
             'goods_3ds' => '360°主图',
             'parame_images' => '参数示意图',

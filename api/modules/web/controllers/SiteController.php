@@ -299,21 +299,21 @@ class SiteController extends OnAuthController
         $area_id = \Yii::$app->ipLocation->getAreaId();
         
         $language = 'zh_CN';
-        $currrency = 'CNY';        
+        $currency = 'CNY';        
         if(in_array($area_id,[AreaEnum::HongKong,AreaEnum::TaiWan,AreaEnum::MaCao])) {
             $language = 'zh_TW';
         }elseif($area_id == AreaEnum::Other) {
             $language = 'en_US';
         }
         if($language == 'zh_TW') {
-            $currrency = 'HKD';
+            $currency = 'HKD';
         } elseif ($language == 'en_US'){
-            $currrency = 'USD';
+            $currency = 'USD';
         }
         return [
             'area_id'  =>$area_id,
             'language' =>$language,
-            'currency' =>$currrency,
+            'currency' =>$currency,
         ];
     }
     /**

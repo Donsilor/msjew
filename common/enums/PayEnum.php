@@ -34,6 +34,7 @@ class PayEnum extends BaseEnum
     const PAY_TYPE_USER_MONEY = 5;
     const PAY_TYPE_PAYPAL = 6;
     const PAY_TYPE_GLOBAL_ALIPAY = 7;
+    const PAY_TYPE_PAYDOLLAR = 8;
     const PAY_TYPE_OFFLINE = 100;
     
     /**
@@ -47,6 +48,7 @@ class PayEnum extends BaseEnum
                 self::PAY_TYPE_GLOBAL_ALIPAY => '支付宝国际版',
                 self::PAY_TYPE_UNION => '银联',
                 self::PAY_TYPE_PAYPAL => 'Paypal',
+                self::PAY_TYPE_PAYDOLLAR => 'Paydollar',
                 //self::PAY_TYPE_MINI_PROGRAM => '小程序',
                 // self::PAY_TYPE_USER_MONEY => '余额',
                 //self::PAY_TYPE_OFFLINE => '线下',
@@ -64,6 +66,7 @@ class PayEnum extends BaseEnum
         self::PAY_TYPE_GLOBAL_ALIPAY => '支付宝国际版',
         self::PAY_TYPE_UNION => '银联',
         self::PAY_TYPE_PAYPAL => 'Paypal',
+        self::PAY_TYPE_PAYDOLLAR => 'Paydollar',
         self::PAY_TYPE_MINI_PROGRAM => '小程序',
         self::PAY_TYPE_USER_MONEY => '余额',
         self::PAY_TYPE_OFFLINE => '线下',
@@ -80,5 +83,6 @@ class PayEnum extends BaseEnum
         self::PAY_TYPE_UNION => 'union',
         self::PAY_TYPE_MINI_PROGRAM => 'miniProgram',
         self::PAY_TYPE_PAYPAL => 'paypal',
+        self::PAY_TYPE_PAYDOLLAR => 'Paydollar',
     ];
 }

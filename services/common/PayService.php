@@ -157,6 +157,36 @@ class PayService extends Service
     }
 
     /**
+     * Paypal支付
+     * @param PayForm $payForm
+     * @param unknown $baseOrder
+     * @return NULL[]
+     */
+    public function paydollar(PayForm $payForm, $baseOrder)
+    {
+        // 配置
+        $config = [
+            'notify_url' => $payForm->notifyUrl, // 支付通知回调地址
+            'return_url' => $payForm->returnUrl, // 买家付款成功跳转地址
+        ];
+
+        // 生成订单
+        $order = [
+            'out_trade_no' => $baseOrder['out_trade_no'],
+
+            //转换成支付货币
+            'total_amount' => $baseOrder['total_fee'],
+            'subject' => $baseOrder['body'],
+            'currency' => $baseOrder['currency'],
+        ];
+        // 交易类型
+        $tradeType = $payForm->tradeType;
+        return [
+            'config' => Yii::$app->pay->paydollar($config)->$tradeType($order)
+        ];
+    }
+
+    /**
      * @param PayForm $payForm
      * @return mixed
      * @throws \yii\base\InvalidConfigException

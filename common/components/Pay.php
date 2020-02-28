@@ -129,6 +129,23 @@ class Pay extends Component
     }
 
     /**
+     * @param array $config
+     * @return PaypalPay
+     */
+    public function paydollar(array $config = [])
+    {
+        return new PaypalPay(ArrayHelper::merge([
+            //'app_id' => $this->rfConfig['alipay_appid'],
+            'notify_url' => '',
+            'return_url' => '',
+
+            'client_id' => $this->rfConfig['paypal_client_id'],
+            'client_secret' => $this->rfConfig['paypal_client_secret'],
+            'sandbox' => !empty($this->rfConfig['paypal_sandbox'])
+        ], $config));
+    }
+
+    /**
      * @param $name
      * @return mixed
      * @throws \Exception

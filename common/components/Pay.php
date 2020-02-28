@@ -3,6 +3,7 @@
 namespace common\components;
 
 use common\components\payment\GlobalAlipayPay;
+use common\components\payment\PaydollarPay;
 use common\components\payment\PaypalPay;
 use Yii;
 use yii\base\Component;
@@ -130,11 +131,11 @@ class Pay extends Component
 
     /**
      * @param array $config
-     * @return PaypalPay
+     * @return PaydollarPay
      */
     public function paydollar(array $config = [])
     {
-        return new PaypalPay(ArrayHelper::merge([
+        return new PaydollarPay(ArrayHelper::merge([
             //'app_id' => $this->rfConfig['alipay_appid'],
             'notify_url' => '',
             'return_url' => '',

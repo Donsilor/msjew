@@ -176,7 +176,12 @@ abstract class AbstractClientRequest extends AbstractRequest
 
     public function setCurrCode($value)
     {
-        return $this->setParameter('currCode', $value);
+        $config = [
+            'HKD' => '344',
+            'USD' => '840',
+            'CNY' => '156',
+        ];
+        return $this->setParameter('currCode', $config[$value]??null);
     }
 
 

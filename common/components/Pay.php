@@ -140,9 +140,9 @@ class Pay extends Component
             'notify_url' => '',
             'return_url' => '',
 
-            'client_id' => $this->rfConfig['paypal_client_id'],
-            'client_secret' => $this->rfConfig['paypal_client_secret'],
-            'sandbox' => !empty($this->rfConfig['paypal_sandbox'])
+            'merchant_id' => $this->rfConfig['paydollar_merchant_id'],
+            'secure_hash_secret' => $this->rfConfig['paydollar_secure_hash_secret'],
+            'sandbox' => !empty($this->rfConfig['paydollar_sandbox'])
         ], $config));
     }
 

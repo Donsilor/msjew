@@ -166,18 +166,22 @@ class PayService extends Service
     {
         // 配置
         $config = [
-            'notify_url' => $payForm->notifyUrl, // 支付通知回调地址
-            'return_url' => $payForm->returnUrl, // 买家付款成功跳转地址
+//            'notify_url' => $payForm->notifyUrl, // 支付通知回调地址
+//            'return_url' => $payForm->returnUrl, // 买家付款成功跳转地址
+            'success_url' => $payForm->returnUrl,
+            'fail_url' => $payForm->returnUrl,
+            'cancel_url' => $payForm->returnUrl,
         ];
 
         // 生成订单
         $order = [
-            'out_trade_no' => $baseOrder['out_trade_no'],
+            'order_ref' => $baseOrder['out_trade_no'],
 
             //转换成支付货币
-            'total_amount' => $baseOrder['total_fee'],
-            'subject' => $baseOrder['body'],
-            'currency' => $baseOrder['currency'],
+            'amount' => $baseOrder['total_fee'],
+//            'subject' => $baseOrder['body'],
+            'curr_code' => $baseOrder['currency'],//货币
+            'lang' => Yii::$app->language,
         ];
         // 交易类型
         $tradeType = $payForm->tradeType;

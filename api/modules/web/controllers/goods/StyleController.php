@@ -54,8 +54,10 @@ class StyleController extends OnAuthController
         $fields = ['m.id','lang.style_name','m.goods_images','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $query = Style::find()->alias('m')->select($fields)
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
-            ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.area_id='.$area_id)
+            ->where(['m.status'=>StatusEnum::ENABLED])
+            ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]])
+            ->orderby($order);
 
         $params = \Yii::$app->request->post("params");  //属性帅选
 
@@ -196,8 +198,9 @@ class StyleController extends OnAuthController
             $style = \Yii::$app->services->goods->formatStyleGoodsById($id, $this->language,$area_id);
             $recommend_style = Style::find()->alias('m')
                 ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-                ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
+                ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.area_id='.$area_id)
                 ->where(['and',['m.status'=>StatusEnum::ENABLED],['<>','m.id',$id],['=','m.type_id',$model->type_id]])
+                ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]])
                 ->orderBy('m.goods_clicks desc')
                 ->select(['m.id','m.goods_images','IFNULL(markup.sale_price,m.sale_price) as sale_price','lang.style_name'])
                 ->limit(4)->all();

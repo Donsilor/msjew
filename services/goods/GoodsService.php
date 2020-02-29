@@ -443,8 +443,9 @@ class GoodsService extends Service
         ];
         $query = Style::find()->alias('m')
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
-            ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
-            ->where(['m.id'=>$style_id]);
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.area_id='.$area_id)
+            ->where(['m.id'=>$style_id])
+            ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]]);
         $style_model =  $query->one();
         $format_style_attrs = $this->formatStyleAttrs($style_model);
 //        return $format_style_attrs;
@@ -533,8 +534,9 @@ class GoodsService extends Service
         //商品
 
         $goods_array = Goods::find()->alias('g')
-            ->leftJoin(GoodsMarkup::tableName().' markup', 'g.id=markup.goods_id and markup.status=1 and markup.area_id='.$area_id)
+            ->leftJoin(GoodsMarkup::tableName().' markup', 'g.id=markup.goods_id and markup.area_id='.$area_id)
             ->where(['g.style_id'=>$style_id ,'g.status'=>StatusEnum::ENABLED])
+            ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]])
             ->select(['g.id','type_id','goods_sn','IFNULL(markup.sale_price,g.sale_price) as sale_price','goods_storage','warehouse','goods_spec'])
             ->asArray()
             ->all();

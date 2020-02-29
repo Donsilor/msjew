@@ -81,8 +81,10 @@ class DiamondController extends OnAuthController
         $area_id = \Yii::$app->ipLocation->getAreaId();
         $query = Diamond::find()->alias('m')->select($fields)
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->leftJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
-            ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.area_id='.$area_id)
+            ->where(['m.status'=>StatusEnum::ENABLED])
+            ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]])
+            ->orderby($order);
 
         $ev = \Yii::$app->request->get("ev");  //属性帅选
         if(!empty($ev)){
@@ -165,9 +167,10 @@ class DiamondController extends OnAuthController
         $area_id = \Yii::$app->ipLocation->getAreaId();
         $query = Diamond::find()->alias('m')
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->leftJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.area_id='.$area_id)
             ->select(['m.*','IFNULL(markup.sale_price,m.sale_price) as sale_price','lang.goods_name', 'lang.meta_title','lang.meta_word','lang.meta_desc'])
-            ->where(['m.id'=>$id, 'm.status'=>StatusEnum::ENABLED]);
+            ->where(['m.id'=>$id, 'm.status'=>StatusEnum::ENABLED])
+            ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]]);
         $model = $query->one();
         if(empty($model)) {
             return ResultHelper::api(422,"裸钻信息不存在或者已下架");

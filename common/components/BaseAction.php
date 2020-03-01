@@ -29,7 +29,7 @@ trait BaseAction
     //当前货币符号
     protected $currencySign;
     //当前货币符号
-    protected $area_id;
+    protected $areaId;
     
     /**
      * 初始化通用参数
@@ -60,17 +60,22 @@ trait BaseAction
         }
         $this->currencySign = \Yii::$app->params['currencySign'];
 
-        //
-        $area_id = \Yii::$app->request->get("area_id");
-        if(!$area_id) {
-            $area_id = \Yii::$app->request->headers->get("x-api-area");
+        //默认地区
+        $areaId = \Yii::$app->request->headers->get("x-api-area");
+        if($areaId) {
+            \Yii::$app->params['areaId'] = $areaId;
         }
-        if($area_id) {
-            \Yii::$app->params['area_id'] = $area_id;
-        }
-        $this->area_id = \Yii::$app->params['area_id'];
+        $this->areaId = \Yii::$app->params['areaId'];
         
-    }    
+    }
+    /**
+     * 默认地区
+     * @return mixed
+     */
+    public function getAreaId()
+    {
+        return \Yii::$app->params['areaId'];
+    }
     /**
      * 当前语言代号
      * @return mixed
@@ -143,7 +148,12 @@ trait BaseAction
         }
 
         return $this->merchant_id;
-    }    
+    } 
+    
+    public function getAreaId()
+    {
+        
+    }
 
     /**
      * @param Model $model

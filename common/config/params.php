@@ -9,6 +9,7 @@ return [
         'zh-TW'=>'繁体中文',
         'en-US'=>'English',
     ],
+    'areaId'  =>1,//默认地区
     'language'=>'zh-CN',//默认语言    
     'currency' =>'CNY',//当前货币代号
     'currencyBase' =>'CNY',//基础货币代号

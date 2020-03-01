@@ -148,8 +148,8 @@ trait BaseAction
         }
 
         return $this->merchant_id;
-    } 
-    
+    }     
+
 
     /**
      * @param Model $model

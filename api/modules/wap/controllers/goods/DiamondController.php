@@ -78,7 +78,7 @@ class DiamondController extends OnAuthController
                     ,'m.carat','m.cert_id','m.depth_lv','m.table_lv','m.clarity','m.cert_type','m.color'
                     ,'m.cut','m.fluorescence','m.polish','m.shape','m.symmetry'];
 
-        $area_id = \Yii::$app->ipLocation->getAreaId();
+        $area_id = $this->getAreaId(); 
         $query = Diamond::find()->alias('m')->select($fields)
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->leftJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.area_id='.$area_id)
@@ -164,7 +164,7 @@ class DiamondController extends OnAuthController
             return ResultHelper::api(422,"id不能为空");
         }
 
-        $area_id = \Yii::$app->ipLocation->getAreaId();
+        $area_id = $this->getAreaId(); 
         $query = Diamond::find()->alias('m')
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->leftJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.area_id='.$area_id)

@@ -106,7 +106,7 @@ class SalepolicyService extends Service
     public function getGoodsSalePrice($goods_id,$area_id = null) 
     {
         if(!$area_id) {
-            $area_id = \Yii::$app->ipLocation->getAreaId();
+            $area_id = $this->getAreaId(); 
         }
         
         $info = Goods::find()
@@ -133,7 +133,7 @@ class SalepolicyService extends Service
     public function getStyleSalePrice($style_id,$area_id = null)
     {
         if(!$area_id) {
-            $area_id = \Yii::$app->ipLocation->getAreaId();
+            $area_id = $this->getAreaId(); 
         }
         
         $info = Style::find()

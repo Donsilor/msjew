@@ -296,7 +296,7 @@ class SiteController extends OnAuthController
     public function actionSetting()
     {
 
-        $area_id = \Yii::$app->ipLocation->getAreaId();
+        $area_id = $this->getAreaId(); 
         
         $language = 'zh_CN';
         $currency = 'CNY';        

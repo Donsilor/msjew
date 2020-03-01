@@ -277,7 +277,7 @@ class GoodsService extends Service
             $language = \Yii::$app->params['language'];
         }
         if(!$area_id) {
-            $area_id = \Yii::$app->ipLocation->getAreaId();
+            $area_id = $this->getAreaId(); 
         }
         //如果是裸钻
         if($goods_type == \Yii::$app->params['goodsType.diamond']) {
@@ -425,7 +425,7 @@ class GoodsService extends Service
 
         $ip = \Yii::$app->request->userIP;
         if(empty($area_id)){
-            $area_id = \Yii::$app->ipLocation->getAreaId();
+            $area_id = $this->getAreaId(); 
         }
 
         if(empty($language)){

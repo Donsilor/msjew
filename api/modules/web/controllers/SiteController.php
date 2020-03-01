@@ -296,10 +296,10 @@ class SiteController extends OnAuthController
     public function actionSetting()
     {
 
-        $area_id = $this->getAreaId(); 
+        $area_id = \Yii::$app->ipLocation->getAreaId();
         
         $language = 'zh_CN';
-        $currency = 'CNY';        
+        $currency = 'HKD';        
         if(in_array($area_id,[AreaEnum::HongKong,AreaEnum::TaiWan,AreaEnum::MaCao])) {
             $language = 'zh_TW';
         }elseif($area_id == AreaEnum::Other) {

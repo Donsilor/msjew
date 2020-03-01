@@ -148,11 +148,6 @@ trait BaseAction
         }
 
         return $this->merchant_id;
-    } 
-    
-    public function getAreaId()
-    {
-        
     }
 
     /**

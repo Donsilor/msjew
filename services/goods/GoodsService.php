@@ -64,8 +64,6 @@ class GoodsService extends Service
               $model->attributes = $attributes;
               $model->save(false);
         }
-        //计算更新款号加价销售价
-        \Yii::$app->services->salepolicy->createStyleMarkup($style_id);
         //商品更新
         foreach ($goods_list as $key=>$goods){
             //禁用没有填写商品编号的，过滤掉
@@ -91,37 +89,11 @@ class GoodsService extends Service
             if(!empty($default_data['style_spec_b'][$key])){
                 $goods_specs = $default_data['style_spec_b'][$key];
                 $goodsModel->goods_spec = json_encode($goods_specs['spec_keys']);
-            }
-            
-            $goodsModel->save(false);  
-            //计算更新商品加价销售价
-            \Yii::$app->services->salepolicy->createGoodsMarkup($goodsModel->id,$goodsModel->style_id,$goodsModel->sale_price);
-            //商品多语言保存更新 goods_lang
-            /*
-            $languages = \Yii::$app->params['languages']??[];
-            foreach ($languages as $lang_key=>$lang_name){
-                if($lang_key == \Yii::$app->language){
-                    $format_data = $default_data;
-                }else{
-                    $format_data = $this->formatStyleAttrs($styleModel,false,$lang_key);
-                }
-                $spec_list = $format_data['style_spec_b']??[];
-                $langModel = GoodsLang::find()->where(['master_id'=>$goodsModel->id,'language'=>$lang_key])->one();
-                if(!$langModel) {
-                    //新增
-                    $langModel = new GoodsLang();
-                    $langModel->master_id = $goodsModel->id;
-                    $langModel->language  = $lang_key;                    
-                }
-                $goods_spec = $format_data['style_spec_b'][$key]??[];
-                $langModel->goods_spec = !empty($goods_spec)?json_encode($goods_spec) : null;
-                $langModel->save(false);
-              
-            }*/
+            }            
+            $goodsModel->save(false);           
         }
-        
-        //按款价格
-
+        //计算更新商品加价销售价
+        \Yii::$app->services->salepolicy->syncGoodsMarkup($style_id);
     }
     /**
     * 款式属性格式化

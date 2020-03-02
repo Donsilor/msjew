@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <li><a href="<?= Url::to(['style/index?type_id='.Yii::$app->request->get('type_id',0)]) ?>"> <?= Html::encode($style_title) ?></a></li>
                 <li class="active"><a href="<?= Url::to(['goods/index?type_id='.Yii::$app->request->get('type_id',0)]) ?>"> <?= Html::encode($this->title) ?></a></li>
                 <li class="pull-right">
-                    <div class="box-header box-tools"> <?= Html::create(['edit-lang','type_id'=>Yii::$app->request->get('type_id',0)]) ?></div>
+                    <div class="box-header box-tools"> <?= Html::create(['style/edit-lang','type_id'=>Yii::$app->request->get('type_id',0)]) ?></div>
                 </li>
             </ul>
             <div class="box-body table-responsive">
@@ -36,7 +36,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'visible' => false,
             ],
 
-            'id',
+            [
+                'attribute' => 'id',
+                'filter' => true,
+                'format' => 'raw',
+                'headerOptions' => ['width'=>'100'],
+            ],
             //'style_id',
             [
                 'attribute' => 'goods_image',
@@ -55,9 +60,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($model) {
                     return $model->styleLang['style_name'];
                 },
-                'headerOptions' => ['width'=>'100'],
+                'headerOptions' => ['width'=>'200'],
             ],
-
             'goods_sn',
             [
                 'attribute'=>'style.style_sn',
@@ -69,39 +73,38 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'headerOptions' => ['width'=>'100'],
             ],
-
             [
-                'attribute'=>'商品销售价',
-                'filter' => Html::activeTextInput($searchModel, 'markup.sale_price', [
-                    'class' => 'form-control',
-                ]),
-                'value' => function ($model) {
-                    return $model->markup['sale_price'] .'/'.$model->sale_price;
-                },
-                'headerOptions' => ['width'=>'100'],
-            ],
-
-            [
-                'attribute'=>'款销售价',
-                'filter' =>false,
-                'value' => function ($model) {
-                    return $model->markup->styleMarkup['sale_price'] .'/'.$model->style->sale_price;
-                },
-                'headerOptions' => ['width'=>'100'],
-            ],
-
-            [
-                'attribute'=>'markup.area_id',
+                'attribute'=>'销售地区',
                 'filter' => Html::activeDropDownList($searchModel, 'markup.area_id',\common\enums\AreaEnum::getMap(), [
                     'prompt' => '全部',
                     'class' => 'form-control',
                 ]),
                 'value' => function ($model) {
-                    return \common\enums\AreaEnum::getValue($model->markup['area_id']);
+                return \common\enums\AreaEnum::getValue($model->markup['area_id']);
+                },
+                'headerOptions' => ['width'=>'100'],
+            ],
+            [
+                'attribute'=>'地区销售价',
+                'filter' => Html::activeTextInput($searchModel, 'markup.sale_price', [
+                    'class' => 'form-control',
+                ]),
+                'value' => function ($model) {
+                    return $model->markup->sale_price;
+                    //return $model->markup['sale_price'] .'/'.$model->sale_price;
                 },
                 'headerOptions' => ['width'=>'100'],
             ],
 
+            [
+                'attribute'=>'基础销售价',
+                'filter' =>false,
+                'value' => function ($model) {
+                    //return $model->markup->styleMarkup['sale_price'] .'/'.$model->style->sale_price;
+                    return $model->sale_price ;
+                },
+                'headerOptions' => ['width'=>'100'],
+            ],
             [
                 'attribute'=>'markup.styleMarkup.markup_rate',
                 'filter' => false,
@@ -121,7 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'attribute'=>'是否开启',
+                'attribute'=>'地区状态',
                 'filter' => Html::activeDropDownList($searchModel, 'markup.status',\common\enums\StatusEnum::getMap(), [
                     'prompt' => '全部',
                     'class' => 'form-control',
@@ -148,14 +151,14 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{edit} {status} {view}',
+                'template' => '{edit} {view}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
                         return Html::edit(['style/edit-lang', 'id' => $model->style_id,'type_id'=>$model->style_id,'returnUrl' => Url::getReturnUrl()]);
                 },
-               'status' => function($url, $model, $key){
+               /* 'status' => function($url, $model, $key){
                         return Html::status($model['status']);
-                  },
+                  }, */
                 'delete' => function($url, $model, $key){
                         return Html::delete(['delete', 'id' => $model->id]);
                 },

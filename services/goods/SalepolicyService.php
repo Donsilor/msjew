@@ -18,35 +18,61 @@ use common\models\goods\Goods;
 class SalepolicyService extends Service
 {   
     /**
-     * 款式加价率
+     * 更新商品和款式地区价格数据
      * @param int $style_id
      * @return boolean
      */
-    public function createStyleMarkup($style_id)
+    public function syncGoodsMarkup($style_id)
     {
         $style = Style::find()->where(['id'=>$style_id])->one();
-        $markup_list = json_decode($style->style_salepolicy,true);
+        $style_salepolicy = json_decode($style->style_salepolicy,true);
+        $goods_salepolicy = json_decode($style->goods_salepolicy,true);
         
-        if(empty($markup_list)) {
-            $markup_list = [];
+        if(empty($style_salepolicy)) {
+            $style_salepolicy = [];
             foreach (AreaEnum::getMap() as $area_id=>$area_name) {
                 $markup_rate  = 1;
                 $markup_value =  0;
                 $sale_price = AmountHelper::calcMarkupPrice($style->sale_price,$markup_rate,$markup_value,2);
-                $markup_list[$area_id] = [
+                $style_salepolicy[$area_id] = [
                     'area_id' =>$area_id,
-                    'area_name'=>$area_name,
-                    'sale_price'=>$sale_price,
                     'markup_rate' => $markup_rate,
                     'markup_value'=> $markup_value,
                     'status'=> StatusEnum::ENABLED,
                 ];
             } 
-            $style->style_salepolicy = json_encode($markup_list);
+            $style->style_salepolicy = json_encode($style_salepolicy);
+        }
+        
+        $goods_list = Goods::find()->select(['id','sale_price'])->where(['style_id'=>$style_id,'status'=>StatusEnum::ENABLED])->asArray()->all();
+        $goods_array = [];
+        if(!empty($goods_list)) {
+            foreach ($goods_list as $key =>$goods){
+                $goods_array[$goods['id']] = $goods;
+            }
+        }
+        if(empty($goods_salepolicy)){   
+            $goods_salepolicy = [];
+            foreach ($goods_array as $goods){
+                $goods_id = $goods['id'];
+                foreach ($style_salepolicy as $area) {
+                    $area_id  = $area['area_id'];
+                    $markup_rate  = $area['markup_rate'];
+                    $markup_value =  $area['markup_value'];
+                    $goods_salepolicy[$area_id][$goods_id] = [
+                        'area_id' =>$area_id,
+                        'markup_rate' => $markup_rate,
+                        'markup_value'=> $markup_value,
+                        'status'=> $area['status'],
+                    ];
+                }
+            }
+            $style->goods_salepolicy = json_encode($goods_salepolicy);
         }
         
         $base_price = $style->sale_price;
-        foreach ($markup_list as $markup) {
+        foreach ($style_salepolicy as $markup) {
+            
             $area_id = (int)$markup['area_id'];
             $styleMarkup = StyleMarkup::find()->where(['style_id'=>$style_id,'area_id'=>$area_id])->one();
             if(!$styleMarkup) {
@@ -62,41 +88,45 @@ class SalepolicyService extends Service
             $styleMarkup->markup_rate = $markup_rate;
             $styleMarkup->markup_value = $markup_value;
             $styleMarkup->status = $status;
-            $styleMarkup->save();
-        }
-        $style->save(false);
-        
-    }
-    /**
-     * 商品加价率
-     * @param int $goods_id
-     * @param int $style_id
-     * @param decimal $base_price
-     */
-    public function createGoodsMarkup($goods_id,$style_id,$base_price) 
-    {
-        $markup_list = StyleMarkup::find()->where(['style_id'=>$style_id])->all();
-        
-        foreach ($markup_list as $markup) {
-            $markup_id = $markup->id;
-            $markup_rate  = $markup->markup_rate;
-            $markup_value = $markup->markup_value;
-            $area_id = $markup->area_id;
+            $styleMarkup->save(false);
             
-            $sale_price = AmountHelper::calcMarkupPrice($base_price, $markup_rate, $markup_value,2);
-            
-            $goodsMarkup = GoodsMarkup::find()->where(['goods_id'=>$goods_id,'area_id'=>$area_id])->one();
-            if(!$goodsMarkup) {
-                 $goodsMarkup = new GoodsMarkup();
-                 $goodsMarkup->markup_id = $markup_id;
-                 $goodsMarkup->goods_id  = $goods_id;
-                 $goodsMarkup->area_id  = $markup->area_id;
+            foreach ($goods_salepolicy as $g_markups) {
+                foreach ($g_markups as $goods_id =>$g_markup){
+                    if(empty($goods_array[$goods_id])) {
+                        continue;
+                    }
+                    //基础销售价
+                    $base_price = $goods_array[$goods_id]['sale_price'];
+                    $area_id = $g_markup['area_id'];//地区ID
+                    $markup_id = $styleMarkup->id;//销售政策ID
+                    $markup_rate  = $g_markup['markup_rate'];//商品加价率
+                    $markup_value = $g_markup['markup_value'];//商品固定值
+                    //$markup_rate  = $styleMarkup->markup_rate;//款号加价率
+                    //$markup_value = $styleMarkup->markup_value;//款号固定值                    
+                                       
+                    $sale_price = AmountHelper::calcMarkupPrice($base_price, $markup_rate, $markup_value,2);
+                    
+                    $goodsMarkup = GoodsMarkup::find()->where(['goods_id'=>$goods_id,'area_id'=>$area_id])->one();
+                    if(!$goodsMarkup) {
+                        $goodsMarkup = new GoodsMarkup();
+                        $goodsMarkup->markup_id = $markup_id;
+                        $goodsMarkup->goods_id  = $goods_id;
+                        $goodsMarkup->area_id  = $area_id;
+                    }
+                    $goodsMarkup->markup_rate  = $markup_rate;
+                    $goodsMarkup->markup_value  = $markup_value;
+                    $goodsMarkup->sale_price = $sale_price;
+                    $goodsMarkup->status = $g_markup['status'];
+                    $goodsMarkup->save(false);
+  
+                }
             }
-            $goodsMarkup->sale_price = $sale_price;
-            $goodsMarkup->save(false);
-        }       
+        }
         
+        $style->save(false);
+
     }
+    
     /**
      * 商品实际销售价
      * @param int $goods_id

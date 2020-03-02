@@ -266,7 +266,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[5]??'';?></li>
             </ul>
-            <div class="box-body nav-tabs-custom none-shadow col-lg-10" style="margin-left:10px">
+            <div class="box-body nav-tabs-custom none-shadow" style="margin-left:10px">
          
         		  <div class="tab-content">            
                     <?php 

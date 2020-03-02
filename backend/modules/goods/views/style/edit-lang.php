@@ -542,7 +542,7 @@ if(!empty($model->style_spec['c'])) {
             				         'markup_rate' => $markup_rate,
             				         'markup_value'=> $markup_value,
             				         'is_onsale'=> $styleArea['status']==1 && $goodsArea['status']==1 ? "上架":"下架",
-            				         'status'=> $status,
+            				         'status'=> $goodsArea['status'],
             				     ];
         				     }
         				    // print_r($goodsAreaValues);

@@ -54,7 +54,7 @@ class GoodsController extends BaseController
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
 
-        //切换默认地区
+        //切换默认地区11
         $area_id = Yii::$app->request->queryParams['SearchModel']['markup.area_id'];
         $this->setLocalAreaId($area_id);
 

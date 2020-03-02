@@ -297,7 +297,7 @@ if(!empty($model->style_spec['c'])) {
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[5]??'';?></li>
             </ul>
-            <div class="box-body nav-tabs-custom none-shadow col-lg-10" style="margin-left:10px">
+            <div class="box-body nav-tabs-custom none-shadow" style="margin-left:10px">
                   <div class="box-header with-border">
                     	<h3 class="box-title">款式地区价格</h3>
                   </div>

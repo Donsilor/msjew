@@ -28,6 +28,7 @@ use Yii;
  * @property int $delivery_time 发货时间
  * @property int $order_from 订单来源 1：web 2：mobile
  * @property int $order_type 订单类型(1普通订单,2预定订单,3门店自提订单)
+ * @property int is_tourist 游客订单
  * @property int $api_pay_time 在线支付动作时间,只要向第三方支付平台提交就会更新
  * @property string $trade_no 外部交易订单号
  * @property string $buyer_remark 买家留言
@@ -54,7 +55,7 @@ class Order extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id','ip_area_id','payment_type','payment_status', 'payment_time', 'member_id', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'api_pay_time', 'status', 'created_at', 'updated_at', 'follower_id','followed_status' ,'followed_time', 'express_id','delivery_time','delivery_status'], 'integer'],
+            [['merchant_id','ip_area_id','payment_type','payment_status', 'payment_time', 'member_id', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'is_tourist', 'api_pay_time', 'status', 'created_at', 'updated_at', 'follower_id','followed_status' ,'followed_time', 'express_id','delivery_time','delivery_status'], 'integer'],
             [['language'], 'safe'],
             [['order_sn','pay_sn'], 'string', 'max' => 20],
             [['express_no', 'trade_no'], 'string', 'max' => 50],
@@ -89,6 +90,7 @@ class Order extends \common\models\base\BaseModel
             'delivery_time' => '发货时间',
             'order_from' => '订单来源',
             'order_type' => '订单类型',
+            'is_tourist' => '是否游客订单',
             'api_pay_time' => 'Api支付时间',
             'trade_no' => '外部单号',
             'buyer_remark' => '客户留言',

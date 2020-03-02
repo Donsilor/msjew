@@ -295,25 +295,26 @@ class SiteController extends OnAuthController
      */
     public function actionSetting()
     {
-
+       
         $area_id = \Yii::$app->ipLocation->getAreaId();
         
         $language = 'zh_CN';
-        $currency = 'HKD';        
+        $currrency = 'HKD';
+
         if(in_array($area_id,[AreaEnum::HongKong,AreaEnum::TaiWan,AreaEnum::MaCao])) {
             $language = 'zh_TW';
         }elseif($area_id == AreaEnum::Other) {
             $language = 'en_US';
         }
         if($language == 'zh_TW') {
-            $currency = 'HKD';
+            $currrency = 'HKD';
         } elseif ($language == 'en_US'){
-            $currency = 'USD';
+            $currrency = 'USD';
         }
         return [
             'area_id'  =>$area_id,
             'language' =>$language,
-            'currency' =>$currency,
+            'currency' =>$currrency,
         ];
     }
     /**

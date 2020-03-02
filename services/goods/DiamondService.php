@@ -102,8 +102,7 @@ class DiamondService extends Service
         $diamond->goods_id = $goods_id;
         $diamond->save(false);
         
-        \Yii::$app->services->salepolicy->createStyleMarkup($style_id);        
-        \Yii::$app->services->salepolicy->createGoodsMarkup($goods_id,$style_id,$diamond->sale_price);
+        \Yii::$app->services->salepolicy->syncGoodsMarkup($style_id);        
     }
     
 

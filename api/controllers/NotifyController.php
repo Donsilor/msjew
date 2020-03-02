@@ -162,6 +162,37 @@ class NotifyController extends Controller
         }
     }
 
+    public function actionPaydollar()
+    {
+        $this->payment = 'Paydollar';
+
+        try {
+            $response = Yii::$app->pay->globalAlipay()->notify();
+
+            if ($response->isPaid()) {
+                $message = Yii::$app->request->post();
+                $message['pay_fee'] = $message['total_amount'];
+                $message['transaction_id'] = $message['trade_no'];
+                $message['mch_id'] = $message['auth_app_id'];
+
+                // 日志记录
+                $logPath = $this->getLogPath('Paydollar');
+                FileHelper::writeLog($logPath, Json::encode(ArrayHelper::toArray($message)));
+
+                if ($this->pay($message)) {
+                    die('ok');
+                }
+            }
+
+            die('fail');
+        } catch (\Exception $e) {
+            // 记录报错日志
+            $logPath = $this->getLogPath('error');
+            FileHelper::writeLog($logPath, $e->getMessage());
+            die('fail'); // 通知响应
+        }
+    }
+
     public function actionPaypal()
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;

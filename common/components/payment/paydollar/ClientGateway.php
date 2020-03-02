@@ -10,6 +10,15 @@ use Omnipay\Common\AbstractGateway;
  */
 class ClientGateway extends AbstractGateway
 {
+    public function setSandbox($value)
+    {
+        return $this->setParameter('sandbox', $value);
+    }
+
+    public function getSandbox()
+    {
+        return $this->getParameter('sandbox');
+    }
 
     /**
      * Get gateway display name

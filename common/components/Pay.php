@@ -141,7 +141,7 @@ class Pay extends Component
             'return_url' => '',
 
             'merchant_id' => $this->rfConfig['paydollar_merchant_id'],
-            'secure_hash_secret' => $this->rfConfig['paydollar_secure_hash_secret'],
+            'security' => $this->rfConfig['paydollar_secure_hash_secret'],
             'sandbox' => !empty($this->rfConfig['paydollar_sandbox'])
         ], $config));
     }

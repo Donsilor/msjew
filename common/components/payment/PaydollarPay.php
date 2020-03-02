@@ -80,7 +80,7 @@ class PaydollarPay
     {
         $gateway = $this->create();
         $request = $gateway->completePurchase();
-//        $request->setParams(array_merge(Yii::$app->request->post(), Yii::$app->request->get(), $info)); // Optional
+        $request->setRequestParams(array_merge(\Yii::$app->request->post(), \Yii::$app->request->get(), $info)); // Optional
         return $request->send();
     }
 

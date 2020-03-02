@@ -11,6 +11,19 @@ use Omnipay\Paydollar\Helper;
  */
 abstract class AbstractClientRequest extends AbstractRequest
 {
+    private $sandbox_pay_server_url = 'https://test.paydollar.com/b2cDemo/eng/payment/payForm.jsp';
+    private $pay_server_url = 'https://www.paydollar.com/b2c2/eng/dPayment/payComp.jsp';
+
+    public function setSandbox($value)
+    {
+        return $this->setParameter('sandbox', $value);
+    }
+
+    public function getSandbox()
+    {
+        return $this->getParameter('sandbox');
+    }
+
     public function setLoginId($value)
     {
         return $this->setParameter('loginId', $value);
@@ -74,7 +87,11 @@ abstract class AbstractClientRequest extends AbstractRequest
 
     public function getPayServerUrl()
     {
-        return $this->getParameter('pay_server_url');
+        if($this->getSandbox()) {
+            return $this->sandbox_pay_server_url;
+        }
+
+        return $this->pay_server_url;
     }
 
 
@@ -205,7 +222,12 @@ abstract class AbstractClientRequest extends AbstractRequest
 
     public function setLang($value)
     {
-        return $this->setParameter('lang', $value);
+        $config = [
+        'zh-CN' => 'X',
+        'zh-TW' => 'C',
+        'en-US' => 'E',
+    ];
+        return $this->setParameter('lang', $config[$value]??null);
     }
 
 

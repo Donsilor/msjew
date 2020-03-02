@@ -27,7 +27,7 @@ class ClientPurchaseResponse extends AbstractResponse implements RedirectRespons
 
     public function getRedirectUrl()
     {
-        return $this->getRequest()->getPayServerUrl();
+        return $this->getRequest()->getPayServerUrl() . '?' . http_build_query($this->getRedirectData());
     }
 
 

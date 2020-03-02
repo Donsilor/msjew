@@ -11,7 +11,8 @@ use common\models\base\BaseModel;
  * @property int $id ID
  * @property int $style_id 款式ID
  * @property int $area_id 地区ID
- * @property string $sale_price 款式销售价
+ * @property string $base_price 基础销售价
+ * @property string $sale_price 加价销售价
  * @property double $markup_rate 加价率
  * @property string $markup_value 规定值
  * @property int $status 状态 1启用 0禁用 -1删除
@@ -36,7 +37,7 @@ class StyleMarkup extends BaseModel
         return [
             [['style_id'], 'required'],
             [['style_id', 'area_id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['sale_price', 'markup_rate', 'markup_value'], 'number'],
+            [['base_price','sale_price', 'markup_rate', 'markup_value'], 'number'],
         ];
     }
 
@@ -49,6 +50,7 @@ class StyleMarkup extends BaseModel
             'id' => 'ID',
             'style_id' => '款式ID',
             'area_id' => '地区ID',
+            'base_price' => '基础销售价',
             'sale_price' => '加价销售价',
             'markup_rate' => '加价率',
             'markup_value' => '固定值',

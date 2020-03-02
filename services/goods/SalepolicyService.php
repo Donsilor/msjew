@@ -70,37 +70,39 @@ class SalepolicyService extends Service
             $style->goods_salepolicy = json_encode($goods_salepolicy);
         }
         
-        $base_price = $style->sale_price;
-        foreach ($style_salepolicy as $markup) {
+        
+        foreach ($style_salepolicy as $styleArea) {
             
-            $area_id = (int)$markup['area_id'];
+            $area_id = (int)$styleArea['area_id'];
             $styleMarkup = StyleMarkup::find()->where(['style_id'=>$style_id,'area_id'=>$area_id])->one();
             if(!$styleMarkup) {
                 $styleMarkup = new StyleMarkup();
                 $styleMarkup->style_id = $style_id;
                 $styleMarkup->area_id  = $area_id;
             }
-            $markup_rate = $markup['markup_rate'] ?? 1;
-            $markup_value= $markup['markup_value'] ?? 0;
-            $status = $markup['status'] ?? StatusEnum::ENABLED;
+            $markup_rate = $styleArea['markup_rate'] ?? 1;
+            $markup_value= $styleArea['markup_value'] ?? 0;
+            $status = $styleArea['status'] ?? StatusEnum::ENABLED;
+            $base_price = $style->sale_price;
             $sale_price = AmountHelper::calcMarkupPrice($base_price, $markup_rate, $markup_value,2);
+            $styleMarkup->base_price = $base_price;
             $styleMarkup->sale_price = $sale_price;
             $styleMarkup->markup_rate = $markup_rate;
             $styleMarkup->markup_value = $markup_value;
             $styleMarkup->status = $status;
             $styleMarkup->save(false);
             
-            foreach ($goods_salepolicy as $g_markups) {
-                foreach ($g_markups as $goods_id =>$g_markup){
+            foreach ($goods_salepolicy as $goodsAreas) {
+                foreach ($goodsAreas as $goods_id =>$goodsArea){
                     if(empty($goods_array[$goods_id])) {
                         continue;
                     }
                     //基础销售价
                     $base_price = $goods_array[$goods_id]['sale_price'];
-                    $area_id = $g_markup['area_id'];//地区ID
+                    $area_id = $goodsArea['area_id'];//地区ID
                     $markup_id = $styleMarkup->id;//销售政策ID
-                    $markup_rate  = $g_markup['markup_rate'];//商品加价率
-                    $markup_value = $g_markup['markup_value'];//商品固定值
+                    $markup_rate  = $goodsArea['markup_rate'];//商品加价率
+                    $markup_value = $goodsArea['markup_value'];//商品固定值
                     //$markup_rate  = $styleMarkup->markup_rate;//款号加价率
                     //$markup_value = $styleMarkup->markup_value;//款号固定值                    
                                        
@@ -113,10 +115,11 @@ class SalepolicyService extends Service
                         $goodsMarkup->goods_id  = $goods_id;
                         $goodsMarkup->area_id  = $area_id;
                     }
+                    $goodsMarkup->base_price  = $base_price;
                     $goodsMarkup->markup_rate  = $markup_rate;
                     $goodsMarkup->markup_value  = $markup_value;
                     $goodsMarkup->sale_price = $sale_price;
-                    $goodsMarkup->status = $g_markup['status'];
+                    $goodsMarkup->status = $goodsArea['status'];
                     $goodsMarkup->save(false);
   
                 }

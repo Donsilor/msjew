@@ -97,7 +97,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'attribute'=>'基础销售价',
+                'attribute'=>'基础价格',
                 'filter' =>false,
                 'value' => function ($model) {
                     //return $model->markup->styleMarkup['sale_price'] .'/'.$model->style->sale_price;

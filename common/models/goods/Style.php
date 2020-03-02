@@ -245,6 +245,6 @@ class Style extends BaseModel
      */
     public function getMarkup()
     {
-        return $this->hasOne(Style::class, ['style_id'=>'id']);
+        return $this->hasOne(StyleMarkup::class, ['style_id'=>'id']);
     }
 }

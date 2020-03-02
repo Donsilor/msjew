@@ -111,16 +111,22 @@ class Goods extends BaseModel
      */
     public function getStyleLang()
     {
-        return $this->hasOne(StyleLang::class, ['master_id'=>'style_id'])->alias('lang')->where(['lang.language'=>Yii::$app->params['language']]);
+        return $this->hasOne(StyleLang::class, ['master_id'=>'style_id'])->where(['goods_style_lang.language'=>Yii::$app->params['language']]);
     }
 
 
     /**
-     * 对应款式加价率模型
+     * 对应商品加价率模型
      * @return \yii\db\ActiveQuery
      */
     public function getMarkup()
     {
-        return $this->hasOne(GoodsMarkup::class, ['goods_id'=>'id']);
+        if(Yii::$app->params['areaId']){
+            return $this->hasOne(GoodsMarkup::class, ['goods_id'=>'id'])->where(['goods_markup.area_id'=>Yii::$app->params['areaId']]);
+        }else{
+            return $this->hasOne(GoodsMarkup::class, ['goods_id'=>'id']);
+        }
+
     }
+
 }

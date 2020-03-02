@@ -49,7 +49,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute'=>'styleLang.style_name',
-                'filter' => false,
+                'filter' => Html::activeTextInput($searchModel, 'styleLang.style_name', [
+                    'class' => 'form-control',
+                ]),
                 'value' => function ($model) {
                     return $model->styleLang['style_name'];
                 },
@@ -59,7 +61,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'goods_sn',
             [
                 'attribute'=>'style.style_sn',
-                'filter' => false,
+                'filter' => Html::activeTextInput($searchModel, 'style.style_sn', [
+                    'class' => 'form-control',
+                ]),
                 'value' => function ($model) {
                     return $model->style['style_sn'];
                 },
@@ -67,21 +71,25 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'attribute'=>'sale_price',
-                'filter' => false,
+                'attribute'=>'商品销售价',
+                'filter' => Html::activeTextInput($searchModel, 'markup.sale_price', [
+                    'class' => 'form-control',
+                ]),
                 'value' => function ($model) {
-                    return $model->sale_price;
+                    return $model->markup['sale_price'] .'/'.$model->sale_price;
                 },
                 'headerOptions' => ['width'=>'100'],
             ],
+
             [
-                'attribute'=>'markup.sale_price',
-                'filter' => false,
+                'attribute'=>'款销售价',
+                'filter' =>false,
                 'value' => function ($model) {
-                    return $model->markup['sale_price'];
+                    return $model->markup->styleMarkup['sale_price'] .'/'.$model->style->sale_price;
                 },
                 'headerOptions' => ['width'=>'100'],
             ],
+
             [
                 'attribute'=>'markup.area_id',
                 'filter' => Html::activeDropDownList($searchModel, 'markup.area_id',\common\enums\AreaEnum::getMap(), [
@@ -113,8 +121,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'attribute'=>'markup.status',
-                'filter' => false,
+                'attribute'=>'是否开启',
+                'filter' => Html::activeDropDownList($searchModel, 'markup.status',\common\enums\StatusEnum::getMap(), [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
                 'value' => function ($model) {
                     return \common\enums\StatusEnum::getValue($model->markup['status']);
                 },
@@ -137,10 +148,10 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{status} {view}',
+                'template' => '{edit} {status} {view}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
-                        return Html::edit(['edit', 'id' => $model->id,'returnUrl' => Url::getReturnUrl()]);
+                        return Html::edit(['style/edit-lang', 'id' => $model->style_id,'type_id'=>$model->style_id,'returnUrl' => Url::getReturnUrl()]);
                 },
                'status' => function($url, $model, $key){
                         return Html::status($model['status']);
@@ -148,9 +159,26 @@ $this->params['breadcrumbs'][] = $this->title;
                 'delete' => function($url, $model, $key){
                         return Html::delete(['delete', 'id' => $model->id]);
                 },
-                'view'=> function($url, $model, $key){
-                    return Html::a('预览', '',['class'=>'btn btn-info btn-sm']);
-                },
+                    'view'=> function($url, $model, $key){
+                        if($model->type_id == 2){
+                            return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/ring/wedding-rings/'.$model->style_id.'?goodId='.$model->style_id.'&ringType=single&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                        }elseif ($model->type_id == 12){
+                            return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/ring/engagement-rings/'.$model->style_id.'?goodId='.$model->style_id.'&ringType=engagement&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                        }elseif ($model->type_id == 4){
+                            return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/necklace/'.$model->style_id.'?goodId='.$model->style_id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                        }elseif ($model->type_id == 5){
+                            return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/pendant/'.$model->style_id.'?goodId='.$model->style_id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                        }elseif ($model->type_id == 6){
+                            return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/studEarring/'.$model->style_id.'?goodId='.$model->style_id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                        }elseif ($model->type_id == 7){
+                            return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/earring/'.$model->style_id.'?goodId='.$model->style_id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                        }elseif ($model->type_id == 8){
+                            return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/braceletLine/'.$model->style_id.'?goodId='.$model->style_id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                        }elseif ($model->type_id == 9){
+                            return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/bracelet/'.$model->style_id.'?goodId='.$model->style_id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                        }
+
+                    }
                 ]
             ]
     ]

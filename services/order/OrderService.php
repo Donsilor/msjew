@@ -24,17 +24,8 @@ use common\models\order\OrderLog;
  * Class OrderService
  * @package services\order
  */
-class OrderService extends Service
+class OrderService extends OrderBaseService
 {
-    /**
-     * 生成订单号
-     * @param unknown $order_id
-     * @param string $prefix
-     */
-    public function createOrderSn($prefix = 'BDD')
-    {
-        return $prefix.date('Ymd').mt_rand(3,9).str_pad(mt_rand(1, 99999),6,'1',STR_PAD_LEFT);
-    }
     /**
      * 创建订单
      * @param array $cart_ids
@@ -233,31 +224,6 @@ class OrderService extends Service
         return $query->asArray()->one();
     }
     /**
-     * 发送订单邮件通知
-     * @param unknown $order_id
-     */
-    public function sendOrderNotification($order_id)
-    {
-        $order = Order::find()->where(['id'=>$order_id])->one();
-        if(RegularHelper::verify('email',$order->member->username)) {
-            $usage = EmailLog::$orderStatusMap[$order->order_status] ?? '';
-            if($usage && $order->address->email) {
-                \Yii::$app->services->mailer->send($order->address->email,$usage,['code'=>$order->id],$order->language);
-            }
-        }else if($order->address->mobile){
-            if($order->order_status == OrderStatusEnum::ORDER_SEND) {
-                $params = [
-                     'code' =>$order->id,                       
-                     'express_name' => ExpressEnum::getValue($order->express_id),
-                     'express_no' =>$order->express_no,
-                     'company_name'=>'BDD Co.', 
-                     'company_email' => 'admin@bddco.com'
-                ];
-                \Yii::$app->services->sms->send($order->address->mobile,SmsLog::USAGE_ORDER_SEND,$params,$order->language);
-            }
-        }
-    }
-    /**
      * 取消订单
      * @param unknown $order_id 订单ID
      * @param unknown $remark 操作备注
@@ -280,29 +246,6 @@ class OrderService extends Service
         $order->save(false);
         //订单日志
         $this->addOrderLog($order_id, $remark, $log_role, $log_user,$order->order_status);
-    }
-    /**
-     * 添加订单日志
-     * @param unknown $order_id
-     * @param unknown $log_msg
-     * @param unknown $log_role
-     * @param unknown $log_user
-     * @param string $order_status
-     */
-    public function addOrderLog($order_id, $log_msg, $log_role, $log_user, $order_status = false)
-    {
-        if($order_status === false) {
-            $order = Order::find()->select(['id','order_status'])->where(['id'=>$order_id])->one();
-            $order_status = $order->order_status ?? 0;
-        }
-        $log = new OrderLog();
-        $log->order_id = $order_id;
-        $log->log_msg = $log_msg;
-        $log->log_role = $log_role;
-        $log->log_user = $log_user;
-        $log->order_status = $order_status;
-        $log->log_time = time();
-        $log->save(false);
     }
           
     

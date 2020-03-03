@@ -37,8 +37,10 @@ if(!empty($model->style_spec['c'])) {
             $style_spec['c'][$spec_key] = $spec_val;
         }
     }
-    $model->style_spec = $style_spec;
+}else {    
+    $style_spec['c'] = [];
 }
+$model->style_spec = $style_spec;
 //
 ?>
 <?php $form = ActiveForm::begin([

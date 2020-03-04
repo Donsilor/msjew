@@ -65,6 +65,7 @@ class GoodsService extends Service
               $model->save(false);
         }
         //商品更新
+        $sale_prices= [];
         foreach ($goods_list as $key=>$goods){
             //禁用没有填写商品编号的，过滤掉
             if(empty($goods['goods_sn']) && empty($goods['status'])){
@@ -90,8 +91,15 @@ class GoodsService extends Service
                 $goods_specs = $default_data['style_spec_b'][$key];
                 $goodsModel->goods_spec = json_encode($goods_specs['spec_keys']);
             }            
-            $goodsModel->save(false);           
+            $goodsModel->save(false);  
+            $sale_prices[] = $goodsModel->sale_price;
         }
+        //更新最小价格
+        $min_sale_price = min($sale_prices);
+        if($min_sale_price > 1) {
+            $styleModel->sale_price = $min_sale_price;
+        }
+        $styleModel->save(false);
         //计算更新商品加价销售价
         \Yii::$app->services->salepolicy->syncGoodsMarkup($style_id);
     }

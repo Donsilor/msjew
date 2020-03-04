@@ -167,13 +167,13 @@ class NotifyController extends Controller
         $this->payment = 'Paydollar';
 
         try {
-            $response = Yii::$app->pay->globalAlipay()->notify();
+            $response = Yii::$app->pay->paydollar()->notify();
 
             if ($response->isPaid()) {
                 $message = Yii::$app->request->post();
-                $message['pay_fee'] = $message['total_amount'];
-                $message['transaction_id'] = $message['trade_no'];
-                $message['mch_id'] = $message['auth_app_id'];
+                $message['pay_fee'] = $message['Amt'];
+                $message['transaction_id'] = $message['PayRef'];
+                $message['out_trade_no'] = $message['Ref'];
 
                 // 日志记录
                 $logPath = $this->getLogPath('Paydollar');

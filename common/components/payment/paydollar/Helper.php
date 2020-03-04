@@ -14,23 +14,20 @@ class Helper
         }
         $secureHashSecret = trim ( $security );
         if (isset ( $secureHash ) && $secureHash && $secureHashSecret) {
-            $secureHashs = explode ( ',', $secureHash );
-            while ( list ( $key, $value ) = each ( $secureHashs ) ) {
-                $verifyResult = self::verifyPaymentDatafeed (
-                    isset($data['src']) ? $data['src'] : '',
-                    isset($data['prc']) ? $data['prc'] : '',
-                    isset($data['successcode']) ? $data['successcode'] : '',
-                    isset($data['Ref']) ? $data['Ref'] : '',
-                    isset($data['PayRef']) ? $data['PayRef'] : '',
-                    isset($data['Cur']) ? $data['Cur'] : '',
-                    isset($data['Amt']) ? $data['Amt'] : '',
-                    isset($data['payerAuth']) ? $data['payerAuth'] : '',
-                    $secureHashSecret,
-                    $value
-                );
-            }
-            return $verifyResult;
+            return self::verifyPaymentDatafeed (
+                isset($data['src']) ? $data['src'] : '',
+                isset($data['prc']) ? $data['prc'] : '',
+                isset($data['successcode']) ? $data['successcode'] : '',
+                isset($data['Ref']) ? $data['Ref'] : '',
+                isset($data['PayRef']) ? $data['PayRef'] : '',
+                isset($data['Cur']) ? $data['Cur'] : '',
+                isset($data['Amt']) ? $data['Amt'] : '',
+                isset($data['payerAuth']) ? $data['payerAuth'] : '',
+                $secureHashSecret,
+                $secureHash
+            );
         }
+        return false;
     }
 
     protected static function verifyPaymentDatafeed($src, $prc, $successCode, $merchantReferenceNumber, $paydollarReferenceNumber, $currencyCode, $amount, $payerAuthenticationStatus, $secureHashSecret, $secureHash) {

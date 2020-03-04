@@ -140,7 +140,7 @@ class PayController extends OnAuthController
             $notify = $pay->verify(array_merge($query, ['model'=>$model]));
 
             //验证重试一次
-            if(!$notify) {
+            if(!$notify && $model->pay_type == 6) {
                 sleep(3);
                 $notify = $pay->verify(array_merge($query, ['model'=>$model]));
             }

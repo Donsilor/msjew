@@ -56,6 +56,23 @@ class PaydollarPay
     public function pc($order, $debug = false)
     {
 
+        $gateway = $this->create(self::WAP);
+
+        $request = $gateway->purchase($order);
+
+        //返回URL
+        $payment = $request->send();
+
+        /**
+         * 直接跳转
+         * return $response->redirect();
+         */
+        return $debug == true ? '' : $payment->getRedirectUrl();
+    }
+
+    public function wap($order, $debug = false)
+    {
+
         $gateway = $this->create(self::PC);
 
         $request = $gateway->purchase($order);
@@ -92,14 +109,16 @@ class PaydollarPay
      */
     public function verify($info=[])
     {
-        return true;
-        unset($info['orderId']);
-        unset($info['model']);
+        $params = [
+            'orderRef'       => $info['Ref'],
+        ];
+
         $gateway = $this->create();
-        $request = $gateway->completePurchase();
-//        $request->setAlipayPublicKey(Yii::$app->debris->config('alipay_notification_cert_path'));
-        $request->setParams($info); // Optional
+
+        $request = $gateway->query($params);
+
         $response = $request->send();
+
         return $response->isPaid();
     }
 }

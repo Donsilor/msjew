@@ -48,9 +48,9 @@ class OrderGoods extends \common\models\base\BaseModel
             [['order_id', 'goods_id'], 'required'],
             [['goods_price', 'goods_pay_price','exchange_rate'], 'number'],
             [['goods_attr'], 'string'],
-            [['goods_sn', 'goods_name'], 'string', 'max' => 50],
+            [['goods_sn'], 'string', 'max' => 50],
             [['goods_image'], 'string', 'max' => 100],
-            [['goods_spec'], 'string', 'max' => 255],
+            [['goods_spec','goods_name'], 'string', 'max' => 300],
             [['currency'], 'string','max'=>5],
         ];
     }

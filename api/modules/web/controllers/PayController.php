@@ -89,6 +89,10 @@ class PayController extends OnAuthController
             $where['out_trade_no'] = $query['out_trade_no'];
         }
 
+        //alipay
+        if(!empty($query['Ref'])) {
+            $where['out_trade_no'] = $query['Ref'];
+        }
 
         if(!empty($where) && ($model = PayLog::find()->where($where)->one())) {
             return $model;

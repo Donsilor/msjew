@@ -140,7 +140,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::delete(['delete', 'id' => $model->id]);
                 },
                 'view'=> function($url, $model, $key){
-                    return Html::a('预览', \Yii::$app->params['webUrl'].'/ring/wedding-rings/'.$model->id.'?goodId='.$model->id.'&ringType=pair&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                    return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/ring/wedding-rings/'.$model->id.'?goodId='.$model->id.'&ringType=pair&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
                 },
                 ]
             ]

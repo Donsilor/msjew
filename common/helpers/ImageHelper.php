@@ -78,21 +78,26 @@ class ImageHelper
 
         return false;
     }
-    
-    public static function thumb($image ,$tag = '')
+    /**
+     * 缩略图
+     * @param unknown $image
+     * @param string $width
+     * @param string $height
+     * @return string
+     */
+    public static function thumb($image ,$width = '',$height = '')
     {   
-          if(empty($image)) {
-              $image = \Yii::$app->params['defaultImage'];
-          }          
-          
-          return $image;
+        if($width > 0) {
+            $image .= "?x-oss-process=image/auto-orient,1/resize,m_lfit,w_{$width}/quality,q_90";
+        }        
+        return $image;
     }
     
-    public static function thumbs($images ,$tag = '')
+    public static function thumbs($images ,$width = '',$height = '')
     {
         if(!empty($images) && is_array($images)){
             foreach ($images as &$image){
-                self::thumb($image,$tag);
+                self::thumb($image,$width,$height);
             }
         }        
         return $images;

@@ -3,6 +3,7 @@
 namespace api\modules\web\controllers\goods;
 
 use common\enums\StatusEnum;
+use common\helpers\ImageHelper;
 use common\models\goods\Ring;
 use common\models\goods\RingLang;
 use common\models\goods\RingRelation;
@@ -84,7 +85,7 @@ class RingController extends OnAuthController
             $arr['coinType'] = $this->getCurrencySign();
             $arr['id'] = $val['id'];
             $arr['ringCode'] = $val['ring_sn'];
-            $arr['ringImg'] = $val['ring_images'];
+            $arr['ringImg'] = ImageHelper::goodsThumbs($val['ring_images'],'mid');
             $arr['ringStyle'] = $val['ring_style'];
             $arr['name'] = $val['ring_name'];
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
@@ -125,7 +126,7 @@ class RingController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['ringCode'] = $val['ring_sn'];
-            $moduleGoods['ringImg'] = $val['ring_images'];
+            $moduleGoods['ringImg'] = ImageHelper::goodsThumbs($val['ring_images'],'mid');
             $moduleGoods['name'] = $val['ring_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $ring_web_site['moduleGoods'][] = $moduleGoods;
@@ -192,7 +193,7 @@ class RingController extends OnAuthController
         $ring = array();
         $ring['id'] = $model->id;
         $ring['name'] = $model->lang->ring_name;
-        $ring['ringImg'] = $model->ring_images;
+        $ring['ringImg'] = ImageHelper::goodsThumbs($model->ring_images,'big');
         $ring['ringCode'] = $model->ring_sn;
         $ring['salePrice'] = $this->exchangeAmount($model->sale_price);
         $ring['coinType'] = $this->getCurrencySign();
@@ -210,6 +211,7 @@ class RingController extends OnAuthController
             foreach ($style_ids as $style_id){
                 $style_id = $style_id['style_id'];
                 $style = \Yii::$app->services->goods->formatStyleGoodsById($style_id, $this->language);
+                $style['goodsImages'] = ImageHelper::goodsThumbs($style['goodsImages'],'mid');
                 $goodsModels[] = $style;
                 $searchGoods = array();
                 $searchGoods['categoryId'] = $style['categoryId'];
@@ -260,7 +262,7 @@ class RingController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['goodsCode'] = $val['style_sn'];
-            $moduleGoods['goodsImages'] = $val['goods_images'];
+            $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'mid');
             $moduleGoods['goodsName'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $result['moduleGoods'][] = $moduleGoods;

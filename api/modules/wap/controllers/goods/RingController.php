@@ -219,12 +219,12 @@ class RingController extends OnAuthController
             foreach ($style_ids as $style_id){
                 $style_id = $style_id['style_id'];
                 $style = \Yii::$app->services->goods->formatStyleGoodsById($style_id, $this->language);
-                $style['goodsImages'] = ImageHelper::goodsThumbs($style['goodsImages'],'big');
+                $style['goodsImages'] = ImageHelper::goodsThumbs($style['goodsImages'],'mid');
                 $goodsModels[] = $style;
                 $searchGoods = array();
                 $searchGoods['categoryId'] = $style['categoryId'];
                 $searchGoods['coinType'] = $this->getCurrencySign();
-                $searchGoods['goodsImages'] = ImageHelper::goodsThumbs($style['goodsImages'],'mid');
+                $searchGoods['goodsImages'] = $style['goodsImages'];
                 $searchGoods['goodsName'] = $style['goodsName'];
                 $searchGoods['id'] = $style['id'];
                 $searchGoods['isJoin'] = null;

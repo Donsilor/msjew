@@ -31,9 +31,9 @@ class SearchController extends OnAuthController
      */
     public function actionIndex(){
         $sort_map = [
-            '1'=>'m.sale_volume desc',//最暢銷
-            '2'=>'m.sale_volume asc ',//價格 - 從低到高
-            '3'=>'m.sale_volume desc',//價格 - 從高到低
+            '1'=>'sale_volume desc',//最暢銷
+            '2'=>'sale_volume asc ',//價格 - 從低到高
+            '3'=>'sale_volume desc',//價格 - 從高到低
         ];
         $keyword = \Yii::$app->request->get("keyword");//产品线ID
         $order_type = \Yii::$app->request->get("sortType", 1);//排序方式 1-升序；2-降序;
@@ -48,7 +48,7 @@ class SearchController extends OnAuthController
         $fields1 = ['m1.id','m1.type_id','lang1.style_name','m1.goods_images','m1.sale_price','m1.sale_volume'];
         $query1 = Style::find()->alias('m1')->select($fields1)
             ->leftJoin(StyleLang::tableName().' lang1',"m1.id=lang1.master_id and lang1.language='".$this->language."'")
-            ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.area_id='.$area_id)
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm1.id=markup.style_id and markup.area_id='.$area_id)
             ->where(['m1.status'=>StatusEnum::ENABLED])
             ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]]);
 

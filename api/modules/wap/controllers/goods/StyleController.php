@@ -4,6 +4,7 @@ namespace api\modules\wap\controllers\goods;
 
 use common\enums\StatusEnum;
 use api\controllers\OnAuthController;
+use common\helpers\ImageHelper;
 use common\models\goods\Style;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
@@ -131,7 +132,7 @@ class StyleController extends OnAuthController
             $arr['id'] = $val['id'];
             $arr['categoryId'] = $type_id;
             $arr['coinType'] = $this->getCurrencySign();
-            $arr['goodsImages'] = $val['goods_images'];
+            $arr['goodsImages'] =ImageHelper::goodsThumbs($val['goods_images'],'mid');
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $arr['goodsName'] = $val['style_name'];
             $arr['isJoin'] = null;
@@ -160,7 +161,7 @@ class StyleController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['goodsCode'] = $val['style_sn'];
-            $moduleGoods['goodsImages'] = $val['goods_images'];
+            $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'mid');
             $moduleGoods['goodsName'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $webSite['moduleGoods'][] = $moduleGoods;
@@ -221,6 +222,7 @@ class StyleController extends OnAuthController
         }
         try{
             $style = \Yii::$app->services->goods->formatStyleGoodsById($id, $this->language);
+            $style['goodsImages'] = ImageHelper::goodsThumbs($style['goodsImages'],'big');
             $recommend_style = Style::find()->alias('m')
                 ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
                 ->where(['and',['m.status'=>StatusEnum::ENABLED],['<>','m.id',$id],['=','m.type_id',$model->type_id]])
@@ -234,7 +236,7 @@ class StyleController extends OnAuthController
                 $recommend['goodsName'] = $val->lang->style_name;
                 $recommend['categoryId'] = $model->type_id;
                 $recommend['salePrice'] = $this->exchangeAmount($val->sale_price);
-                $recommend['goodsImages'] = $val->goods_images;
+                $recommend['goodsImages'] = ImageHelper::goodsThumbs($val->goods_images,'mid');
                 $recommend['isJoin'] = null;
                 $recommend['specsModels'] = null;
                 $recommend['coinType'] = $this->getCurrencySign();

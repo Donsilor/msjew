@@ -54,7 +54,7 @@ class OrderTouristService extends OrderBaseService
             $detail->promotions_id = 0;//$item['promotions_id'];//促销活动ID
             $detail->group_id = $item['group_id'];//组ID
             $detail->group_type = $item['group_type'];//分组类型
-            $detail->goods_spec = json_encode($goods['goods_spec']);//商品规格
+            $detail->goods_spec = $goods['goods_spec'];//商品规格
             $detail->goods_attr = $goods['goods_attr'];//商品规格
 
             $details[] = $detail;

@@ -1,9 +1,8 @@
 <?php
 return [
-    'adminEmail' => 'admin@example.com',
-    'supportEmail' => 'support@example.com',
-    'user.passwordResetTokenExpire' => 3600,
-    'defaultImage'=>'https://bddco.oss-cn-hongkong.aliyuncs.com/images/2019/12/14/image_157631778355995698.jpg', 
+    'adminEmail' => 'admin@bddco.com',
+    'supportEmail' => 'support@bddco.com',
+    'user.passwordResetTokenExpire' => 3600,    
     'languages'=>[
         'zh-CN'=>'简体中文',
         'zh-TW'=>'繁体中文',

@@ -104,12 +104,13 @@ class ImageHelper
      */
     public static function goodsThumbs($images,$size = '')
     {
-        
+        $images = explode(',',$images);
         if(!empty($images) && is_array($images)){
             foreach ($images as $k=> $image){
                 $images[$k] = self::goodsThumb($image,$size);
             }
         }
+        $images = join(',',$images);
         return $images;
     }
     /**

@@ -104,6 +104,7 @@ class ImageHelper
      */
     public static function goodsThumbs($images,$size = '')
     {
+        
         if(!empty($images) && is_array($images)){
             foreach ($images as $k=> $image){
                 $images[$k] = self::goodsThumb($image,$size);
@@ -121,7 +122,8 @@ class ImageHelper
     public static function thumb($image ,$width = '',$height = '')
     {   
         if($width > 0) {
-            $image .= "?x-oss-process=image/auto-orient,1/resize,m_lfit,w_{$width}/quality,q_90";
+            $height = $width;
+            $image .= "?x-oss-process=style/{$width}X{$height}";
         }        
         return $image;
     }

@@ -105,8 +105,8 @@ class ImageHelper
     public static function goodsThumbs($images,$size = '')
     {
         if(!empty($images) && is_array($images)){
-            foreach ($images as &$image){
-                self::goodsThumb($image,$size);
+            foreach ($images as $k=> $image){
+                $images[$k] = self::goodsThumb($image,$size);
             }
         }
         return $images;

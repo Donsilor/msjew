@@ -97,6 +97,21 @@ class ImageHelper
         }
     }
     /**
+     * 批量缩略图
+     * @param unknown $images
+     * @param string $size
+     * @return unknown
+     */
+    public static function goodsThumbs($images,$size = '')
+    {
+        if(!empty($images) && is_array($images)){
+            foreach ($images as &$image){
+                self::goodsThumb($image,$size);
+            }
+        }
+        return $images;
+    }
+    /**
      * 缩略图
      * @param unknown $image
      * @param string $width

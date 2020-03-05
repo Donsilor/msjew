@@ -294,12 +294,17 @@ class SiteController extends OnAuthController
      * 站点默认配置（默认语言和货币）
      */
     public function actionSetting()
-    {
-       
-        //$area_id = \Yii::$app->ipLocation->getAreaId();
+    {       
+
         $area_id = \Yii::$app->debris->config("web_area_id");
-        $language = 'zh_CN';
-        $currrency = 'CNY';
+        if(!$area_id) {
+            $area_id = \Yii::$app->ipLocation->getAreaId();
+            $language = 'zh_CN';
+            $currrency = 'HKD';
+        }else {
+            $language = 'zh_CN';
+            $currrency = 'CNY';
+        }
 
         if(in_array($area_id,[AreaEnum::HongKong,AreaEnum::TaiWan,AreaEnum::MaCao])) {
             $language = 'zh_TW';

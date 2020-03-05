@@ -51,7 +51,7 @@ class SalepolicyService extends Service
                 $goods_array[$goods['id']] = $goods;
             }
         }
-        if(empty($goods_salepolicy)){   
+        if(empty($goods_salepolicy) || $style->type_id == \Yii::$app->params['goodsType.diamond']){   
             $goods_salepolicy = [];
             foreach ($goods_array as $goods){
                 $goods_id = $goods['id'];

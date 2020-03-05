@@ -412,13 +412,14 @@ $model->style_spec = $style_spec;
                <!-- ./tab-content 款号-->
                 
                 <?php 
-                if($model->id) {
+                if($model->id && !empty($model->style_spec['c'])) {
                     
                     $goodsAreaColomns = [
                         [
                             'name' => 'area_id',
                             'title'=>"地区ID",
                             'enableError'=>false,
+                            'type'  => 'checkBox',
                             'options' => [
                                 'class' => 'input-priority',
                                 'readonly' =>'true',

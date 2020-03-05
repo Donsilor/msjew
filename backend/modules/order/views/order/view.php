@@ -246,11 +246,11 @@ DOM;
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label style="font-weight:bold"><?= $model->getAttributeLabel('account.pay_amount') ?>：</label></div>
-                                <div class="col-lg-7 text-red"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->pay_amount, $model->account->exchange_rate, 2, ',') ?></div>
+                                <div class="col-lg-7 text-red"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->pay_amount, 1, 2, ',') ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label style="font-weight:bold">参考支付RMB金额：</label></div>
-                                <div class="col-lg-7 text-red"><?= \Yii::$app->services->currency->getSign() ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->pay_amount, $model->account->exchange_rate, 2, ',') ?></div>
+                                <div class="col-lg-7 text-red"><?= \Yii::$app->services->currency->getSign() ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->pay_amount, 1/$model->account->exchange_rate, 2, ',') ?></div>
                             </div>
                         </div>
                     </div>

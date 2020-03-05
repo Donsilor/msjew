@@ -42,10 +42,11 @@ class OrderTouristDetails extends \common\models\base\BaseModel
     {
         return [
             [['order_tourist_id'], 'required'],
-            [['order_tourist_id', 'goods_id', 'goods_type', 'goods_num', 'promotions_id', 'group_id', 'group_type', 'created_at', 'updated_at'], 'integer'],
+            [['order_tourist_id', 'goods_id','style_id', 'goods_type', 'goods_num', 'promotions_id', 'group_id', 'group_type', 'created_at', 'updated_at'], 'integer'],
             [['goods_price'], 'number'],
             [['goods_spec', 'goods_attr'], 'string'],
-            [['style_id', 'goods_sn', 'goods_name'], 'string', 'max' => 50],
+            [['goods_sn'], 'string', 'max' => 50],
+            [['goods_name'], 'string', 'max' => 300],
             [['goods_image'], 'string', 'max' => 100],
         ];
     }

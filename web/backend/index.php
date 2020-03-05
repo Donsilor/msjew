@@ -1,4 +1,9 @@
 <?php
+if(isset($_SERVER['host']) && $_SERVER['host']=='bdd.com'){
+    header('HTTP/1.1 301 Moved Permanently');
+    header('Location:https://www.bddco.com');
+    exit;
+}
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 

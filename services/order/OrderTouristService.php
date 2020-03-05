@@ -10,6 +10,7 @@ use common\models\member\Member;
 use common\models\order\Order;
 use common\models\order\OrderAccount;
 use common\models\order\OrderAddress;
+use common\models\order\OrderCart;
 use common\models\order\OrderGoods;
 use common\models\order\OrderTourist;
 use common\models\order\OrderTouristDetails;
@@ -27,14 +28,14 @@ class OrderTouristService extends OrderBaseService
 
 
     /**
-     * @param $cart_list
+     * @param $cartList
      */
-    public function createOrder($cart_list)
+    public function createOrder($cartList)
     {
 
         $goods_amount = 0;
         $details = [];
-        foreach ($cart_list as $item) {
+        foreach ($cartList as $item) {
             $goods = \Yii::$app->services->goods->getGoodsInfo($item['goods_id'], $item['goods_type']);
 
             //商品价格
@@ -50,7 +51,7 @@ class OrderTouristService extends OrderBaseService
             $detail->goods_price = $sale_price;//价格
             $detail->goods_num = $item['goods_num'];//数量
             $detail->goods_image = $goods['goods_image'];//商品图片
-            $detail->promotions_id = $item['promotions_id'];//促销活动ID
+            $detail->promotions_id = 0;//$item['promotions_id'];//促销活动ID
             $detail->group_id = $item['group_id'];//组ID
             $detail->group_type = $item['group_type'];//分组类型
             $detail->goods_spec = $goods['goods_spec'];//商品规格
@@ -116,6 +117,9 @@ class OrderTouristService extends OrderBaseService
      * @throws UnprocessableEntityHttpException|void
      */
     public function sync($orderTourist, $payLog) {
+        //IP区域ID与地址
+        list($ip_area_id, $ip_location) = \Yii::$app->ipLocation->getLocation($orderTourist->ip);
+
         //获取支付信息
         $pay = \Yii::$app->services->pay->getPayByType($payLog->pay_type);
 
@@ -138,9 +142,9 @@ class OrderTouristService extends OrderBaseService
             'lastname' => $payerInfo->getLastName(),
             'realname' => $shippingAddressInfo->getRecipientName(),
             'email' => $payerInfo->getEmail(),
-//            'last_ip' => '',
-//            'first_ip' => '',
-//            'first_ip_location' => '',
+            'last_ip' => $orderTourist->ip,
+            'first_ip' => $orderTourist->ip,
+            'first_ip_location' => $ip_location,
 //            'mobile' => $payerInfo->getPhone()
         ];
         if(false === $member->save()) {
@@ -170,6 +174,7 @@ class OrderTouristService extends OrderBaseService
 //            'receive_type' => '',
 //            'order_from' => '',
 //            'order_type' => '',
+            'is_tourist' => 1,//游客订单
             'api_pay_time' => $payLog->pay_time,
 //            'trade_no' => '',
             'buyer_remark' => '',
@@ -177,12 +182,11 @@ class OrderTouristService extends OrderBaseService
 //            'follower_id' => '',
 //            'followed_time' => '',
 //            'followed_status' => '',
-            'ip' => $orderTourist->id,
-//            'ip_area_id' => '',
-//            'ip_location' => '',
+            'ip' => $orderTourist->ip,
+            'ip_location' => $ip_location,
+            'ip_area_id' => $ip_area_id,
 //            'status' => '',
         ];
-        list($order->ip_area_id, $order->ip_location) = \Yii::$app->ipLocation->getLocation($order->ip);
         if(false === $order->save()) {
             throw new UnprocessableEntityHttpException($this->getError($order));
         }
@@ -233,6 +237,9 @@ class OrderTouristService extends OrderBaseService
             throw new UnprocessableEntityHttpException($this->getError($orderAccount));
         }
 
+        //
+        $languages = $this->getLanguages();
+
         //保存订单商品信息
         foreach ($orderTourist->details as $detail) {
             $orderTouristDetails = new OrderGoods();
@@ -257,7 +264,36 @@ class OrderTouristService extends OrderBaseService
             if(false === $orderTouristDetails->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($orderTouristDetails));
             }
+
+            foreach (array_keys($languages) as $language) {
+                $goods = \Yii::$app->services->goods->getGoodsInfo($orderTouristDetails->goods_id,$orderTouristDetails->goods_type,false,$language);
+                if(empty($goods) || $goods['status'] != 1) {
+                    continue;
+                }
+
+                //验证库存
+                if($orderTouristDetails->goods_num>$goods['goods_storage']) {
+                    throw new UnprocessableEntityHttpException(sprintf("[%s]商品库存不足", $goods['goods_sn']));
+                }
+
+                $langModel = $orderTouristDetails->langModel();
+                $langModel->master_id = $orderTouristDetails->id;
+                $langModel->language = $language;
+                $langModel->goods_name = $goods['goods_name'];
+                $langModel->goods_body = $goods['goods_body'];
+                if(false === $langModel->save()){
+                    throw new UnprocessableEntityHttpException($this->getError($langModel));
+                }
+            }
         }
 
+        //订单日志
+        $log_msg = "创建订单,订单编号：".$order->order_sn;
+        $log_role = 'buyer';
+        $log_user = $member->username;
+        $this->addOrderLog($order->id, $log_msg, $log_role, $log_user,$order->order_status);
+
+        //订单发送邮件
+        $this->sendOrderNotification($order->id);
     }
 }

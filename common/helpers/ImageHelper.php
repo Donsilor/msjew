@@ -78,21 +78,62 @@ class ImageHelper
 
         return false;
     }
-    
-    public static function thumb($image ,$tag = '')
+    /**
+     * 商品缩略图
+     * @param unknown $godos_image
+     * @param string $size
+     * @return string
+     */
+    public static function goodsThumb($image,$size = '')
+    {
+        if($size == 'small'){
+            return self::thumb($image,200,200);
+        }elseif($size == 'mid') {
+            return self::thumb($image,400,400);
+        }else if($size == 'big'){
+            return self::thumb($image,800,800);
+        }else{
+            return self::thumb($image);
+        }
+    }
+    /**
+     * 批量缩略图
+     * @param unknown $images
+     * @param string $size
+     * @return unknown
+     */
+    public static function goodsThumbs($images,$size = '')
+    {
+        $images = explode(',',$images);
+        if(!empty($images) && is_array($images)){
+            foreach ($images as $k=> $image){
+                $images[$k] = self::goodsThumb($image,$size);
+            }
+        }
+        $images = join(',',$images);
+        return $images;
+    }
+    /**
+     * 缩略图
+     * @param unknown $image
+     * @param string $width
+     * @param string $height
+     * @return string
+     */
+    public static function thumb($image ,$width = '',$height = '')
     {   
-          if(empty($image)) {
-              $image = \Yii::$app->params['defaultImage'];
-          }          
-          
-          return $image;
+        if($width > 0) {
+            $height = $width;
+            $image .= "?x-oss-process=style/{$width}X{$height}";
+        }        
+        return $image;
     }
     
-    public static function thumbs($images ,$tag = '')
+    public static function thumbs($images ,$width = '',$height = '')
     {
         if(!empty($images) && is_array($images)){
             foreach ($images as &$image){
-                self::thumb($image,$tag);
+                self::thumb($image,$width,$height);
             }
         }        
         return $images;

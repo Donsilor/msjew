@@ -79,6 +79,24 @@ class ImageHelper
         return false;
     }
     /**
+     * 商品缩略图
+     * @param unknown $godos_image
+     * @param string $size
+     * @return string
+     */
+    public static function goodsThumb($image,$size = '')
+    {
+        if($size == 'small'){
+            return self::thumb($image,100,100);
+        }elseif($size == 'mid') {
+            return self::thumb($image,400,400);
+        }else if($size == 'big'){
+            return self::thumb($image,800,800);
+        }else{
+            return self::thumb($image);
+        }
+    }
+    /**
      * 缩略图
      * @param unknown $image
      * @param string $width

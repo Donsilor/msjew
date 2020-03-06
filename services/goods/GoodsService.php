@@ -276,6 +276,7 @@ class GoodsService extends Service
                 ];
                 $goods['goods_attr'] = json_encode($goods_attr); 
                 $goods['goods_spec'] = null;
+                $goods['id'] = $goods['goods_id'];
             }
             
         }else {

@@ -201,7 +201,7 @@ class DiamondController extends OnAuthController
               'barCode' => null,
               'categoryId' => $type_id,
               'goodsDetailsCode' => $model->goods_sn,
-              'goodsId' => $model->id,
+              'goodsId' => $model->goods_id,
               'stock' => $model->goods_num,
               'retailMallPrice' => $this->exchangeAmount($model->sale_price),
               'productNumber' => null,

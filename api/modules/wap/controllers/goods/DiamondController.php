@@ -122,7 +122,7 @@ class DiamondController extends OnAuthController
             $arr = array();
             $arr['categoryId'] = $type_id;
             $arr['coinType'] = $this->getCurrencySign();
-            $arr['id'] = $val['id'];
+            $arr['id'] = $val['goods_id'];
             $arr['goodsImages'] = $val['goods_image'];
             $arr['goodsName'] = $val['goods_name'];
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
@@ -180,7 +180,7 @@ class DiamondController extends OnAuthController
 
 
         $diamond = array();
-        $diamond['id'] = $model->id;
+        $diamond['id'] = $model->goods_id;
         $diamond['categoryId'] = $model->type_id;
         $diamond['coinType'] = $this->getCurrencySign();
         $diamond['goodsName'] = $model->lang->goods_name;
@@ -215,7 +215,7 @@ class DiamondController extends OnAuthController
               'barCode' => null,
               'categoryId' => $model->type_id,
               'goodsDetailsCode' => $model->goods_sn,
-              'goodsId' => $model->id,
+              'goodsId' => $model->goods_id,
               'stock' => $model->goods_num,
               'retailMallPrice' => (float)$this->exchangeAmount($model->sale_price),
               'productNumber' => null,

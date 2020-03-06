@@ -262,7 +262,7 @@ class GoodsService extends Service
         //如果是裸钻
         if($goods_type == \Yii::$app->params['goodsType.diamond']) {
             $goods = Diamond::find()->alias('g')
-                        ->select(['g.*','IFNULL(m.sale_price,g.sale_price) as sale_price','g.goods_sn as style_sn','g.goods_id as style_id','lang.goods_name','lang.goods_body','g.goods_num as goods_storage'])
+                        ->select(['g.*','IFNULL(m.sale_price,g.sale_price) as sale_price','g.goods_sn as style_sn','lang.goods_name','lang.goods_body','g.goods_num as goods_storage'])
                         ->innerJoin(DiamondLang::tableName().' lang',"g.id=lang.master_id and lang.language='{$language}'")
                         ->leftJoin(GoodsMarkup::tableName().' m','g.goods_id=m.goods_id and m.area_id='.$area_id)
                         ->where(['g.goods_id'=>$goods_id])

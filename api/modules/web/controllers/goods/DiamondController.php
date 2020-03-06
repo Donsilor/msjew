@@ -105,7 +105,7 @@ class DiamondController extends OnAuthController
             $arr = array();
             $arr['categoryId'] = $type_id;
             $arr['coinType'] = $this->getCurrencySign();
-            $arr['id'] = $val['id'];
+            $arr['id'] = $val['goods_id'];
             $arr['goodsImages'] = $val['goods_image'];
             $arr['goodsName'] = $val['goods_name'];
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
@@ -152,7 +152,7 @@ class DiamondController extends OnAuthController
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->leftJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.area_id='.$area_id)
             ->select(['m.*','IFNULL(markup.sale_price,m.sale_price) as sale_price','lang.goods_name', 'lang.meta_title','lang.meta_word','lang.meta_desc'])
-            ->where(['m.id'=>$id])
+            ->where(['m.goods_id'=>$id])
             ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]]);
         if($backend != 1){
             $query->andWhere(['m.status'=>StatusEnum::ENABLED]);
@@ -166,7 +166,7 @@ class DiamondController extends OnAuthController
 
 
         $diamond = array();
-        $diamond['id'] = $model->id;
+        $diamond['id'] = $model->goods_id;
         $diamond['categoryId'] = 1;
         $diamond['coinType'] = $this->getCurrencySign();
         $diamond['goodsName'] = $model->lang->goods_name;

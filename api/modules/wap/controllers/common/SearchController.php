@@ -45,7 +45,7 @@ class SearchController extends OnAuthController
         }
 
         $area_id = $this->getAreaId();
-        $fields1 = ['m1.id','m1.type_id','lang1.style_name','m1.goods_images','m1.sale_price','m1.sale_volume'];
+        $fields1 = ['m1.id','m1.type_id','lang1.style_name','m1.goods_images','IFNULL(markup.sale_price,m1.sale_price) as sale_price','m1.sale_volume'];
         $query1 = Style::find()->alias('m1')->select($fields1)
             ->leftJoin(StyleLang::tableName().' lang1',"m1.id=lang1.master_id and lang1.language='".$this->language."'")
             ->leftJoin(StyleMarkup::tableName().' markup', 'm1.id=markup.style_id and markup.area_id='.$area_id)

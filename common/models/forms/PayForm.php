@@ -88,7 +88,7 @@ class PayForm extends Model
                     $this->addError($attribute, 'PayPal交易类型不符');
                 }
                 if($this->coinType == 'CNY') {
-                    $this->addError($attribute, \Yii::t('payment', 'NOT_SUPPORT_PAYPAL'));
+                    $this->addError($attribute, \Yii::t('payment', 'PAYPAL_NOT_SUPPORT_RMB'));
                 }
                 break;
             case PayEnum::PAY_TYPE_GLOBAL_ALIPAY :

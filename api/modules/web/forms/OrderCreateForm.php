@@ -65,7 +65,7 @@ class OrderCreateForm extends Model
     {
         $currency = strtoupper(\Yii::$app->params['currency']);
         if(in_array($currency, ['CNY'])) {
-            $this->addError($attribute, \Yii::t('payment','CAN_NOT_PAY_IN_RMB'));
+            $this->addError($attribute, \Yii::t('payment','PAYMENT_NOT_SUPPORT_RMB'));
             return false;
         }
         return true;

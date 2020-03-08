@@ -11,8 +11,8 @@ use Omnipay\Paydollar\Helper;
  */
 abstract class AbstractClientRequest extends AbstractRequest
 {
-    private $sandbox_pay_server_url = 'https://test.paydollar.com/b2cDemo/eng/payment/payForm.jsp';
-    private $pay_server_url = 'https://www.paydollar.com/b2c2/eng/payment/payForm.jsp';
+    protected $sandbox_pay_server_url = 'https://test.paydollar.com/b2cDemo/eng/payment/payForm.jsp';
+    protected $pay_server_url = 'https://www.paydollar.com/b2c2/eng/payment/payForm.jsp';
 
     public function setSandbox($value)
     {

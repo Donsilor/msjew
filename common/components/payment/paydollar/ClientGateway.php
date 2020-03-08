@@ -281,4 +281,9 @@ class ClientGateway extends AbstractGateway
     {
         return $this->createRequest('\Omnipay\Paydollar\Message\ClientRefundRequest', $parameters);
     }
+
+    public function query(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Paydollar\Message\ClientQueryRequest', $parameters);
+    }
 }

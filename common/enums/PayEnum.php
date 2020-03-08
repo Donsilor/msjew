@@ -13,7 +13,7 @@ class PayEnum extends BaseEnum
     const ORDER_TOURIST = 'order_tourist';
     const ORDER_GROUP_GOODS = 'goods';
     const ORDER_GROUP_RECHARGE = 'recharge';
-
+    
     /**
      * 订单组别说明
      *
@@ -25,7 +25,7 @@ class PayEnum extends BaseEnum
         self::ORDER_GROUP_GOODS => '订单商品',
         self::ORDER_GROUP_RECHARGE => '充值',
     ];
-
+    
     const PAY_TYPE = 0;
     const PAY_TYPE_WECHAT = 1;
     const PAY_TYPE_ALI = 2;
@@ -43,16 +43,16 @@ class PayEnum extends BaseEnum
     public static function getMap(): array
     {
         return [
-                self::PAY_TYPE_WECHAT => \Yii::t('common','微信'),
-                self::PAY_TYPE_ALI => '支付宝',
-                self::PAY_TYPE_GLOBAL_ALIPAY => '支付宝国际版',
-                self::PAY_TYPE_UNION => '银联',
-                self::PAY_TYPE_PAYPAL => 'Paypal',
-                self::PAY_TYPE_PAYDOLLAR => 'Paydollar',
-                //self::PAY_TYPE_MINI_PROGRAM => '小程序',
-                // self::PAY_TYPE_USER_MONEY => '余额',
-                //self::PAY_TYPE_OFFLINE => '线下',
-                self::PAY_TYPE => '待支付',
+            self::PAY_TYPE_WECHAT => \Yii::t('common','微信'),
+            self::PAY_TYPE_ALI => '支付宝',
+            self::PAY_TYPE_GLOBAL_ALIPAY => '支付宝国际版',
+            self::PAY_TYPE_UNION => '银联',
+            self::PAY_TYPE_PAYPAL => 'Paypal',
+            self::PAY_TYPE_PAYDOLLAR => 'Paydollar',
+            //self::PAY_TYPE_MINI_PROGRAM => '小程序',
+            // self::PAY_TYPE_USER_MONEY => '余额',
+            //self::PAY_TYPE_OFFLINE => '线下',
+            self::PAY_TYPE => '待支付',
         ];
     }
     /**
@@ -71,7 +71,7 @@ class PayEnum extends BaseEnum
         self::PAY_TYPE_USER_MONEY => '余额',
         self::PAY_TYPE_OFFLINE => '线下',
         self::PAY_TYPE => '待支付',
-    ];    
+    ];
     
     /**
      * @var array

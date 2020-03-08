@@ -91,6 +91,34 @@ class Helper
         return $result;
     }
 
+
+    public static function sendQueryRequest($url, $params)
+    {
+        $ch = curl_init();
+        curl_setopt ($ch, CURLOPT_URL, $url);
+        curl_setopt ($ch, CURLOPT_POST, 1);
+        curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+        curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_exec ($ch);
+
+        $response = ob_get_contents();
+
+        ob_end_clean();
+
+        $message = "";
+
+        if(strchr($response,"<?xml") || strchr($response,"<?xml")) {;
+            $message = $response;
+        } else {
+            if (curl_error($ch))
+                $message = "%s: s". curl_errno($ch) . "<br/>" . curl_error($ch);
+        }
+
+        curl_close($ch);
+
+        return $message;
+    }
+
     public static function sendRefundHttpRequest($url, $params)
     {
         ob_start();

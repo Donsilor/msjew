@@ -88,11 +88,6 @@ class AuthorizeRequest extends AbstractPaypalRequest
                 //捕获订单
                 //需下载状态列表到备注
                 $result = $this->capture($order)->state == 'completed';
-            } elseif($order->state!="PENDING") {
-                //订单正在处理中
-                $logPath = \Yii::getAlias('@runtime') . "/pay-logs/paypal-" . date('Y_m_d') . '/error.txt';
-                FileHelper::writeLog($logPath, '订单正在处理中');
-                $result = false;
             } else {
                 $result = true;
             }

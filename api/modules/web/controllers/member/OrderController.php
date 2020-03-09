@@ -128,10 +128,11 @@ class OrderController extends UserAuthController
             
             $model = new OrderCreateForm();
             $model->attributes = \Yii::$app->request->post();
+            $invoiceInfo = \Yii::$app->request->post('invoice');
             if(!$model->validate()) {
                 return ResultHelper::api(422,$this->getError($model));
             }
-            $ressult = \Yii::$app->services->order->createOrder($model->cart_ids, $this->member_id, $model->buyer_address_id,$model->toArray());
+            $ressult = \Yii::$app->services->order->createOrder($model->cart_ids, $this->member_id, $model->buyer_address_id,$model->toArray(),$invoiceInfo);
             $trans->commit();
             return [
                     "coinType" => $ressult['currency'],

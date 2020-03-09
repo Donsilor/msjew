@@ -4,6 +4,7 @@ namespace services\order;
 
 use common\components\Service;
 use common\models\order\OrderCart;
+use common\models\order\OrderInvoice;
 use yii\web\UnprocessableEntityHttpException;
 use common\models\order\OrderGoods;
 use common\models\order\Order;
@@ -29,11 +30,12 @@ class OrderService extends OrderBaseService
     /**
      * 创建订单
      * @param array $cart_ids
-     * @param array $order_info
      * @param int $buyer_id
      * @param int $buyer_address_id
+     * @param array $order_info
+     * @param array $invoice_info
      */
-    public function createOrder($cart_ids,$buyer_id, $buyer_address_id, $order_info)
+    public function createOrder($cart_ids,$buyer_id, $buyer_address_id, $order_info, $invoice_info)
     {
         $buyer = Member::find()->where(['id'=>$buyer_id])->one();
         
@@ -121,6 +123,16 @@ class OrderService extends OrderBaseService
         if(false === $orderAddress->save()) {
             throw new UnprocessableEntityHttpException($this->getError($orderAddress));
         }
+
+        //如果有发票信息
+        if(!empty($invoice_info)) {
+            $invoice = new OrderInvoice();
+            $invoice->attributes = $invoice_info;
+            if(false === $invoice->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($invoice));
+            }
+        }
+
         //订单日志
         $log_msg = "创建订单,订单编号：".$order->order_sn;
         $log_role = 'buyer';

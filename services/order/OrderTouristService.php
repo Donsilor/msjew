@@ -14,6 +14,7 @@ use common\models\order\OrderCart;
 use common\models\order\OrderGoods;
 use common\models\order\OrderTourist;
 use common\models\order\OrderTouristDetails;
+use common\models\order\OrderTouristInvoice;
 use PayPal\Api\PayerInfo;
 use PayPal\Api\Payment;
 use PayPal\Api\ShippingAddress;
@@ -30,7 +31,7 @@ class OrderTouristService extends OrderBaseService
     /**
      * @param $cartList
      */
-    public function createOrder($cartList)
+    public function createOrder($cartList, $invoice_info)
     {
 
         $goods_amount = 0;
@@ -104,6 +105,15 @@ class OrderTouristService extends OrderBaseService
             //保存订单详情
             if(false === $detail->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($detail));
+            }
+        }
+
+        //如果有发票信息
+        if(!empty($invoice_info)) {
+            $invoice = new OrderTouristInvoice();
+            $invoice->attributes = $invoice_info;
+            if(false === $invoice->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($invoice));
             }
         }
 

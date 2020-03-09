@@ -457,22 +457,22 @@ class GoodsService extends Service
         $style['ip'] = $ip;
         $style['area_id'] = $area_id;
 
-        if(isset($format_style_attrs['style_spec_a'])){
-            $format_style_spec = $format_style_attrs['style_spec_a'];
-            foreach ($style_spec_array as $key => $val){
-                if(isset($format_style_spec[$key]['value'])){
-                    foreach ($format_style_spec[$key]['value'] as $k => $v){
-                        $attr = array();
-                        $attr['id'] = $k;
-                        $attr['image'] = \Yii::$app->services->goodsAttribute->getAttrImageByValueId($k);
-                        $attr['name'] = $v;
-                        $style[$val['attr_name']][] = $attr;
-                    }
-                }else{
-                    $style[$val['attr_name']] = null;
-                }
-            }
-        }
+//        if(isset($format_style_attrs['style_spec_a'])){
+//            $format_style_spec = $format_style_attrs['style_spec_a'];
+//            foreach ($style_spec_array as $key => $val){
+//                if(isset($format_style_spec[$key]['value'])){
+//                    foreach ($format_style_spec[$key]['value'] as $k => $v){
+//                        $attr = array();
+//                        $attr['id'] = $k;
+//                        $attr['image'] = \Yii::$app->services->goodsAttribute->getAttrImageByValueId($k);
+//                        $attr['name'] = $v;
+//                        $style[$val['attr_name']][] = $attr;
+//                    }
+//                }else{
+//                    $style[$val['attr_name']] = null;
+//                }
+//            }
+//        }
 
         //基础属性
         if(isset($format_style_attrs['style_attr'])){
@@ -523,12 +523,26 @@ class GoodsService extends Service
             ->all();
         $details = array();
         $totalStock = 0;
+
+        $check_goods_spec_ids = array();
         foreach ($goods_array  as $key => $val){
             $goods_spec = json_decode($val['goods_spec']);
             $goods_spec = (array)$goods_spec;
             foreach ($style_spec_array as $k => $v){
                 if(isset($goods_spec[$k])){
-                    $details[$key][$v['key_name']] = (int)$goods_spec[$k];
+                    $goods_spec_id = (int)$goods_spec[$k];
+
+                    if(!in_array($goods_spec_id,$check_goods_spec_ids)){
+                        $check_goods_spec_ids[] = $goods_spec_id;
+                        $attr = array();
+                        $attr['id'] = $goods_spec_id;
+                        $attr['image'] = \Yii::$app->services->goodsAttribute->getAttrImageByValueId($goods_spec_id);
+                        $attr['name'] = \Yii::$app->attr->valueName($goods_spec_id);
+                        $style[$v['attr_name']][] = $attr;
+                    }
+
+
+                    $details[$key][$v['key_name']] = $goods_spec_id;
                 }else{
                     $details[$key][$v['key_name'] ]= null;
                 }
@@ -554,6 +568,15 @@ class GoodsService extends Service
             $totalStock += $val['goods_storage'];
 
         }
+
+        //对尺寸进行排序
+        if(isset($style['sizes'])){
+            $names = array_column($style['sizes'],'name');
+            array_multisort($names,SORT_ASC,$style['sizes']);
+        }
+
+
+
 
         $style['details'] = $details;
         $style['totalStock'] = $totalStock;

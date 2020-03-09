@@ -74,7 +74,7 @@ class DiamondController extends OnAuthController
         }
 
 
-        $fields = ['m.id','m.goods_id','m.goods_sn','lang.goods_name','m.goods_image','IFNULL(markup.sale_price,m.sale_price) as sale_price'
+        $fields = ['m.id','m.goods_id','m.style_id','m.goods_sn','lang.goods_name','m.goods_image','IFNULL(markup.sale_price,m.sale_price) as sale_price'
                     ,'m.carat','m.cert_id','m.depth_lv','m.table_lv','m.clarity','m.cert_type','m.color'
                     ,'m.cut','m.fluorescence','m.polish','m.shape','m.symmetry'];
 
@@ -122,7 +122,7 @@ class DiamondController extends OnAuthController
             $arr = array();
             $arr['categoryId'] = $type_id;
             $arr['coinType'] = $this->getCurrencySign();
-            $arr['id'] = $val['goods_id'];
+            $arr['id'] = $val['style_id'];
             $arr['goodsImages'] = $val['goods_image'];
             $arr['goodsName'] = $val['goods_name'];
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
@@ -169,7 +169,7 @@ class DiamondController extends OnAuthController
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->leftJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.area_id='.$area_id)
             ->select(['m.*','IFNULL(markup.sale_price,m.sale_price) as sale_price','lang.goods_name', 'lang.meta_title','lang.meta_word','lang.meta_desc'])
-            ->where(['m.goods_id'=>$id, 'm.status'=>StatusEnum::ENABLED])
+            ->where(['m.style_id'=>$id, 'm.status'=>StatusEnum::ENABLED])
             ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]]);
         $model = $query->one();
         if(empty($model)) {
@@ -180,7 +180,7 @@ class DiamondController extends OnAuthController
 
 
         $diamond = array();
-        $diamond['id'] = $model->goods_id;
+        $diamond['id'] = $model->style_id;
         $diamond['categoryId'] = $model->type_id;
         $diamond['coinType'] = $this->getCurrencySign();
         $diamond['goodsName'] = $model->lang->goods_name;
@@ -215,7 +215,7 @@ class DiamondController extends OnAuthController
               'barCode' => null,
               'categoryId' => $model->type_id,
               'goodsDetailsCode' => $model->goods_sn,
-              'goodsId' => $model->goods_id,
+              'goodsId' => $model->style_id,
               'stock' => $model->goods_num,
               'retailMallPrice' => (float)$this->exchangeAmount($model->sale_price),
               'productNumber' => null,

@@ -177,8 +177,7 @@ class DiamondController extends OnAuthController
         }
         $type_id = $model->type_id;
         $diamond_array = $query->asArray()->one();
-
-
+        
         $diamond = array();
         $diamond['id'] = $model->style_id;
         $diamond['categoryId'] = $model->type_id;

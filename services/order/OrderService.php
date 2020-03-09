@@ -239,7 +239,7 @@ class OrderService extends OrderBaseService
         }
         $order_goods_list = OrderGoods::find()->select(['id','goods_id','goods_type','goods_num'])->where(['order_id'=>$order_id])->all();
         foreach ($order_goods_list as $goods) {
-            \Yii::$app->services->goods->updateGoodsStorageForOrder($goods->goods_id, $goods->goods_num, $goods->goods_type);
+            //\Yii::$app->services->goods->updateGoodsStorageForOrder($goods->goods_id, $goods->goods_num, $goods->goods_type);
         }
         //更改订单状态
         $order->order_status = OrderStatusEnum::ORDER_CANCEL;

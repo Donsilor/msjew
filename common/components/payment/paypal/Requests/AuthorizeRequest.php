@@ -84,7 +84,7 @@ class AuthorizeRequest extends AbstractPaypalRequest
 
             //如果已捕获，则跳过
             //需下载状态列表到备注
-            if ($order->state != "COMPLETED" && $order->state!="PENDING") {
+            if ($order->state != "COMPLETED") {
                 //捕获订单
                 //需下载状态列表到备注
                 $result = $this->capture($order)->state == 'completed';

@@ -101,10 +101,10 @@ class SalepolicyService extends Service
                     $base_price = $goods_array[$goods_id]['sale_price'];
                     $area_id = $goodsArea['area_id'];//地区ID
                     $markup_id = $styleMarkup->id;//销售政策ID
-                    $markup_rate  = $goodsArea['markup_rate'];//商品加价率
-                    $markup_value = $goodsArea['markup_value'];//商品固定值
-                    //$markup_rate  = $styleMarkup->markup_rate;//款号加价率
-                    //$markup_value = $styleMarkup->markup_value;//款号固定值                    
+                    //$markup_rate  = $goodsArea['markup_rate'];//商品加价率
+                    //$markup_value = $goodsArea['markup_value'];//商品固定值
+                    $markup_rate  = $styleMarkup->markup_rate;//款号加价率
+                    $markup_value = $styleMarkup->markup_value;//款号固定值                    
                                        
                     $sale_price = AmountHelper::calcMarkupPrice($base_price, $markup_rate, $markup_value,2);
                     

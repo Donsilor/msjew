@@ -99,13 +99,12 @@ class SalepolicyService extends Service
                     }
                     //基础销售价
                     $base_price = $goods_array[$goods_id]['sale_price'];
-                    $area_id = $goodsArea['area_id'];//地区ID
                     $markup_id = $styleMarkup->id;//销售政策ID
                     //$markup_rate  = $goodsArea['markup_rate'];//商品加价率
                     //$markup_value = $goodsArea['markup_value'];//商品固定值
                     $markup_rate  = $styleMarkup->markup_rate;//款号加价率
                     $markup_value = $styleMarkup->markup_value;//款号固定值                    
-                                       
+                 
                     $sale_price = AmountHelper::calcMarkupPrice($base_price, $markup_rate, $markup_value,2);
                     
                     $goodsMarkup = GoodsMarkup::find()->where(['goods_id'=>$goods_id,'area_id'=>$area_id])->one();
@@ -120,6 +119,7 @@ class SalepolicyService extends Service
                     $goodsMarkup->markup_value  = $markup_value;
                     $goodsMarkup->sale_price = $sale_price;
                     $goodsMarkup->status = $goodsArea['status'];
+                    //print_r($goodsMarkup->toArray());
                     $goodsMarkup->save(false);
   
                 }
@@ -127,7 +127,7 @@ class SalepolicyService extends Service
         }
         
         $style->save(false);
-
+//exit;
     }
     
     /**

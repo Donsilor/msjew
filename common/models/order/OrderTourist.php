@@ -112,7 +112,7 @@ class OrderTourist extends \common\models\base\BaseModel
      */
     public function getInvoice()
     {
-        return $this->hasOne(OrderInvoice::class, ['order_id'=>'id']);
+        return $this->hasOne(OrderInvoice::class, ['order_tourist_id'=>'id']);
     }
 
 }

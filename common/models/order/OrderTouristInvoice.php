@@ -9,7 +9,7 @@ use Yii;
  * This is the model class for table "order_invoice".
  *
  * @property int $id
- * @property int $order_id 订单ID
+ * @property int $order_tourist_id 订单ID
  * @property int $invoice_type 发票类型：1=企业，2=个人
  * @property string $invoice_title 发票抬头
  * @property string $tax_number 纳税人识别号
@@ -32,10 +32,11 @@ class OrderTouristInvoice extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['order_id'], 'required'],
-            [['order_id', 'invoice_type', 'is_electronic'], 'integer'],
+            [['order_tourist_id', 'invoice_type', 'invoice_title', 'is_electronic'], 'required'],
+            [['order_tourist_id', 'invoice_type', 'is_electronic'], 'integer'],
             [['invoice_title'], 'string', 'max' => 80],
             [['tax_number'], 'string', 'max' => 50],
+            [['invoice_type'], 'validateTaxNumber'],
             [['invoice_title','tax_number'], 'safe'],
             [['email'], 'string', 'max' => 60],
             ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => '请输入正确的发票接收邮箱'],
@@ -56,5 +57,16 @@ class OrderTouristInvoice extends \common\models\base\BaseModel
             'is_electronic' => '是否电子发票',
             'email' => '接收邮箱',
         ];
+    }
+
+    public function validateTaxNumber($attribute)
+    {
+        $invoiceType = intval($this->invoice_type);
+        if(!in_array($invoiceType, [1, 2])) {
+            $this->addError($attribute, '发票类型的值超出范围');
+        }
+        if($invoiceType===1 && empty($this->tax_number)) {
+            $this->addError($attribute, '企业发票税号不能为空');
+        }
     }
 }

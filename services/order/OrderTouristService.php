@@ -12,6 +12,7 @@ use common\models\order\OrderAccount;
 use common\models\order\OrderAddress;
 use common\models\order\OrderCart;
 use common\models\order\OrderGoods;
+use common\models\order\OrderInvoice;
 use common\models\order\OrderTourist;
 use common\models\order\OrderTouristDetails;
 use common\models\order\OrderTouristInvoice;
@@ -112,6 +113,7 @@ class OrderTouristService extends OrderBaseService
         if(!empty($invoice_info)) {
             $invoice = new OrderTouristInvoice();
             $invoice->attributes = $invoice_info;
+            $invoice->order_tourist_id = $order->id;;
             if(false === $invoice->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($invoice));
             }
@@ -294,6 +296,16 @@ class OrderTouristService extends OrderBaseService
                 if(false === $langModel->save()){
                     throw new UnprocessableEntityHttpException($this->getError($langModel));
                 }
+            }
+        }
+
+        //如果有发票信息
+        if(!empty($orderTourist->invoice)) {
+            $invoice = new OrderInvoice();
+            $invoice->attributes = $orderTourist->invoice->toArray();
+            $invoice->order_id   = $order->id;
+            if(false === $invoice->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($invoice));
             }
         }
 

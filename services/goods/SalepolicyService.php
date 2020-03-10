@@ -92,42 +92,42 @@ class SalepolicyService extends Service
             $styleMarkup->status = $status;
             $styleMarkup->save(false);
             
-            foreach ($goods_salepolicy as $goodsAreas) {
-                foreach ($goodsAreas as $goods_id =>$goodsArea){
-                    if(empty($goods_array[$goods_id])) {
-                        continue;
-                    }
-                    //基础销售价
-                    $base_price = $goods_array[$goods_id]['sale_price'];
-                    $markup_id = $styleMarkup->id;//销售政策ID
-                    //$markup_rate  = $goodsArea['markup_rate'];//商品加价率
-                    //$markup_value = $goodsArea['markup_value'];//商品固定值
-                    $markup_rate  = $styleMarkup->markup_rate;//款号加价率
-                    $markup_value = $styleMarkup->markup_value;//款号固定值                    
-                 
-                    $sale_price = AmountHelper::calcMarkupPrice($base_price, $markup_rate, $markup_value,2);
-                    
-                    $goodsMarkup = GoodsMarkup::find()->where(['goods_id'=>$goods_id,'area_id'=>$area_id])->one();
-                    if(!$goodsMarkup) {
-                        $goodsMarkup = new GoodsMarkup();
-                        $goodsMarkup->markup_id = $markup_id;
-                        $goodsMarkup->goods_id  = $goods_id;
-                        $goodsMarkup->area_id  = $area_id;
-                    }
-                    $goodsMarkup->base_price  = $base_price;
-                    $goodsMarkup->markup_rate  = $markup_rate;
-                    $goodsMarkup->markup_value  = $markup_value;
-                    $goodsMarkup->sale_price = $sale_price;
-                    $goodsMarkup->status = $goodsArea['status'];
-                    //print_r($goodsMarkup->toArray());
-                    $goodsMarkup->save(false);
-  
+            $goodsAreas = $goods_salepolicy[$area_id]??[];
+            foreach ($goodsAreas as $goods_id =>$goodsArea){
+                if(empty($goods_array[$goods_id])) {
+                    continue;
+                }      
+                //基础销售价
+                $base_price = $goods_array[$goods_id]['sale_price'];
+                $markup_id = $styleMarkup->id;//销售政策ID
+                //$markup_rate  = $goodsArea['markup_rate'];//商品加价率
+                //$markup_value = $goodsArea['markup_value'];//商品固定值
+                $markup_rate  = $styleMarkup->markup_rate;//款号加价率
+                $markup_value = $styleMarkup->markup_value;//款号固定值                    
+             
+                $sale_price = AmountHelper::calcMarkupPrice($base_price, $markup_rate, $markup_value,2);
+                
+                $goodsMarkup = GoodsMarkup::find()->where(['goods_id'=>$goods_id,'area_id'=>$area_id])->one();
+                if(!$goodsMarkup) {
+                    $goodsMarkup = new GoodsMarkup();
+                    $goodsMarkup->markup_id = $markup_id;
+                    $goodsMarkup->goods_id  = $goods_id;
+                    $goodsMarkup->area_id  = $area_id;
                 }
+                $goodsMarkup->base_price  = $base_price;
+                $goodsMarkup->markup_rate  = $markup_rate;
+                $goodsMarkup->markup_value  = $markup_value;
+                $goodsMarkup->sale_price = $sale_price;
+                $goodsMarkup->status = $goodsArea['status'];
+                echo '<pre/>';
+                print_r($goodsMarkup->toArray());
+                $goodsMarkup->save(false);
+
             }
-        }
-        
+
+        }       
         $style->save(false);
-//exit;
+
     }
     
     /**

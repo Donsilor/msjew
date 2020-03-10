@@ -179,7 +179,7 @@ class OrderTouristController extends OnAuthController
 //            'address' => $address,
 //            'addressId' => $address['id'],
 //            'afterMail' => $order->address->email,
-//            'coinCode' => $currency,
+            'coinCode' => $order->currency,
             'allSend' => 1,
             'isInvoice' => 2,
             'orderNo' => $order->order_sn,

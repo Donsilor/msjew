@@ -92,8 +92,8 @@ class SalepolicyService extends Service
             $styleMarkup->status = $status;
             $styleMarkup->save(false);
             
-            $goodsAreas = $goods_salepolicy[$area_id]??[];
-            foreach ($goodsAreas as $goods_id =>$goodsArea){
+            $goods_areas = $goods_salepolicy[$area_id]??[];
+            foreach ($goods_areas as $goods_id =>$goods_area){
                 if(empty($goods_array[$goods_id])) {
                     continue;
                 }      
@@ -118,9 +118,7 @@ class SalepolicyService extends Service
                 $goodsMarkup->markup_rate  = $markup_rate;
                 $goodsMarkup->markup_value  = $markup_value;
                 $goodsMarkup->sale_price = $sale_price;
-                $goodsMarkup->status = $goodsArea['status'];
-                echo '<pre/>';
-                print_r($goodsMarkup->toArray());
+                $goodsMarkup->status = $goods_area['status'];
                 $goodsMarkup->save(false);
 
             }

@@ -39,7 +39,7 @@ class OrderInvoice extends \common\models\base\BaseModel
             [['invoice_type'], 'validateTaxNumber'],
             [['invoice_title','tax_number'], 'safe'],
             [['email'], 'string', 'max' => 60],
-            ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => '请输入正确的发票接收邮箱'],
+            ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => \Yii::t('order','请输入正确的发票接收邮箱')],
         ];
     }
 
@@ -51,11 +51,11 @@ class OrderInvoice extends \common\models\base\BaseModel
         return [
             'id' => 'ID',
             'order_id' => '订单ID',
-            'invoice_type' => '发票类型',
-            'invoice_title' => '发票抬头',
-            'tax_number' => '纳税人识别号',
-            'is_electronic' => '是否电子发票',
-            'email' => '接收邮箱',
+            'invoice_type' => \Yii::t('order','发票类型'),
+            'invoice_title' => \Yii::t('order','发票抬头'),
+            'tax_number' => \Yii::t('order','纳税人识别号'),
+            'is_electronic' => \Yii::t('order','是否电子发票'),
+            'email' => \Yii::t('order','接收邮箱'),
         ];
     }
 
@@ -63,10 +63,10 @@ class OrderInvoice extends \common\models\base\BaseModel
     {
         $invoiceType = intval($this->invoice_type);
         if(!in_array($invoiceType, [1, 2])) {
-            $this->addError($attribute, '发票类型的值超出范围');
+            $this->addError($attribute, \Yii::t('order','发票类型的值超出范围'));
         }
         if($invoiceType===1 && empty($this->tax_number)) {
-            $this->addError($attribute, '企业发票税号不能为空');
+            $this->addError($attribute, \Yii::t('order','企业发票税号不能为空'));
         }
     }
 }

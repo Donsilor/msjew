@@ -40,7 +40,7 @@ class GoodsService extends Service
         $spec_array = json_decode($styleModel->style_spec,true);
         if(!empty($spec_array['c'])){
             $goods_list = $spec_array['c'];
-            $specb_list = $spec_array['b'];
+            //$specb_list = $spec_array['b'];
         }else{
             $goods_list = [
                  [
@@ -71,7 +71,7 @@ class GoodsService extends Service
             if(empty($goods['goods_sn']) && empty($goods['status'])){
                 continue;
             }
-            $goodsModel = Goods::find()->where(['style_id'=>$style_id,'goods_sn'=>$goods['goods_sn']])->one();
+            $goodsModel = Goods::find()->where(['style_id'=>$style_id,'spec_key'=>$key])->one();
             if(!$goodsModel || empty($goods['goods_sn'])) {
                 //新增
                 $goodsModel = new Goods();

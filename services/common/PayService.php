@@ -164,13 +164,15 @@ class PayService extends Service
      */
     public function paydollar(PayForm $payForm, $baseOrder)
     {
+        //成功，失败返回URL
+        $cancelUrl = sprintf('%s%s%s', $payForm->returnUrl, (strpos($payForm->returnUrl,'?')?'&':'?'), 'success=false');
+        $returnUrl = sprintf('%s%s%s', $payForm->returnUrl, (strpos($payForm->returnUrl,'?')?'&':'?'), 'success=true');
+
         // 配置
         $config = [
-//            'notify_url' => $payForm->notifyUrl, // 支付通知回调地址
-//            'return_url' => $payForm->returnUrl, // 买家付款成功跳转地址
-            'success_url' => $payForm->returnUrl,
-            'fail_url' => $payForm->returnUrl,
-            'cancel_url' => $payForm->returnUrl,
+            'success_url' => $returnUrl,
+            'fail_url' => $cancelUrl,
+            'cancel_url' => $cancelUrl,
         ];
 
         // 生成订单

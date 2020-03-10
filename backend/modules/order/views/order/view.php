@@ -33,13 +33,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                     class="col-lg-6 text-right"><?= $model->getAttributeLabel('order_sn') ?>
                                 ：</label><?= $model->order_sn ?></div>
                         <div class="col-lg-3">
-                        	<label class="col-lg-6 text-right"><?= $model->getAttributeLabel('language') ?>：</label>
-                        	<?= \common\enums\LanguageEnum::getValue($model->language) ?>
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('language') ?>：</label>
+                            <?= \common\enums\LanguageEnum::getValue($model->language) ?>
                         </div>
                         <div class="col-lg-3">
                             <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('account.currency') ?>：</label>
                             <?= $model->account->currency ?>(<?= $model->account->exchange_rate ?>)
-                        </div>                        
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-3">
@@ -128,6 +128,35 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="col-lg-3">
                             <label class="col-sm-6 text-right"><?= $model->getAttributeLabel('buyer_remark') ?> ：</label>
                             <?= $model->buyer_remark ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_1">
+                <ul class="nav nav-tabs pull-right">
+                    <li class="pull-left header"><i class="fa fa-th"></i> 发票信息 </li>
+                </ul>
+                <div class="box-body" style="margin-left:9px">
+                    <div class="row">
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('invoice.invoice_type') ?>
+                                ：</label><?= \common\enums\InvoiceTypeEnum::getValue($model->invoice->invoice_type) ?></div>
+                        <div class="col-lg-3">
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('invoice.invoice_title') ?>：</label>
+                            <?= $model->invoice->invoice_title ?>
+                        </div>
+                        <div class="col-lg-3">
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('invoice.tax_number') ?>：</label>
+                            <?= $model->invoice->tax_number ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3"><label
+                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('invoice.is_electronic') ?>
+                                ：</label><?= \common\enums\InvoiceElectronicEnum::getValue($model->invoice->is_electronic) ?></div>
+                        <div class="col-lg-3">
+                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('invoice.email') ?>：</label>
+                            <?= $model->invoice->email ?>
                         </div>
                     </div>
                 </div>

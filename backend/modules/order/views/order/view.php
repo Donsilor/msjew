@@ -137,10 +137,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     <li class="pull-left header"><i class="fa fa-th"></i> 发票信息 </li>
                 </ul>
                 <div class="box-body" style="margin-left:9px">
+                    <?php if($model->invoice) {?>
                     <div class="row">
-                        <div class="col-lg-3"><label
-                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('invoice.invoice_type') ?>
-                                ：</label><?= \common\enums\InvoiceTypeEnum::getValue($model->invoice->invoice_type) ?></div>
+                        <div class="col-lg-3">
+                        <label  class="col-lg-6 text-right"><?= $model->getAttributeLabel('invoice.invoice_type') ?>：</label>
+                        <?= \common\enums\InvoiceTypeEnum::getValue($model->invoice->invoice_type) ?></div>
                         <div class="col-lg-3">
                             <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('invoice.invoice_title') ?>：</label>
                             <?= $model->invoice->invoice_title ?>
@@ -159,6 +160,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $model->invoice->email ?>
                         </div>
                     </div>
+                    <?php } else {?>
+                    	不开发票
+                    <?php }?>
                 </div>
             </div>
             <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_2">

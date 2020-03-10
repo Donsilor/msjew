@@ -3,6 +3,8 @@
 namespace backend\modules\goods\controllers;
 
 use common\enums\AttrIdEnum;
+use common\helpers\ArrayHelper;
+use common\models\goods\Style;
 use Yii;
 use common\models\goods\Diamond;
 use common\components\Curd;
@@ -76,6 +78,10 @@ class DiamondController extends BaseController
                 if(false === $model->save()){
                     throw new Exception($this->getError($model));
                 }
+
+                //同步款式库的状态
+                Style::updateAll(['status'=>$model->status],['id'=>$model->style_id]);
+
                 $this->editLang($model);
                 //同步裸钻数据到goods
                 \Yii::$app->services->diamond->syncDiamondToGoods($model->id);
@@ -135,5 +141,26 @@ class DiamondController extends BaseController
 
         return ResultHelper::json(200, '保存成功',$data);
 
+    }
+
+    /**
+     * ajax更新排序/状态
+     *
+     * @param $id
+     * @return array
+     */
+    public function actionAjaxUpdate($id)
+    {
+        if (!($model = $this->modelClass::findOne($id))) {
+            return ResultHelper::json(404, '找不到数据');
+        }
+
+        $model->attributes = ArrayHelper::filter(Yii::$app->request->get(), ['sort', 'status']);
+        if (!$model->save(false)) {
+            return ResultHelper::json(422, $this->getError($model));
+        }else{
+            Style::updateAll(['status'=>$model->status],['id'=>$model->style_id]);
+        }
+        return ResultHelper::json(200, '修改成功');
     }
 }

@@ -9,8 +9,8 @@ namespace common\enums;
  */
 class InvoiceTypeEnum extends BaseEnum
 {
-    const PERSONAL = 1;
-    const ENTERPRISE = 2;
+    const ENTERPRISE = 1;
+    const PERSONAL = 2;
 
     /**
      * @return array
@@ -18,8 +18,8 @@ class InvoiceTypeEnum extends BaseEnum
     public static function getMap(): array
     {
         return [
-            self::PERSONAL => '个人',
             self::ENTERPRISE => '企业',
+            self::PERSONAL => '个人',
         ];
     }
 }

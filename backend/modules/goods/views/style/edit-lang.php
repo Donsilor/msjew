@@ -518,7 +518,7 @@ $model->style_spec = $style_spec;
         				 foreach ($styleAreaValues as $area_id =>$styleArea){
         				     $goodsAreaValues = [];
         				     foreach ($model->style_spec['c'] as $goods){
-        				         if($goods['status'] != StatusEnum::ENABLED){
+        				         if($goods['status'] != StatusEnum::ENABLED || !isset($goods['goods_id'])){
         				            continue;   
         				         }
         				         $goods_id = $goods['goods_id'];

@@ -251,6 +251,8 @@ class OrderController extends UserAuthController
                 'isElectronic' => $order->invoice->is_electronic,
                 'email' => $order->invoice->email,
             );
+        }else{
+            $invoiceInfo = [];
         }
 
         $order = array(
@@ -276,7 +278,7 @@ class OrderController extends UserAuthController
             'taxFee' => $order->account->tax_fee,
             'userId' => $order->member_id,
             'details' => $orderDetails,
-            'invoice' => !empty($invoiceInfo)?$invoiceInfo:[]
+            'invoice' => $invoiceInfo
         );
 
         return $order;

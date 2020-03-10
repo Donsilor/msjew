@@ -128,6 +128,7 @@ class OrderService extends OrderBaseService
         if(!empty($invoice_info)) {
             $invoice = new OrderInvoice();
             $invoice->attributes = $invoice_info;
+            $invoice->order_id   = $order->id;
             if(false === $invoice->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($invoice));
             }

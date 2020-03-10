@@ -18,8 +18,8 @@ class InvoiceElectronicEnum extends BaseEnum
     public static function getMap(): array
     {
         return [
-            self::NO => '不是',
-            self::YES => '是',
+            self::NO => '纸质发票',
+            self::YES => '电子发票',
         ];
     }
 }

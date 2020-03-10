@@ -51,10 +51,10 @@ class OrderTouristInvoice extends \common\models\base\BaseModel
         return [
             'id' => 'ID',
             'order_tourist_id' => '订单ID',
-            'invoice_type' => \Yii::t('order','发票类型'),
+            'invoice_type' => \Yii::t('order','抬头类型'),
             'invoice_title' => \Yii::t('order','发票抬头'),
             'tax_number' => \Yii::t('order','纳税人识别号'),
-            'is_electronic' => \Yii::t('order','是否电子发票'),
+            'is_electronic' => \Yii::t('order','发票类型'),
             'email' => \Yii::t('order','接收邮箱'),
         ];
     }

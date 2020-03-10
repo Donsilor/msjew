@@ -71,7 +71,7 @@ class GoodsService extends Service
             if(empty($goods['goods_sn']) && empty($goods['status'])){
                 continue;
             }
-            $goodsModel = Goods::find()->where(['style_id'=>$style_id,'goods_sn'=>$goods['goods_sn']])->one();
+            $goodsModel = Goods::find()->where(['style_id'=>$style_id,'spec_key'=>$key])->one();
             if(!$goodsModel || empty($goods['goods_sn'])) {
                 //新增
                 $goodsModel = new Goods();

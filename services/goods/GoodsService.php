@@ -40,7 +40,7 @@ class GoodsService extends Service
         $spec_array = json_decode($styleModel->style_spec,true);
         if(!empty($spec_array['c'])){
             $goods_list = $spec_array['c'];
-            $specb_list = $spec_array['b'];
+            //$specb_list = $spec_array['b'];
         }else{
             $goods_list = [
                  [

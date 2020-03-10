@@ -171,13 +171,15 @@ class DiamondController extends OnAuthController
             ->select(['m.*','IFNULL(markup.sale_price,m.sale_price) as sale_price','lang.goods_name', 'lang.meta_title','lang.meta_word','lang.meta_desc'])
             ->where(['m.style_id'=>$id, 'm.status'=>StatusEnum::ENABLED])
             ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]]);
+
         $model = $query->one();
         if(empty($model)) {
             return ResultHelper::api(422,"裸钻信息不存在或者已下架");
         }
         $type_id = $model->type_id;
-        $diamond_array = $query->asArray()->one();
 
+
+        $diamond_array = $query->asArray()->one();
 
         $diamond = array();
         $diamond['id'] = $model->style_id;

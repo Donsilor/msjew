@@ -145,22 +145,26 @@ class OrderTouristService extends OrderBaseService
         /** @var ShippingAddress $shippingAddressInfo */
         $shippingAddressInfo = $payerInfo->getShippingAddress();
 
-        //创建用户信息
-        $member = new Member();
-        $member->attributes = [
-            'username' => '游客-'.$payerInfo->getPayerId(),
-            'password_hash' => 'password_hash',
-            'firstname' => $payerInfo->getFirstName(),
-            'lastname' => $payerInfo->getLastName(),
-            'realname' => $shippingAddressInfo->getRecipientName(),
-            'email' => $payerInfo->getEmail(),
-            'last_ip' => $orderTourist->ip,
-            'first_ip' => $orderTourist->ip,
-            'first_ip_location' => $ip_location,
+        //用户信息处理
+        $username = '游客-'.$payerInfo->getPayerId();
+        if(!($member = Member::findByUsername($username))) {
+            //创建用户信息
+            $member = new Member();
+            $member->attributes = [
+                'username' => '游客-'.$payerInfo->getPayerId(),
+                'password_hash' => 'password_hash',
+                'firstname' => $payerInfo->getFirstName(),
+                'lastname' => $payerInfo->getLastName(),
+                'realname' => $shippingAddressInfo->getRecipientName(),
+                'email' => $payerInfo->getEmail(),
+                'last_ip' => $orderTourist->ip,
+                'first_ip' => $orderTourist->ip,
+                'first_ip_location' => $ip_location,
 //            'mobile' => $payerInfo->getPhone()
-        ];
-        if(false === $member->save()) {
-            throw new UnprocessableEntityHttpException($this->getError($member));
+            ];
+            if(false === $member->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($member));
+            }
         }
 
         //订单信息

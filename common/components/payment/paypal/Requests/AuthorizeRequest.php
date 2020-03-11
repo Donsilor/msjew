@@ -70,7 +70,7 @@ class AuthorizeRequest extends AbstractPaypalRequest
 
             //判断付款人是否授权
             //需下载状态列表到备注
-            if (!$payment->getPayer() || $payment->getPayer()->status != 'VERIFIED') {
+            if (!$payment->getPayer()) {
                 throw new \Exception('买家未付款');
             }
 

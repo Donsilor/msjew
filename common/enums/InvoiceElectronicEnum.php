@@ -3,14 +3,14 @@
 namespace common\enums;
 
 /**
- * Class InvoiceTypeEnum
+ * Class InvoiceElectronicEnum
  * @package common\enums
  * @author jianyan74 <751393839@qq.com>
  */
-class InvoiceTypeEnum extends BaseEnum
+class InvoiceElectronicEnum extends BaseEnum
 {
-    const ENTERPRISE = 1;
-    const PERSONAL = 2;
+    const NO = 0;
+    const YES = 1;
 
     /**
      * @return array
@@ -18,8 +18,8 @@ class InvoiceTypeEnum extends BaseEnum
     public static function getMap(): array
     {
         return [
-            self::ENTERPRISE => '企业',
-            self::PERSONAL => '个人',
+            self::NO => '纸质发票',
+            self::YES => '电子发票',
         ];
     }
 }

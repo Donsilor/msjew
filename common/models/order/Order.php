@@ -132,6 +132,15 @@ class Order extends \common\models\base\BaseModel
     }
 
     /**
+     * 对应订单付款信息模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInvoice()
+    {
+        return $this->hasOne(OrderInvoice::class, ['order_id'=>'id']);
+    }
+
+    /**
      * 对应订单地址模型
      * @return \yii\db\ActiveQuery
      */

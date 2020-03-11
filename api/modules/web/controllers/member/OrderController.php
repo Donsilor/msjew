@@ -128,10 +128,11 @@ class OrderController extends UserAuthController
             
             $model = new OrderCreateForm();
             $model->attributes = \Yii::$app->request->post();
+            $invoiceInfo = \Yii::$app->request->post('invoice');
             if(!$model->validate()) {
                 return ResultHelper::api(422,$this->getError($model));
             }
-            $ressult = \Yii::$app->services->order->createOrder($model->cart_ids, $this->member_id, $model->buyer_address_id,$model->toArray());
+            $ressult = \Yii::$app->services->order->createOrder($model->cart_ids, $this->member_id, $model->buyer_address_id,$model->toArray(),$invoiceInfo);
             $trans->commit();
             return [
                     "coinType" => $ressult['currency'],
@@ -196,7 +197,7 @@ class OrderController extends UserAuthController
             if(!empty($orderGoods->goods_attr)) {
                 $goods_attr = \Yii::$app->services->goods->formatGoodsAttr($orderGoods->goods_attr, $orderGoods->goods_type);
                 $baseConfig = [];
-                foreach ($goods_attr as $vo){
+                foreach ($goods_attr as $vo) {
                     $baseConfig[] = [
                         'configId' =>$vo['id'],
                         'configAttrId' =>0,
@@ -242,6 +243,18 @@ class OrderController extends UserAuthController
                 'zipCode'=> $order->address->zip_code,
         );
 
+        if($order->invoice) {
+            $invoiceInfo = array(
+                'invoiceType' => $order->invoice->invoice_type,
+                'invoiceTitle' => $order->invoice->invoice_title,
+                'taxNumber' => $order->invoice->tax_number,
+                'isElectronic' => $order->invoice->is_electronic,
+                'email' => $order->invoice->email,
+            );
+        }else{
+            $invoiceInfo = [];
+        }
+
         $order = array(
             'id' => $order->id,
             'address' => $address,
@@ -264,7 +277,8 @@ class OrderController extends UserAuthController
             'safeFee' => $order->account->safe_fee,
             'taxFee' => $order->account->tax_fee,
             'userId' => $order->member_id,
-            'details' => $orderDetails
+            'details' => $orderDetails,
+            'invoice' => $invoiceInfo
         );
 
         return $order;

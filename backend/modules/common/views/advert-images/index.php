@@ -81,7 +81,7 @@ use common\helpers\ImageHelper;
                     $area_ids_arr = explode(',',trim($model->area_ids,','));
                     $area = '';
                     foreach ($area_ids_arr as $area_id){
-                        $area .= \common\enums\AreaEnum::getMap()[$area_id]." ";
+                        $area .= \common\enums\AreaEnum::getValue($area_id)." ";
                     }
                     return $area;
                 },

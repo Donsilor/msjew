@@ -19,6 +19,8 @@ use common\helpers\ArrayHelper;
  * @property string $goods_images 商品图库
  * @property string $style_attr 款式属性
  * @property string $style_custom 款式自定义属性
+ * @property string $style_salepolicy 款式销售政策
+ * @property string $goods_salepolicy 商品销售政策
  * @property string $style_spec 款式规格属性
  * @property string $goods_body 商品内容
  * @property string $mobile_body 手机端商品描述
@@ -77,6 +79,7 @@ class Style extends BaseModel
                 [['style_spec'],'parseStyleSpec'],
                 [['goods_images'],'parseGoodsImages'],
                 [['style_salepolicy'],'parseStyleSalepolicy'],//销售政策
+                [['goods_salepolicy'],'parseGoodsSalepolicy'],//销售政策
                 [['style_sn'],'unique'],                
                 [['attr_require'], 'required','isEmpty'=>function($value){
                     return false;
@@ -131,23 +134,53 @@ class Style extends BaseModel
      */
     public function parseGoodsImages()
     {
-        if(!empty($this->goods_images[0])){
-            $this->style_image = $this->goods_images[0];
+        $goods_images = $this->goods_images;
+        if(!empty($goods_images[0]) && is_array($goods_images)){
+            $this->style_image = $goods_images[0];
         }
-        if(is_array($this->goods_images)){
-            $this->goods_images = implode(',',$this->goods_images);
+        if(is_array($goods_images)){
+            $this->goods_images = implode(',',$goods_images);
         }
     }
     /**
-     * 销售政策（地区价格）
+     * 款式销售政策（地区价格）
      */
     public function parseStyleSalepolicy()
     {
         if(is_array($this->style_salepolicy)){
-            $this->style_salepolicy = json_encode($this->style_salepolicy);
+            $style_salepolicy = [];
+            foreach ($this->style_salepolicy as $key=>$area) {
+                $style_salepolicy[$key] = [
+                    'area_id' =>$area['area_id'],
+                    'markup_rate' =>$area['markup_rate'],
+                    'markup_value' =>$area['markup_value'],
+                    'status' =>$area['status'],
+                ];
+            }
+            $this->style_salepolicy= json_encode($style_salepolicy);
         } 
     }
-
+    /**
+     * 商品销售政策（地区价格）
+     */
+    public function parseGoodsSalepolicy()
+    {
+        //print_r($this->goods_salepolicy);exit;
+        if(is_array($this->goods_salepolicy)){
+            $goods_salepolicy = [];
+            foreach ($this->goods_salepolicy as $key=>$goodsAreas) {
+                foreach ($goodsAreas as $goods_id=> $area){
+                    $goods_salepolicy[$key][$goods_id] = [
+                        'area_id' =>$area['area_id'],
+                        'markup_rate' =>$area['markup_rate'],
+                        'markup_value' =>$area['markup_value'],
+                        'status' =>$area['status'],
+                    ];
+                }
+            }
+            $this->goods_salepolicy = json_encode($goods_salepolicy);
+        }
+    }
 
     /**
      * {@inheritdoc}
@@ -236,5 +269,14 @@ class Style extends BaseModel
     public function imageModel()
     {
         return new Images();
+    }
+
+    /**
+     * 对应加价率模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMarkup()
+    {
+        return $this->hasOne(StyleMarkup::class, ['style_id'=>'id']);
     }
 }

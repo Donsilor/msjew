@@ -27,6 +27,7 @@ if(!empty($model->style_spec['c'])) {
     foreach ($style_spec['c'] as $spec_key => $spec_val){
         $goods = Goods::find()->select(['id','goods_sn','sale_price','cost_price','market_price','goods_storage','status'])->where(['spec_key'=>$spec_key,'style_id'=>$model->id])->one();
         if($goods) {
+            $spec_val['goods_id'] = $goods->id??'';
             $spec_val['goods_sn'] = $goods->goods_sn??'';
             $spec_val['sale_price'] = $goods->sale_price??'';
             $spec_val['cost_price'] = $goods->cost_price??'';
@@ -36,8 +37,10 @@ if(!empty($model->style_spec['c'])) {
             $style_spec['c'][$spec_key] = $spec_val;
         }
     }
-    $model->style_spec = $style_spec;
+}else {    
+    $style_spec['c'] = [];
 }
+$model->style_spec = $style_spec;
 //
 ?>
 <?php $form = ActiveForm::begin([
@@ -296,91 +299,278 @@ if(!empty($model->style_spec['c'])) {
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[5]??'';?></li>
             </ul>
-            <div class="box-body nav-tabs-custom none-shadow col-lg-10" style="margin-left:10px">
-         
+            <div class="box-body nav-tabs-custom none-shadow" style="margin-left:10px">
+                  <div class="box-header with-border">
+                    	<h3 class="box-title">款式地区价格</h3>
+                  </div>
         		  <div class="tab-content">            
                     <?php 
+                    $styleAreaColomns = [
+                        [
+                            'name' => 'area_id',
+                            'title'=>"地区ID",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                                'style'=>'width:60px'
+                            ]
+                        ],
+                        [
+                            'name' =>'area_name',
+                            'title'=>"地区",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                                'style'=>'width:80px'
+                            ]
+                        ],                        
+                        [
+                            'name' => "sale_price",
+                            'title'=>"地区销售价",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                            ]
+                        ],
+                        [
+                            'name' => "base_price",
+                            'title'=>"基础销售价",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                            ]
+                        ],
+                        [
+                            'name' => "markup_rate",
+                            'title'=>"加价率",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority'
+                            ]
+                        ],
+                        [
+                            'name' => "markup_value",
+                            'title'=>"固定值",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority'
+                            ]
+                        ],
+                        [
+                            'name' => "is_onsale",
+                            'title'=>"地区状态",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                            ]
+                        ],
+                        [
+                            'name' => "status",
+                            'title'=>"状态",
+                            'enableError'=>false,
+                            'type'  => 'dropDownList',
+                            'options' => [
+                                'class' => 'input-priority',
+                                'style'=>'width:80px'
+                            ],
+                            'defaultValue' => StatusEnum::ENABLED,
+                            'items' => common\enums\StatusEnum::getMap()
+                        ],
+                    ];
                     $styleSalepolicy = json_decode($model->style_salepolicy,true) ??[]; 
-                    $areaValues = []; 
+                    $styleAreaValues = []; 
                     foreach (AreaEnum::getMap() as $area_id=>$area_name) {                        
                         $area = $styleSalepolicy[$area_id] ?? [];
                         $markup_rate  = isset($area['markup_rate']) ? abs($area['markup_rate']):1;
                         $markup_value =  isset($area['markup_value']) ? $area['markup_value']:0;
+                        $base_price = $model->sale_price;
                         $sale_price = AmountHelper::calcMarkupPrice($model->sale_price,$markup_rate,$markup_value,2);
-                        $areaValues[$area_id] = [
+                        $styleAreaValues[$area_id] = [
                                 'area_id' =>$area_id,
-                                'area_name'=>$area_name,
+                                'area_name'=>$area_name,                                
                                 'sale_price'=>$sale_price,
+                                'base_price'=>$base_price,
                                 'markup_rate' => $markup_rate,
                                 'markup_value'=> $markup_value,
+                                'is_onsale'=>!isset($area['status']) || $area['status']==1 ? "上架":"下架",
                                 'status'=> isset($area['status']) ? $area['status']:1,
                         ]; 
-                    }    
-                    $areaColomns = [
-                            [
-                                    'name' => 'area_id',
-                                    'title'=>"地区ID",
-                                    'enableError'=>false,
-                                    'options' => [
-                                            'class' => 'input-priority',
-                                            'readonly' =>'true',
-                                    ]
-                            ],
-                            [
-                                    'name' =>'area_name',
-                                    'title'=>"地区",
-                                    'enableError'=>false,
-                                    'options' => [
-                                            'class' => 'input-priority',
-                                            'readonly' =>'true',
-                                    ]
-                            ],
-                            [
-                                    'name' => "sale_price",
-                                    'title'=>"加价销售价",
-                                    'enableError'=>false,
-                                    'options' => [
-                                            'class' => 'input-priority',
-                                            'readonly' =>'true',
-                                    ]
-                            ],
-                            [
-                                    'name' => "markup_rate",
-                                    'title'=>"加价率",
-                                    'enableError'=>false,
-                                    'options' => [
-                                            'class' => 'input-priority'
-                                    ]
-                            ],
-                            [
-                                    'name' => "markup_value",
-                                    'title'=>"固定值",
-                                    'enableError'=>false,
-                                    'options' => [
-                                            'class' => 'input-priority'
-                                    ]
-                            ],
-                            [
-                                    'name' => "status",
-                                    'title'=>"状态",
-                                    'enableError'=>false,
-                                    'type'  => 'dropDownList',
-                                    'options' => [
-                                            'class' => 'input-priority'
-                                    ],
-                                    'defaultValue' => 1,
-                                    'items' => common\enums\StatusEnum::getMap()
-                            ],
-                    ];
-                    ?>
+                    }
+                    ?>                    
                     <?= unclead\multipleinput\MultipleInput::widget([                            
                             'name' => "Style[style_salepolicy]",
                             'removeButtonOptions'=>['label'=>'','class'=>''], 
-                            'value' => $areaValues,
-                            'columns' => $areaColomns
+                            'value' => $styleAreaValues,
+                            'columns' => $styleAreaColomns
                     ]) ?>
-            	  </div>  
-    		    <!-- ./tab-content -->
+               </div>
+               <!-- ./tab-content 款号-->
+                
+                <?php 
+                if($model->id && !empty($model->style_spec['c'])) {
+                    
+                    $goodsAreaColomns = [
+                        [
+                            'name' => 'area_id',
+                            'title'=>"地区ID",
+                            'enableError'=>false,
+                            //'type'  => 'checkBox',
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                                'style'=>'width:60px'
+                            ]
+                        ],
+                        [
+                            'name' =>'area_name',
+                            'title'=>"地区",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                                'style'=>'width:70px'
+                            ]
+                        ],
+                        [
+                            'name' => "goods_sn",
+                            'title'=>"商品编码",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                                'style'=>'width:200px'
+                             ]
+                        ],                        
+                        [
+                            'name' => "sale_price",
+                            'title'=>"地区销售价",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                            ]
+                        ],
+                        [
+                            'name' => "base_price",
+                            'title'=>"基础销售价",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                            ]
+                        ],
+                        [
+                            'name' => "markup_rate",
+                            'title'=>"加价率",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                            ]
+                        ],
+                        [
+                            'name' => "markup_value",
+                            'title'=>"固定值",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                            ]
+                        ],
+                        [
+                            'name' => "is_onsale",
+                            'title'=>"地区状态",
+                            'enableError'=>false,
+                            'options' => [
+                                'class' => 'input-priority',
+                                'readonly' =>'true',
+                                'style'=>'width:80px'
+                            ]
+                        ],
+                        [
+                            'name' => "status",
+                            'title'=>"状态",
+                            'enableError'=>false,
+                            'type'  => 'dropDownList',
+                            'options' => [
+                                'class' => 'input-priority',
+                                'style'=>'width:80px'
+                            ],
+                            'defaultValue' => StatusEnum::ENABLED,
+                            'items' => common\enums\StatusEnum::getMap()
+                        ],
+                    ];
+                    $goods_salepolicy = json_decode($model->goods_salepolicy,true) ?? [];
+                ?>
+                <div class="box-header with-border">
+                	<h3 class="box-title">商品地区价格</h3>
+                </div> 
+                <div class="tab-content">
+				<div class="nav-tabs-custom ">
+    		        <?php echo Html::areaTab("areaTab1")?>    			      
+        			<div class="tab-content" style="padding-left:10px"> 
+        				 <?php 
+        				 foreach ($styleAreaValues as $area_id =>$styleArea){
+        				     $goodsAreaValues = [];
+        				     foreach ($model->style_spec['c'] as $goods){
+        				         if($goods['status'] != StatusEnum::ENABLED || !isset($goods['goods_id'])){
+        				            continue;   
+        				         }
+        				         $goods_id = $goods['goods_id'];
+        				         if(!empty($goods_salepolicy[$area_id][$goods_id])) {
+        				             $goodsArea = $goods_salepolicy[$area_id][$goods_id];
+        				             $markup_rate  = isset($styleArea['markup_rate']) ? $styleArea['markup_rate']:1;
+        				             $markup_value =  isset($styleArea['markup_value']) ? $styleArea['markup_value']:0;
+        				             //$markup_rate  = $goodsArea['markup_rate'];
+        				             //$markup_value =  $goodsArea['markup_value'];
+        				         }else{        				            
+        				             $markup_rate  = isset($styleArea['markup_rate']) ? $styleArea['markup_rate']:1;
+        				             $markup_value =  isset($styleArea['markup_value']) ? $styleArea['markup_value']:0;
+              				         $goodsArea['status'] = isset($styleArea['markup_rate']) ? $styleArea['markup_rate']:1;
+        				         }
+    
+        				         $base_price = $goods['sale_price'];
+        				         $sale_price = AmountHelper::calcMarkupPrice($base_price,$markup_rate,$markup_value,2);
+            				     $goodsAreaValues[$goods['goods_id']] = [
+            				         'area_id' =>$area_id,
+            				         'area_name'=>$styleArea['area_name'],
+            				         'goods_sn'=>$goods['goods_sn'],            				         
+            				         'sale_price'=>$sale_price,
+            				         'base_price'=>$base_price,
+            				         'markup_rate' => $markup_rate,
+            				         'markup_value'=> $markup_value,
+            				         'is_onsale'=> $styleArea['status']==1 && $goodsArea['status']==1 ? "上架":"下架",
+            				         'status'=> $goodsArea['status'],
+            				     ];
+        				     }
+        				    // print_r($goodsAreaValues);
+        				     ?>
+        				     
+        				     <div class="tab-pane<?php echo $area_id == AreaEnum::China ?" active":"" ?>" id="<?= 'areaTab1_'.$area_id?>">
+        				     <?= unclead\multipleinput\MultipleInput::widget([
+        				         'name' => "Style[goods_salepolicy][{$area_id}]",
+        				         'removeButtonOptions'=>['label'=>'','class'=>''],
+        				         'value' => $goodsAreaValues,
+        				         'columns' => $goodsAreaColomns
+                                ]);
+        				     ?>
+        				     </div>
+        				     <?php 
+        				 }
+        				 ?>
+        			</div>
+		        </div>
+                </div>  
+    		    <!-- ./tab-content 商品-->
+                <?php                 
+                }
+                ?>
+        	  
             </div>
             <!-- ./box-body -->
       </div>

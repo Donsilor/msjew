@@ -41,13 +41,28 @@ class GoodsController extends BaseController
             'defaultOrder' => [
                 'id' => SORT_DESC
             ],
-            'pageSize' => $this->pageSize
+            'pageSize' => $this->pageSize,
+            'relations' => [
+                'style' => ['style_sn','sale_price'],
+                'styleLang' => ['style_name'],
+                'markup' => ['sale_price','area_id','status'],
+            ]
         ]);
 
-        $typeModel = Yii::$app->services->goodsType->getAllTypesById($type_id,null);
+        $typeModel= Yii::$app->services->goodsType->getAllTypesById($type_id,null);
          
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
+
+        //切换默认地区11
+        $area_id = Yii::$app->request->queryParams['SearchModel']['markup.area_id'];
+        $this->setLocalAreaId($area_id);
+
+        if($typeModel){
+            $dataProvider->query->andFilterWhere(['in', 'goods.type_id',$typeModel['ids']]);
+        }
+
+//        $dataProvider->query->andFilterWhere(['IS','goods_markup.area_id',new \yii\db\Expression('NULL')]);
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,

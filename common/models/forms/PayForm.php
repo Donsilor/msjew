@@ -2,12 +2,14 @@
 
 namespace common\models\forms;
 
+use common\models\order\OrderTourist;
 use Yii;
 use yii\base\Model;
 use yii\web\UnprocessableEntityHttpException;
 use common\enums\PayEnum;
 use common\enums\OrderStatusEnum;
 use common\models\order\Order;
+use common\enums\CurrencyEnum;
 
 /**
  * Class PayForm
@@ -86,8 +88,8 @@ class PayForm extends Model
                 if (!in_array($this->tradeType, ['pc', 'wap'])) {
                     $this->addError($attribute, 'PayPal交易类型不符');
                 }
-                if($this->coinType == 'CNY') {
-                    $this->addError($attribute, \Yii::t('payment', 'NOT_SUPPORT_PAYPAL'));
+                if($this->coinType == CurrencyEnum::CNY) {
+                    $this->addError($attribute, \Yii::t('payment', 'PAYPAL_NOT_SUPPORT_RMB'));
                 }
                 break;
             case PayEnum::PAY_TYPE_GLOBAL_ALIPAY :
@@ -95,6 +97,13 @@ class PayForm extends Model
                     $this->addError($attribute, 'GlobalAlipay交易类型不符');
                 }
                 break;
+            case PayEnum::PAY_TYPE_PAYDOLLAR :{                
+                if(in_array($this->coinType,[CurrencyEnum::CNY,CurrencyEnum::USD])) {
+                    $this->addError($attribute, \Yii::t('payment', 'PAYDOLLAR_NOT_SUPPORT_RMB_AND_USD'));
+                }
+                break;
+            }
+                
         }
     }
 
@@ -142,6 +151,23 @@ class PayForm extends Model
                     'total_fee' => $totalFee,
                     'currency' => $currency,
                     'exchange_rate'=>$exchangeRate
+                ];
+                break;
+            case PayEnum::ORDER_TOURIST :
+                // 游客订单支付
+                $order = OrderTourist::find()->where(['id'=>$this->orderId])->one();
+
+                $this->returnUrl = str_replace('{order_sn}', $order->order_sn, $this->returnUrl);
+
+                $orderSn = $order->order_sn;
+                $totalFee = $order->order_amount - $order->discount_amount;
+                $currency = $order->currency;
+                $exchangeRate = $order->exchange_rate;
+                $order = [
+                    'body' => "商品",
+                    'total_fee' => $totalFee,
+                    'currency' => $currency,
+                    'exchange_rate' => $exchangeRate
                 ];
                 break;
             case PayEnum::ORDER_GROUP_GOODS :

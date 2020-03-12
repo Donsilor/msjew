@@ -3,6 +3,7 @@
 namespace api\modules\web\controllers\goods;
 
 use common\enums\StatusEnum;
+use common\helpers\ImageHelper;
 use common\models\goods\Ring;
 use common\models\goods\RingLang;
 use common\models\goods\RingRelation;
@@ -10,6 +11,7 @@ use common\models\goods\Style;
 use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
+use common\models\goods\StyleMarkup;
 use yii\base\Exception;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
@@ -84,7 +86,7 @@ class RingController extends OnAuthController
             $arr['coinType'] = $this->getCurrencySign();
             $arr['id'] = $val['id'];
             $arr['ringCode'] = $val['ring_sn'];
-            $arr['ringImg'] = $val['ring_images'];
+            $arr['ringImg'] = ImageHelper::goodsThumbs($val['ring_images'],'mid');
             $arr['ringStyle'] = $val['ring_style'];
             $arr['name'] = $val['ring_name'];
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
@@ -125,7 +127,7 @@ class RingController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['ringCode'] = $val['ring_sn'];
-            $moduleGoods['ringImg'] = $val['ring_images'];
+            $moduleGoods['ringImg'] = ImageHelper::goodsThumbs($val['ring_images'],'mid');
             $moduleGoods['name'] = $val['ring_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $ring_web_site['moduleGoods'][] = $moduleGoods;
@@ -192,7 +194,7 @@ class RingController extends OnAuthController
         $ring = array();
         $ring['id'] = $model->id;
         $ring['name'] = $model->lang->ring_name;
-        $ring['ringImg'] = $model->ring_images;
+        $ring['ringImg'] = ImageHelper::goodsThumbs($model->ring_images,'big');
         $ring['ringCode'] = $model->ring_sn;
         $ring['salePrice'] = $this->exchangeAmount($model->sale_price);
         $ring['coinType'] = $this->getCurrencySign();
@@ -210,6 +212,7 @@ class RingController extends OnAuthController
             foreach ($style_ids as $style_id){
                 $style_id = $style_id['style_id'];
                 $style = \Yii::$app->services->goods->formatStyleGoodsById($style_id, $this->language);
+                $style['goodsImages'] = ImageHelper::goodsThumbs($style['goodsImages'],'mid');
                 $goodsModels[] = $style;
                 $searchGoods = array();
                 $searchGoods['categoryId'] = $style['categoryId'];
@@ -239,15 +242,18 @@ class RingController extends OnAuthController
 
     //获取商品信息
     public function getAdvertStyle($where=null){
+        $area_id = $this->getAreaId(); 
         $type_id = 2;
         $limit = 3;
         $order = 'goods_clicks desc';
-        $fields =  ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
+        $fields =  ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $language = $this->language;
         $query = Style::find()->alias('m')
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.area_id='.$area_id)
             ->leftJoin(AttributeIndex::tableName().' a','a.style_id=m.id')
-            ->where(['m.status'=>StatusEnum::ENABLED,'m.type_id'=>$type_id]);
+            ->where(['m.status'=>StatusEnum::ENABLED,'m.type_id'=>$type_id])
+            ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]]);
 
         if($where){
             $query->andWhere($where);
@@ -260,7 +266,7 @@ class RingController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['goodsCode'] = $val['style_sn'];
-            $moduleGoods['goodsImages'] = $val['goods_images'];
+            $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'mid');
             $moduleGoods['goodsName'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $result['moduleGoods'][] = $moduleGoods;

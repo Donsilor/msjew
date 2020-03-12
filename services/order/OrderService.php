@@ -4,6 +4,7 @@ namespace services\order;
 
 use common\components\Service;
 use common\models\order\OrderCart;
+use common\models\order\OrderInvoice;
 use yii\web\UnprocessableEntityHttpException;
 use common\models\order\OrderGoods;
 use common\models\order\Order;
@@ -24,25 +25,17 @@ use common\models\order\OrderLog;
  * Class OrderService
  * @package services\order
  */
-class OrderService extends Service
+class OrderService extends OrderBaseService
 {
-    /**
-     * 生成订单号
-     * @param unknown $order_id
-     * @param string $prefix
-     */
-    public function createOrderSn($prefix = 'BDD')
-    {
-        return $prefix.date('Ymd').mt_rand(3,9).str_pad(mt_rand(1, 99999),6,'1',STR_PAD_LEFT);
-    }
     /**
      * 创建订单
      * @param array $cart_ids
-     * @param array $order_info
      * @param int $buyer_id
      * @param int $buyer_address_id
+     * @param array $order_info
+     * @param array $invoice_info
      */
-    public function createOrder($cart_ids,$buyer_id, $buyer_address_id, $order_info)
+    public function createOrder($cart_ids,$buyer_id, $buyer_address_id, $order_info, $invoice_info)
     {
         $buyer = Member::find()->where(['id'=>$buyer_id])->one();
         
@@ -130,6 +123,17 @@ class OrderService extends Service
         if(false === $orderAddress->save()) {
             throw new UnprocessableEntityHttpException($this->getError($orderAddress));
         }
+
+        //如果有发票信息
+        if(!empty($invoice_info)) {
+            $invoice = new OrderInvoice();
+            $invoice->attributes = $invoice_info;
+            $invoice->order_id   = $order->id;
+            if(false === $invoice->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($invoice));
+            }
+        }
+
         //订单日志
         $log_msg = "创建订单,订单编号：".$order->order_sn;
         $log_role = 'buyer';
@@ -233,36 +237,11 @@ class OrderService extends Service
         return $query->asArray()->one();
     }
     /**
-     * 发送订单邮件通知
-     * @param unknown $order_id
-     */
-    public function sendOrderNotification($order_id)
-    {
-        $order = Order::find()->where(['id'=>$order_id])->one();
-        if(RegularHelper::verify('email',$order->member->username)) {
-            $usage = EmailLog::$orderStatusMap[$order->order_status] ?? '';
-            if($usage && $order->address->email) {
-                \Yii::$app->services->mailer->send($order->address->email,$usage,['code'=>$order->id],$order->language);
-            }
-        }else if($order->address->mobile){
-            if($order->order_status == OrderStatusEnum::ORDER_SEND) {
-                $params = [
-                     'code' =>$order->id,                       
-                     'express_name' => ExpressEnum::getValue($order->express_id),
-                     'express_no' =>$order->express_no,
-                     'company_name'=>'BDD Co.', 
-                     'company_email' => 'admin@bddco.com'
-                ];
-                \Yii::$app->services->sms->send($order->address->mobile,SmsLog::USAGE_ORDER_SEND,$params,$order->language);
-            }
-        }
-    }
-    /**
      * 取消订单
-     * @param unknown $order_id 订单ID
-     * @param unknown $remark 操作备注
-     * @param unknown $log_role 用户角色
-     * @param unknown $log_user 用户名
+     * @param int $order_id 订单ID
+     * @param string $remark 操作备注
+     * @param string $log_role 用户角色
+     * @param string $log_user 用户名
      * @return boolean
      */
     public function changeOrderStatusCancel($order_id,$remark, $log_role, $log_user)
@@ -273,36 +252,14 @@ class OrderService extends Service
         }
         $order_goods_list = OrderGoods::find()->select(['id','goods_id','goods_type','goods_num'])->where(['order_id'=>$order_id])->all();
         foreach ($order_goods_list as $goods) {
-            \Yii::$app->services->goods->updateGoodsStorageForOrder($goods->goods_id, $goods->goods_num, $goods->goods_type);
+            //\Yii::$app->services->goods->updateGoodsStorageForOrder($goods->goods_id, $goods->goods_num, $goods->goods_type);
         }
         //更改订单状态
+        $order->seller_remark = $remark;
         $order->order_status = OrderStatusEnum::ORDER_CANCEL;
         $order->save(false);
         //订单日志
         $this->addOrderLog($order_id, $remark, $log_role, $log_user,$order->order_status);
-    }
-    /**
-     * 添加订单日志
-     * @param unknown $order_id
-     * @param unknown $log_msg
-     * @param unknown $log_role
-     * @param unknown $log_user
-     * @param string $order_status
-     */
-    public function addOrderLog($order_id, $log_msg, $log_role, $log_user, $order_status = false)
-    {
-        if($order_status === false) {
-            $order = Order::find()->select(['id','order_status'])->where(['id'=>$order_id])->one();
-            $order_status = $order->order_status ?? 0;
-        }
-        $log = new OrderLog();
-        $log->order_id = $order_id;
-        $log->log_msg = $log_msg;
-        $log->log_role = $log_role;
-        $log->log_user = $log_user;
-        $log->order_status = $order_status;
-        $log->log_time = time();
-        $log->save(false);
     }
           
     

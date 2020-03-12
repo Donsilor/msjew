@@ -95,13 +95,7 @@ $type_id = Yii::$app->request->get('type_id',0);
                     ]),
                     'format' => 'raw',
                     'headerOptions' => ['width'=>'120'],
-            ],
-            /* [
-                'attribute' => 'cat_id',
-                'value' => "cate.cat_name",
-                'filter' => false,
-                'format' => 'raw',
-            ],    */         
+            ],       
             [
                 'attribute' => 'sale_price',
                 'value' => "sale_price",
@@ -151,21 +145,21 @@ $type_id = Yii::$app->request->get('type_id',0);
                 },
                 'view'=> function($url, $model, $key){
                    if($model->type_id == 2){
-                       return Html::a('预览', \Yii::$app->params['webUrl'].'/ring/wedding-rings/'.$model->id.'?goodId='.$model->id.'&ringType=single&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                       return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/ring/wedding-rings/'.$model->id.'?goodId='.$model->id.'&ringType=single&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
                    }elseif ($model->type_id == 12){
-                       return Html::a('预览', \Yii::$app->params['webUrl'].'/ring/engagement-rings/'.$model->id.'?goodId='.$model->id.'&ringType=engagement&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                       return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/ring/engagement-rings/'.$model->id.'?goodId='.$model->id.'&ringType=engagement&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
                    }elseif ($model->type_id == 4){
-                       return Html::a('预览', \Yii::$app->params['webUrl'].'/jewellery/necklace/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                       return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/necklace/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
                    }elseif ($model->type_id == 5){
-                       return Html::a('预览', \Yii::$app->params['webUrl'].'/jewellery/pendant/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                       return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/pendant/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
                    }elseif ($model->type_id == 6){
-                       return Html::a('预览', \Yii::$app->params['webUrl'].'/jewellery/studEarring/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                       return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/studEarring/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
                    }elseif ($model->type_id == 7){
-                       return Html::a('预览', \Yii::$app->params['webUrl'].'/jewellery/earring/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                       return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/earring/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
                    }elseif ($model->type_id == 8){
-                       return Html::a('预览', \Yii::$app->params['webUrl'].'/jewellery/braceletLine/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                       return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/braceletLine/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
                    }elseif ($model->type_id == 9){
-                       return Html::a('预览', \Yii::$app->params['webUrl'].'/jewellery/bracelet/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
+                       return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/bracelet/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
                    }
 
                 }

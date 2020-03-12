@@ -2,6 +2,7 @@
 
 namespace api\modules\wap\controllers\member;
 
+use common\helpers\ImageHelper;
 use common\helpers\ResultHelper;
 use api\controllers\UserAuthController;
 use common\models\member\Member;
@@ -90,7 +91,7 @@ class OrderController extends UserAuthController
                        'detailCount' => 1,
                        'createTime' => $orderRow['created_at'],
                        'joinCartTime'=>$orderRow['created_at'],
-                       'goodsImages'=>$goodsRow['goods_image'],
+                       'goodsImages'=>ImageHelper::goodsThumbs($goodsRow['goods_image'],'mid'),
                        'mainGoodsCode'=>null,
                        'ringName'=>"",
                        'ringImg'=>"",

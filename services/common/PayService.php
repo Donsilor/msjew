@@ -2,6 +2,8 @@
 
 namespace services\common;
 
+use common\enums\OrderTouristStatusEnum;
+use common\models\order\OrderTourist;
 use Yii;
 use common\enums\PayEnum;
 use common\components\Service;
@@ -155,6 +157,42 @@ class PayService extends Service
     }
 
     /**
+     * Paypal支付
+     * @param PayForm $payForm
+     * @param unknown $baseOrder
+     * @return NULL[]
+     */
+    public function paydollar(PayForm $payForm, $baseOrder)
+    {
+        //成功，失败返回URL
+        $cancelUrl = sprintf('%s%s%s', $payForm->returnUrl, (strpos($payForm->returnUrl,'?')?'&':'?'), 'success=false');
+        $returnUrl = sprintf('%s%s%s', $payForm->returnUrl, (strpos($payForm->returnUrl,'?')?'&':'?'), 'success=true');
+
+        // 配置
+        $config = [
+            'success_url' => $returnUrl,
+            'fail_url' => $cancelUrl,
+            'cancel_url' => $cancelUrl,
+        ];
+
+        // 生成订单
+        $order = [
+            'order_ref' => $baseOrder['out_trade_no'],
+
+            //转换成支付货币
+            'amount' => $baseOrder['total_fee'],
+//            'subject' => $baseOrder['body'],
+            'curr_code' => $baseOrder['currency'],//货币
+            'lang' => Yii::$app->language,
+        ];
+        // 交易类型
+        $tradeType = $payForm->tradeType;
+        return [
+            'config' => Yii::$app->pay->paydollar($config)->$tradeType($order)
+        ];
+    }
+
+    /**
      * @param PayForm $payForm
      * @return mixed
      * @throws \yii\base\InvalidConfigException
@@ -274,6 +312,19 @@ class PayService extends Service
                     }
                 }
                 // TODO 处理订单
+                return true;
+                break;
+            case PayEnum::ORDER_TOURIST :
+                if($log->pay_status == 1 && ($orderTourist = OrderTourist::find()->where(['order_sn'=>$log->order_sn, 'status'=>OrderTouristStatusEnum::ORDER_UNPAID])->one())) {
+
+                    //保存游客支付订单状态
+                    $orderTourist->status = OrderTouristStatusEnum::ORDER_PAID;
+                    $orderTourist->pay_amount = $log->total_fee;
+                    if($orderTourist->save()) {
+                        //同步游客订单到标准订单
+                        \Yii::$app->services->orderTourist->sync($orderTourist, $log);
+                    }
+                }
                 return true;
                 break;
             case PayEnum::ORDER_GROUP_RECHARGE :

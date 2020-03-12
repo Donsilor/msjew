@@ -151,4 +151,23 @@ class PaypalPay
 
         return $response;
     }
+
+    /**
+     * @param $query
+     * @return \Omnipay\Common\Message\ResponseInterface
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
+     */
+    public function getPayment($query)
+    {
+        $gateway = $this->create();
+
+        /**
+         * 确认订单
+         */
+        $request = $gateway->completePurchase($query);
+
+        $response = $request->getPayment();
+
+        return $response;
+    }
 }

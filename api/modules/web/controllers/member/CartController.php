@@ -2,6 +2,7 @@
 
 namespace api\modules\web\controllers\member;
 
+use common\helpers\ImageHelper;
 use common\models\goods\Ring;
 use common\models\goods\RingLang;
 use common\models\order\OrderCart;
@@ -22,7 +23,7 @@ class CartController extends UserAuthController
     
     public $modelClass = OrderCart::class;
     
-    protected $authOptional = [];
+    protected $authOptional = ['local'];
 
     /**
      * 购物车列表     
@@ -65,7 +66,7 @@ class CartController extends UserAuthController
                     "categoryId"=>$model->goods_type,
                     "goodsName"=>$goods['goods_name'],
                     "goodsCode"=>$goods['goods_sn'],
-                    "goodsImages"=>$goods['goods_image'],
+                    "goodsImages"=>ImageHelper::goodsThumbs($goods['goods_image'],'small'),
                     "goodsStatus"=>$goods['status']==1?2:0,
                     "totalStock"=>$goods['goods_storage'],
                     "salePrice"=>$sale_price,
@@ -216,7 +217,118 @@ class CartController extends UserAuthController
             $num = $this->modelClass::deleteAll(['member_id'=>$this->member_id,'id'=>$id]);
         }
         return ['num'=>$num];
-    } 
+    }
+
+    /**
+     * 本地购物车数据置换
+     */
+    public function actionLocal()
+    {
+        $addType = \Yii::$app->request->post("addType");
+        $goodsCartList = \Yii::$app->request->post('goodsCartList');
+        if(empty($goodsCartList)){
+            return ResultHelper::api(422,"goodsCartList不能为空");
+        }
+
+        $cart_list = array();
+        foreach ($goodsCartList as  $cartGoods) {
+            $cartGoods['add_type'] = $addType;
+            $model = new CartForm();
+            $model->attributes = $cartGoods;
+            if (!$model->validate()) {
+                // 返回数据验证失败
+                //throw new UnprocessableEntityHttpException($this->getError($model));
+                continue;
+            }
+
+            $goods = \Yii::$app->services->goods->getGoodsInfo($model->goods_id,$model->goods_type);
+            if(empty($goods)) {
+                continue;
+            }
+
+            $sale_price = $this->exchangeAmount($goods['sale_price']);
+            $cart = array();
+            //$cart['id'] = $model->id;
+            $cart['userId'] = $this->member_id;
+            $cart['goodsId'] = $goods['style_id'];
+            $cart['goodsDetailsId'] = $model->goods_id;
+            $cart['goodsCount'] = $model->goods_num;
+            $cart['createTime'] = $cartGoods['createTime'];
+            $cart['collectionId'] = null;
+            $cart['collectionStatus'] = null;
+            $cart['localSn'] = $cart['createTime'];
+            $cart['groupType'] = $model->group_type;
+            $cart['goodsType'] = $model->goods_type;
+            $cart['groupId'] = $model->group_id;
+            $simpleGoodsEntity = [
+                "goodId"=>$goods['style_id'],
+                "goodsDetailsId"=>$model->goods_id,
+                "categoryId"=>$model->goods_type,
+                "goodsName"=>$goods['goods_name'],
+                "goodsCode"=>$goods['goods_sn'],
+                "goodsImages"=>ImageHelper::goodsThumbs($goods['goods_image'],'small'),
+                "goodsStatus"=>$goods['status']==1?2:0,
+                "totalStock"=>$goods['goods_storage'],
+                "salePrice"=>$sale_price,
+                "coinType"=>$this->currencySign,
+                'detailConfig'=>[],
+                'baseConfig'=>[]
+            ];
+            //return $goods['goods_attr'];
+            if(!empty($goods['lang']['goods_attr'])) {
+                $baseConfig = [];
+                foreach ($goods['lang']['goods_attr'] as $vo){
+                    $baseConfig[] = [
+                        'configId' =>$vo['id'],
+                        'configAttrId' =>0,
+                        'configVal' =>$vo['attr_name'],
+                        'configAttrIVal' =>implode('/',$vo['value']),
+                    ];
+                }
+                $simpleGoodsEntity['baseConfig'] = $baseConfig;
+            }
+            if(!empty($goods['lang']['goods_spec'])) {
+                $detailConfig = [];
+                foreach ($goods['lang']['goods_spec'] as $vo){
+                    $detailConfig[] = [
+                        'configId' =>$vo['attr_id'],
+                        'configAttrId' =>$vo['value_id'],
+                        'configVal' =>$vo['attr_name'],
+                        'configAttrIVal' =>$vo['attr_value'],
+                    ];
+
+                }
+                $simpleGoodsEntity['detailConfig'] = $detailConfig;
+            }
+            $simpleGoodsEntity['simpleGoodsDetails'] = [
+                //"id"=>$model->id,
+                "goodsId"=>$goods['style_id'],
+                "goodsDetailsCode"=>$goods["goods_sn"],
+                "stock"=>$goods["goods_storage"],
+                "retailPrice"=>$sale_price,
+                "retailMallPrice"=>$sale_price,
+                "coinType"=>$this->getCurrencySign(),
+            ];
+
+            if($model->group_type == 1) { //对戒
+                $ring = Ring::find()->alias('r')
+                    ->where(['r.id'=>$model->group_id])
+                    ->innerJoin(RingLang::tableName().' lang','r.id=lang.master_id')
+                    ->select(['r.id','r.ring_style as ringStyle','r.sale_price','r.status','r.ring_images as ringImg','r.ring_sn as ringCode','lang.ring_name as name'])->asArray()->one();
+                $ring['coinType'] = $this->getCurrencySign();
+                $ring['simpleGoodsEntity'] = $simpleGoodsEntity;
+                $ring['salePrice'] = $this->exchangeAmount($ring['sale_price']);
+                $cart['ringsSimpleGoodsEntity'] = $ring;
+
+            }else{
+                $cart['simpleGoodsEntity'] = $simpleGoodsEntity;
+            }
+
+            $cart_list[] = $cart;
+        }
+
+        return $cart_list;
+    }
      
     
 }

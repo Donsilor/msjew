@@ -95,13 +95,7 @@ $type_id = Yii::$app->request->get('type_id',0);
                     ]),
                     'format' => 'raw',
                     'headerOptions' => ['width'=>'120'],
-            ],
-            /* [
-                'attribute' => 'cat_id',
-                'value' => "cate.cat_name",
-                'filter' => false,
-                'format' => 'raw',
-            ],    */         
+            ],       
             [
                 'attribute' => 'sale_price',
                 'value' => "sale_price",

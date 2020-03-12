@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-sm-12">
                     <?= $form->field($model, 'style_id')->dropDownList([]) ?>
                     <?= $form->field($model, 'goods_sn')->textInput(['maxlength' => true]) ?>
-                    <?= $form->field($model, 'goods_type')->dropDownList([]) ?>
+                    <?= $form->field($model, 'type_id')->dropDownList([]) ?>
                     <?= $form->field($model, 'goods_image')->widget(\common\widgets\webuploader\Files::class, [
                             'type' => 'images',
                             'theme' => 'default',
@@ -42,8 +42,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]); ?>
                     <?= $form->field($model, 'merchant_id')->textInput() ?>
                     <?= $form->field($model, 'cat_id')->textInput() ?>
-                    <?= $form->field($model, 'cat_id1')->textInput() ?>
-                    <?= $form->field($model, 'cat_id2')->textInput() ?>
                     <?= $form->field($model, 'sale_price')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'market_price')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'promotion_price')->textInput(['maxlength' => true]) ?>
@@ -54,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= $form->field($model, 'goods_comments')->textInput() ?>
                     <?= $form->field($model, 'goods_stars')->textInput() ?>
                     <?= $form->field($model, 'goods_storage')->textInput() ?>
-                    <?= $form->field($model, 'status')->checkboxList(\common\enums\StatusEnum::$listExplain) ?>
+                    <?= $form->field($model, 'status')->checkboxList(\common\enums\StatusEnum::getMap()) ?>
                     <?= $form->field($model, 'verify_status')->textInput() ?>
                     <?= $form->field($model, 'verify_remark')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'created_at')->widget(kartik\date\DatePicker::class, [

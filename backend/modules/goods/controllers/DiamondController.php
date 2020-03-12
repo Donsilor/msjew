@@ -3,12 +3,15 @@
 namespace backend\modules\goods\controllers;
 
 use common\enums\AttrIdEnum;
+use common\helpers\ArrayHelper;
+use common\models\goods\Style;
 use Yii;
 use common\models\goods\Diamond;
 use common\components\Curd;
 use common\models\base\SearchModel;
 use backend\controllers\BaseController;
 use common\helpers\ResultHelper;
+use yii\base\Exception;
 
 /**
 * Diamond
@@ -54,7 +57,55 @@ class DiamondController extends BaseController
             'searchModel' => $searchModel,
         ]);
     }
+    /**
+     * 编辑/创建 多语言
+     *
+     * @return mixed
+     */
+    public function actionEditLang()
+    {
+        $id = Yii::$app->request->get('id');
+        $returnUrl = Yii::$app->request->get('returnUrl',['index']);
+        
+        $model = $this->findModel($id);
+        $status = $model ? $model->status:0;
+        if ($model->load(Yii::$app->request->post())) { 
+            try{
+                $trans = Yii::$app->db->beginTransaction();
+                if($model->status == 1 && $status == 0){
+                    $model->onsale_time = time();
+                }
+                if(false === $model->save()){
+                    throw new Exception($this->getError($model));
+                }
 
+                //同步款式库的状态
+                Style::updateAll(['status'=>$model->status],['id'=>$model->style_id]);
+
+                $this->editLang($model);
+                //同步裸钻数据到goods
+                \Yii::$app->services->diamond->syncDiamondToGoods($model->id);
+                
+                $trans->commit();
+            }catch (Exception $e){
+                $trans->rollBack();
+                $error = $e->getMessage();
+                \Yii::error($error);
+                return $this->message("保存失败:".$error, $this->redirect([$this->action->id,'id'=>$model->id]), 'error');
+            }
+            
+            return $this->message("保存成功", $this->redirect($returnUrl), 'success');
+        }
+        
+        return $this->render($this->action->id, [
+            'model' => $model,
+        ]);
+    }
+    
+    /**
+     * 生成商品名称
+     * @return string[]|array[]
+     */
     public function actionGetGoodsName(){
         $carat = Yii::$app->request->post('carat',null);
         $cert_type_id = Yii::$app->request->post('cert_type',null);
@@ -90,9 +141,26 @@ class DiamondController extends BaseController
 
         return ResultHelper::json(200, '保存成功',$data);
 
+    }
 
+    /**
+     * ajax更新排序/状态
+     *
+     * @param $id
+     * @return array
+     */
+    public function actionAjaxUpdate($id)
+    {
+        if (!($model = $this->modelClass::findOne($id))) {
+            return ResultHelper::json(404, '找不到数据');
+        }
 
-
-
+        $model->attributes = ArrayHelper::filter(Yii::$app->request->get(), ['sort', 'status']);
+        if (!$model->save(false)) {
+            return ResultHelper::json(422, $this->getError($model));
+        }else{
+            Style::updateAll(['status'=>$model->status],['id'=>$model->style_id]);
+        }
+        return ResultHelper::json(200, '修改成功');
     }
 }

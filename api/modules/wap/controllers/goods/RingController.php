@@ -11,6 +11,7 @@ use common\models\goods\Style;
 use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
+use common\models\goods\StyleMarkup;
 use yii\base\Exception;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
@@ -249,15 +250,18 @@ class RingController extends OnAuthController
 
     //获取商品信息
     public function getAdvertStyle($where=null){
+        $area_id = $this->getAreaId(); 
         $type_id = 2;
         $limit = 3;
         $order = 'goods_clicks desc';
-        $fields =  ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
+        $fields =  ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $language = $this->language;
         $query = Style::find()->alias('m')
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.area_id='.$area_id)
             ->leftJoin(AttributeIndex::tableName().' a','a.style_id=m.id')
-            ->where(['m.status'=>StatusEnum::ENABLED,'m.type_id'=>$type_id]);
+            ->where(['m.status'=>StatusEnum::ENABLED,'m.type_id'=>$type_id])
+            ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]]);
 
         if($where){
             $query->andWhere($where);

@@ -294,12 +294,18 @@ class SiteController extends OnAuthController
      * 站点默认配置（默认语言和货币）
      */
     public function actionSetting()
-    {
-        
-        $area_id = \Yii::$app->ipLocation->getAreaId();
-        
-        $language = 'zh_CN';
-        $currrency = 'HKD';
+    {       
+
+        $area_id = \Yii::$app->debris->config("web_area_id");
+        if(!$area_id) {
+            $area_id = \Yii::$app->ipLocation->getAreaId();
+            $language = 'zh_CN';
+            $currrency = 'HKD';
+        }else {
+            $language = 'zh_CN';
+            $currrency = 'CNY';
+        }
+
         if(in_array($area_id,[AreaEnum::HongKong,AreaEnum::TaiWan,AreaEnum::MaCao])) {
             $language = 'zh_TW';
         }elseif($area_id == AreaEnum::Other) {
@@ -342,13 +348,5 @@ class SiteController extends OnAuthController
         $member->first_ip  = $member->last_ip;
         list(,$member->first_ip_location) = \Yii::$app->ipLocation->getLocation($member->first_ip);
     }
-     /**
-     * 用户首次注册ip
-     * @param Member $member
-     */
-    private function buildLastIpLocation(& $member)
-    {
-        $member->last_ip  = \Yii::$app->request->getRemoteIP();
-        $member->last_time = time();
-    }
+    
 }

@@ -4,6 +4,7 @@ namespace services\goods;
 
 use common\models\goods\RingRelation;
 use common\models\goods\StyleLang;
+use common\models\goods\StyleMarkup;
 use Yii;
 use common\components\Service;
 use common\enums\StatusEnum;
@@ -58,12 +59,15 @@ class StyleService extends Service
 
     //获取商品信息
     public function getStyleList($type_id=null, $limit=null, $order=null, $fields=['*'],$language=null ){
+        $area_id = $this->getAreaId(); 
         if(empty($language)){
             $language = Yii::$app->params['language'];
         }
         $query = Style::find()->alias('m')
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
-            ->where(['m.status'=>StatusEnum::ENABLED]);
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.status=1 and markup.area_id='.$area_id)
+            ->where(['m.status'=>StatusEnum::ENABLED])
+            ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]]);
         if(!empty($type_id)){
             $query->andWhere(['m.type_id'=>$type_id]);
         }

@@ -99,7 +99,7 @@ class StyleController extends BaseController
             }
             
             //商品更新
-            \Yii::$app->services->goods->createGoods($model->id);
+            \Yii::$app->services->goods->syncStyleToGoods($model->id);
             return $this->message("保存成功", $this->redirect($returnUrl), 'success');
         }
         return $this->render($this->action->id, [

@@ -29,13 +29,14 @@ class ImageHelper
      * @param int $width 宽度 默认45px
      * @param int $height 高度 默认45px
      */
-    public static function fancyBox($imgSrc, $width = 45, $height = 45)
+    public static function fancyBox($imgSrc, $width = 60, $height = 60)
     {
-        $image = Html::img($imgSrc, [
+        
+        $thumb = $imgSrc."?x-oss-process=image/auto-orient,1/resize,m_lfit,w_{$width}/quality,q_90";
+        $image = Html::img($thumb, [
             'width' => $width,
             'height' => $height,
         ]);
-
         return Html::a($image, $imgSrc, [
             'data-fancybox' => 'gallery'
         ]);

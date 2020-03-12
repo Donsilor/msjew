@@ -58,6 +58,8 @@ class AuthorizeRequest extends AbstractPaypalRequest
     {
         $model = $this->getParameter('model');
 
+        FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id . ' ' . $_POST['return_url']);
+
         $apiContext = $this->getParameter('apiContext');
 
         try {

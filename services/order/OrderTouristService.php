@@ -12,8 +12,10 @@ use common\models\order\OrderAccount;
 use common\models\order\OrderAddress;
 use common\models\order\OrderCart;
 use common\models\order\OrderGoods;
+use common\models\order\OrderInvoice;
 use common\models\order\OrderTourist;
 use common\models\order\OrderTouristDetails;
+use common\models\order\OrderTouristInvoice;
 use PayPal\Api\PayerInfo;
 use PayPal\Api\Payment;
 use PayPal\Api\ShippingAddress;
@@ -30,7 +32,7 @@ class OrderTouristService extends OrderBaseService
     /**
      * @param $cartList
      */
-    public function createOrder($cartList)
+    public function createOrder($cartList, $invoice_info)
     {
 
         $goods_amount = 0;
@@ -54,7 +56,7 @@ class OrderTouristService extends OrderBaseService
             $detail->promotions_id = 0;//$item['promotions_id'];//促销活动ID
             $detail->group_id = $item['group_id'];//组ID
             $detail->group_type = $item['group_type'];//分组类型
-            $detail->goods_spec = json_encode($goods['goods_spec']);//商品规格
+            $detail->goods_spec = $goods['goods_spec'];//商品规格
             $detail->goods_attr = $goods['goods_attr'];//商品规格
 
             $details[] = $detail;
@@ -104,6 +106,16 @@ class OrderTouristService extends OrderBaseService
             //保存订单详情
             if(false === $detail->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($detail));
+            }
+        }
+
+        //如果有发票信息
+        if(!empty($invoice_info)) {
+            $invoice = new OrderTouristInvoice();
+            $invoice->attributes = $invoice_info;
+            $invoice->order_tourist_id = $order->id;;
+            if(false === $invoice->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($invoice));
             }
         }
 
@@ -284,6 +296,16 @@ class OrderTouristService extends OrderBaseService
                 if(false === $langModel->save()){
                     throw new UnprocessableEntityHttpException($this->getError($langModel));
                 }
+            }
+        }
+
+        //如果有发票信息
+        if(!empty($orderTourist->invoice)) {
+            $invoice = new OrderInvoice();
+            $invoice->attributes = $orderTourist->invoice->toArray();
+            $invoice->order_id   = $order->id;
+            if(false === $invoice->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($invoice));
             }
         }
 

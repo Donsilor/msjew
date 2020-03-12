@@ -3,6 +3,7 @@
 namespace api\modules\wap\controllers\home;
 
 use api\controllers\OnAuthController;
+use common\helpers\ImageHelper;
 use common\models\goods\Style;
 
 
@@ -35,7 +36,7 @@ class IndexController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->currency;
             $moduleGoods['goodsCode'] = $val['style_sn'];
-            $moduleGoods['goodsImages'] = $val['goods_images'];
+            $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'mid');
             $moduleGoods['goodsName'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $webSite['moduleGoods'][] = $moduleGoods;

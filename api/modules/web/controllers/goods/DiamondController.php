@@ -3,6 +3,7 @@
 namespace api\modules\web\controllers\goods;
 
 use common\enums\StatusEnum;
+use common\helpers\ImageHelper;
 use common\models\goods\Diamond;
 use common\models\goods\DiamondLang;
 use api\controllers\OnAuthController;
@@ -105,8 +106,10 @@ class DiamondController extends OnAuthController
             $arr = array();
             $arr['categoryId'] = $type_id;
             $arr['coinType'] = $this->getCurrencySign();
+
             $arr['id'] = $val['style_id'];
-            $arr['goodsImages'] = $val['goods_image'];
+            $arr['goodsImages'] = ImageHelper::goodsThumbs($val['goods_image'],'mid');
+
             $arr['goodsName'] = $val['goods_name'];
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $arr['isJoin'] = null;
@@ -173,8 +176,8 @@ class DiamondController extends OnAuthController
         $diamond['goodsCode'] = $model->goods_sn;
         $diamond['salePrice'] = $this->exchangeAmount($model->sale_price);
         $diamond['goods3ds'] = $model->goods_3ds;
-        $diamond['goodsGiaImage'] = $model->goods_gia_image;
-        $diamond['goodsImages'] = $model->goods_image.",".$model->parame_images;
+        $diamond['goodsGiaImage'] = ImageHelper::goodsThumbs($model->goods_gia_image,'big');
+        $diamond['goodsImages'] = ImageHelper::goodsThumbs($model->goods_image,'big').",".ImageHelper::goodsThumbs($model->parame_images,'big');
         $diamond['goodsDesc'] = $model->lang->goods_desc;
         $diamond['goodsMod'] = 2;
         $diamond['goodsServices'] = $model->sale_services;
@@ -288,7 +291,7 @@ class DiamondController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['goodsCode'] = $val['style_sn'];
-            $moduleGoods['goodsImages'] = $val['goods_images'];
+            $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'big');
             $moduleGoods['goodsName'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $webSite['moduleGoods'][] = $moduleGoods;

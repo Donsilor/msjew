@@ -24,3 +24,4 @@ Yii::setAlias('@merchantUrl', '');
 
 //定义paypal命名空间
 Yii::setAlias('@Omnipay/Paypal', dirname(__DIR__) . '/components/payment/paypal');
+Yii::setAlias('@Omnipay/Paydollar', dirname(__DIR__) . '/components/payment/paydollar');

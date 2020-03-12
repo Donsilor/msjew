@@ -26,6 +26,7 @@ class OrderCreateForm extends Model
                 [['order_amount'], 'number'],                
                 [['buyer_remark'], 'string','max'=>500],
                 [['cart_ids'], 'validateIds'],
+                [['cart_ids'], 'validateCurrency'],
         ];
     }
     
@@ -59,6 +60,15 @@ class OrderCreateForm extends Model
         return true;
         
     }
-    
-    
+
+    public function validateCurrency($attribute)
+    {
+        $currency = strtoupper(\Yii::$app->params['currency']);
+        if(in_array($currency, ['CNY'])) {
+            $this->addError($attribute, \Yii::t('payment','PAYMENT_NOT_SUPPORT_RMB'));
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -70,7 +70,7 @@ class AuthorizeRequest extends AbstractPaypalRequest
 
             //判断付款人是否授权
             //需下载状态列表到备注
-            if (!$payment->getPayer() || $payment->getPayer()->status != 'VERIFIED') {
+            if (!$payment->getPayer()) {
                 throw new \Exception('买家未付款');
             }
 
@@ -84,10 +84,11 @@ class AuthorizeRequest extends AbstractPaypalRequest
 
             //如果已捕获，则跳过
             //需下载状态列表到备注
-            if ($order->state != "COMPLETED" && $order->state!="PENDING") {
-                //捕获订单
-                //需下载状态列表到备注
-                $result = $this->capture($order)->state == 'completed';
+            if ($order->state != "COMPLETED") {
+                if(!($capture = $this->getCapture($payment))) {
+                    $capture = $this->capture($order);
+                }
+                $result = $capture->state == 'completed';
             } else {
                 $result = true;
             }
@@ -112,8 +113,32 @@ class AuthorizeRequest extends AbstractPaypalRequest
         if (empty($relatedResources)) {
             return null;
         }
-        $relatedResource = $relatedResources[0];
-        return $relatedResource->getOrder();
+        foreach ($relatedResources as $relatedResource) {
+            if($order = $relatedResource->getOrder()) {
+                return $order;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param Payment $payment
+     * @return Capture|null
+     */
+    public function getCapture($payment)
+    {
+        $transactions = $payment->getTransactions();
+        $transaction = $transactions[0];
+        $relatedResources = $transaction->getRelatedResources();
+        if (empty($relatedResources)) {
+            return null;
+        }
+        foreach ($relatedResources as $relatedResource) {
+            if($capture = $relatedResource->getCapture()) {
+                return $capture;
+            }
+        }
+        return null;
     }
 
     /**

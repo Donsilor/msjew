@@ -35,6 +35,7 @@ class OrderTouristController extends OnAuthController
     public function actionCreate()
     {
         $goodsCartList = \Yii::$app->request->post('goodsCartList');
+        $invoiceInfo = \Yii::$app->request->post('invoice');
         if (empty($goodsCartList)) {
             return ResultHelper::api(422, "goodsCartList不能为空");
         }
@@ -55,7 +56,7 @@ class OrderTouristController extends OnAuthController
             $trans = \Yii::$app->db->beginTransaction();
 
             //创建订单
-            $orderId = \Yii::$app->services->orderTourist->createOrder($cart_list);
+            $orderId = \Yii::$app->services->orderTourist->createOrder($cart_list, $invoiceInfo);
 
             //调用支付接口
             $payForm = new PayForm();
@@ -179,7 +180,7 @@ class OrderTouristController extends OnAuthController
 //            'address' => $address,
 //            'addressId' => $address['id'],
 //            'afterMail' => $order->address->email,
-//            'coinCode' => $currency,
+            'coinCode' => $order->currency,
             'allSend' => 1,
             'isInvoice' => 2,
             'orderNo' => $order->order_sn,

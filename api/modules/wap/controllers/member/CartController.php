@@ -2,6 +2,7 @@
 
 namespace api\modules\wap\controllers\member;
 
+use common\helpers\ImageHelper;
 use common\models\goods\Ring;
 use common\models\goods\RingLang;
 use common\models\order\OrderCart;
@@ -67,7 +68,7 @@ class CartController extends UserAuthController
                     "categoryId"=>$model->goods_type,
                     "goodsName"=>$goods['goods_name'],
                     "goodsCode"=>$goods['goods_sn'],
-                    "goodsImages"=>$goods['goods_image'],
+                    "goodsImages"=>ImageHelper::goodsThumbs($goods['goods_image'],'mid'),
                     "goodsStatus"=>$goods['status']==1?2:0,
                     "totalStock"=>$goods['goods_storage'],
                     "salePrice"=>$sale_price,

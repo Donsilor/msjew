@@ -4,6 +4,7 @@ namespace api\modules\web\controllers\common;
 
 use common\enums\StatusEnum;
 use api\controllers\OnAuthController;
+use common\helpers\ImageHelper;
 use common\models\goods\Style;
 use common\models\goods\StyleLang;
 use common\models\goods\Ring;
@@ -77,7 +78,7 @@ class SearchController extends OnAuthController
             $arr['id'] = $val['id'];
             $arr['categoryId'] = $val['type_id'];
             $arr['coinType'] = $this->currency;
-            $arr['goodsImages'] = $val['goods_images'];
+            $arr['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'mid');
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $arr['goodsName'] = $val['style_name'];
             $arr['isJoin'] = null;

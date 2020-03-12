@@ -9,6 +9,7 @@ use yii\web\UnprocessableEntityHttpException;
 use common\enums\PayEnum;
 use common\enums\OrderStatusEnum;
 use common\models\order\Order;
+use common\enums\CurrencyEnum;
 
 /**
  * Class PayForm
@@ -87,8 +88,8 @@ class PayForm extends Model
                 if (!in_array($this->tradeType, ['pc', 'wap'])) {
                     $this->addError($attribute, 'PayPal交易类型不符');
                 }
-                if($this->coinType == 'CNY') {
-                    $this->addError($attribute, \Yii::t('payment', 'NOT_SUPPORT_PAYPAL'));
+                if($this->coinType == CurrencyEnum::CNY) {
+                    $this->addError($attribute, \Yii::t('payment', 'PAYPAL_NOT_SUPPORT_RMB'));
                 }
                 break;
             case PayEnum::PAY_TYPE_GLOBAL_ALIPAY :
@@ -96,6 +97,13 @@ class PayForm extends Model
                     $this->addError($attribute, 'GlobalAlipay交易类型不符');
                 }
                 break;
+            case PayEnum::PAY_TYPE_PAYDOLLAR :{                
+                if(in_array($this->coinType,[CurrencyEnum::CNY,CurrencyEnum::USD])) {
+                    $this->addError($attribute, \Yii::t('payment', 'PAYDOLLAR_NOT_SUPPORT_RMB_AND_USD'));
+                }
+                break;
+            }
+                
         }
     }
 

@@ -1,10 +1,9 @@
 <?php
 return [
-    'adminEmail' => 'admin@example.com',
-    'supportEmail' => 'support@example.com',
+    'adminEmail' => 'admin@bddco.com',
+    'supportEmail' => 'support@bddco.com',
     'user.passwordResetTokenExpire' => 3600,
     'frontBaseUrl' =>'https://www.bddco.com',//前端地址
-    'defaultImage'=>'https://bddco.oss-cn-hongkong.aliyuncs.com/images/2019/12/14/image_157631778355995698.jpg', 
     'languages'=>[
         'zh-CN'=>'简体中文',
         'zh-TW'=>'繁体中文',

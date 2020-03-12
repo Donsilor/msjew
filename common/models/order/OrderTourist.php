@@ -63,6 +63,7 @@ class OrderTourist extends \common\models\base\BaseModel
             [['merchant_id', 'store_id', 'tourist_key', 'status', 'created_at', 'updated_at'], 'integer'],
             [['order_amount', 'goods_amount', 'discount_amount', 'pay_amount', 'refund_amount', 'shipping_fee', 'tax_fee', 'safe_fee', 'other_fee', 'exchange_rate'], 'number'],
             [['currency'], 'string', 'max' => 3],
+            [['order_sn'], 'string', 'max' => 20],
             [['language'], 'safe'],
             [['ip'], 'string', 'max' => 30],
         ];
@@ -75,6 +76,7 @@ class OrderTourist extends \common\models\base\BaseModel
     {
         return [
             'id' => Yii::t('app', '主键'),
+            'order_sn' => Yii::t('app', '订单编号'),
             'merchant_id' => Yii::t('app', '商户ID'),
             'store_id' => Yii::t('app', '店铺id'),
             'tourist_key' => Yii::t('app', '游客的KEY'),
@@ -91,8 +93,8 @@ class OrderTourist extends \common\models\base\BaseModel
             'exchange_rate' => Yii::t('app', '汇率'),
             'language' => Yii::t('app', '下单时语言'),
             'ip' => Yii::t('app', '下单时IP'),
-            'status' => Yii::t('app', '状态：0未支付，1已支付，2已同步到标准订单'),
-            'created_at' => Yii::t('app', '创建时间'),
+            'status' => Yii::t('app', '状态'),
+            'created_at' => Yii::t('app', '下单时间'),
             'updated_at' => Yii::t('app', '更新时间'),
         ];
     }
@@ -104,6 +106,15 @@ class OrderTourist extends \common\models\base\BaseModel
     public function getDetails()
     {
         return $this->hasMany(OrderTouristDetails::class,['order_tourist_id'=>'id']);
+    }
+
+    /**
+     * 对应订单付款信息模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInvoice()
+    {
+        return $this->hasOne(OrderTouristInvoice::class, ['order_tourist_id'=>'id']);
     }
 
 }

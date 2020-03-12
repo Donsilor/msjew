@@ -2,6 +2,7 @@
 
 namespace api\modules\web\controllers\member;
 
+use common\helpers\ImageHelper;
 use common\helpers\ResultHelper;
 use api\controllers\UserAuthController;
 use common\models\member\Member;
@@ -78,7 +79,7 @@ class OrderController extends UserAuthController
                        'detailCount' => 1,
                        'createTime' => $orderGoods->created_at,
                        'joinCartTime'=>$orderGoods->created_at,
-                       'goodsImages'=>$orderGoods->goods_image,
+                       'goodsImages'=>ImageHelper::goodsThumbs($orderGoods->goods_image,'small'),
                        'mainGoodsCode'=>null,
                        'ringName'=>"",
                        'ringImg'=>"",
@@ -127,10 +128,11 @@ class OrderController extends UserAuthController
             
             $model = new OrderCreateForm();
             $model->attributes = \Yii::$app->request->post();
+            $invoiceInfo = \Yii::$app->request->post('invoice');
             if(!$model->validate()) {
                 return ResultHelper::api(422,$this->getError($model));
             }
-            $ressult = \Yii::$app->services->order->createOrder($model->cart_ids, $this->member_id, $model->buyer_address_id,$model->toArray());
+            $ressult = \Yii::$app->services->order->createOrder($model->cart_ids, $this->member_id, $model->buyer_address_id,$model->toArray(),$invoiceInfo);
             $trans->commit();
             return [
                     "coinType" => $ressult['currency'],
@@ -186,7 +188,7 @@ class OrderController extends UserAuthController
                 'detailCount' => 1,
                 'createTime' => $orderGoods->created_at,
                 'joinCartTime'=>$orderGoods->created_at,
-                'goodsImages'=>$orderGoods->goods_image,
+                'goodsImages'=>ImageHelper::goodsThumbs($orderGoods->goods_image,'small'),
                 'mainGoodsCode'=>null,
                 'ringName'=>"",
                 'ringImg'=>"",
@@ -195,7 +197,7 @@ class OrderController extends UserAuthController
             if(!empty($orderGoods->goods_attr)) {
                 $goods_attr = \Yii::$app->services->goods->formatGoodsAttr($orderGoods->goods_attr, $orderGoods->goods_type);
                 $baseConfig = [];
-                foreach ($goods_attr as $vo){
+                foreach ($goods_attr as $vo) {
                     $baseConfig[] = [
                         'configId' =>$vo['id'],
                         'configAttrId' =>0,
@@ -241,6 +243,18 @@ class OrderController extends UserAuthController
                 'zipCode'=> $order->address->zip_code,
         );
 
+        if($order->invoice) {
+            $invoiceInfo = array(
+                'invoiceType' => $order->invoice->invoice_type,
+                'invoiceTitle' => $order->invoice->invoice_title,
+                'taxNumber' => $order->invoice->tax_number,
+                'isElectronic' => $order->invoice->is_electronic,
+                'email' => $order->invoice->email,
+            );
+        }else{
+            $invoiceInfo = [];
+        }
+
         $order = array(
             'id' => $order->id,
             'address' => $address,
@@ -263,7 +277,8 @@ class OrderController extends UserAuthController
             'safeFee' => $order->account->safe_fee,
             'taxFee' => $order->account->tax_fee,
             'userId' => $order->member_id,
-            'details' => $orderDetails
+            'details' => $orderDetails,
+            'invoice' => $invoiceInfo
         );
 
         return $order;
@@ -287,6 +302,7 @@ class OrderController extends UserAuthController
         }
         $res = Order::updateAll(['order_status'=>OrderStatusEnum::ORDER_CANCEL],['id'=>$order_id,'order_status'=>OrderStatusEnum::ORDER_UNPAID]);
         if($res){
+            \Yii::$app->services->order->changeOrderStatusCancel($order_id,"用户取消订单", 'buyer',$this->member_id);
             return 'success';
         }else{
             return ResultHelper::api(422, '取消订单失败');

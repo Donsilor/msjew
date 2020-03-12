@@ -68,6 +68,11 @@ class AuthorizeRequest extends AbstractPaypalRequest
             //COMPLETED。付款已授权或已为订单捕获授权付款。completed
             $payment = Payment::get($model->transaction_id, $apiContext);
 
+            //state三个状态：created:创建，approved:批准，failed:失败
+            if($payment->state=="failed") {
+                throw new \Exception('付款失败');
+            }
+
             //判断付款人是否授权
             //需下载状态列表到备注
             if (!$payment->getPayer()) {

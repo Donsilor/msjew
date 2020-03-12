@@ -11,6 +11,7 @@ use PayPal\Api\Capture;
 use PayPal\Api\Order;
 use PayPal\Api\Payment;
 use PayPal\Api\PaymentExecution;
+use PayPal\Api\Sale;
 use PayPal\Api\Transaction;
 
 class AuthorizeRequest extends AbstractPaypalRequest
@@ -68,6 +69,8 @@ class AuthorizeRequest extends AbstractPaypalRequest
             //COMPLETED。付款已授权或已为订单捕获授权付款。completed
             $payment = Payment::get($model->transaction_id, $apiContext);
 
+            FileHelper::writeLog('paypal-result.txt', $payment->state. ' ' . $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id);
+
             //state三个状态：created:创建，approved:批准，failed:失败
             if($payment->state=="failed") {
                 throw new \Exception('付款失败');
@@ -80,23 +83,18 @@ class AuthorizeRequest extends AbstractPaypalRequest
             }
 
             //获取订单
-            $order = $this->getOrder($payment);
+            $order = $this->getSale($payment);
 
             if (!$order) {
                 $this->execute($payment);
-                $order = $this->getOrder($payment);
+                $order = $this->getSale($payment);
             }
 
-            //如果已捕获，则跳过
-            //需下载状态列表到备注
-            if ($order->state != "COMPLETED") {
-                if(!($capture = $this->getCapture($payment))) {
-                    $capture = $this->capture($order);
-                }
-                $result = $capture->state == 'completed';
-            } else {
-                $result = true;
-            }
+            //订单状态： completed, partially_refunded, pending, refunded, denied
+            $result = $order->state == 'completed';
+
+            FileHelper::writeLog('paypal-result.txt', $order->state. ' ' . $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id);
+
         } catch (\Exception $e) {
             $logPath = \Yii::getAlias('@runtime') . "/pay-logs/paypal-" . date('Y_m_d') . '/error.txt';
             FileHelper::writeLog($logPath, $e->getMessage());
@@ -120,6 +118,26 @@ class AuthorizeRequest extends AbstractPaypalRequest
         }
         foreach ($relatedResources as $relatedResource) {
             if($order = $relatedResource->getOrder()) {
+                return $order;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param Payment $payment
+     * @return Sale|null
+     */
+    public function getSale($payment)
+    {
+        $transactions = $payment->getTransactions();
+        $transaction = $transactions[0];
+        $relatedResources = $transaction->getRelatedResources();
+        if (empty($relatedResources)) {
+            return null;
+        }
+        foreach ($relatedResources as $relatedResource) {
+            if($order = $relatedResource->getSale()) {
                 return $order;
             }
         }

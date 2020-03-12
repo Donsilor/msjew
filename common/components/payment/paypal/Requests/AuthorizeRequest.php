@@ -69,7 +69,7 @@ class AuthorizeRequest extends AbstractPaypalRequest
             //COMPLETED。付款已授权或已为订单捕获授权付款。completed
             $payment = Payment::get($model->transaction_id, $apiContext);
 
-            FileHelper::writeLog('paypal-result.txt', $payment->state. ' ' . $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id);
+            FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id . ' ' . $payment->state);
 
             //state三个状态：created:创建，approved:批准，failed:失败
             if($payment->state=="failed") {
@@ -93,11 +93,19 @@ class AuthorizeRequest extends AbstractPaypalRequest
             //订单状态： completed, partially_refunded, pending, refunded, denied
             $result = $order->state == 'completed';
 
-            FileHelper::writeLog('paypal-result.txt', $order->state. ' ' . $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id);
+            FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$order->state);
 
         } catch (\Exception $e) {
-            $logPath = \Yii::getAlias('@runtime') . "/pay-logs/paypal-" . date('Y_m_d') . '/error.txt';
-            FileHelper::writeLog($logPath, $e->getMessage());
+            //接口错误日志
+            if ($e instanceof \PayPal\Exception\PayPalConnectionException) {
+                $data = $e->getData();
+                $str = @var_export($data, true);
+                FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$str);
+            }
+            else {
+                $logPath = \Yii::getAlias('@runtime') . "/pay-logs/paypal-" . date('Y_m_d') . '/error.txt';
+                FileHelper::writeLog($logPath, $model->order_sn . '-' . $e->getMessage());
+            }
             $result = false;
         }
 

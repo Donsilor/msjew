@@ -78,7 +78,7 @@ class BaseController extends Controller
     public function setLocalLanguage($language = '')
     {
         //切换默认语言
-        Yii::$app->params['language'] = $language ? $language : Yii::$app->language; 
+        Yii::$app->params['language'] = $language ? $language : Yii::$app->params['language']; 
     }
 
     /**
@@ -88,6 +88,6 @@ class BaseController extends Controller
     public function setLocalAreaId($area_id = '')
     {
         //切换默认语言   
-        Yii::$app->params['areaId'] = $area_id;
+        Yii::$app->params['areaId'] = $area_id ? $area_id : Yii::$app->params['areaId'];
     }
 }

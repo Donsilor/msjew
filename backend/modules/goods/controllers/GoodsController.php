@@ -53,10 +53,13 @@ class GoodsController extends BaseController
          
         $dataProvider = $searchModel
             ->search(Yii::$app->request->queryParams);
-
+        
+        $params = Yii::$app->request->queryParams;
         //切换默认地区11
-        $area_id = Yii::$app->request->queryParams['SearchModel']['markup.area_id'];
-        $this->setLocalAreaId($area_id);
+        if(!empty($params['SearchModel']['markup.area_id'])) {
+            $area_id = Yii::$app->request->queryParams['SearchModel']['markup.area_id'];
+            $this->setLocalAreaId($area_id);
+        }
 
         if($typeModel){
             $dataProvider->query->andFilterWhere(['in', 'goods.type_id',$typeModel['ids']]);

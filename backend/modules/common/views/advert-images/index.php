@@ -74,6 +74,23 @@ use common\helpers\ImageHelper;
                 )
             ],
             [
+                'attribute'=>'area_ids',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1','width'=>'120'],
+                'value' => function ($model){
+                    $area_ids_arr = explode(',',trim($model->area_ids,','));
+                    $area = '';
+                    foreach ($area_ids_arr as $area_id){
+                        $area .= \common\enums\AreaEnum::getMap()[$area_id]." ";
+                    }
+                    return $area;
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'area_ids',\common\enums\AreaEnum::getMap(), [
+                    'prompt' => '全部',
+                    'class' => 'form-control'
+                ]),
+            ],
+            [
                 'attribute'=>'cate.adv_type',
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],

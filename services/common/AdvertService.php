@@ -72,11 +72,13 @@ class AdvertService extends Service
         if($language == null) {
             $language = \Yii::$app->params['language'];
         }
+        $area_id = $this->getAreaId();
         $time = date('Y-m-d H:i:s', time());
         $query =  AdvertImages::find()->alias('m')
             ->select(['lang.title as title','m.adv_image','adv_url'])
             ->leftJoin(AdvertImagesLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
             ->where([ 'm.status'=>StatusEnum::ENABLED, 'm.adv_id'=>$adv_id])
+            ->andWhere(['like','m.area_ids',$area_id])
             ->andWhere(['or',['and',['<=','m.start_time',$time], ['>=','m.end_time',$time]],['m.end_time'=>null]])
             ->orderby('m.sort desc, m.created_at desc');
 

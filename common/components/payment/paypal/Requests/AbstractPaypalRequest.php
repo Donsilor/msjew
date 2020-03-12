@@ -80,7 +80,7 @@ abstract class AbstractPaypalRequest extends AbstractRequest
             array(
                 'mode' => $sandbox ? 'sandbox' : 'live',
                 'log.LogEnabled' => true,
-                'log.FileName' => '../PayPal.log',
+                'log.FileName' => './paypal-debug.txt',
                 'log.LogLevel' => 'DEBUG', // PLEASE USE `INFO` LEVEL FOR LOGGING IN LIVE ENVIRONMENTS
                 'cache.enabled' => true,
                 //'cache.FileName' => '/PaypalCache' // for determining paypal cache directory

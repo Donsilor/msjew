@@ -30,6 +30,8 @@ trait BaseAction
     protected $currencySign;
     //当前货币符号
     protected $areaId;
+    //平台类型
+    protected $platform = 1;//默认1:PC  2:mobile
     
     /**
      * 初始化通用参数
@@ -67,6 +69,10 @@ trait BaseAction
         }
         $this->areaId = \Yii::$app->params['areaId'];
         
+        $platform = \Yii::$app->request->headers->get("x-api-platform");
+        if($platform) {
+           $this->platform = $platform;
+        }
     }
     /**
      * 默认地区

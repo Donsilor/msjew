@@ -206,6 +206,29 @@ class OrderController extends BaseController
                     throw new Exception(sprintf('[%d]不是已付款状态', $id));
                 }
 
+                $isPay = false;
+
+                //查验订单是否有多笔支付
+                foreach ($model->paylogs as $paylog) {
+                    //获取支付类
+                    $pay = Yii::$app->services->pay->getPayByType($paylog->pay_type);
+
+                    //验证是否支付
+                    $state = $pay->verify(['model'=>$paylog]);
+
+                    //当前这笔订单的付款
+                    if($paylog->out_trade_no==$model->pay_sn) {
+                        $isPay = $state;
+                    }
+                    elseif($state) {
+                        throw new Exception(sprintf('[%d]订单存在多笔支付[%s]', $id, $paylog->out_trade_no));
+                    }
+                }
+
+                if(!$isPay) {
+                    throw new Exception(sprintf('[%d]订单支付状态验证失败', $id));
+                }
+
                 //更新订单审核状态
                 $model->status = AuditStatusEnum::PASS;
                 $model->order_status = OrderStatusEnum::ORDER_CONFIRM;//已审核，代发货

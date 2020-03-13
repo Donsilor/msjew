@@ -137,7 +137,7 @@ class PayController extends OnAuthController
             $pay = Yii::$app->services->pay->getPayByType($model->pay_type);
 
             //验证是否支付
-            $notify = $pay->verify(array_merge($query, ['model'=>$model]));
+            $notify = $pay->verify(['model'=>$model]);
 
             //验证重试一次
             if(!$notify && $model->pay_type == 6) {

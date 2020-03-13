@@ -110,7 +110,7 @@ class PaydollarPay
     public function verify($info=[])
     {
         $params = [
-            'orderRef'       => $info['Ref'],
+            'orderRef'       => ($info['model'])->out_trade_no,
         ];
 
         $gateway = $this->create();

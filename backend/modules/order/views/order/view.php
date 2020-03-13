@@ -235,7 +235,7 @@ DOM;
                         <div class="col-lg-6">
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_id') ?>：</label></div>
-                                <div class="col-lg-9"></div>
+                                <div class="col-lg-9"><?= \common\enums\ExpressEnum::getValue($model->express_id);?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_no') ?>：</label></div>

@@ -209,8 +209,17 @@ class NotifyController extends Controller
         }
 
         //买家付款事件
-        if(!empty($data['event_type']) && $data['event_type']=='PAYMENTS.PAYMENT.CREATED') {
-            $paymentId = $data['resource']['id'];
+        if(!empty($data['event_type']) && in_array($data['event_type'],['PAYMENTS.PAYMENT.CREATED', 'PAYMENT.SALE.COMPLETED'])) {
+
+            //创建订单
+            if($data['event_type']=='PAYMENTS.PAYMENT.CREATED') {
+                $paymentId = $data['resource']['id'];
+            }
+
+            //订单成功
+            if($data['event_type']=='PAYMENT.SALE.COMPLETED') {
+                $paymentId = $data['resource']['parent_payment'];
+            }
 
             $model = PayLog::find()->where(['transaction_id'=>$paymentId])->one();
 

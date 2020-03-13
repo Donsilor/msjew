@@ -85,17 +85,43 @@ class AuthorizeRequest extends AbstractPaypalRequest
             }
 
             //获取订单
-            $order = $this->getSale($payment);
+            if($payment->intent=="order") {
+                $order = $this->getOrder($payment);
 
-            if (!$order) {
-                $this->execute($payment);
-                $order = $this->getSale($payment);
+                if (!$order) {
+                    $this->execute($payment);
+                    $order = $this->getOrder($payment);
+                }
+
+                //如果已捕获，则跳过
+                //需下载状态列表到备注
+                if ($order->state != "COMPLETED") {
+                    if(!($capture = $this->getCapture($payment))) {
+                        $capture = $this->capture($order);
+                    }
+                    FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$capture->state);
+                    $result = $capture->state == 'completed';
+                } else {
+                    $result = true;
+                }
+
+                FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$order->state);
             }
 
-            //订单状态： completed, partially_refunded, pending, refunded, denied
-            $result = $order->state == 'completed';
+            if($payment->intent=="sale") {
+                //获取订单
+                $order = $this->getSale($payment);
 
-            FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$order->state);
+                if (!$order) {
+                    $this->execute($payment);
+                    $order = $this->getSale($payment);
+                }
+
+                //订单状态： completed, partially_refunded, pending, refunded, denied
+                $result = $order->state == 'completed';
+
+                FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$order->state);
+            }
 
         } catch (\Exception $e) {
             //接口错误日志

@@ -24,7 +24,7 @@ class ExpressEnum extends BaseEnum
     public static function getMap(): array
     {
         return [
-            self::Shunfeng => \Yii::t('common','顺丰'),
+            self::Shunfeng => \Yii::t('common','顺丰快递'),
             self::FEDEX => \Yii::t('common','FEDEX'),
             self::DHL => \Yii::t('common','DHL'),
         ];

@@ -30,7 +30,7 @@ class RingController extends BaseController
     */
     public $modelClass = Ring::class;
     public $enableCsrfValidation = false;
-    public $authOptional = ['select-style','get-style','is-have'];
+    public $noAuthOptional = ['select-style','get-style','is-have'];
     /**
     * 首页
     *

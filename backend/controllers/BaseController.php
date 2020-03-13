@@ -21,7 +21,7 @@ class BaseController extends Controller
     use BaseAction;
     use Page;
     
-    protected $authOptional = [];
+    protected $noAuthOptional = [];
     /**
      * @return array
      */
@@ -69,7 +69,7 @@ class BaseController extends Controller
         
         //权限白名单
         $actionId = Yii::$app->controller->action->id;
-        if(in_array($actionId,$this->authOptional)) {
+        if(in_array($actionId,$this->noAuthOptional)) {
             return true;
         }
             

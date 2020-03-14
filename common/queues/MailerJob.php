@@ -3,7 +3,6 @@
 namespace common\queues;
 
 use Yii;
-use yii\base\BaseObject;
 use yii\base\Exception;
 
 /**
@@ -13,7 +12,7 @@ use yii\base\Exception;
  * @package common\queues
  * @author jianyan74 <751393839@qq.com>
  */
-class MailerJob extends BaseObject implements \yii\queue\JobInterface
+class MailerJob extends Job
 {
 
     /**
@@ -55,6 +54,7 @@ class MailerJob extends BaseObject implements \yii\queue\JobInterface
     public function execute($queue)
     {       
         try{
+            
             echo date("Y-m-d H:i:s").'=>send mail start =>'.$this->email.PHP_EOL;
             $res = Yii::$app->services->mailer->realSend($this->email, $this->subject, $this->template, $this->usage, $this->data);
             if($res) {
@@ -66,5 +66,5 @@ class MailerJob extends BaseObject implements \yii\queue\JobInterface
             echo date("Y-m-d H:i:s").'=>send email faild!'.$e->getMessage().PHP_EOL;
             throw  $e ;
         }        
-    }
+    }    
 }

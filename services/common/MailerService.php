@@ -59,6 +59,8 @@ class MailerService extends Service
             $template = 'languages/'.$language.'/'.$template;
         }
         $subject = Yii::t('mail', $subject);
+        $data['ip'] = Yii::$app->request->userIP;
+        
         if ($this->queueSwitch == true) {
             $_params = array_merge(['data'=>$data],[
                     'email' => $email,
@@ -95,13 +97,14 @@ class MailerService extends Service
                 ->setTo($email)
                 ->setSubject($subject)
                 ->send(); 
-
+          
             $this->saveLog([
                     'title'=>$subject,
                     'email' => $email,
                     'code' => $data['code']??null,
                     'member_id' => $data['member_id']??0,
                     'usage' => $usage,
+                    'ip' => $data['ip']??'',
                     'error_code' => 200,
                     'error_msg' => 'ok',
                     'error_data' => Json::encode($result),

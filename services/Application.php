@@ -120,7 +120,7 @@ class Application extends Service
         ],
         'mailer' => [
             'class' => 'services\common\MailerService',
-            'queueSwitch' => false, // 是否丢进队列
+            'queueSwitch' => true, // 是否丢进队列
         ],
         /** ------ oauth2 ------ **/
         'oauth2Server' => 'services\oauth2\ServerService',

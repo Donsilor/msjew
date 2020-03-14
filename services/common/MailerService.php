@@ -32,6 +32,12 @@ class MailerService extends Service
      * @var array
      */
     protected $config = [];
+    
+    public function queue($queueSwitch = false)
+    {
+        $this->queueSwitch = $queueSwitch;
+        return $this;
+    }
 
     /**
      * 发送邮件

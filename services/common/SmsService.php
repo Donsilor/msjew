@@ -66,7 +66,16 @@ class SmsService extends Service
             ],
         ];
     }
-
+    /**
+     * 是否消息队列
+     * @param string $queueSwitch
+     * @return \services\common\SmsService
+     */
+    public function queue($queueSwitch = false)
+    {
+        $this->queueSwitch = $queueSwitch;
+        return $this;
+    }
     /**
      * 发送短信
      *

@@ -56,7 +56,7 @@ class MailerJob extends BaseObject implements \yii\queue\JobInterface
     {
         try{
             $res = Yii::$app->services->mailer->realSend($this->email, $this->subject, $this->template, $this->usage, $this->data);
-            if(!$res) {
+            if($res) {
                 echo date("Y-m-d H:i:s").'=>send email success!'.var_export($res,true).PHP_EOL;
             }else{
                 echo date("Y-m-d H:i:s").'=>send email failed!'.var_export($res,true).PHP_EOL;

@@ -129,12 +129,14 @@ class SmsService extends Service
         $code  = $data['code']??null;
         $member_id = $data['member_id']??0;
         $ip = $data['ip']??'';
+        if(isset($data['ip'])) unset($data['ip']);
+        if(isset($data['member_id'])) unset($data['member_id']);
         try {
             // 校验发送是否频繁
             if (($smsLog = $this->findByMobile($mobile)) && $smsLog['created_at'] + 60 > time()) {
                 throw new NotFoundHttpException('请不要频繁发送短信');
             }
-            if($templateID){
+            if($templateID){              
                 $easySms = new EasySms($this->config);
                 $result = $easySms->send($mobile, [
                     'template' => $templateID,
@@ -155,6 +157,7 @@ class SmsService extends Service
                 'error_data' => Json::encode($result),
                 'status' =>StatusEnum::ENABLED
             ]);
+            return true;
         } catch (NotFoundHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
@@ -192,7 +195,7 @@ class SmsService extends Service
             throw new UnprocessableEntityHttpException('短信发送失败');
         }
         
-        return $params;
+        return false;
     }
 
     /**

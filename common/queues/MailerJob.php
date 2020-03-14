@@ -4,6 +4,7 @@ namespace common\queues;
 
 use Yii;
 use yii\base\BaseObject;
+use yii\console\Exception;
 
 /**
  * 发送邮件
@@ -14,12 +15,6 @@ use yii\base\BaseObject;
  */
 class MailerJob extends BaseObject implements \yii\queue\JobInterface
 {
-    /**
-     * 当前用户信息
-     *
-     * @var
-     */
-    public $user;
 
     /**
      * 邮箱
@@ -59,7 +54,15 @@ class MailerJob extends BaseObject implements \yii\queue\JobInterface
      */
     public function execute($queue)
     {
-        print_r($this);
-        Yii::$app->services->mailer->realSend($this->email, $this->subject, $this->template, $this->usage, $this->data);
+        try{
+            $res = Yii::$app->services->mailer->realSend($this->email, $this->subject, $this->template, $this->usage, $this->data);
+            if(!$res) {
+                echo date("Y-m-d H:i:s").'=>send email success!'.var_export($res,true).PHP_EOL;
+            }else{
+                echo date("Y-m-d H:i:s").'=>send email failed!'.var_export($res,true).PHP_EOL;
+            }
+        }catch (Exception $e) {
+            echo date("Y-m-d H:i:s").'=>send email faild!'.$e->getMessage().PHP_EOL;
+        }        
     }
 }

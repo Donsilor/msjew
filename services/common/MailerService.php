@@ -46,7 +46,8 @@ class MailerService extends Service
      * @throws \yii\base\InvalidConfigException
      */
     public function send($email, $usage, $data = [], $language = null)
-    {        
+    {   
+
         $usageExplains = EmailLog::$usageExplain;        
         $usageTemplates = EmailLog::$usageTemplates;
         if(!$language) {

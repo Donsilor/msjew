@@ -53,8 +53,9 @@ class MailerJob extends BaseObject implements \yii\queue\JobInterface
      * @throws \yii\base\InvalidConfigException
      */
     public function execute($queue)
-    {
+    {       
         try{
+            echo date("Y-m-d H:i:s").'=>send mail start =>'.$this->email.PHP_EOL;
             $res = Yii::$app->services->mailer->realSend($this->email, $this->subject, $this->template, $this->usage, $this->data);
             if($res) {
                 echo date("Y-m-d H:i:s").'=>send email success!'.var_export($res,true).PHP_EOL;

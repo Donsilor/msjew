@@ -141,9 +141,6 @@ class OrderService extends OrderBaseService
         $this->addOrderLog($order->id, $log_msg, $log_role, $log_user,$order->order_status);
         //清空购物车
         OrderCart::deleteAll(['id'=>$cart_ids,'member_id'=>$buyer_id]);
-
-        //订单发送邮件
-        $this->sendOrderNotification($order->id);
         
         return [
                 "currency" => $currency,

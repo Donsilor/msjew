@@ -26,12 +26,18 @@ class MailerService extends Service
      *
      * @var bool
      */
-    public $queueSwitch = false;
+    public $queueSwitch = true;
 
     /**
      * @var array
      */
     protected $config = [];
+    
+    public function queue($queueSwitch = false)
+    {
+        $this->queueSwitch = $queueSwitch;
+        return $this;
+    }
 
     /**
      * 发送邮件
@@ -45,8 +51,9 @@ class MailerService extends Service
      * @param string $template 对应邮件模板
      * @throws \yii\base\InvalidConfigException
      */
-    public function send($email,$usage,$params = [],$language = null)
-    {        
+    public function send($email, $usage, $data = [], $language = null)
+    {   
+
         $usageExplains = EmailLog::$usageExplain;        
         $usageTemplates = EmailLog::$usageTemplates;
         if(!$language) {
@@ -58,8 +65,10 @@ class MailerService extends Service
             $template = 'languages/'.$language.'/'.$template;
         }
         $subject = Yii::t('mail', $subject);
+        $data['ip'] = Yii::$app->request->userIP;
+        
         if ($this->queueSwitch == true) {
-            $_params = array_merge($params,[
+            $_params = array_merge(['data'=>$data],[
                     'email' => $email,
                     'subject' => $subject,
                     'template' => $template,
@@ -70,7 +79,7 @@ class MailerService extends Service
             return $messageId;
         }
 
-        return $this->realSend($email, $subject , $template , $usage , $params);
+        return $this->realSend($email, $subject , $template , $usage , $data);
     }
 
     /**
@@ -83,30 +92,34 @@ class MailerService extends Service
      * @return bool
      * @throws \yii\base\InvalidConfigException
      */
-    public function realSend($email, $subject, $template, $usage, $params = [])
+    public function realSend($email, $subject, $template, $usage, $data = [])
     {
         try {
-
+             $code = $data['code']??null;
+             $member_id = $data['member_id']??0;
+             $ip = $data['ip']??'';
+             
              $this->setConfig();
              $result = Yii::$app->mailer
-                ->compose($template, $params)
+                ->compose($template, $data)
                 ->setFrom([$this->config['smtp_username'] => $this->config['smtp_name']])
                 ->setTo($email)
                 ->setSubject($subject)
                 ->send(); 
-
+            
             $this->saveLog([
                     'title'=>$subject,
                     'email' => $email,
-                    'code' => $params['code']??null,
-                    'member_id' => $params['member_id']??0,
+                    'code' => $code,
+                    'member_id' => $member_id,
                     'usage' => $usage,
+                    'ip' => $ip,
                     'error_code' => 200,
                     'error_msg' => 'ok',
                     'error_data' => Json::encode($result),
                     'status' => StatusEnum::ENABLED
             ]);
-            return $params;
+            return $data;
         } catch (InvalidConfigException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }catch (\Exception $e) {            
@@ -114,9 +127,10 @@ class MailerService extends Service
             $log = $this->saveLog([
                     'title'=>$subject,
                     'email' => $email,
-                    'code' => $params['code']??null,
-                    'member_id' => $params['member_id']??0,
+                    'code' => $code,
+                    'member_id' => $member_id,
                     'usage' => $usage,
+                    'ip' =>$ip,
                     'error_code' => 422,
                     'error_msg' => '发送失败',
                     'error_data' => Json::encode($result),

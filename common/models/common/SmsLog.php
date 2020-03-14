@@ -94,9 +94,9 @@ class SmsLog extends \common\models\base\BaseModel
      */
     public function beforeSave($insert)
     {
-        if ($this->isNewRecord) {
+        /* if ($this->isNewRecord) {
             $this->ip = Yii::$app->request->userIP;
-        }
+        } */
 
         return parent::beforeSave($insert);
     }

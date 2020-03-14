@@ -4,7 +4,7 @@ namespace common\queues;
 
 use Yii;
 use yii\base\BaseObject;
-use yii\console\Exception;
+use yii\base\Exception;
 
 /**
  * 发送邮件
@@ -63,6 +63,7 @@ class MailerJob extends BaseObject implements \yii\queue\JobInterface
             }
         }catch (Exception $e) {
             echo date("Y-m-d H:i:s").'=>send email faild!'.$e->getMessage().PHP_EOL;
+            throw  $e ;
         }        
     }
 }

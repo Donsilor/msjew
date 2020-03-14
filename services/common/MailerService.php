@@ -89,7 +89,10 @@ class MailerService extends Service
     public function realSend($email, $subject, $template, $usage, $data = [])
     {
         try {
-
+             $code = $data['code']??null;
+             $member_id = $data['member_id']??0;
+             $ip = $data['ip']??'';
+             
              $this->setConfig();
              $result = Yii::$app->mailer
                 ->compose($template, $data)
@@ -97,14 +100,14 @@ class MailerService extends Service
                 ->setTo($email)
                 ->setSubject($subject)
                 ->send(); 
-          
+            
             $this->saveLog([
                     'title'=>$subject,
                     'email' => $email,
-                    'code' => $data['code']??null,
-                    'member_id' => $data['member_id']??0,
+                    'code' => $code,
+                    'member_id' => $member_id,
                     'usage' => $usage,
-                    'ip' => $data['ip']??'',
+                    'ip' => $ip,
                     'error_code' => 200,
                     'error_msg' => 'ok',
                     'error_data' => Json::encode($result),
@@ -118,9 +121,10 @@ class MailerService extends Service
             $log = $this->saveLog([
                     'title'=>$subject,
                     'email' => $email,
-                    'code' => $data['code']??null,
-                    'member_id' => $data['member_id']??0,
+                    'code' => $code,
+                    'member_id' => $member_id,
                     'usage' => $usage,
+                    'ip' =>$ip,
                     'error_code' => 422,
                     'error_msg' => '发送失败',
                     'error_data' => Json::encode($result),

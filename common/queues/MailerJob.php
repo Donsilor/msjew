@@ -41,6 +41,16 @@ class MailerJob extends BaseObject implements \yii\queue\JobInterface
      * @var
      */
     public $template;
+    /**
+     * 用途
+     * @var unknown
+     */
+    public $usage;
+    /**
+     * 模板参数
+     * @var array
+     */
+    public $data;
 
     /**
      * @param \yii\queue\Queue $queue
@@ -49,6 +59,7 @@ class MailerJob extends BaseObject implements \yii\queue\JobInterface
      */
     public function execute($queue)
     {
-        Yii::$app->services->mailer->realSend($this->user, $this->email, $this->subject, $this->template);
+        print_r($this);
+        Yii::$app->services->mailer->realSend($this->email, $this->subject, $this->template, $this->usage, $this->data);
     }
 }

@@ -65,6 +65,7 @@ class OrderService extends OrderBaseService
         $order->payment_status = PayStatusEnum::UNPAID;
         $order->order_status = OrderStatusEnum::ORDER_UNPAID;
         $order->ip = \Yii::$app->request->userIP;  //用户下单ip
+        $order->is_invoice = empty($invoice_info)?0:1;//是否开发票
         list($order->ip_area_id,$order->ip_location) = \Yii::$app->ipLocation->getLocation($order->ip);
         if(false === $order->save()){
             throw new UnprocessableEntityHttpException($this->getError($order));

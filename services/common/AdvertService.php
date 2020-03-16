@@ -2,6 +2,7 @@
 
 namespace services\common;
 
+use common\enums\AreaEnum;
 use Yii;
 use common\models\common\Advert;
 use common\models\common\AdvertArea;
@@ -67,12 +68,14 @@ class AdvertService extends Service
      * @param unknown $language
      * @return array|\yii\db\ActiveRecord[]|unknown|array|\yii\db\ActiveRecord[]
      */
-    public function getTypeAdvertImage($type_id, $adv_id, $language = null){
+    public function getTypeAdvertImage($type_id, $adv_id, $language = null,$area_id=null){
         
         if($language == null) {
             $language = \Yii::$app->params['language'];
         }
-        $area_id = $this->getAreaId();
+        if($area_id == null) {
+            $area_id = $this->getAreaId();
+        }
         $time = date('Y-m-d H:i:s', time());
         $query =  AdvertImages::find()->alias('m')
             ->select(['lang.title as title','m.adv_image','adv_url'])
@@ -80,13 +83,19 @@ class AdvertService extends Service
             ->where([ 'm.status'=>StatusEnum::ENABLED, 'm.adv_id'=>$adv_id])
             ->andWhere(['like','m.area_ids',$area_id])
             ->andWhere(['or',['and',['<=','m.start_time',$time], ['>=','m.end_time',$time]],['m.end_time'=>null]])
-            ->orderby('m.sort desc, m.created_at desc');
+            ->orderby('m.sort asc, m.created_at desc');
 
         if($type_id == 0){
             // 如果父父级没有，则直接获取位置图片
             $model = $query->asArray()->all();
+            //如果没有获取到，则获取大陆的
+            if(empty($model) && $area_id != AreaEnum::China){
+                $area_id = AreaEnum::China;
+                return $this->getTypeAdvertImage($type_id, $adv_id, $language,$area_id);
+            }
             return $model;
         }
+
         $model = $query ->andWhere(['m.type_id'=>$type_id])->asArray()->all();
         if(empty($model)){
             //获取父级生产线图片

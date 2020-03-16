@@ -41,6 +41,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => false,
             ],
             [
+                'attribute' => 'cover',
+                "format"=>'raw',
+                'filter' => false,
+                'value' => function($model) {
+                    return \common\helpers\ImageHelper::fancyBox($model->cover,120,'auto');
+                },
+            ],
+            [
                 //'headerOptions' => ['width'=>'200'],
                 'attribute' => 'lang.express_name',
                 'value' => 'lang.express_name',
@@ -49,13 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]),
                 'format' => 'raw',
             ],
-            [
-                'label' => '图片',
-                "format"=>'raw',
-                'value' => function($model) {
-                    return \common\helpers\ImageHelper::fancyBox($model->cover,120,'auto');
-                },
-            ],
+
 
 
             [

@@ -255,6 +255,15 @@ class OrderController extends UserAuthController
             $invoiceInfo = [];
         }
 
+        //快递信息
+        if($order->order_status >= OrderStatusEnum::ORDER_CONFIRM){
+            $express = array();
+            $express['expressNo'] = $order->express_no;
+            $express['companyName'] = $order->express->lang->express_name;
+            $express['delivery_time'] = date('Y-m-d',$order->delivery_time);
+
+        }
+
         $order = array(
             'id' => $order->id,
             'address' => $address,
@@ -278,8 +287,10 @@ class OrderController extends UserAuthController
             'taxFee' => $order->account->tax_fee,
             'userId' => $order->member_id,
             'details' => $orderDetails,
-            'invoice' => $invoiceInfo
+            'invoice' => $invoiceInfo,
+            'express'=>empty($express)? null : $express
         );
+
 
         return $order;
 

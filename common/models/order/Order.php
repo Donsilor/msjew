@@ -175,4 +175,14 @@ class Order extends \common\models\base\BaseModel
     {
         return $this->hasMany(OrderGoods::class,['order_id'=>'id']);
     }
+
+
+    /**
+     * 对应快递模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getExpress()
+    {
+        return $this->hasOne(\common\models\common\Express::class, ['id'=>'express_id']);
+    }
 }

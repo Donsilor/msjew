@@ -161,7 +161,7 @@ class OrderController extends BaseController
         // ajax 校验
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
-            $model->delivery_time = time();
+//            $model->delivery_time = time();
             $model->delivery_status = DeliveryStatusEnum::SEND;
             $model->order_status = OrderStatusEnum::ORDER_SEND;//已发货
             $result = $model->save();

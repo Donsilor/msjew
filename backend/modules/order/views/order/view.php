@@ -235,15 +235,15 @@ DOM;
                         <div class="col-lg-6">
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_id') ?>：</label></div>
-                                <div class="col-lg-9"></div>
+                                <div class="col-lg-9"><?= $model->express->lang->express_name;?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_no') ?>：</label></div>
                                 <div class="col-lg-9"><?= $model->express_no ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-3 text-right"><label>&nbsp;</label></div>
-                                <div class="col-lg-9"></div>
+                                <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('delivery_time') ?>：</label></div>
+                                <div class="col-lg-9"><?= date('Y-m-d H:i:s',$model->delivery_time)?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-3 text-right">

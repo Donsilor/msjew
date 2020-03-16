@@ -60,6 +60,7 @@ use common\components\Service;
  * @property \services\common\CurrencyService $currency 货币汇率
  * @property \services\order\OrderService $order 订单
  * @property \services\order\OrderTouristService $orderTourist 订单
+ *  * @property \services\common\ExpressService $express 快递
  */
 class Application extends Service
 {
@@ -142,5 +143,6 @@ class Application extends Service
         /*********订单相关*********/
         'order' => 'services\order\OrderService',
         'orderTourist' => 'services\order\OrderTouristService',
+        'express' => 'services\common\ExpressService',
     ];
 }

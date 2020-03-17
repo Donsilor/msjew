@@ -115,10 +115,6 @@ class PayController extends OnAuthController
             'verification_status' => 'false'
         ];
 
-//        //测试不验证结果
-//        $result['verification_status'] = 'true';
-//        return $result;
-
         //获取操作实例
         $returnUrl = Yii::$app->request->post('return_url', null);
 
@@ -130,32 +126,23 @@ class PayController extends OnAuthController
             $model = $this->getPayModelByReturnUrlQuery($query);
 
             if(empty($model)) {
-                throw new \Exception('数据异常');
+                throw new \Exception('未找到订单数据');
             }
 
-            //获取支付类
-            $pay = Yii::$app->services->pay->getPayByType($model->pay_type);
+            //判断订单支付状态
+            if ($model->pay_status == StatusEnum::ENABLED) {
+                $result['verification_status'] = 'true';
+
+                return $result;
+            };
 
             //验证是否支付
-            $notify = $pay->verify(['model'=>$model]);
+            $notify = Yii::$app->services->pay->getPayByType($model->pay_type)->verify(['model'=>$model]);
 
-            //验证重试一次
-            if($notify!==true && $model->pay_type == 6) {
-                sleep(3);
-                $notify = $pay->verify(array_merge($query, ['model'=>$model]));
-            }
-
-            if($notify===true) {
-                $message = [];                
-                $message['out_trade_no'] = $model->out_trade_no;
-                $message['pay_fee'] = $model->total_fee;
-                // 日志记录
-                $logPath = $this->getLogPath(PayEnum::$payTypeAction[$model->pay_type]);
-                FileHelper::writeLog($logPath, Json::encode(ArrayHelper::toArray($message)));
-
+            if($notify==='completed') {
                 //操作成功，则返回 true .
-                if ($this->pay($message)) {
-                    $result['verification_status'] = 'true';
+                if ($this->pay($model)) {
+                    $result['verification_status'] = 'completed';
                 }
                 else {
                     throw new \Exception('数据库操作异常');
@@ -164,37 +151,37 @@ class PayController extends OnAuthController
             elseif($notify==='pending') {
                 $result['verification_status'] = 'pending';
             }
+            elseif($notify==='denied') {
+                $result['verification_status'] = 'denied';
+            }
+            else {
+                $result['verification_status'] = 'null';
+            }
         } catch (\Exception $e) {
             // 记录报错日志
             $logPath = $this->getLogPath('error');
             FileHelper::writeLog($logPath, $e->getMessage());
+
+            //服务器错误的时候，返回订单处理中
+            $result['verification_status'] = 'pending';
         }
         return $result;
     }
 
     /**
      * 此方法复制于 NotifyController.php
-     * @param $message
+     * @param $payLog
      * @return bool
      */
-    protected function pay($message)
+    protected function pay($payLog)
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            if (!($payLog = Yii::$app->services->pay->findByOutTradeNo($message['out_trade_no']))) {
-                throw new UnprocessableEntityHttpException('找不到支付信息');
-            };
 
-            // 支付完成
-            if ($payLog->pay_status == StatusEnum::ENABLED) {
-                return true;
-            };
-
-            $payLog->attributes = $message;
             $payLog->pay_status = StatusEnum::ENABLED;
             $payLog->pay_time = time();
             if (!$payLog->save()) {
-                throw new UnprocessableEntityHttpException('日志修改失败');
+                throw new UnprocessableEntityHttpException('支付记录保存失败');
             }
 
             // 业务回调

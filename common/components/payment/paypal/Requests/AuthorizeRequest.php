@@ -100,7 +100,18 @@ class AuthorizeRequest extends AbstractPaypalRequest
                         $capture = $this->capture($order);
                     }
                     FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$capture->state);
-                    $result = $capture->state == 'completed';
+
+                    //$result = $capture->state == 'completed';
+                    if($capture->state == 'completed') {
+                        $result = true;
+                    }
+                    elseif($capture->state == 'pending') {
+                        $result = 'pending';
+                    }
+                    else {
+                        $result = false;
+                    }
+
                 } else {
                     $result = true;
                 }
@@ -118,7 +129,16 @@ class AuthorizeRequest extends AbstractPaypalRequest
                 }
 
                 //订单状态： completed, partially_refunded, pending, refunded, denied
-                $result = $order->state == 'completed';
+                //$result = $order->state == 'completed';
+                if($order->state == 'completed') {
+                    $result = true;
+                }
+                elseif($order->state == 'pending') {
+                    $result = 'pending';
+                }
+                else {
+                    $result = false;
+                }
 
                 FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$order->state);
             }

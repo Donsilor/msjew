@@ -140,12 +140,12 @@ class PayController extends OnAuthController
             $notify = $pay->verify(['model'=>$model]);
 
             //验证重试一次
-            if(!$notify && $model->pay_type == 6) {
+            if($notify!==true && $model->pay_type == 6) {
                 sleep(3);
                 $notify = $pay->verify(array_merge($query, ['model'=>$model]));
             }
 
-            if($notify) {
+            if($notify===true) {
                 $message = [];                
                 $message['out_trade_no'] = $model->out_trade_no;
                 $message['pay_fee'] = $model->total_fee;
@@ -160,6 +160,9 @@ class PayController extends OnAuthController
                 else {
                     throw new \Exception('数据库操作异常');
                 }
+            }
+            elseif($notify==='pending') {
+                $result['verification_status'] = 'pending';
             }
         } catch (\Exception $e) {
             // 记录报错日志

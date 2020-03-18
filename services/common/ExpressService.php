@@ -42,7 +42,7 @@ class ExpressService extends Service
             ->where(['status' => StatusEnum::ENABLED])
             ->leftJoin(ExpressLang::tableName().' lang','lang.master_id = m.id and lang.language =  "'.$language.'"')
             ->select(['lang.express_name as name','m.*'])
-            ->orderBy('sort desc')
+            ->orderBy('sort asc')
             ->asArray()
             ->all();
     }

@@ -80,6 +80,14 @@ $this->params['breadcrumbs'][] = $this->title;
 //            'created_at:date',
             [
                 'headerOptions' => ['width'=>'120'],
+                'attribute' => 'created_at',
+                'value' => function ($model, $key, $index, $column){
+                    return date('Y-m-d',$model->created_at);
+                },
+                'filter' => false,
+            ],
+            [
+                'headerOptions' => ['width'=>'120'],
                 'attribute' => 'updated_at',
                 'value' => function ($model, $key, $index, $column){
                     return date('Y-m-d',$model->updated_at);

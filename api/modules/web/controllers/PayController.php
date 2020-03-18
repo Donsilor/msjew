@@ -6,6 +6,8 @@ use common\enums\StatusEnum;
 use common\helpers\ArrayHelper;
 use common\helpers\FileHelper;
 use common\models\common\PayLog;
+use Omnipay\Common\Message\AbstractResponse;
+use Omnipay\Paydollar\Message\AuthorizeResponse;
 use Yii;
 use api\controllers\OnAuthController;
 use common\enums\PayEnum;
@@ -126,20 +128,23 @@ class PayController extends OnAuthController
             $model = $this->getPayModelByReturnUrlQuery($query);
 
             if(empty($model)) {
-                throw new \Exception('未找到订单数据');
+                $result['verification_status'] = 'failed';
+                return $result;
             }
 
             //判断订单支付状态
             if ($model->pay_status == StatusEnum::ENABLED) {
-                $result['verification_status'] = 'true';
-
+                $result['verification_status'] = 'completed';
                 return $result;
             };
 
-            //验证是否支付
-            $notify = Yii::$app->services->pay->getPayByType($model->pay_type)->verify(['model'=>$model]);
+            /**
+             * @var $response AbstractResponse
+             */
+            $response = Yii::$app->services->pay->getPayByType($model->pay_type)->verify(['model'=>$model]);
 
-            if($notify==='completed') {
+            //支付成功
+            if($response->isPaid()) {
                 //操作成功，则返回 true .
                 if ($this->pay($model)) {
                     $result['verification_status'] = 'completed';
@@ -148,14 +153,17 @@ class PayController extends OnAuthController
                     throw new \Exception('数据库操作异常');
                 }
             }
-            elseif($notify==='pending') {
-                $result['verification_status'] = 'pending';
-            }
-            elseif($notify==='denied') {
-                $result['verification_status'] = 'denied';
-            }
             else {
-                $result['verification_status'] = 'null';
+                if($response->getCode() == 'pending') {
+                    $result['verification_status'] = 'pending';
+                }
+                elseif(in_array($response->getCode(), ['failed', 'denied', 'nopayer'])) {
+                    //支付失败，失败被拒绝，无支付返回支付失败
+                    $result['verification_status'] = 'failed';
+                }
+                else {
+                    $result['verification_status'] = 'null';
+                }
             }
         } catch (\Exception $e) {
             // 记录报错日志

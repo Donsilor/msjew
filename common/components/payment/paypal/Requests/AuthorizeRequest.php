@@ -5,7 +5,7 @@ namespace Omnipay\Paypal\Requests;
 
 
 use common\helpers\FileHelper;
-use Omnipay\Common\Message\ResponseInterface;
+use Omnipay\Paypal\Response\AuthorizeResponse;
 use PayPal\Api\Amount;
 use PayPal\Api\Capture;
 use PayPal\Api\Order;
@@ -62,6 +62,8 @@ class AuthorizeRequest extends AbstractPaypalRequest
 
         $apiContext = $this->getParameter('apiContext');
 
+        $result = null;
+
         try {
 
             //CREATED。订单是使用指定的上下文创建的。
@@ -75,13 +77,13 @@ class AuthorizeRequest extends AbstractPaypalRequest
 
             //state三个状态：created:创建，approved:批准，failed:失败
             if($payment->state=="failed") {
-                throw new \Exception('付款失败');
+                //付款失败
+                return new AuthorizeResponse($this, ['result' => 'failed']);
             }
 
-            //判断付款人是否授权
-            //需下载状态列表到备注
+            //判断付款人
             if (!$payment->getPayer()) {
-                throw new \Exception('买家未付款');
+                return new AuthorizeResponse($this, ['result' => 'nopayer']);
             }
 
             //获取订单
@@ -93,6 +95,8 @@ class AuthorizeRequest extends AbstractPaypalRequest
                     $order = $this->getOrder($payment);
                 }
 
+                FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$order->state);
+
                 //如果已捕获，则跳过
                 //需下载状态列表到备注
                 if(!($capture = $this->getCapture($payment))) {
@@ -101,9 +105,7 @@ class AuthorizeRequest extends AbstractPaypalRequest
 
                 FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$capture->state);
 
-                $result = $this->getStatusCode($capture);
-
-                FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$order->state);
+                $result = $capture->state;
             }
 
             if($payment->intent=="sale") {
@@ -115,13 +117,12 @@ class AuthorizeRequest extends AbstractPaypalRequest
                     $order = $this->getSale($payment);
                 }
 
-                $result = $this->getStatusCode($order);
-
                 FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$order->state);
+
+                $result = $order->state;
             }
 
         } catch (\Exception $e) {
-            //接口错误日志
             if ($e instanceof \PayPal\Exception\PayPalConnectionException) {
                 $data = $e->getData();
                 $str = @var_export($data, true);
@@ -134,40 +135,7 @@ class AuthorizeRequest extends AbstractPaypalRequest
             $result = null;
         }
 
-        return $result;
-    }
-
-    //标准化订单状态： completed, partially_refunded, pending, refunded, denied
-    private function getStatusCode($order)
-    {
-        //未知错误
-        if(empty($order)) {
-            null;
-        }
-
-        //成功
-        if($order->state == 'completed') {
-            return 'completed';
-        }
-        //处理中
-        elseif($order->state == 'pending') {
-            return 'pending';
-        }
-        //拒绝,付款失败
-        elseif($order->state == 'denied') {
-            return 'denied';
-        }
-        //退款
-        elseif($order->state == 'refunded') {
-            return 'denied';
-        }
-        //部份退款
-        elseif($order->state == 'partially_refunded') {
-            return 'partially_refunded';
-        }
-        else {
-            return null;
-        }
+        return new AuthorizeResponse($this, ['result' => $result]);
     }
 
     /**

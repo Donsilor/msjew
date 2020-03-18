@@ -228,10 +228,10 @@ class NotifyController extends Controller
             }
 
             try {
-                
-                $notify = Yii::$app->pay->Paypal()->notify(['model'=>$model]);
 
-                if ($notify===true) {
+                $response = Yii::$app->pay->Paypal()->notify(['model'=>$model]);
+
+                if ($response->isPaid()) {
 
                     $message = [];//= Yii::$app->request->post();
                     $message['out_trade_no'] = $model->out_trade_no;

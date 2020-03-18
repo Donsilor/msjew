@@ -7,6 +7,7 @@ use common\enums\OrderStatusEnum;
 use common\enums\PayStatusEnum;
 use common\helpers\ResultHelper;
 use common\models\order\OrderGoods;
+use Omnipay\Common\Message\AbstractResponse;
 use Yii;
 use common\components\Curd;
 use common\enums\StatusEnum;
@@ -214,14 +215,19 @@ class OrderController extends BaseController
                     //获取支付类
                     $pay = Yii::$app->services->pay->getPayByType($paylog->pay_type);
 
-                    //验证是否支付
+                    /**
+                     * @var $state AbstractResponse
+                     */
                     $state = $pay->verify(['model'=>$paylog]);
 
                     //当前这笔订单的付款
                     if($paylog->out_trade_no==$model->pay_sn) {
-                        $isPay = $state;
+                        $isPay = $state->isPaid();
                     }
-                    elseif($state || $paylog->pay_status==PayStatusEnum::PAID) {
+                    elseif(in_array($state, ['null'])) {
+                        throw new Exception(sprintf('[%d]订单支付[%s]验证出错，请重试', $id, $paylog->out_trade_no));
+                    }
+                    elseif(in_array($state, ['completed','pending']) || $paylog->pay_status==PayStatusEnum::PAID) {
                         throw new Exception(sprintf('[%d]订单存在多笔支付[%s]', $id, $paylog->out_trade_no));
                     }
                 }

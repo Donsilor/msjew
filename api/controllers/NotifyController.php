@@ -227,6 +227,11 @@ class NotifyController extends Controller
                 return exit(Json::encode($result));
             }
 
+            //判断订单支付状态
+            if ($model->pay_status == StatusEnum::ENABLED) {
+                return exit(Json::encode($result));
+            };
+
             try {
 
                 $response = Yii::$app->pay->Paypal()->notify(['model'=>$model]);

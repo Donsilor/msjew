@@ -233,6 +233,7 @@ DOM;
                 <div class="box-body col-lg-9">
                     <div class="row">
                         <div class="col-lg-6">
+                            <?php  if($model->express_id){?>
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_id') ?>：</label></div>
                                 <div class="col-lg-9"><?= $model->express->lang->express_name;?></div>
@@ -245,6 +246,7 @@ DOM;
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('delivery_time') ?>：</label></div>
                                 <div class="col-lg-9"><?= date('Y-m-d H:i:s',$model->delivery_time)?></div>
                             </div>
+                            <?php } ?>
                             <div class="row">
                                 <div class="col-lg-3 text-right">
                                     <label><?= $model->getAttributeLabel('seller_remark') ?>：</label></div>

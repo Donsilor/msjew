@@ -302,8 +302,8 @@ class PayService extends Service
                     ];
 
                     $result = Order::updateAll($update, ['id' => $order->id, 'order_status'=>OrderStatusEnum::ORDER_UNPAID]);
-                    
-                    if(!$result) {
+
+                    if($result) {
                         $accountUpdata = [
                              'pay_amount'=> $pay_amount,                            
                         ];

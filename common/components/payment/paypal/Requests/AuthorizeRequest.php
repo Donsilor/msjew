@@ -90,6 +90,10 @@ class AuthorizeRequest extends AbstractPaypalRequest
             if($payment->intent=="order") {
                 $order = $this->getOrder($payment);
 
+                if($this->getParameter('isVerify') && !$order) {
+                    return new AuthorizeResponse($this, ['result' => 'payer']);
+                }
+
                 if (!$order) {
                     $this->execute($payment);
                     $order = $this->getOrder($payment);
@@ -111,6 +115,10 @@ class AuthorizeRequest extends AbstractPaypalRequest
             if($payment->intent=="sale") {
                 //获取订单
                 $order = $this->getSale($payment);
+
+                if($this->getParameter('isVerify') && !$order) {
+                    return new AuthorizeResponse($this, ['result' => 'payer']);
+                }
 
                 if (!$order) {
                     $this->execute($payment);

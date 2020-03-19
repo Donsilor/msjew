@@ -15,6 +15,15 @@ abstract class AbstractPaypalRequest extends AbstractRequest
      * @param $value
      * @return AbstractPaypalRequest
      */
+    public function setIsVerify($value)
+    {
+        return $this->setParameter('isVerify', $value);
+    }
+
+    /**
+     * @param $value
+     * @return AbstractPaypalRequest
+     */
     public function setClientId($value)
     {
         return $this->setParameter('clientId', $value);

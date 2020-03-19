@@ -150,13 +150,13 @@ class PayForm extends Model
                         /**
                          * @var $state AbstractResponse
                          */
-                        $state = $pay->verify(['model'=>$paylog]);
+                        $state = $pay->verify(['model'=>$paylog, 'isVerify'=>true]);
 
                         if(in_array($state->getCode(), ['null'])) {
                             throw new UnprocessableEntityHttpException(sprintf('[%s]订单支付验证出错，请重试', $order->order_sn));
                         }
-                        elseif(in_array($state->getCode(), ['completed','pending']) || $paylog->pay_status==PayStatusEnum::PAID) {
-                            throw new UnprocessableEntityHttpException(sprintf('[%s]订单存正在支付中...', $order->order_sn));
+                        elseif(in_array($state->getCode(), ['completed', 'pending', 'payer']) || $paylog->pay_status==PayStatusEnum::PAID) {
+                            throw new UnprocessableEntityHttpException(sprintf('[%s]订单正在支付中...', $order->order_sn));
                         }
                     }
                 }

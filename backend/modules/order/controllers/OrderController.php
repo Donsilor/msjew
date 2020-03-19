@@ -218,7 +218,7 @@ class OrderController extends BaseController
                     /**
                      * @var $state AbstractResponse
                      */
-                    $state = $pay->verify(['model'=>$paylog]);
+                    $state = $pay->verify(['model'=>$paylog, 'isVerify'=>true]);
 
                     //当前这笔订单的付款
                     if($paylog->out_trade_no==$model->pay_sn) {
@@ -227,7 +227,7 @@ class OrderController extends BaseController
                     elseif(in_array($state->getCode(), ['null'])) {
                         throw new Exception(sprintf('[%d]订单支付[%s]验证出错，请重试', $id, $paylog->out_trade_no));
                     }
-                    elseif(in_array($state->getCode(), ['completed','pending']) || $paylog->pay_status==PayStatusEnum::PAID) {
+                    elseif(in_array($state->getCode(), ['completed','pending', 'payer']) || $paylog->pay_status==PayStatusEnum::PAID) {
                         throw new Exception(sprintf('[%d]订单存在多笔支付[%s]', $id, $paylog->out_trade_no));
                     }
                 }

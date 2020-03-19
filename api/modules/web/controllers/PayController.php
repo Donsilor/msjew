@@ -149,11 +149,16 @@ class PayController extends OnAuthController
                 'pay_status' => PayStatusEnum::PAID,
                 'pay_time' => time(),
             ];
-            $updated = PayLog::updateAll($update, ['pay_status'=>PayStatusEnum::UNPAID, $model->id]);
+            $updated = PayLog::updateAll($update, ['pay_status'=>PayStatusEnum::UNPAID, 'id'=>$model->id]);
 
             if(!$updated) {
                 throw new \Exception('该笔订单已支付~！');
             }
+
+            $model->refresh();
+
+            //更新订单状态
+            Yii::$app->services->pay->notify($model, null);
 
             /**
              * @var $response AbstractResponse
@@ -162,8 +167,6 @@ class PayController extends OnAuthController
 
             //支付成功
             if($response->isPaid()) {
-
-                Yii::$app->services->pay->notify($model, null);
 
                 $result['verification_status'] = 'completed';
 

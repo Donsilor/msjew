@@ -252,12 +252,14 @@ class NotifyController extends Controller
                     throw new \Exception('该笔订单已支付~！'.$model->order_sn);
                 }
 
+                $model->refresh();
+
+                //更新订单记录
+                Yii::$app->services->pay->notify($model, $this->payment);
+
                 $response = Yii::$app->pay->Paypal()->notify(['model'=>$model]);
 
                 if ($response->isPaid()) {
-
-                    //更新订单记录
-                    Yii::$app->services->pay->notify($model, $this->payment);
 
                     $transaction->commit();
 

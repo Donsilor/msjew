@@ -241,28 +241,32 @@ class NotifyController extends Controller
 
             try {
 
+                //更新支付记录
                 $update = [
                     'pay_fee' => $model->total_fee,
                     'pay_status' => PayStatusEnum::PAID,
                     'pay_time' => time(),
                 ];
                 $updated = PayLog::updateAll($update, ['pay_status'=>PayStatusEnum::UNPAID, $model->id]);
-
                 if(!$updated) {
-                    throw new \Exception('该笔订单已支付~！');
+                    throw new \Exception('该笔订单已支付~！'.$model->order_sn);
                 }
 
                 $response = Yii::$app->pay->Paypal()->notify(['model'=>$model]);
 
                 if ($response->isPaid()) {
 
+                    //更新订单记录
                     Yii::$app->services->pay->notify($model, $this->payment);
 
                     $transaction->commit();
 
                     $result['verification_status'] = 'SUCCESS';
                 }
+                else {
 
+                    throw new \Exception('该笔订单验证异常~！'.$model->order_sn);
+                }
             } catch (\Exception $e) {
 
                 $transaction->rollBack();

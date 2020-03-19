@@ -2,6 +2,7 @@
 
 namespace api\modules\web\controllers;
 
+use common\enums\PayStatusEnum;
 use common\enums\StatusEnum;
 use common\helpers\ArrayHelper;
 use common\helpers\FileHelper;
@@ -120,11 +121,16 @@ class PayController extends OnAuthController
         //获取操作实例
         $returnUrl = Yii::$app->request->post('return_url', null);
 
+        $transaction = Yii::$app->db->beginTransaction();
+
         try {
             $urlInfo = parse_url($returnUrl);
             $query = parse_query($urlInfo['query']);
 
             //获取支付记录模型
+            /**
+             * @var $model PayLog
+             */
             $model = $this->getPayModelByReturnUrlQuery($query);
 
             if(empty($model)) {
@@ -133,10 +139,21 @@ class PayController extends OnAuthController
             }
 
             //判断订单支付状态
-            if ($model->pay_status == StatusEnum::ENABLED) {
+            if ($model->pay_status == PayStatusEnum::PAID) {
                 $result['verification_status'] = 'completed';
                 return $result;
-            };
+            }
+
+            $update = [
+                'pay_fee' => $model->total_fee,
+                'pay_status' => PayStatusEnum::PAID,
+                'pay_time' => time(),
+            ];
+            $updated = PayLog::updateAll($update, ['pay_status'=>PayStatusEnum::UNPAID, $model->id]);
+
+            if(!$updated) {
+                throw new \Exception('该笔订单已支付~！');
+            }
 
             /**
              * @var $response AbstractResponse
@@ -145,13 +162,12 @@ class PayController extends OnAuthController
 
             //支付成功
             if($response->isPaid()) {
-                //操作成功，则返回 true .
-                if ($this->pay($model)) {
-                    $result['verification_status'] = 'completed';
-                }
-                else {
-                    throw new \Exception('数据库操作异常');
-                }
+
+                Yii::$app->services->pay->notify($model, null);
+
+                $result['verification_status'] = 'completed';
+
+                $transaction->commit();
             }
             else {
                 if($response->getCode() == 'pending') {
@@ -164,8 +180,11 @@ class PayController extends OnAuthController
                 else {
                     $result['verification_status'] = 'null';
                 }
+                $transaction->rollBack();
             }
         } catch (\Exception $e) {
+            $transaction->rollBack();
+
             // 记录报错日志
             $logPath = $this->getLogPath('error');
             FileHelper::writeLog($logPath, $e->getMessage());

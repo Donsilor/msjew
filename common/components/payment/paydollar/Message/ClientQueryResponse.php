@@ -29,7 +29,7 @@ class ClientQueryResponse extends AbstractResponse
             return null;
         }
 
-        switch($this->data['result'])
+        switch($this->data['prc'])
         {
             case '0':
                 return 'completed';

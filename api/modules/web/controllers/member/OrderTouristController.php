@@ -65,6 +65,11 @@ class OrderTouristController extends OnAuthController
             else {
                 //按单号支付
                 $order = OrderTourist::find()->where(['order_sn'=>$orderSn])->one();
+
+                if(!$order) {
+                    throw new UnprocessableEntityHttpException('系统忙，请稍后再试~！');
+                }
+
                 $orderId = $order->id;
             }
 

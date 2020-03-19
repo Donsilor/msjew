@@ -2,8 +2,10 @@
 
 namespace api\controllers;
 
+use common\enums\PayStatusEnum;
 use common\models\common\PayLog;
 use Yii;
+use yii\db\Exception;
 use yii\web\Controller;
 use yii\helpers\Json;
 use yii\web\UnprocessableEntityHttpException;
@@ -221,6 +223,11 @@ class NotifyController extends Controller
                 $paymentId = $data['resource']['parent_payment'];
             }
 
+            $transaction = Yii::$app->db->beginTransaction();
+
+            /**
+             * @var $model PayLog
+             */
             $model = PayLog::find()->where(['transaction_id'=>$paymentId])->one();
 
             if(!$model) {
@@ -228,28 +235,38 @@ class NotifyController extends Controller
             }
 
             //判断订单支付状态
-            if ($model->pay_status == StatusEnum::ENABLED) {
+            if ($model->pay_status == PayStatusEnum::PAID) {
                 return exit(Json::encode($result));
-            };
+            }
 
             try {
+
+                $update = [
+                    'pay_fee' => $model->total_fee,
+                    'pay_status' => PayStatusEnum::PAID,
+                    'pay_time' => time(),
+                ];
+                $updated = PayLog::updateAll($update, ['pay_status'=>PayStatusEnum::UNPAID, $model->id]);
+
+                if(!$updated) {
+                    throw new \Exception('该笔订单已支付~！');
+                }
 
                 $response = Yii::$app->pay->Paypal()->notify(['model'=>$model]);
 
                 if ($response->isPaid()) {
 
-                    $message = [];//= Yii::$app->request->post();
-                    $message['out_trade_no'] = $model->out_trade_no;
-                    $message['pay_fee'] = $model->total_fee;
-                    // 日志记录
-                    $logPath = $this->getLogPath('paypal_hooks');
-                    FileHelper::writeLog($logPath, Json::encode(ArrayHelper::toArray($message)));
+                    Yii::$app->services->pay->notify($model, $this->payment);
 
-                    if ($this->pay($message)) {
-                        $result['verification_status'] = 'SUCCESS';
-                    }
+                    $transaction->commit();
+
+                    $result['verification_status'] = 'SUCCESS';
                 }
+
             } catch (\Exception $e) {
+
+                $transaction->rollBack();
+
                 // 记录报错日志
                 $logPath = $this->getLogPath('error');
                 FileHelper::writeLog($logPath, $e->getMessage());

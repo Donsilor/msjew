@@ -54,10 +54,14 @@ class AdvertImagesController extends BaseController
         ]);
         
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams,['title','start_end','adv_type']);
+            ->search(Yii::$app->request->queryParams,['title','start_end','adv_type','area_ids']);
         $dataProvider->query->joinWith(['lang']);
         $dataProvider->query->andFilterWhere(['like', 'lang.title',$searchModel->title]) ;
         $dataProvider->query->andWhere(['>','common_advert_images.status',-1]);
+
+        if($searchModel->area_ids){
+            $dataProvider->query->andFilterWhere(['like', 'area_ids',','.$searchModel->area_ids.',']) ;
+        }
 
         $dataProvider->query->joinWith(['cate']);
         $adv_type = $searchModel->adv_type;

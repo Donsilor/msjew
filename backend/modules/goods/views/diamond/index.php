@@ -5,6 +5,14 @@ use common\helpers\Url;
 use yii\grid\GridView;
 use common\helpers\ImageHelper;
 
+$id = $searchModel->id;
+$goods_name = $searchModel->goods_name;
+$goods_sn = $searchModel->goods_sn;
+$cert_id = $searchModel->cert_id;
+$sale_price = $searchModel->sale_price;
+$carat = $searchModel->carat;
+$status = $searchModel->status;
+
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
@@ -18,8 +26,11 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
-                <div class="box-tools">
+                <div class="box-tools"  style="right: 100px;">
                     <?= Html::create(['edit-lang']) ?>
+                </div>
+                <div class="box-tools" >
+                    <a href="<?= Url::to(['export?goods_name='.$goods_name.'&id='.$id.'&goods_sn='.$goods_sn.'&cert_id='.$cert_id.'&sale_price='.$sale_price.'&carat='.$carat.'&status='.$status])?>" class="blue">导出Excel</a>
                 </div>
             </div>
             <div class="box-body table-responsive">

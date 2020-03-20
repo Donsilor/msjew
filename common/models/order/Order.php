@@ -72,7 +72,7 @@ class Order extends \common\models\base\BaseModel
         return [
             'id' => 'ID',
             'merchant_id' => '商户ID',
-            'language' => '下单语言',
+            'language' => '订单语言',
             'order_sn' => '订单编号',
             'pay_sn' => '支付单号',
             'member_id' => '客户',

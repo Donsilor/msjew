@@ -138,7 +138,12 @@ class PayForm extends Model
 
                 $order = Order::find()->where(['id'=>$this->orderId,'member_id'=>$this->memberId])->one();
                 if(empty($order) || $order->order_status != OrderStatusEnum::ORDER_UNPAID) {
-                    throw new UnprocessableEntityHttpException("支付失败,订单状态已变更");
+                    if($order && $order->order_status === OrderStatusEnum::ORDER_PAID) {
+                        throw new UnprocessableEntityHttpException(\Yii::t('payment', 'ORDER_PAID'));
+                    }
+                    else {
+                        throw new UnprocessableEntityHttpException(\Yii::t('payment', 'ORDER_STATUS_CHANGED'));
+                    }
                 }
 
                 //验证重复支付
@@ -153,10 +158,11 @@ class PayForm extends Model
                         $state = $pay->verify(['model'=>$paylog, 'isVerify'=>true]);
 
                         if(in_array($state->getCode(), ['null'])) {
-                            throw new UnprocessableEntityHttpException(sprintf('[%s]订单支付验证出错，请重试', $order->order_sn));
+                            throw new UnprocessableEntityHttpException(\Yii::t('payment','ORDER_PAYMENT_VERIFICATION_ERROR'));
                         }
                         elseif(in_array($state->getCode(), ['completed', 'pending', 'payer']) || $paylog->pay_status==PayStatusEnum::PAID) {
-                            throw new UnprocessableEntityHttpException(sprintf('[%s]订单正在支付中...', $order->order_sn));
+                            //此订单正在付款中
+                            throw new UnprocessableEntityHttpException(\Yii::t('payment','ORDER_BEING_PAID'));
                         }
                     }
                 }

@@ -35,26 +35,26 @@ use common\helpers\AmountHelper;
         </tr>
         <tr>
             <td>支付类型</td>
-            <td style="text-align:left"><?= PayEnum::$payTypeExplain[$model['pay_type']]; ?></td>
+            <td style="text-align:left"><?= PayEnum::$payTypeExplain[$model->pay_type]; ?></td>
         </tr>
         <tr>
             <td>商户号</td>
-            <td style="text-align:left"><?= Html::encode($model['mch_id']) ?></td>
+            <td style="text-align:left"><?= Html::encode($model->mch_id) ?></td>
         </tr>
         <tr>
             <td>
                 回执订单号
             </td>
-            <td style="text-align:left"><?= Html::encode($model['transaction_id']) ?></td>
+            <td style="text-align:left"><?= Html::encode($model->transaction_id) ?></td>
         </tr>
         <tr>
             <td>交易类型</td>
-            <td style="text-align:left"><?= Html::encode($model['trade_type']) ?></td>
+            <td style="text-align:left"><?= Html::encode($model->trade_type) ?></td>
         </tr>
         <tr>
             <td>状态</td>
             <td style="text-align:left">
-                <?php if ($model['pay_status'] == StatusEnum::ENABLED) { ?>
+                <?php if ($model->pay_status == StatusEnum::ENABLED) { ?>
                     <span class="label label-primary">支付成功</span>
                 <?php } else { ?>
                     <span class="label label-danger">未支付</span>

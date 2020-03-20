@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
                             'format' => 'raw',
                         ],
                         [
-                            'label' => '状态',
+                            'label' => '状态',                            
                             'value' => function ($model) {
                                 if ($model->pay_status == StatusEnum::ENABLED) {
                                     return '<span class="label label-primary">支付成功</span>';
@@ -70,6 +70,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
                                     return '<span class="label label-danger">未支付</span>';
                                 }
                             },
+                            'filter' => Html::activeDropDownList($searchModel, 'pay_status', \common\enums\PayStatusEnum::getMap(), [
+                                'prompt' => '全部',
+                                'class' => 'form-control',
+                            ]),
                             'format' => 'raw',
                         ],
                         [

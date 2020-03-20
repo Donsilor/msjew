@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
                             'value' => function ($model) {
                                 $total_fee = $model->total_fee > 0 ? $model->total_fee  : 0;
                                 $pay_fee = $model->pay_fee > 0 ? $model->pay_fee  : 0;
-                                $str = '应付金额：' . AmountHelper::outputAmount($total_fee) . '<br>';
+                                $str = '应付金额：' . AmountHelper::outputAmount($total_fee,2,$model->currency) . '<br>';
                                 $str .= '实际支付：' . AmountHelper::outputAmount($pay_fee,2,$model->currency);
                                 return $str;
                             },
@@ -38,11 +38,15 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
                         ],
                         [
                             'label' => '支付来源',
+                            'attribute'=>'order_sn',
                             'value' => function ($model) {
                                 $str = '订单编号：' . $model->order_sn . '<br>';
                                 $str .= '订单类型：' . $model->order_group;
                                 return $str;
                             },
+                            'filter' => Html::activeTextInput($searchModel, 'order_sn', [
+                                'class' => 'form-control',
+                            ]),
                             'format' => 'raw',
                         ],
                         [

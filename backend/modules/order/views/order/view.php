@@ -29,9 +29,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 </ul>
                 <div class="box-body col-lg-12" style="margin-left:9px">
                     <div class="row">
-                        <div class="col-lg-4"><label
-                                    class="text-right col-lg-4"><?= $model->getAttributeLabel('order_sn') ?>
-                                ：</label><?= $model->order_sn ?></div>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('order_sn') ?> ：</label>                        
+                            <?= $model->order_sn ?>
+                        </div>
                         <div class="col-lg-4">
                             <label class="text-right col-lg-4"><?= $model->getAttributeLabel('language') ?>：</label>
                             <?= \common\enums\LanguageEnum::getValue($model->language) ?>
@@ -56,16 +57,19 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-4"><label
-                                    class="text-right col-lg-4"><?= $model->getAttributeLabel('address.mobile') ?>
-                                ：</label><?= $model->address->mobile_code ?>-<?= $model->address->mobile ?></div>
+                         <div class="col-lg-4">
+                        	<label class="text-right col-lg-4"><?= $model->getAttributeLabel('address.mobile') ?>：</label>
+                            <?= $model->address->mobile_code ?>-<?= $model->address->mobile ?>
+                         </div>
 
                         <div class="col-lg-4">
                             <label class="text-right col-lg-4"><?= $model->getAttributeLabel('pay_sn') ?>：</label>
                             <?= $model->pay_sn?>
                         </div>
-                        <div class="col-lg-4"><label class="text-right col-lg-4"><?= $model->getAttributeLabel('payment_status') ?>：</div>
-                        <?= \common\enums\PayStatusEnum::getValue($model->payment_status)?>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('payment_status') ?>：</div>
+                            <?= \common\enums\PayStatusEnum::getValue($model->payment_status)?>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4">

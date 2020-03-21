@@ -213,8 +213,8 @@ $model->style_spec = $style_spec;
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[3]??'';?></li>
             </ul>
-            <div class="box-body col-lg-9">
-            	<div class="row">
+            <div class="box-body">
+            	<div class="row col-lg-9">
                   <?php $model->goods_images = !empty($model->goods_images)?explode(',', $model->goods_images):null;?>      
                   <?= $form->field($model, 'goods_images')->widget(common\widgets\webuploader\Files::class, [
                         'config' => [
@@ -234,18 +234,17 @@ $model->style_spec = $style_spec;
                   ]); ?>
                 </div>
                 <div class="row">
-                    <div class="col-lg-5">
+                    <div class="col-lg-6">
                         <?= $form->field($model, 'style_3ds')->textInput(['maxlength' => true, 'id'=>'ds3']) ?>
                     </div>
-                    <div class="col-lg-5">
+                    <div class="col-lg-4">
                         <?= Html::button('预览',['class'=>'btn btn-info btn-sm','style'=>'margin-top:25px;','onclick'=>"view_3ds()"]) ?>
                     </div>
 
                 </div>
-
-                <div class="row nav-tabs-custom">
+                <div class="row nav-tabs-custom col-lg-10">
     		        <?php echo Html::langTab("tab_body")?>    			      
-        			<div class="tab-content " style="padding-left:10px"> 
+        			<div class="tab-content" style="padding-left:10px"> 
         				<?php 
                 			echo LangBox::widget(['form'=>$form,'model'=>$model,'tab'=>'tab_body','fields'=>[
                 			        'goods_body'=>[
@@ -276,7 +275,7 @@ $model->style_spec = $style_spec;
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[4]??'';?></li>
             </ul>
-            <div class="box-body nav-tabs-custom none-shadow col-lg-9" style="margin-left:10px">
+            <div class="box-body nav-tabs-custom none-shadow" style="margin-left:10px">
                  <?php echo Html::langTab("tab4")?>           
         		  <div class="tab-content">            
                     <?php 

@@ -232,7 +232,7 @@ DOM;
                             <?php  if($model->express_id){?>
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_id') ?>：</label></div>
-                                <div class="col-lg-9"><?= $model->express->lang->express_name;?></div>
+                                <div class="col-lg-9"><?= \Yii::$app->services->express->getExressName($model->express_id);?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_no') ?>：</label></div>

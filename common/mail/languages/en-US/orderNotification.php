@@ -49,7 +49,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 							<?php }elseif($order->order_status == OrderStatusEnum::ORDER_PAID) {?>
 							<dd><span>Payment time：</span><span><?= \Yii::$app->formatter->asDatetime($order->payment_time); ?></span></dd>
 							<?php }elseif($order->order_status == OrderStatusEnum::ORDER_SEND) {?>
-							<dd><span>Logistics Company：</span><span><?= $order->express->lang->express_name;?></span></dd>
+							<dd><span>Logistics Company：</span><span><?= \Yii::$app->services->express->getExressName($order->express_id,$order->language);?></span></dd>
 							<dd><span>Logistics NO：</span><span><?= $order->express_no; ?></span></dd>
 							<dd><span>Delivery Time：</span><span><?= \Yii::$app->formatter->asDatetime($order->delivery_time); ?></span></dd>
 							<?php }?>

@@ -57,6 +57,23 @@ class ExpressService extends Service
         return ArrayHelper::map($models, 'id', 'name');
 
     }
+    /**
+     * 查询快递名城
+     * @param unknown $id
+     * @param unknown $language
+     * @return unknown|string
+     */
+    public function getExressName($id,$language = null)
+    {
+        if($language === null) {
+            $language = \Yii::$app->params['language'];
+        }
+        $model = ExpressLang::find()->select(['express_name'])->where(['master_id'=>$id,'language'=>$language])->one();
+        if($model) {
+            return $model->express_name;
+        }
+        return '';
+    }
 
 
 

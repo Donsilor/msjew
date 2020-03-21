@@ -209,9 +209,11 @@ class OrderController extends BaseController
                 }
 
                 $isPay = false;
-
                 //查验订单是否有多笔支付
                 foreach ($model->paylogs as $paylog) {
+                    if($paylog->pay_status != PayStatusEnum::PAID) {
+                          continue;
+                    }
                     //获取支付类
                     $pay = Yii::$app->services->pay->getPayByType($paylog->pay_type);
 
@@ -221,13 +223,16 @@ class OrderController extends BaseController
                     $state = $pay->verify(['model'=>$paylog, 'isVerify'=>true]);
 
                     //当前这笔订单的付款
-                    if($paylog->out_trade_no==$model->pay_sn) {
+                    if($paylog->out_trade_no == $model->pay_sn) {
                         $isPay = $state->isPaid();
                     }
                     elseif(in_array($state->getCode(), ['null'])) {
                         throw new Exception(sprintf('[%d]订单支付[%s]验证出错，请重试', $id, $paylog->out_trade_no));
                     }
-                    elseif(in_array($state->getCode(), ['completed','pending', 'payer']) || $paylog->pay_status==PayStatusEnum::PAID) {
+                    /*elseif(in_array($state->getCode(), ['completed','pending', 'payer']) || $paylog->pay_status==PayStatusEnum::PAID) {
+                        throw new Exception(sprintf('[%d]订单存在多笔支付[%s]', $id, $paylog->out_trade_no));
+                    }*/
+                    elseif($state->isPaid()) {
                         throw new Exception(sprintf('[%d]订单存在多笔支付[%s]', $id, $paylog->out_trade_no));
                     }
                 }

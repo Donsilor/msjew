@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_1">
                 <ul class="nav nav-tabs pull-right">
                     <li class="pull-left header"><i class="fa fa-th"></i> 订单信息 <span
-                                class="btn btn-success btn-sm"><?= \common\enums\OrderStatusEnum::getValue($model->order_status) ?></span>
+                                class="label label-primary"><?= \common\enums\OrderStatusEnum::getValue($model->order_status) ?></span>
                     </li>
                 </ul>
                 <div class="box-body col-lg-12" style="margin-left:9px">

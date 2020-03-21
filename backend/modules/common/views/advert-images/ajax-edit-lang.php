@@ -49,7 +49,7 @@ $form = ActiveForm::begin([
                     ]]);
             ?>
         </div>
-        <?php $model->area_ids = !empty($model->area_ids)?explode(',', $model->area_ids):null;?>
+        <?php $model->area_ids = !empty($model->area_ids)?explode(',', trim($model->area_ids,',')):null;?>
         <?= $form->field($model, 'area_ids')->checkboxList(common\enums\AreaEnum::getMap()) ?>
         <?= $form->field($model, 'type_id')->widget(kartik\select2\Select2::class, [
             'data' => \Yii::$app->services->goodsType->getDropDown(),

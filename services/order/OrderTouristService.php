@@ -145,22 +145,26 @@ class OrderTouristService extends OrderBaseService
         /** @var ShippingAddress $shippingAddressInfo */
         $shippingAddressInfo = $payerInfo->getShippingAddress();
 
-        //创建用户信息
-        $member = new Member();
-        $member->attributes = [
-            'username' => '游客-'.$payerInfo->getPayerId(),
-            'password_hash' => 'password_hash',
-            'firstname' => $payerInfo->getFirstName(),
-            'lastname' => $payerInfo->getLastName(),
-            'realname' => $shippingAddressInfo->getRecipientName(),
-            'email' => $payerInfo->getEmail(),
-            'last_ip' => $orderTourist->ip,
-            'first_ip' => $orderTourist->ip,
-            'first_ip_location' => $ip_location,
+        //用户信息处理
+        $username = '游客-'.$payerInfo->getPayerId();
+        if(!($member = Member::findByUsername($username))) {
+            //创建用户信息
+            $member = new Member();
+            $member->attributes = [
+                'username' => '游客-'.$payerInfo->getPayerId(),
+                'password_hash' => 'password_hash',
+                'firstname' => $payerInfo->getFirstName(),
+                'lastname' => $payerInfo->getLastName(),
+                'realname' => $shippingAddressInfo->getRecipientName(),
+                'email' => $payerInfo->getEmail(),
+                'last_ip' => $orderTourist->ip,
+                'first_ip' => $orderTourist->ip,
+                'first_ip_location' => $ip_location,
 //            'mobile' => $payerInfo->getPhone()
-        ];
-        if(false === $member->save()) {
-            throw new UnprocessableEntityHttpException($this->getError($member));
+            ];
+            if(false === $member->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($member));
+            }
         }
 
         //订单信息
@@ -187,6 +191,7 @@ class OrderTouristService extends OrderBaseService
 //            'order_from' => '',
 //            'order_type' => '',
             'is_tourist' => 1,//游客订单
+            'is_invoice' => empty($orderTourist->invoice)?0:1,//是否开发票
             'api_pay_time' => $payLog->pay_time,
 //            'trade_no' => '',
             'buyer_remark' => '',

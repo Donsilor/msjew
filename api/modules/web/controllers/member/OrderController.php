@@ -132,12 +132,14 @@ class OrderController extends UserAuthController
             if(!$model->validate()) {
                 return ResultHelper::api(422,$this->getError($model));
             }
-            $ressult = \Yii::$app->services->order->createOrder($model->cart_ids, $this->member_id, $model->buyer_address_id,$model->toArray(),$invoiceInfo);
+            $result = \Yii::$app->services->order->createOrder($model->cart_ids, $this->member_id, $model->buyer_address_id,$model->toArray(),$invoiceInfo);
             $trans->commit();
+            //订单发送邮件
+            \Yii::$app->services->order->sendOrderNotification($result['order_id']);
             return [
-                    "coinType" => $ressult['currency'],
-                    "orderAmount"=> $ressult['order_amount'],
-                    "orderId" => $ressult['order_id'],
+                "coinType" => $result['currency'],
+                "orderAmount"=> $result['order_amount'],
+                "orderId" => $result['order_id'],
             ];            
         }catch(Exception $e) {
             

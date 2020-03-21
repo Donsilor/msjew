@@ -23,8 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="tab-content">
             <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_1">
                 <ul class="nav nav-tabs pull-right">
-                    <li class="pull-left header"><i class="fa fa-th"></i> 订单信息 <span
-                                class="btn btn-success btn-sm"><?= \common\enums\OrderStatusEnum::getValue($model->order_status) ?></span>
+                    <li class="pull-left header"><i class="fa fa-th"></i> 订单信息&nbsp; <span class="label label-primary"><?= \common\enums\OrderStatusEnum::getValue($model->order_status) ?></span>
                     </li>
                 </ul>
                 <div class="box-body col-lg-12" style="margin-left:9px">
@@ -232,7 +231,11 @@ DOM;
                             <?php  if($model->express_id){?>
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_id') ?>：</label></div>
+<<<<<<< HEAD
                                 <div class="col-lg-9"><?= \Yii::$app->services->express->getExressName($model->express_id);?></div>
+=======
+                                <div class="col-lg-9"><?= \common\enums\ExpressEnum::getValue($model->express_id);?></div>
+>>>>>>> ab3cfd7a76b613775d8a279f92f90733499239c1
                             </div>
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_no') ?>：</label></div>

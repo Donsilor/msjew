@@ -20,6 +20,8 @@ class BaseController extends Controller
 {
     use BaseAction;
     use Page;
+    
+    protected $noAuthOptional = [];
     /**
      * @return array
      */
@@ -64,6 +66,13 @@ class BaseController extends Controller
         if (in_array($permissionName, Yii::$app->params['noAuthRoute'])) {
             return true;
         }
+        
+        //权限白名单
+        $actionId = Yii::$app->controller->action->id;
+        if(in_array($actionId,$this->noAuthOptional)) {
+            return true;
+        }
+            
         // 开始权限校验
         if (!Auth::verify($permissionName)) {
             throw new UnauthorizedHttpException('对不起，您现在还没获此操作的权限');

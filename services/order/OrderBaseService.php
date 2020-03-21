@@ -31,18 +31,15 @@ class OrderBaseService extends Service
             if(RegularHelper::verify('email',$order->member->email)) {
                 $usage = EmailLog::$orderStatusMap[$order->order_status] ?? '';
                 if($usage && $order->address->email) {
-                    \Yii::$app->services->mailer->send($order->address->email,$usage,['code'=>$order->id],$order->language);
+                    \Yii::$app->services->mailer->queue(true)->send($order->address->email,$usage,['code'=>$order->id],$order->language);
                 }
             }
-            return;
-        }
-
-        if(RegularHelper::verify('email',$order->member->username)) {
+        }elseif(RegularHelper::verify('email',$order->member->username)) {
             $usage = EmailLog::$orderStatusMap[$order->order_status] ?? '';
             if($usage && $order->address->email) {
-                \Yii::$app->services->mailer->send($order->address->email,$usage,['code'=>$order->id],$order->language);
+                \Yii::$app->services->mailer->queue(true)->send($order->address->email,$usage,['code'=>$order->id],$order->language);
             }
-        }else if($order->address->mobile){
+        }elseif($order->address->mobile){
             if($order->order_status == OrderStatusEnum::ORDER_SEND) {
                 $params = [
                     'code' =>$order->id,
@@ -51,7 +48,7 @@ class OrderBaseService extends Service
                     'company_name'=>'BDD Co.',
                     'company_email' => 'admin@bddco.com'
                 ];
-                \Yii::$app->services->sms->send($order->address->mobile,SmsLog::USAGE_ORDER_SEND,$params,$order->language);
+                \Yii::$app->services->sms->queue(true)->send($order->address->mobile,SmsLog::USAGE_ORDER_SEND,$params,$order->language);
             }
         }
     }

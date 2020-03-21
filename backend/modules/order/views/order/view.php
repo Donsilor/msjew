@@ -236,11 +236,7 @@ DOM;
                             <?php  if($model->express_id){?>
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_id') ?>：</label></div>
-<<<<<<< HEAD
                                 <div class="col-lg-9"><?= \Yii::$app->services->express->getExressName($model->express_id);?></div>
-=======
-                                <div class="col-lg-9"><?= \common\enums\ExpressEnum::getValue($model->express_id);?></div>
->>>>>>> ab3cfd7a76b613775d8a279f92f90733499239c1
                             </div>
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_no') ?>：</label></div>

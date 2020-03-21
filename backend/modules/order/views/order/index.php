@@ -233,28 +233,33 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                             [
                                 'header' => "操作",
+                                //'headerOptions' => ['class' => 'col-md-1'],
                                 'class' => 'yii\grid\ActionColumn',
-                                'template' => '{operation}',
+                                'template' => '{audit} {delivery} {follower}',
                                 'buttons' => [
-//                                    'view' => function ($url, $model, $key) {
-//                                        return Html::a('详情', ['view', 'id' => $model->id], ['class' => 'btn btn-info btn-sm']);
-//                                    },
-                                    'operation' => function ($url, $model, $key) {
-                                        $html = '';
-                                        $html .= Html::edit(['edit-follower', 'id' => $model->id], '跟进', [
+                                    'follower' => function ($url, $model, $key) {
+                                        return Html::edit(['edit-follower', 'id' => $model->id], '跟进', [
                                             'data-toggle' => 'modal',
                                             'data-target' => '#ajaxModal',
-                                        ]);
+                                            'class'=>'btn btn-default btn-sm'
+                                        ]);                                        
+                                    },
+                                    'audit' => function ($url, $model, $key) {
+                    
                                         if($model->order_status == \common\enums\OrderStatusEnum::ORDER_PAID) {
-                                            $html .= Html::batchAudit();
-                                        }
+                                            return Html::batchAudit(['ajax-batch-audit'], '审核', [
+                                                //'class'=>'label bg-green'
+                                            ]);
+                                        }                                        
+                                    },
+                                    'delivery' => function ($url, $model, $key) {                     
                                         if($model->order_status == \common\enums\OrderStatusEnum::ORDER_CONFIRM) {
-                                            $html .= Html::edit(['edit-delivery', 'id' => $model->id], '发货', [
+                                            return  Html::edit(['edit-delivery', 'id' => $model->id], '发货', [
                                                 'data-toggle' => 'modal',
                                                 'data-target' => '#ajaxModal',
+                                                'class'=>'btn btn-success btn-sm'
                                             ]);
                                         }
-                                        return $html;
                                     }
                                 ],
                             ],

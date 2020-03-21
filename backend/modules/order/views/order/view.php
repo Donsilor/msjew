@@ -65,6 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $model->pay_sn?>
                         </div>
                         <div class="col-lg-4"><label class="text-right col-lg-4"><?= $model->getAttributeLabel('payment_status') ?>：</div>
+                        <?= \common\enums\PayStatusEnum::getValue($model->payment_status)?>
                     </div>
                     <div class="row">
                         <div class="col-lg-4">

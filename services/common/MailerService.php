@@ -195,10 +195,7 @@ class MailerService extends Service
         $log = new EmailLog();
         $log = $log->loadDefaultValues();
         $log->attributes = $data;
-        $log->save();
-        if(!$log) {
-            echo $log->getErrors();exit;
-        }
+        $log->save(false);
         return $log;
     }
 }

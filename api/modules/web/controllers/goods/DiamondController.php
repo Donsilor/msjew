@@ -280,7 +280,7 @@ class DiamondController extends OnAuthController
         $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit,$order, $fields ,$language);
         $webSite = array();
-        $webSite['moduleTitle'] = '最畅销订婚戒指';
+        $webSite['moduleTitle'] = \Yii::t('common','最畅销订婚戒指');
 
         $type_id = 12; //不要改动
         $webSite['type'] = $type_id;

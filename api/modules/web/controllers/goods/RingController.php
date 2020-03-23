@@ -119,7 +119,7 @@ class RingController extends OnAuthController
         }
         $style_list = $query->asArray()->select($fields)->all();
         $ring_web_site = array();
-        $ring_web_site['moduleTitle'] = '最暢銷訂婚戒指';
+        $ring_web_site['moduleTitle'] = \Yii::t('common','最畅销订婚戒指');
         $ring_web_site['id'] = $type_id;
         foreach ($style_list as $val){
             $moduleGoods = array();
@@ -136,16 +136,16 @@ class RingController extends OnAuthController
 
         $where = ['a.attr_id'=>26, 'a.attr_value_id'=>41];
         $man_web_site = $this->getAdvertStyle($where);
-        $man_web_site['moduleTitle'] = '自由搭配 爱我所爱';
+        $man_web_site['moduleTitle'] = \Yii::t('common','自由搭配 爱我所爱');
         $man_web_site['recommendInfo'] = 'Go for the traditional, classic wedding band, or dare to be different with a unique alternative metal wedding ring made from cobalt, tantalum or titanium.';
-        $man_web_site['title'] = '男士结婚戒指';
+        $man_web_site['title'] = \Yii::t('common','男士结婚戒指');
         $man_web_site['id'] = $type_id;
 
         $where = ['a.attr_id'=>26, 'a.attr_value_id'=>42];
         $woman_web_site = $this->getAdvertStyle($where);
-        $woman_web_site['moduleTitle'] = '自由搭配 爱我所爱';
+        $woman_web_site['moduleTitle'] = \Yii::t('common','自由搭配 爱我所爱');
         $woman_web_site['recommendInfo'] = 'Go for the traditional, classic wedding band, or dare to be different with a unique alternative metal wedding ring made from cobalt, tantalum or titanium.';
-        $woman_web_site['title'] = '女士结婚戒指';
+        $woman_web_site['title'] = \Yii::t('common','女士结婚戒指');
         $woman_web_site['id'] = $type_id;
 
 

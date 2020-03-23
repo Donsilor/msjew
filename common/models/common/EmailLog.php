@@ -114,7 +114,7 @@ class EmailLog extends \common\models\base\BaseModel
      */
     public function beforeSave($insert)
     {
-        /* if ($this->isNewRecord) {
+        /* if (!$this->ip) {
             $this->ip = Yii::$app->request->userIP?Yii::$app->request->userIP:$this->ip;
         } */
         

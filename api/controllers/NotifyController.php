@@ -2,8 +2,10 @@
 
 namespace api\controllers;
 
+use common\enums\PayStatusEnum;
 use common\models\common\PayLog;
 use Yii;
+use yii\db\Exception;
 use yii\web\Controller;
 use yii\helpers\Json;
 use yii\web\UnprocessableEntityHttpException;
@@ -209,33 +211,68 @@ class NotifyController extends Controller
         }
 
         //买家付款事件
-        if(!empty($data['event_type']) && $data['event_type']=='PAYMENTS.PAYMENT.CREATED') {
-            $paymentId = $data['resource']['id'];
+        if(!empty($data['event_type']) && in_array($data['event_type'],['PAYMENTS.PAYMENT.CREATED', 'PAYMENT.SALE.COMPLETED'])) {
 
+            //创建订单
+            if($data['event_type']=='PAYMENTS.PAYMENT.CREATED') {
+                $paymentId = $data['resource']['id'];
+            }
+
+            //订单成功
+            if($data['event_type']=='PAYMENT.SALE.COMPLETED') {
+                $paymentId = $data['resource']['parent_payment'];
+            }
+
+            $transaction = Yii::$app->db->beginTransaction();
+
+            /**
+             * @var $model PayLog
+             */
             $model = PayLog::find()->where(['transaction_id'=>$paymentId])->one();
 
             if(!$model) {
                 return exit(Json::encode($result));
             }
 
+            //判断订单支付状态
+            if ($model->pay_status == PayStatusEnum::PAID) {
+                return exit(Json::encode($result));
+            }
+
             try {
-                
-                $notify = Yii::$app->pay->Paypal()->notify(['model'=>$model]);
 
-                if ($notify) {
+                //更新支付记录
+                $update = [
+                    'pay_fee' => $model->total_fee,
+                    'pay_status' => PayStatusEnum::PAID,
+                    'pay_time' => time(),
+                ];
+                $updated = PayLog::updateAll($update, ['pay_status'=>PayStatusEnum::UNPAID, $model->id]);
+                if(!$updated) {
+                    throw new \Exception('该笔订单已支付~！'.$model->order_sn);
+                }
 
-                    $message = [];//= Yii::$app->request->post();
-                    $message['out_trade_no'] = $model->out_trade_no;
-                    $message['pay_fee'] = $model->total_fee;
-                    // 日志记录
-                    $logPath = $this->getLogPath('paypal_hooks');
-                    FileHelper::writeLog($logPath, Json::encode(ArrayHelper::toArray($message)));
+                $model->refresh();
 
-                    if ($this->pay($message)) {
-                        $result['verification_status'] = 'SUCCESS';
-                    }
+                //更新订单记录
+                Yii::$app->services->pay->notify($model, $this->payment);
+
+                $response = Yii::$app->pay->Paypal()->notify(['model'=>$model]);
+
+                if ($response->isPaid()) {
+
+                    $transaction->commit();
+
+                    $result['verification_status'] = 'SUCCESS';
+                }
+                else {
+
+                    throw new \Exception('该笔订单验证异常~！'.$model->order_sn);
                 }
             } catch (\Exception $e) {
+
+                $transaction->rollBack();
+
                 // 记录报错日志
                 $logPath = $this->getLogPath('error');
                 FileHelper::writeLog($logPath, $e->getMessage());

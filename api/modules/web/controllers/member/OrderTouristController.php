@@ -35,21 +35,30 @@ class OrderTouristController extends OnAuthController
     public function actionCreate()
     {
         $goodsCartList = \Yii::$app->request->post('goodsCartList');
+
         $invoiceInfo = \Yii::$app->request->post('invoice');
         if (empty($goodsCartList)) {
             return ResultHelper::api(422, "goodsCartList不能为空");
         }
+        $orderSn = \Yii::$app->request->post('orderSn');
 
-        //验证产品数据
-        $cart_list = array();
-        foreach ($goodsCartList as $cartGoods) {
-            $model = new CartForm();
-            $model->attributes = $cartGoods;
-            if (!$model->validate()) {
-                // 返回数据验证失败
-                throw new UnprocessableEntityHttpException($this->getError($model));
+
+        if(empty($orderSn)) {
+            if (empty($goodsCartList)) {
+                return ResultHelper::api(422, "goodsCartList不能为空");
             }
-            $cart_list[] = $model->toArray();
+
+            //验证产品数据
+            $cart_list = array();
+            foreach ($goodsCartList as $cartGoods) {
+                $model = new CartForm();
+                $model->attributes = $cartGoods;
+                if (!$model->validate()) {
+                    // 返回数据验证失败
+                    throw new UnprocessableEntityHttpException($this->getError($model));
+                }
+                $cart_list[] = $model->toArray();
+            }
         }
 
         try {

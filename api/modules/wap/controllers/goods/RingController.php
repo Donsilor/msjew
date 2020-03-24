@@ -37,21 +37,21 @@ class RingController extends OnAuthController
     public function actionSearch(){
         $sort_map = [
             "sale_price"=>'m.sale_price',//价格
-            "sale_volume"=>'m.sale_volume',//销量
+            "sale_volume"=>'virtual_volume',//销量
         ];
         //$type_id = \Yii::$app->request->get("type_id", 12);//产品线ID
         $order_param = \Yii::$app->request->post("orderParam");//排序参数
         $order_type = \Yii::$app->request->post("orderType", 1);//排序方式 1-升序；2-降序;
 
         //排序
-        $order = '';
+        $order = 'virtual_volume desc';
         if(!empty($order_param)){
           $order_type = $order_type == 1? "asc": "desc";
           $order = $sort_map[$order_param]. " ".$order_type;
         }
 
 
-        $fields = ['m.id','m.ring_sn','lang.ring_name','m.ring_images','m.sale_price','m.ring_style','m.status'];
+        $fields = ['m.id','m.ring_sn','lang.ring_name','m.ring_images','m.sale_price','m.ring_style','m.status','m.virtual_volume'];
         $query = Ring::find()->alias('m')->select($fields)
             ->innerJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'");
 

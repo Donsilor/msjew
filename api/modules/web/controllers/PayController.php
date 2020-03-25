@@ -121,22 +121,26 @@ class PayController extends OnAuthController
         //获取操作实例
         $returnUrl = Yii::$app->request->post('return_url', null);
 
+        $urlInfo = parse_url($returnUrl);
+        $query = parse_query($urlInfo['query']);
+
+        //获取支付记录模型
+        /**
+         * @var $model PayLog
+         */
+        $model = $this->getPayModelByReturnUrlQuery($query);
+
+        if(empty($model)) {
+            $result['verification_status'] = 'failed';
+            return $result;
+        }
+
+        //记录验证日志
+        Yii::$app->services->actionLog->create('verify', $model->out_trade_no);
+
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
-            $urlInfo = parse_url($returnUrl);
-            $query = parse_query($urlInfo['query']);
-
-            //获取支付记录模型
-            /**
-             * @var $model PayLog
-             */
-            $model = $this->getPayModelByReturnUrlQuery($query);
-
-            if(empty($model)) {
-                $result['verification_status'] = 'failed';
-                return $result;
-            }
 
             //判断订单支付状态
             if ($model->pay_status == PayStatusEnum::PAID) {

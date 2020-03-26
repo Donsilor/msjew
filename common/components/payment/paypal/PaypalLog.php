@@ -14,7 +14,7 @@ class PaypalLog {
     {   
         $fileName = $fileName ? $fileName :"paypal-" . date('Y-m-d') . ".log";
         $message = "[".date('Y-m-d H:i:s')."]".$message;
-        FileHelper::writeLog(self::$logPath."/".$fileName, $message);
+        FileHelper::writeLog(self::logPath()."/".$fileName, $message);
     }
     /**
      * 日志目录

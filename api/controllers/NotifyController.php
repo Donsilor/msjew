@@ -285,7 +285,9 @@ class NotifyController extends Controller
 
                 $transaction->rollBack();
                 
-                $messsage = $logPrix.'Notify Exception:'.$e->getCode().'|'.$e->getMessage().PHP_EOL;
+                $messsage = $logPrix.'Notify Exception:'.PHP_EOL;
+                $messsage = $logPrix.'Exception->getMessage:'.$e->getCode().' '.$e->getMessage().PHP_EOL;
+                $messsage = $logPrix.'Exception->trace:'.$e->getTraceAsString().PHP_EOL;
                 PaypalLog::writeLog($messsage,'notify-'.date('Y-m-d').'.log');
             }
         }

@@ -85,7 +85,8 @@ abstract class AbstractPaypalRequest extends AbstractRequest
         // Comment this line out and uncomment the PP_CONFIG_PATH
         // 'define' block if you want to use static file
         // based configuration
-
+        
+        PaypalLog::mkDirs(PaypalLog::logPath());        
         $apiContext->setConfig(
             array(
                 'mode' => $sandbox ? 'sandbox' : 'live',

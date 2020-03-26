@@ -167,7 +167,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             <div class="col-lg-6">
                                 <div class="row">
-                                    <?= Html::create(['ele-invoice?order_id='.$model->id], '预览', [
+                                    <?= Html::create(['ele-invoice-send?order_id='.$model->id], '预览', [
                                         'class' => 'btn btn-primary btn-xs openIframe1','data'=>['title'=>'电子发票','width'=>'80%','height'=>'80%']
                                     ])?>
                                 </div>
@@ -178,10 +178,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ])?>
                                 </div>
                                 <div class="row" style="margin-top:20px; ">
-                                    <?= Html::create(['ele-invoice-send?order_id='.$model->id], '发送', [
-                                        'class' => 'btn btn-primary btn-xs openIframe2','data'=>['title'=>'电子发票','width'=>'80%','height'=>'80%']
-                                    ])?>
-                                    <?= Html::button('发送',['class'=>'btn btn-info btn-sm'])?>
+                                    <?= Html::button('发送',['class'=>'btn btn-info btn-sm ele-invoice-send'])?>
                                 </div>
                                 <div class="row" style="margin-top:20px; ">
                                     <?= Html::a('pdf','pdf')?>
@@ -375,6 +372,7 @@ DOM;
                     dataType: "html",
                     data: form.serialize(),
                     success: function (data) {
+                        console.log(11,content);
                         bdhtml = window.document.body.innerHTML; //获取当前页的html代码
                         window.document.body.innerHTML = data;
                         window.print();
@@ -393,5 +391,25 @@ DOM;
 
         return false;
     }
+
+
+
+    $(document).on("click", ".ele-invoice-send", function (e) {
+        var postUrl = '/backend/index.php/order/order/ele-invoice-send';
+        $.ajax({
+            type: "post",
+            url: postUrl,
+            dataType: "json",
+            data: {order_id:<?= $model->id?>},
+            success: function (data) {
+                if (parseInt(data.code) !== 200) {
+                    rfMsg(data.message);
+                } else {
+                    console.log(data)
+                }
+            }
+        });
+        return false;
+    });
 
 </script>

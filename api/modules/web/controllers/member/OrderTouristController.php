@@ -36,38 +36,42 @@ class OrderTouristController extends OnAuthController
     {
         $orderSn = \Yii::$app->request->post('orderSn');
         $goodsCartList = \Yii::$app->request->post('goodsCartList');
-        $invoiceInfo = \Yii::$app->request->post('invoice');
-        if (empty($goodsCartList)) {
-            return ResultHelper::api(422, "goodsCartList不能为空");
-        }       
-
+        $invoiceInfo = \Yii::$app->request->post('invoice');      
+        if(empty($orderSn)) {
+            if (empty($goodsCartList)) {
+                return ResultHelper::api(422, "goodsCartList不能为空");
+            }            
+            //验证产品数据
+            $cart_list = array();
+            foreach ($goodsCartList as $cartGoods) {
+                $model = new CartForm();
+                $model->attributes = $cartGoods;
+                if (!$model->validate()) {
+                    // 返回数据验证失败
+                    throw new UnprocessableEntityHttpException($this->getError($model));
+                }
+                $cart_list[] = $model->toArray();
+            }
+            $orderId = \Yii::$app->services->orderTourist->createOrder($cart_list, $invoiceInfo);
+        }
+        
         try {
             $trans = \Yii::$app->db->beginTransaction();
-
-            //创建订单
-            if(empty($orderSn) || !($order = self::$modelClass->find()->where(['order_sn'=>$orderSn])->one())) {
-                if (empty($goodsCartList)) {
-                    return ResultHelper::api(422, "goodsCartList不能为空");
+            if(empty($orderSn)) {
+                //创建订单
+                $orderId = \Yii::$app->services->orderTourist->createOrder($cart_list,$invoiceInfo);
+            }
+            else {
+                //按单号支付
+                $order = OrderTourist::find()->where(['order_sn'=>$orderSn])->one();
+                
+                if(!$order) {
+                    throw new UnprocessableEntityHttpException('系统忙，请稍后再试~！');
                 }
                 
-                //验证产品数据
-                $cart_list = array();
-                foreach ($goodsCartList as $cartGoods) {
-                    $model = new CartForm();
-                    $model->attributes = $cartGoods;
-                    if (!$model->validate()) {
-                        // 返回数据验证失败
-                        throw new UnprocessableEntityHttpException($this->getError($model));
-                    }
-                    $cart_list[] = $model->toArray();
-                }
-                $orderId = \Yii::$app->services->orderTourist->createOrder($cart_list, $invoiceInfo);
-            } else {
-                if($order->status > 0) {
-                    throw new UnprocessableEntityHttpException(\Yii::t('payment', 'ORDER_PAID'));
-                }
                 $orderId = $order->id;
-            }            
+            }
+            
 
             //调用支付接口
             $payForm = new PayForm();

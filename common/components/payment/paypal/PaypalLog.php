@@ -5,7 +5,6 @@ use common\helpers\FileHelper;
 
 class PaypalLog {
     
-    public $logPath = \Yii::getAlias('@runtime') . "/pay-logs/paypal/".date('Ym');
     /**
      * 日志写入
      * @param unknown $message
@@ -16,6 +15,14 @@ class PaypalLog {
         $fileName = $fileName ? $fileName :"paypal-" . date('Y-m-d') . ".log";
         $message = "[".date('Y-m-d H:i:s')."]".$message;
         FileHelper::writeLog(self::$logPath."/".$fileName, $message);
+    }
+    /**
+     * 日志目录
+     * @return string
+     */
+    public static function logPath()
+    {
+        return \Yii::getAlias('@runtime') . "/pay-logs/paypal/".date('Ym');
     }
     
 }

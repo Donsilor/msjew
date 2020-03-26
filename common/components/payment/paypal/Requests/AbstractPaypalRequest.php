@@ -90,7 +90,7 @@ abstract class AbstractPaypalRequest extends AbstractRequest
             array(
                 'mode' => $sandbox ? 'sandbox' : 'live',
                 'log.LogEnabled' => true,
-                'log.FileName' => PaypalLog::LOG_PATH.'/debug-'.date('Y-m-d').'.txt',
+                'log.FileName' => PaypalLog::logPath().'/debug-'.date('Y-m-d').'.log',
                 'log.LogLevel' => 'DEBUG', // PLEASE USE `INFO` LEVEL FOR LOGGING IN LIVE ENVIRONMENTS
                 'cache.enabled' => true,
                 //'cache.FileName' => '/PaypalCache' // for determining paypal cache directory

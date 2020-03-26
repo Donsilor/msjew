@@ -13,6 +13,7 @@ use PayPal\Api\RedirectUrls;
 use PayPal\Api\Transaction;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Rest\ApiContext;
+use Omnipay\Paypal\PaypalLog;
 
 class PageRequest extends AbstractPaypalRequest
 {
@@ -106,8 +107,8 @@ class PageRequest extends AbstractPaypalRequest
 
             $payment->create($apiContext);
         } catch (\Exception $ex) {
-            $logPath = \Yii::getAlias('@runtime') . "/paypal-create/" . date('Y_m_d') . '/error.txt';
-            FileHelper::writeLog($logPath, $ex->getMessage());
+            $message = $ex->getMessage();
+            PaypalLog::writeLog($message,'create-'.date('Y-m-d').'.log');
             throw new \Exception('paypal创建订单异常~！');
         }
 

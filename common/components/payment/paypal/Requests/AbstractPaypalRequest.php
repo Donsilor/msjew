@@ -7,6 +7,7 @@ namespace Omnipay\Paypal\Requests;
 use Omnipay\Common\Message\AbstractRequest;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Rest\ApiContext;
+use Omnipay\Paypal\PaypalLog;
 
 abstract class AbstractPaypalRequest extends AbstractRequest
 {
@@ -84,12 +85,13 @@ abstract class AbstractPaypalRequest extends AbstractRequest
         // Comment this line out and uncomment the PP_CONFIG_PATH
         // 'define' block if you want to use static file
         // based configuration
-
+        
+        PaypalLog::mkDirs(PaypalLog::logPath());        
         $apiContext->setConfig(
             array(
                 'mode' => $sandbox ? 'sandbox' : 'live',
                 'log.LogEnabled' => true,
-                'log.FileName' => './paypal-debug.txt',
+                'log.FileName' => PaypalLog::logPath().'/debug-'.date('Y-m-d').'.log',
                 'log.LogLevel' => 'DEBUG', // PLEASE USE `INFO` LEVEL FOR LOGGING IN LIVE ENVIRONMENTS
                 'cache.enabled' => true,
                 //'cache.FileName' => '/PaypalCache' // for determining paypal cache directory

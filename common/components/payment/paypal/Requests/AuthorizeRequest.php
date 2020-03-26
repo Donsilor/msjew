@@ -13,6 +13,7 @@ use PayPal\Api\Payment;
 use PayPal\Api\PaymentExecution;
 use PayPal\Api\Sale;
 use PayPal\Api\Transaction;
+use Omnipay\Paypal\PaypalLog;
 
 class AuthorizeRequest extends AbstractPaypalRequest
 {
@@ -55,11 +56,10 @@ class AuthorizeRequest extends AbstractPaypalRequest
      * @param unknown $message
      */
     public function writeLog($message)
-    {
-        $logPath = \Yii::getAlias('@runtime') . "/pay-logs/paypal/paypal-" . date('Y_m_d') . '.log';
+    {   
         $model = $this->getParameter('model');
-        $message = "[".date('Y-m-d H:i:s')."][".$model->order_sn."]".$message;
-        FileHelper::writeLog($logPath, $message);
+        $message = "[".$model->order_sn."]".$message;
+        PaypalLog::writeLog($message);
     }
     /**
      * @inheritDoc

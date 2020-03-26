@@ -254,9 +254,8 @@ class NotifyController extends Controller
                     PaypalLog::writeLog($logPrix.'更新支付状态失败','notify-'.date('Y-m-d').'.log');
                     throw new \Exception('该笔订单已支付~！'.$model->order_sn);
                 }
-                PaypalLog::writeLog($logPrix.'update refresh begin','notify-'.date('Y-m-d').'.log');
+                
                 $model->refresh();
-                PaypalLog::writeLog($logPrix.'update refresh end','notify-'.date('Y-m-d').'.log');
                 //更新订单记录
                 Yii::$app->services->pay->notify($model, $this->payment);
 

@@ -237,7 +237,7 @@ class NotifyController extends Controller
             $logPrix = "[".$model->order_sn."]";
             //判断订单支付状态
             if ($model->pay_status == PayStatusEnum::PAID) {
-                PaypalLog::writeLog($logPrix.'该笔订单已支付'.__LINE__,'notify-'.date('Y-m-d').'.log');
+                PaypalLog::writeLog($logPrix.'该笔订单已支付','notify-'.date('Y-m-d').'.log');
                 return exit(Json::encode($result));
             }
              
@@ -251,7 +251,7 @@ class NotifyController extends Controller
                 ];
                 $updated = PayLog::updateAll($update, ['pay_status'=>PayStatusEnum::UNPAID, $model->id]);
                 if(!$updated) {
-                    PaypalLog::writeLog($logPrix.'该笔订单已支付'.__LINE__,'notify-'.date('Y-m-d').'.log');
+                    PaypalLog::writeLog($logPrix.'更新支付状态失败','notify-'.date('Y-m-d').'.log');
                     throw new \Exception('该笔订单已支付~！'.$model->order_sn);
                 }
 

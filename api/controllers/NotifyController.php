@@ -287,7 +287,6 @@ class NotifyController extends Controller
                 $messsage = $logPrix.'Notify Exception:'.PHP_EOL;
                 $messsage .= 'Exception->message:'.$e->getCode().'|'.$e->getMessage().PHP_EOL;
                 $messsage .= 'Exception->line:'.$e->getLine().'|'.$e->getFile().PHP_EOL;
-                $messsage .= 'Exception->trace:'.$e->getTraceAsString().PHP_EOL;
                 PaypalLog::writeLog($messsage,'notify-'.date('Y-m-d').'.log');
             }
         }

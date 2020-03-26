@@ -102,7 +102,6 @@ class AuthorizeRequest extends AbstractPaypalRequest
             if($payment->intent == "sale") {
                 //获取订单
                 $order = $this->getSale($payment);
-                
                 if($this->getParameter('isVerify') && !$order) {
                     $this->writeLog("getSale = not is Verify or order is empty");
                     return new AuthorizeResponse($this, ['result' => 'payer']);
@@ -112,8 +111,9 @@ class AuthorizeRequest extends AbstractPaypalRequest
                     $this->execute($payment);
                     $order = $this->getSale($payment);
                 }
-                
                 $result = $order->state;
+                $this->writeLog($payment->intent." state=".$order->state);
+                $this->writeLog($payment->intent." reason_code=".$order->reason_code);
             }
             //担保交易
             elseif($payment->intent == "order") {
@@ -128,15 +128,19 @@ class AuthorizeRequest extends AbstractPaypalRequest
                     $this->execute($payment);
                     $order = $this->getOrder($payment);
                 }
-                //如果已捕获，则跳过
-                //需下载状态列表到备注
+                //order 日志
+                $this->writeLog($payment->intent." state=".$order->state);
+                $this->writeLog($payment->intent." reason_code=".$order->reason_code);
+                
+                //如果已捕获，则跳过 需下载状态列表到备注
                 if(!($capture = $this->getCapture($payment))) {
                     $capture = $this->capture($order);
                 }
                 $result = $capture->state;
-            }            
-            
-            $this->writeLog($payment->intent." state=".$result);
+                //order capture 日志
+                $this->writeLog($payment->intent." capture state=".$capture->state);
+                $this->writeLog($payment->intent." capture reason_code=".$capture->reason_code);
+            }
             
         } catch (\Exception $e) {
             if ($e instanceof \PayPal\Exception\PayPalConnectionException) {

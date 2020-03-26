@@ -249,14 +249,14 @@ class NotifyController extends Controller
                     'pay_status' => PayStatusEnum::PAID,
                     'pay_time' => time(),
                 ];
-                $updated = PayLog::updateAll($update, ['pay_status'=>PayStatusEnum::UNPAID, $model->id]);
+                $updated = PayLog::updateAll($update, [$model->id,'pay_status'=>PayStatusEnum::UNPAID]);
                 if(!$updated) {
                     PaypalLog::writeLog($logPrix.'更新支付状态失败','notify-'.date('Y-m-d').'.log');
                     throw new \Exception('该笔订单已支付~！'.$model->order_sn);
                 }
-
+                PaypalLog::writeLog($logPrix.'update refresh begin','notify-'.date('Y-m-d').'.log');
                 $model->refresh();
-
+                PaypalLog::writeLog($logPrix.'update refresh end','notify-'.date('Y-m-d').'.log');
                 //更新订单记录
                 Yii::$app->services->pay->notify($model, $this->payment);
 

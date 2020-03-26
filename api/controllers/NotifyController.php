@@ -249,14 +249,13 @@ class NotifyController extends Controller
                     'pay_status' => PayStatusEnum::PAID,
                     'pay_time' => time(),
                 ];
-                $updated = PayLog::updateAll($update, ['pay_status'=>PayStatusEnum::UNPAID, $model->id]);
+                $updated = PayLog::updateAll($update, ['id'=>$model->id,'pay_status'=>PayStatusEnum::UNPAID]);
                 if(!$updated) {
                     PaypalLog::writeLog($logPrix.'更新支付状态失败','notify-'.date('Y-m-d').'.log');
                     throw new \Exception('该笔订单已支付~！'.$model->order_sn);
                 }
-
+                
                 $model->refresh();
-
                 //更新订单记录
                 Yii::$app->services->pay->notify($model, $this->payment);
 
@@ -286,9 +285,9 @@ class NotifyController extends Controller
                 $transaction->rollBack();
                 
                 $messsage = $logPrix.'Notify Exception:'.PHP_EOL;
-                $messsage .= $logPrix.'Exception->message:'.$e->getCode().'|'.$e->getMessage().PHP_EOL;
-                $messsage .= $logPrix.'Exception->line:'.$e->getLine().'|'.$e->getFile().PHP_EOL;
-                $messsage .= $logPrix.'Exception->trace:'.$e->getTraceAsString().PHP_EOL;
+                $messsage .= 'Exception->message:'.$e->getCode().'|'.$e->getMessage().PHP_EOL;
+                $messsage .= 'Exception->line:'.$e->getLine().'|'.$e->getFile().PHP_EOL;
+                $messsage .= 'Exception->trace:'.$e->getTraceAsString().PHP_EOL;
                 PaypalLog::writeLog($messsage,'notify-'.date('Y-m-d').'.log');
             }
         }

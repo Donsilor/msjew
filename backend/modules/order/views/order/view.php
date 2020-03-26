@@ -140,28 +140,55 @@ $this->params['breadcrumbs'][] = $this->title;
                 </ul>
                 <div class="box-body col-lg-12" style="margin-left:9px">
                     <?php if($model->invoice) {?>
-                    <div class="row">
-                        <div class="col-lg-4">
-                        <label  class="text-right col-lg-4"><?= $model->getAttributeLabel('invoice.invoice_type') ?>：</label>
-                        <?= \common\enums\InvoiceTypeEnum::getValue($model->invoice->invoice_type) ?></div>
-                        <div class="col-lg-4">
-                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('invoice.invoice_title') ?>：</label>
-                            <?= $model->invoice->invoice_title ?>
+                        <div class="row">
+
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-5 text-right"><?= $model->getAttributeLabel('invoice.invoice_type') ?>：</label></div>
+                                    <div class="col-lg-7"><?= \common\enums\InvoiceTypeEnum::getValue($model->invoice->invoice_type) ?></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-5 text-right"><?= $model->getAttributeLabel('invoice.invoice_title') ?>：</label> </div>
+                                    <div class="col-lg-7"><?= $model->invoice->invoice_title ?></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-5 text-right"><?= $model->getAttributeLabel('invoice.tax_number') ?>：</label></div>
+                                    <div class="col-lg-7"><?= $model->invoice->tax_number ?></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-5 text-right"><?= $model->getAttributeLabel('invoice.is_electronic') ?>：</label></div>
+                                    <div class="col-lg-7"><?= \common\enums\InvoiceElectronicEnum::getValue($model->invoice->is_electronic) ?></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-5 text-right"><?= $model->getAttributeLabel('invoice.email') ?>：</label></div>
+                                    <div class="col-lg-7"><?= $model->invoice->email ?></div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <?= Html::create(['ele-invoice?order_id='.$model->id], '预览', [
+                                        'class' => 'btn btn-primary btn-xs openIframe1','data'=>['title'=>'电子发票','width'=>'80%','height'=>'80%']
+                                    ])?>
+                                </div>
+                                <div class="row" style="margin-top:20px; ">
+                                    <?= Html::edit(['ele-invoice-ajax-edit', 'order_id' => $model->id,'returnUrl' => Url::getReturnUrl()],'编辑', [
+                                        'data-toggle' => 'modal',
+                                        'data-target' => '#ajaxModalLg',
+                                    ])?>
+                                </div>
+                                <div class="row" style="margin-top:20px; ">
+                                    <?= Html::create(['ele-invoice-send?order_id='.$model->id], '发送', [
+                                        'class' => 'btn btn-primary btn-xs openIframe2','data'=>['title'=>'电子发票','width'=>'80%','height'=>'80%']
+                                    ])?>
+                                    <?= Html::button('发送',['class'=>'btn btn-info btn-sm'])?>
+                                </div>
+                                <div class="row" style="margin-top:20px; ">
+                                    <?= Html::a('pdf','pdf')?>
+                                </div>
+
+                            </div>
                         </div>
-                        <div class="col-lg-4">
-                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('invoice.tax_number') ?>：</label>
-                            <?= $model->invoice->tax_number ?>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4"><label
-                                    class="text-right col-lg-4"><?= $model->getAttributeLabel('invoice.is_electronic') ?>
-                                ：</label><?= \common\enums\InvoiceElectronicEnum::getValue($model->invoice->is_electronic) ?></div>
-                        <div class="col-lg-3">
-                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('invoice.email') ?>：</label>
-                            <?= $model->invoice->email ?>
-                        </div>
-                    </div>
                     <?php } else {?>
                     	不开发票
                     <?php }?>
@@ -298,3 +325,73 @@ DOM;
             </div>
         </div>
     </div>
+
+<script>
+    /* 打一个新窗口 */
+    $(document).on("click", ".openIframe1", function (e) {
+
+        var title = $(this).data('title');
+        var width = $(this).data('width');
+        var height = $(this).data('height');
+        var offset = $(this).data('offset');
+        var href = $(this).attr('href');
+
+        if (title == undefined) {
+            title = '基本信息';
+        }
+
+        if (width == undefined) {
+            width = '80%';
+        }
+
+        if (height == undefined) {
+            height = '80%';
+        }
+
+        if (offset == undefined) {
+            offset = "10%";
+        }
+
+        openIframe1(title, width, height, href, offset);
+        e.preventDefault();
+        return false;
+    });
+    // 打一个新窗口
+    function openIframe1(title, width, height, content, offset) {
+        layer.open({
+            type: 2,
+            title: title,
+            shade: 0.3,
+            offset: offset,
+            shadeClose: true,
+            btn: ['打印', '关闭'],
+            yes: function (index, layero) {
+                var body = layer.getChildFrame('body', index);
+                var form = body.find('#w0');
+                var postUrl = content;
+                $.ajax({
+                    type: "post",
+                    url: postUrl,
+                    dataType: "html",
+                    data: form.serialize(),
+                    success: function (data) {
+                        bdhtml = window.document.body.innerHTML; //获取当前页的html代码
+                        window.document.body.innerHTML = data;
+                        window.print();
+                        window.document.body.innerHTML = bdhtml;
+                        layer.close(index);
+                        location.reload();
+                    }
+                });
+            },
+            btn2: function () {
+                layer.closeAll();
+            },
+            area: [width, height],
+            content: content
+        });
+
+        return false;
+    }
+
+</script>

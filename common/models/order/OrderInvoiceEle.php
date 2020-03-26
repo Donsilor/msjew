@@ -2,6 +2,7 @@
 
 namespace common\models\order;
 
+use common\helpers\StringHelper;
 use Yii;
 
 /**
@@ -37,7 +38,8 @@ class OrderInvoiceEle extends \common\models\base\BaseModel
         return [
             [['order_id'], 'required'],
             [['order_id'], 'unique'],
-            [['order_id', 'invoice_date', 'delivery_time', 'updated_at'], 'integer'],
+            [['order_id'], 'integer'],
+            [['invoice_date','language', 'delivery_time','created_at'],'safe'],
             [['sender_name', 'shipper_name'], 'string', 'max' => 50],
             [['sender_address', 'shipper_address'], 'string', 'max' => 255],
             [['express_company_name', 'express_no'], 'string', 'max' => 100],
@@ -53,15 +55,28 @@ class OrderInvoiceEle extends \common\models\base\BaseModel
             'id' => 'ID',
             'order_id' => 'Order ID',
             'invoice_date' => '发票日期',
-            'sender_name' => '发件人',
-            'sender_address' => '发件人地址',
-            'shipper_name' => '托运人',
-            'shipper_address' => '托运人地址',
+            'sender_name' => '托运人',
+            'sender_address' => '托运人地址',
+            'shipper_name' => '进口商',
+            'shipper_address' => '进口商地址',
             'express_company_name' => '运输公司',
             'express_no' => '国际空运单号',
             'delivery_time' => '发货时间',
             'create_at' => '创建时间',
             'updated_at' => '修改时间',
         ];
+    }
+
+    /**
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+
+        $this->invoice_date = StringHelper::dateToInt($this->invoice_date);
+        $this->delivery_time = StringHelper::dateToInt($this->delivery_time);
+
+        return parent::beforeSave($insert);
     }
 }

@@ -3,10 +3,13 @@
 namespace backend\modules\order\controllers;
 
 use backend\controllers\BaseController;
+use common\enums\CurrencyEnum;
 use common\enums\OrderStatusEnum;
 use common\enums\PayStatusEnum;
 use common\helpers\ResultHelper;
 use common\models\order\OrderGoods;
+use common\models\order\OrderGoodsLang;
+use common\models\order\OrderInvoiceEle;
 use Omnipay\Common\Message\AbstractResponse;
 use Yii;
 use common\components\Curd;
@@ -20,6 +23,7 @@ use common\enums\AuditStatusEnum;
 use backend\modules\order\forms\DeliveryForm;
 use common\enums\DeliveryStatusEnum;
 
+use kartik\mpdf\Pdf;
 /**
  * Default controller for the `order` module
  */
@@ -257,6 +261,165 @@ class OrderController extends BaseController
         }
         
         return ResultHelper::json(200, '审核成功', [], true);
+    }
+
+
+    public function actionEleInvoice(){
+
+        $order_id = Yii::$app->request->get("order_id");
+        if(!$order_id){
+            return ResultHelper::json(422, '非法调用');
+        }
+        $order = Order::find()
+            ->where(['id'=>$order_id])
+            ->one();
+        $language = $order->language;
+        $result = array(
+            'invoice_date' => $order->delivery_time,
+            'sender_name' => '',
+            'sender_address'=> '',
+            'shipper_name' => '',
+            'shipper_address' => '',
+            'realname' => $order->address->realname,
+            'address_details' => $order->address->address_details,
+            'express_no' => $order->express_no,
+            'express_company_name' => $order->express_id ? $order->express->lang->express_name:'',
+            'delivery_time' => $order->delivery_time,
+            'country' => $order->address->country_name,
+            'currency' => CurrencyEnum::getValue($order->account->currency),
+            'order_amount' => $order->account->order_amount
+        );
+
+
+        $order_invoice_exe = OrderInvoiceEle::find()
+            ->where(['order_id'=>$order_id])
+            ->one();
+        if($order_invoice_exe){
+            $result['invoice_date'] = $order_invoice_exe['invoice_date'] ? $order_invoice_exe['invoice_date'] : $result['invoice_date'];
+            $result['sender_name'] = $order_invoice_exe['sender_name'] ? $order_invoice_exe['sender_name'] : $result['sender_name'];
+            $result['sender_address'] = $order_invoice_exe['sender_address'] ? $order_invoice_exe['sender_address'] : $result['sender_address'];
+            $result['shipper_name'] = $order_invoice_exe['shipper_name'] ? $order_invoice_exe['shipper_name'] : $result['shipper_name'];
+            $result['shipper_address'] = $order_invoice_exe['shipper_address'] ? $order_invoice_exe['shipper_address'] : $result['shipper_address'];
+            $result['express_company_name'] = $order_invoice_exe['express_company_name'] ? $order_invoice_exe['express_company_name'] : $result['express_company_name'];
+            $result['express_no'] = $order_invoice_exe['express_no'] ? $order_invoice_exe['express_no'] : $result['express_no'];
+            $result['delivery_time'] = $order_invoice_exe['delivery_time'] ? $order_invoice_exe['delivery_time'] : $result['delivery_time'];
+            $result['delivery_time'] = $order_invoice_exe['delivery_time'] ? $order_invoice_exe['delivery_time'] : $result['delivery_time'];
+            $language = $order_invoice_exe['language'] ? $order_invoice_exe['language'] : $language;
+        }
+
+
+        //商品明细
+        $order_goods = OrderGoods::find()->alias('m')
+           ->leftJoin(OrderGoodsLang::tableName().'lang','m.id=lang.master_id and lang.language="'.$language.'"')
+            ->where(['order_id'=>$order_id])
+            ->select(['lang.goods_name','m.goods_num','m.goods_pay_price','m.currency'])
+            ->asArray()
+            ->all();
+        $result['order_goods'] = $order_goods;
+
+
+
+        //时间转换
+        if($language == 'en-US'){
+            $result['invoice_date'] = $result['invoice_date'] ? date('d-m-Y',$result['invoice_date']):date('d-m-Y',time());
+            $result['delivery_time'] = $result['delivery_time'] ? date('d-m-Y',$result['delivery_time']):'';
+
+            $city_name = $order->address->city_name ? ','.$order->address->city_name : '';
+            $province_name = $order->address->province_name ? ','.$order->address->province_name : '';
+            $country_name = $order->address->country_name ? ','.$order->address->country_name : '';
+            $result['address_details'] = $order->address->address_details .$city_name.$province_name.$country_name ;
+        }else{
+            $result['invoice_date'] = $result['invoice_date'] ? date('Y-m-d',$result['invoice_date']):date('Y-m-d',time());
+            $result['delivery_time'] = $result['delivery_time'] ? date('Y-m-d',$result['delivery_time']):'';
+
+            $city_name = $order->address->city_name ? $order->address->city_name . ' ' : '';
+            $province_name = $order->address->province_name ? $order->address->province_name . ' ' : '';
+            $country_name = $order->address->country_name ? $order->address->country_name .' ' : '';
+            $result['address_details'] = $country_name . $province_name . $city_name . $order->address->address_details ;
+        }
+
+
+        switch ($language){
+            case 'en-US':
+                $template = 'ele-invoice-us.php';
+                break;
+            case 'zh-CN':
+                $template = 'ele-invoice-zh.php';
+                break;
+            default: $template = 'ele-invoice.php';
+
+
+        }
+
+
+        return $this->render($template, [
+            'result'=>$result
+        ]);
+    }
+
+
+
+    public  function actionEleInvoiceAjaxEdit(){
+        $id = Yii::$app->request->get('id');
+        $order_id = Yii::$app->request->get('order_id');
+        $returnUrl = Yii::$app->request->get('returnUrl',['index']);
+
+        if(!$id){
+            $model = OrderInvoiceEle::find()
+                ->where(['order_id'=>$order_id])
+                ->one();
+            $id = $model->id;
+        }
+
+        $this->modelClass = OrderInvoiceEle::class;
+        $model = $this->findModel($id);
+        $this->activeFormValidate($model);
+        if ($model->load(Yii::$app->request->post())) {
+            if(false === $model->save()){
+                throw new Exception($this->getError($model));
+            }
+//            return $this->redirect($returnUrl);
+            return $this->message("保存成功", $this->redirect($returnUrl), 'success');
+        }
+        return $this->renderAjax($this->action->id, [
+            'model' => $model,
+            'order_id'=>$order_id,
+            'returnUrl'=>$returnUrl
+        ]);
+
+    }
+
+    public function actionPdf(){
+        $content = $this->renderPartial('aaa');
+
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_CORE,
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4,
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER,
+            // your html content input
+            'content' => $content,
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            // any css to be embedded if required
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+            // set mPDF properties on the fly
+            'options' => ['title' => 'Krajee Report Title'],
+            // call mPDF methods on the fly
+            'methods' => [
+                'SetHeader'=>['Krajee Report Header'],
+                'SetFooter'=>['{PAGENO}'],
+            ]
+        ]);
+
+        // return the pdf output as per the destination setting
+        return $pdf->render();
     }
 
 }

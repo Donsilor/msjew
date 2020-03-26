@@ -4,24 +4,6 @@
     <meta charset="utf-8">
     <title></title>
 
-    <script language="javascript">
-        function preview(fang) {
-            var popup = document.getElementById('popup');
-            popup.style.display = 'block';
-            if (fang < 10) {
-                bdhtml = window.document.body.innerHTML; //获取当前页的html代码
-                sprnstr = "<!--startprint" + fang + "-->"; //设置打印开始区域
-                eprnstr = "<!--endprint" + fang + "-->"; //设置打印结束区域
-                prnhtml = bdhtml.substring(bdhtml.indexOf(sprnstr) + 18); //从开始代码向后取html
-                prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr)); //从结束代码向前取html
-                window.document.body.innerHTML = prnhtml;
-                // window.print();
-                window.document.body.innerHTML = bdhtml;
-            } else {
-                window.print();
-            }
-        }
-    </script>
     <style>
         .rfHeaderFont{
             display: none;
@@ -61,15 +43,12 @@
             height: 100%;
         }
 
-
-
         .scroll {
-
+            overflow-y: scroll;
             box-sizing: border-box;
             background-color: #fff;
             border: 3px solid #333;
             padding: 10px;
-
         }
 
         .template {
@@ -84,8 +63,8 @@
 
         .invoice-data-topcolor {
             height: 30px;
-            background: #000000 !important;
-            color: #fff;
+            background: #333 !important;
+            color: #fff !important;
             text-align: center;
             line-height: 30px;
         }
@@ -127,8 +106,16 @@
             width: 100px;
         }
 
-        .site-type .child {
+        .site-type .child-name{
             font-size: 16px;
+            width: 200px;
+            word-break: break-all;
+            overflow: hidden;
+        }
+        .site-type .child-addr{
+            font-size: 16px;
+            width: 200px;
+            word-break: break-all;
         }
 
         .package-information {
@@ -137,8 +124,8 @@
 
         .package-tit {
             height: 30px;
-            background-color: #333;
-            color: #fff;
+            background-color: #333 !important;
+            color: #fff !important;
             text-align: center;
             line-height: 30px;
         }
@@ -172,55 +159,37 @@
             text-align: center;
         }
 
-        .table {
-            margin-top: 20px;
+        table{
             border: 1px solid #333;
+            margin-top: 30px;
+            border-collapse: collapse;
+            table-layout: fixed;
         }
-
-        .item-description {
-            width: 36%;
-        }
-
-        .country {
-            width: 12%;
-        }
-
-        .qty {
-            width: 10%;
-        }
-
-        .unit-price {
-            width: 15%;
-        }
-
-        .total-amt {
-            width: 27%;
-        }
-
-        .table .table-child {
-            padding: 0 3%;
-            box-sizing: border-box;
-            text-align: center;
-            font-size: 12px;
-        }
-
-        .table>div {
-            padding-bottom: 20px;
-        }
-
-        .table>div:not(:last-child) {
-            min-height: 240px;
-            border-right: 1px solid #333;
-            box-sizing: border-box;
-        }
-
-        .table .table-child:first-child {
+        th{
             height: 30px;
-            background-color: #333;
-            color: #fff;
-            line-height: 30px;
-            font-weight: 600;
+            background-color: #333 !important;
+            color: #fff !important;
+            font-weight: normal;
+            padding: 0 2%;
+            box-sizing: border-box;
         }
+        td{
+            text-align: center;
+            height: 30px;
+            padding: 0 2%;
+            box-sizing: border-box;
+            word-break:break-all;
+        }
+        th:first-child{
+            text-align: left;
+        }
+        td:first-child{
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
 
         .item-description .table-child {
             text-align: left;
@@ -272,8 +241,8 @@
         .total-bg {
             width: 240px;
             height: 30px;
-            background-color: #333;
-            color: #fff;
+            background-color: #333 !important;
+            color: #fff !important;
             padding: 0 10px;
             box-sizing: border-box;
         }
@@ -299,14 +268,14 @@
     <div class="template">
         <div class="clf">
             <div class="invoice-data fr">
-                <div class="invoice-data-topcolor">发票</div>
+                <div class="invoice-data-topcolor">發票</div>
                 <div class="invoice-data-b clf">
                     <div class="invoice-data-l fl">
-                        <div class="invoice-data-type">开票日期</div>
-                        <div class="invoice-data-val">14-mar-2018</div>
+                        <div class="invoice-data-type">開票日期</div>
+                        <div class="invoice-data-val"><?php echo $result['invoice_date'];?></div>
                     </div>
                     <div class="invoice-data-r fl">
-                        <div class="invoice-data-type">页码</div>
+                        <div class="invoice-data-type">頁碼</div>
                         <div class="invoice-data-val">1 of 1</div>
                     </div>
                 </div>
@@ -315,117 +284,98 @@
 
         <div class="site-type clf">
             <div class="list clf">
-                <div class="list-tit fl">托运人：</div>
+                <div class="list-tit fl">托運人:</div>
                 <div class="list-details fl">
-                    <div class="child">Li Jun Qi</div>
-                    <div class="child">15F-4,No.410,Sec.5,</div>
-                    <div class="child">Zhongxiao E,Rd.,Xinyi Dist.,</div>
-                    <div class="child">TaiPei City 110,TaiWan(R.O.C)</div>
+                    <div class="child-name"><?php echo $result['sender_name']?$result['sender_name']:'BDD Co.';?></div>
+                    <div class="child-addr"><?php echo $result['sender_address']?$result['sender_address']: 'Rm4, 23/F,Universal Trade Centre 3 Arbuthnot Road Central';?></div>
                 </div>
             </div>
         </div>
         <div class="site-type clf">
             <div class="list fl clf">
-                <div class="list-tit fl">进口商：</div>
+                <div class="list-tit fl">進口商:</div>
                 <div class="list-details fl">
-                    <div class="child">Li Jun Qi</div>
-                    <div class="child">15F-4,No.410,Sec.5,</div>
-                    <div class="child">Zhongxiao E,Rd.,Xinyi Dist.,</div>
-                    <div class="child">TaiPei City 110,TaiWan(R.O.C)</div>
+                    <div class="child-name"><?php echo $result['shipper_name']?$result['shipper_name']: 'BDD Co.';?></div>
+                    <div class="child-addr"><?php echo $result['shipper_address']?$result['shipper_address']: 'Rm4, 23/F,Universal Trade Centre 3 Arbuthnot Road Central';?></div>
                 </div>
             </div>
 
             <div class="list fl clf">
-                <div class="list-tit fl">收货人：</div>
+                <div class="list-tit fl">收貨人:</div>
                 <div class="list-details fl">
-                    <div class="child">Li Jun Qi</div>
-                    <div class="child">15F-4,No.410,Sec.5,</div>
-                    <div class="child">Zhongxiao E,Rd.,Xinyi Dist.,</div>
-                    <div class="child">TaiPei City 110,TaiWan(R.O.C)</div>
+                    <div class="child-name"><?php echo $result['realname'];?></div>
+                    <div class="child-addr"><?php echo $result['address_details'];?></div>
                 </div>
             </div>
         </div>
 
         <div class="package-information">
-            <div class="package-tit">货单信息</div>
+            <div class="package-tit">貨單資訊</div>
             <div class="package-info clf">
                 <div class="package-child fl">
-                    <div class="package-child-v">国际空运货单</div>
-                    <div class="package-child-val">7800885823</div>
+                    <div class="package-child-v">國際空運貨單</div>
+                    <div class="package-child-val"><?php echo $result['express_no'];?></div>
                 </div>
                 <div class="package-child fl">
-                    <div class="package-child-v">运输公司</div>
-                    <div class="package-child-val">FedEXnniNIOLl</div>
+                    <div class="package-child-v">運輸公司</div>
+                    <div class="package-child-val"><?php echo $result['express_company_name'];?></div>
                 </div>
                 <div class="package-child fl">
                     <div class="package-child-v">出口日期</div>
-                    <div class="package-child-val"></div>
+                    <div class="package-child-val"><?php echo $result['delivery_time'];?></div>
                 </div>
             </div>
             <div class="package-info clf">
                 <div class="package-child fl">
-                    <div class="package-child-v">出口国家</div>
-                    <div class="package-child-val">TaiWan</div>
+                    <div class="package-child-v">出口國家</div>
+                    <div class="package-child-val">中國</div>
                 </div>
                 <div class="package-child fl">
-                    <div class="package-child-v">交易币种</div>
-                    <div class="package-child-val">Hong Kong</div>
+                    <div class="package-child-v">交易幣種</div>
+                    <div class="package-child-val"><?php echo $result['currency'];?></div>
                 </div>
                 <div class="package-child fl">
-                    <div class="package-child-v">目的地国家</div>
-                    <div class="package-child-val">Hong Kong</div>
+                    <div class="package-child-v">目的地國家</div>
+                    <div class="package-child-val"><?php echo $result['country'];?></div>
                 </div>
             </div>
         </div>
 
-        <div class="table clf">
-            <div class="item-description fl">
-                <div class="table-child">商品描述</div>
-                <div class="table-child">Item Description</div>
-                <div class="table-child">Item Description</div>
-                <div class="table-child">Item Description</div>
-            </div>
-            <div class="country fl">
-                <div class="table-child">国家</div>
-                <div class="table-child">Country</div>
-                <div class="table-child">Country</div>
-                <div class="table-child">Country</div>
-            </div>
-            <div class="qty fl">
-                <div class="table-child">数量</div>
-                <div class="table-child">Qty</div>
-                <div class="table-child">Qty</div>
-                <div class="table-child">Qty</div>
-            </div>
-            <div class="unit-price fl">
-                <div class="table-child">单价</div>
-                <div class="table-child">Unit Price</div>
-                <div class="table-child">Unit Price</div>
-                <div class="table-child">Unit Price</div>
-            </div>
-            <div class="total-amt fl">
-                <div class="table-child">总金额</div>
-                <div class="table-child">Total Amt.</div>
-                <div class="table-child">Total Amt.</div>
-                <div class="table-child">Total Amt.</div>
-            </div>
-        </div>
+        <table cellspacing="0" cellpadding="0" width="100%" border="1" rules="cols">
+            <tr>
+                <th width="32%">商品描述</th>
+                <th width="16%">國家</th>
+                <th width="10%">數量</th>
+                <th width="15%">單價</th>
+                <th width="27%">總金額</th>
+            </tr>
+            <?php foreach ($result['order_goods'] as $val){ ?>
+            <tr>
+                <td><?php echo $val['goods_name'].$val['goods_name'];?></td>
+                <td>中國</td>
+                <td><?php echo $val['goods_num'];?></td>
+                <td><?php echo $val['goods_pay_price']. " ".$val['currency']; ?></td>
+                <td><?php echo $val['goods_pay_price']*$val['goods_num'] . " ".$val['currency']; ?></td>
+            </tr>
+            <?php } ?>
+
+        </table>
 
         <div class="signature clf">
             <div class="signature-name fl">
-                <div class="signature-t">找钱孙</div>
-                <div class="text">出口商签字</div>
+                <div class="signature-t"><?php echo $result['sender_name']?$result['sender_name']:'BDD Co.';?></div>
+                <div class="text">出口商簽字</div>
             </div>
             <div class="signature-date fl">
-                <div class="signature-t">14-MAR-2018</div>
+                <div class="signature-t"><?php echo $result['invoice_date'];?></div>
                 <div class="text">日期</div>
             </div>
         </div>
 
         <div class="total clf">
             <div class="fr clf">
-                <div class="fl total-bg">总金额</div>
-                <div class="fl total-val">币种 19,512,00</div>
+                <div class="fl total-bg">Total</div>
+                <div class="fl total-val"><?php echo $result['currency'] .' '.$result['order_amount']; ?> </div>
             </div>
         </div>
     </div>

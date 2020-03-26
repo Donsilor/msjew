@@ -127,7 +127,7 @@ class RingController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['ringCode'] = $val['ring_sn'];
-            $moduleGoods['ringImg'] = ImageHelper::goodsThumbs($val['ring_images'],'mid');
+            $moduleGoods['ringImg'] = ImageHelper::goodsThumbs($val['ring_images'],'big');
             $moduleGoods['name'] = $val['ring_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $ring_web_site['moduleGoods'][] = $moduleGoods;
@@ -266,7 +266,7 @@ class RingController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['goodsCode'] = $val['style_sn'];
-            $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'mid');
+            $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'big');
             $moduleGoods['goodsName'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $result['moduleGoods'][] = $moduleGoods;

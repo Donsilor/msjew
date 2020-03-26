@@ -63,6 +63,9 @@ class OrderTouristController extends OnAuthController
                 }
                 $orderId = \Yii::$app->services->orderTourist->createOrder($cart_list, $invoiceInfo);
             } else {
+                if($order->status > 0) {
+                    throw new UnprocessableEntityHttpException(\Yii::t('payment', 'ORDER_PAID'));
+                }
                 $orderId = $order->id;
             }            
 

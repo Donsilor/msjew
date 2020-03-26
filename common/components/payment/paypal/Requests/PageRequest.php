@@ -78,8 +78,6 @@ class PageRequest extends AbstractPaypalRequest
 
         $returnUrl = $this->getParameter('returnUrl');
         $cancelUrl = $this->getParameter('cancelUrl');
-        //common_pay_log 表模型model
-        $model = $this->getParameter('model');
 
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
@@ -109,7 +107,7 @@ class PageRequest extends AbstractPaypalRequest
 
             $payment->create($apiContext);
         } catch (\Exception $ex) {
-            $message = "[".$model->order_sn."]".$ex->getMessage();
+            $message = $ex->getMessage();
             PaypalLog::writeLog($message,'create-'.date('Y-m-d').'.log');
             throw new \Exception('paypal创建订单异常~！');
         }

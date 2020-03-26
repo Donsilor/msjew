@@ -78,7 +78,9 @@ class PageRequest extends AbstractPaypalRequest
 
         $returnUrl = $this->getParameter('returnUrl');
         $cancelUrl = $this->getParameter('cancelUrl');
-
+        //参数
+        PaypalLog::writeLog('['.$outTradeNo.'] Request Parameters ='.var_export($this->getParameters(),true),'create-'.date('Y-m-d').'.log');
+        
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
 
@@ -106,9 +108,14 @@ class PageRequest extends AbstractPaypalRequest
                 ->setTransactions(array($transaction));
 
             $payment->create($apiContext);
-        } catch (\Exception $ex) {
-            $message = $ex->getMessage();
-            PaypalLog::writeLog($message,'create-'.date('Y-m-d').'.log');
+            //日志
+            PaypalLog::writeLog('['.$outTradeNo.'] payment->state='.$payment->state,'create-'.date('Y-m-d').'.log');
+            if($payment->failure_reason) {
+                PaypalLog::writeLog('['.$outTradeNo.'] payment->failure_reason='.$payment->failure_reason,'create-'.date('Y-m-d').'.log');
+            }
+            
+        } catch (\Exception $e) {
+            PaypalLog::writeLog('['.$outTradeNo.'] Exception：'.$e->getCode().'|'.$e->getMessage(),'create-'.date('Y-m-d').'.log');
             throw new \Exception('paypal创建订单异常~！');
         }
 

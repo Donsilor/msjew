@@ -35,7 +35,7 @@ class IndexController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->currency;
             $moduleGoods['goodsCode'] = $val['style_sn'];
-            $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'mid');
+            $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'big');
             $moduleGoods['goodsName'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $webSite['moduleGoods'][] = $moduleGoods;

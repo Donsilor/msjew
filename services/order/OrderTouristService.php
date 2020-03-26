@@ -139,6 +139,9 @@ class OrderTouristService extends OrderBaseService
         $payment = $pay->getPayment(['model'=>$payLog]);
 //        $payment->getPayer();
 
+        //记录订单日志
+        \Yii::error($payment->toArray());
+
         /** @var PayerInfo $payerInfo */
         $payerInfo = $payment->getPayer()->getPayerInfo();
 

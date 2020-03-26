@@ -99,7 +99,7 @@ class PageRequest extends AbstractPaypalRequest
 
         try {
             $payment = new Payment();
-            $payment->setIntent("order")
+            $payment->setIntent("sale")
                 ->setPayer($payer)
                 ->setRedirectUrls($redirectUrls)
                 ->setTransactions(array($transaction));

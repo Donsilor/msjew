@@ -5,12 +5,13 @@ namespace Omnipay\Paypal\Requests;
 
 
 use common\helpers\FileHelper;
-use Omnipay\Common\Message\ResponseInterface;
+use Omnipay\Paypal\Response\AuthorizeResponse;
 use PayPal\Api\Amount;
 use PayPal\Api\Capture;
 use PayPal\Api\Order;
 use PayPal\Api\Payment;
 use PayPal\Api\PaymentExecution;
+use PayPal\Api\Sale;
 use PayPal\Api\Transaction;
 
 class AuthorizeRequest extends AbstractPaypalRequest
@@ -49,18 +50,30 @@ class AuthorizeRequest extends AbstractPaypalRequest
         $apiContext = $this->getParameter('apiContext');
         return Payment::get($model->transaction_id, $apiContext);
     }
-
+    /**
+     * 日志
+     * @param unknown $message
+     */
+    public function writeLog($message)
+    {
+        $logPath = \Yii::getAlias('@runtime') . "/pay-logs/paypal-" . date('Y_m_d') . '.log';
+        $model = $this->getParameter('model');
+        $message = "[".date('Y-m-d H:i:s').".][".$model->order_sn."]".$message;
+        FileHelper::writeLog($logPath, $message);
+    }
     /**
      * @inheritDoc
      */
     public function sendData($data)
     {
+        $this->writeLog("post->return_url=" . \Yii::$app->request->post('return_url'));
+        
         $model = $this->getParameter('model');
-
         $apiContext = $this->getParameter('apiContext');
 
-        try {
+        $result = null;
 
+        try {
             //CREATED。订单是使用指定的上下文创建的。
             //SAVED。订单已保存并保留。订单状态一直持续到捕获final_capture = true订单中的所有购买单位为止。
             //APPROVED。客户通过贝宝（PayPal）钱包或其他形式的客人或非品牌付款批准了付款。例如，卡，银行帐户等。
@@ -68,37 +81,75 @@ class AuthorizeRequest extends AbstractPaypalRequest
             //COMPLETED。付款已授权或已为订单捕获授权付款。completed
             $payment = Payment::get($model->transaction_id, $apiContext);
 
-            //判断付款人是否授权
-            //需下载状态列表到备注
+
+            $this->writeLog("payment->state=".$payment->state);
+            //state三个状态：created:创建，approved:批准，failed:失败
+            if($payment->state=="failed") {
+                //付款失败
+                return new AuthorizeResponse($this, ['result' => 'failed']);
+            }
+
+            //判断付款人
             if (!$payment->getPayer()) {
-                throw new \Exception('买家未付款');
+                $this->writeLog("payment->state = Payer failed");
+                return new AuthorizeResponse($this, ['result' => 'nopayer']);
             }
 
-            //获取订单
-            $order = $this->getOrder($payment);
-
-            if (!$order) {
-                $this->execute($payment);
+            //担保交易
+            if($payment->intent=="order") {
                 $order = $this->getOrder($payment);
-            }
 
-            //如果已捕获，则跳过
-            //需下载状态列表到备注
-            if ($order->state != "COMPLETED") {
+                if($this->getParameter('isVerify') && !$order) {
+                    $this->writeLog("getOrder = not isVerify or order is empty");
+                    return new AuthorizeResponse($this, ['result' => 'payer']);
+                }
+
+                if (!$order) {
+                    $this->execute($payment);
+                    $order = $this->getOrder($payment);
+                }
+                //如果已捕获，则跳过
+                //需下载状态列表到备注
                 if(!($capture = $this->getCapture($payment))) {
                     $capture = $this->capture($order);
                 }
-                $result = $capture->state == 'completed';
-            } else {
-                $result = true;
+                $result = $capture->state;
             }
+            //普通交易
+            elseif($payment->intent=="sale") {
+                //获取订单
+                $order = $this->getSale($payment);
+
+                if($this->getParameter('isVerify') && !$order) {
+                    $this->writeLog("getSale = not is Verify or order is empty");
+                    return new AuthorizeResponse($this, ['result' => 'payer']);
+                }
+
+                if (!$order) {
+                    $this->execute($payment);
+                    $order = $this->getSale($payment);
+                }
+
+                FileHelper::writeLog('paypal-result.txt', $model->order_sn. ' ' .$model->out_trade_no. ' ' .$model->transaction_id. ' '.$order->state);
+
+                $result = $order->state;
+            }
+            
+            $this->writeLog($payment->intent." state=".$result);
+            
         } catch (\Exception $e) {
-            $logPath = \Yii::getAlias('@runtime') . "/pay-logs/paypal-" . date('Y_m_d') . '/error.txt';
-            FileHelper::writeLog($logPath, $e->getMessage());
-            $result = false;
+            if ($e instanceof \PayPal\Exception\PayPalConnectionException) {
+                $data = $e->getData();
+                $message = @var_export($data, true);               
+            }
+            else {
+                $message = $e->getMessage();
+            }
+            $this->writeLog($message);
+            $result = null;
         }
 
-        return $result;
+        return new AuthorizeResponse($this, ['result' => $result]);
     }
 
     /**
@@ -115,6 +166,26 @@ class AuthorizeRequest extends AbstractPaypalRequest
         }
         foreach ($relatedResources as $relatedResource) {
             if($order = $relatedResource->getOrder()) {
+                return $order;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param Payment $payment
+     * @return Sale|null
+     */
+    public function getSale($payment)
+    {
+        $transactions = $payment->getTransactions();
+        $transaction = $transactions[0];
+        $relatedResources = $transaction->getRelatedResources();
+        if (empty($relatedResources)) {
+            return null;
+        }
+        foreach ($relatedResources as $relatedResource) {
+            if($order = $relatedResource->getSale()) {
                 return $order;
             }
         }

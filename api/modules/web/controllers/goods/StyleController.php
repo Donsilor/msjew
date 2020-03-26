@@ -34,7 +34,7 @@ class StyleController extends OnAuthController
     public function actionSearch(){
         $sort_map = [
             "sale_price"=>'m.sale_price',//价格
-            "sale_volume"=>'m.sale_volume',//销量
+            "sale_volume"=>'m.virtual_volume',//销量
         ];
         $type_id = \Yii::$app->request->post("categoryId");//产品线ID
         if(!$type_id){
@@ -44,7 +44,7 @@ class StyleController extends OnAuthController
         $order_type = \Yii::$app->request->post("orderType", 1);//排序方式 1-升序；2-降序;
 
         //排序
-        $order = '';
+        $order = 'm.virtual_volume desc';
         if(!empty($order_param)){
             $order_type = $order_type == 1? "asc": "desc";
             $order = $sort_map[$order_param]. " ".$order_type;

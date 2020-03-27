@@ -16,14 +16,14 @@
     <div class="template">
         <div class="clf">
             <div class="invoice-data fr">
-                <div class="invoice-data-topcolor">發票</div>
+                <div class="invoice-data-topcolor">Invoice</div>
                 <div class="invoice-data-b clf">
                     <div class="invoice-data-l fl">
-                        <div class="invoice-data-type">開票日期</div>
+                        <div class="invoice-data-type">invoice Data</div>
                         <div class="invoice-data-val"><?php echo $result['invoice_date'];?></div>
                     </div>
                     <div class="invoice-data-r fl">
-                        <div class="invoice-data-type">頁碼</div>
+                        <div class="invoice-data-type">page</div>
                         <div class="invoice-data-val">1 of 1</div>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
 
         <div class="site-type clf">
             <div class="list clf">
-                <div class="list-tit fl">托運人:</div>
+                <div class="list-tit fl">Shipper:</div>
                 <div class="list-details fl">
                     <div class="child-name"><?php echo $result['sender_name']?$result['sender_name']:'BDD Co.';?></div>
                     <div class="child-addr"><?php echo $result['sender_address']?$result['sender_address']: 'Rm4, 23/F,Universal Trade Centre 3 Arbuthnot Road Central';?></div>
@@ -41,7 +41,7 @@
         </div>
         <div class="site-type clf">
             <div class="list fl clf">
-                <div class="list-tit fl">進口商:</div>
+                <div class="list-tit fl">Importer:</div>
                 <div class="list-details fl">
                     <div class="child-name"><?php echo $result['shipper_name']?$result['shipper_name']: 'BDD Co.';?></div>
                     <div class="child-addr"><?php echo $result['shipper_address']?$result['shipper_address']: 'Rm4, 23/F,Universal Trade Centre 3 Arbuthnot Road Central';?></div>
@@ -49,7 +49,7 @@
             </div>
 
             <div class="list fl clf">
-                <div class="list-tit fl">收貨人:</div>
+                <div class="list-tit fl">Consingee:</div>
                 <div class="list-details fl">
                     <div class="child-name"><?php echo $result['realname'];?></div>
                     <div class="child-addr"><?php echo $result['address_details'];?></div>
@@ -58,32 +58,32 @@
         </div>
 
         <div class="package-information">
-            <div class="package-tit">貨單資訊</div>
+            <div class="package-tit">Package Information</div>
             <div class="package-info clf">
                 <div class="package-child fl">
-                    <div class="package-child-v">國際空運貨單</div>
+                    <div class="package-child-v">International Air Waybill No.</div>
                     <div class="package-child-val"><?php echo $result['express_no'];?></div>
                 </div>
                 <div class="package-child fl">
-                    <div class="package-child-v">運輸公司</div>
+                    <div class="package-child-v">Carrier</div>
                     <div class="package-child-val"><?php echo $result['express_company_name'];?></div>
                 </div>
                 <div class="package-child fl">
-                    <div class="package-child-v">出口日期</div>
+                    <div class="package-child-v">Data of Exportation</div>
                     <div class="package-child-val"><?php echo $result['delivery_time'];?></div>
                 </div>
             </div>
             <div class="package-info clf">
                 <div class="package-child fl">
-                    <div class="package-child-v">出口國家</div>
-                    <div class="package-child-val">中國</div>
+                    <div class="package-child-v">Country of Export</div>
+                    <div class="package-child-val">CHINA</div>
                 </div>
                 <div class="package-child fl">
-                    <div class="package-child-v">交易幣種</div>
+                    <div class="package-child-v">Currency Of Sale</div>
                     <div class="package-child-val"><?php echo $result['currency'];?></div>
                 </div>
                 <div class="package-child fl">
-                    <div class="package-child-v">目的地國家</div>
+                    <div class="package-child-v">Country of Uitimate Destination</div>
                     <div class="package-child-val"><?php echo $result['country'];?></div>
                 </div>
             </div>
@@ -91,16 +91,16 @@
 
         <table cellspacing="0" cellpadding="0" width="100%" border="1" rules="cols">
             <tr>
-                <th width="32%">商品描述</th>
-                <th width="16%">國家</th>
-                <th width="10%">數量</th>
-                <th width="15%">單價</th>
-                <th width="27%">總金額</th>
+                <th width="32%">Item Description</th>
+                <th width="16%">Country</th>
+                <th width="10%">Qty</th>
+                <th width="15%">Unit Price</th>
+                <th width="27%">Total Amt.</th>
             </tr>
             <?php foreach ($result['order_goods'] as $val){ ?>
             <tr>
                 <td><?php echo $val['goods_name'].$val['goods_name'];?></td>
-                <td>中國</td>
+                <td>CHINA</td>
                 <td><?php echo $val['goods_num'];?></td>
                 <td><?php echo $val['goods_pay_price']. " ".$val['currency']; ?></td>
                 <td><?php echo $val['goods_pay_price']*$val['goods_num'] . " ".$val['currency']; ?></td>
@@ -112,11 +112,11 @@
         <div class="signature clf">
             <div class="signature-name fl">
                 <div class="signature-t"><?php echo $result['sender_name']?$result['sender_name']:'BDD Co.';?></div>
-                <div class="text">出口商簽字</div>
+                <div class="text">Signature of shipper/Exporter</div>
             </div>
             <div class="signature-date fl">
                 <div class="signature-t"><?php echo $result['invoice_date'];?></div>
-                <div class="text">日期</div>
+                <div class="text">Date</div>
             </div>
         </div>
 

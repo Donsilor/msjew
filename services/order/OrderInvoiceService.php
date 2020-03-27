@@ -52,7 +52,10 @@ class OrderInvoiceService extends OrderBaseService
             'delivery_time' => $order->delivery_time,
             'country' => $order->address->country_name,
             'currency' => CurrencyEnum::getValue($order->account->currency),
-            'order_amount' => $order->account->order_amount
+            'order_amount' => $order->account->order_amount,
+            'email' => $order->invoice->email,
+            'is_electronic' => $order->invoice->is_electronic, //是否电子发票
+            'payment_status' => $order->payment_status,
         );
 
 
@@ -70,7 +73,8 @@ class OrderInvoiceService extends OrderBaseService
             $result['express_no'] = $order_invoice_exe['express_no'] ? $order_invoice_exe['express_no'] : $result['express_no'];
             $result['delivery_time'] = $order_invoice_exe['delivery_time'] ? $order_invoice_exe['delivery_time'] : $result['delivery_time'];
             $result['delivery_time'] = $order_invoice_exe['delivery_time'] ? $order_invoice_exe['delivery_time'] : $result['delivery_time'];
-            $language = $order_invoice_exe['language'] ? $order_invoice_exe['language'] : $language;
+            $result['language'] = $order_invoice_exe['language'] ? $order_invoice_exe['language'] : $language;
+            $language = $result['language'];
         }
 
 

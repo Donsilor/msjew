@@ -7,8 +7,10 @@ use common\enums\CurrencyEnum;
 use common\enums\OrderStatusEnum;
 use common\enums\PayStatusEnum;
 use common\helpers\ResultHelper;
+use common\models\common\EmailLog;
 use common\models\order\OrderGoods;
 use common\models\order\OrderGoodsLang;
+use common\models\order\OrderInvoice;
 use common\models\order\OrderInvoiceEle;
 use Omnipay\Common\Message\AbstractResponse;
 use Yii;
@@ -264,18 +266,6 @@ class OrderController extends BaseController
     }
 
 
-    public function actionEleInvoice(){
-        $order_id = Yii::$app->request->get("order_id");
-        if(!$order_id){
-            return ResultHelper::json(422, '非法调用');
-        }
-        $result = Yii::$app->services->orderInvoice->getEleInvoiceInfo($order_id);
-        return $this->render($result['template'], [
-            'result'=>$result
-        ]);
-    }
-
-
 
     public  function actionEleInvoiceAjaxEdit(){
         $id = Yii::$app->request->get('id');
@@ -307,20 +297,21 @@ class OrderController extends BaseController
 
     }
 
-    public function actionEleInvoiceSend(){
-
+   //电子发票预览（PDF）
+    public function actionEleInvoicePdf(){
         $order_id = Yii::$app->request->get('order_id');
         if(!$order_id){
             return ResultHelper::json(422, '非法调用');
         }
         $result = Yii::$app->services->orderInvoice->getEleInvoiceInfo($order_id);
-
         $content = $this->renderPartial($result['template'],['result'=>$result]);
-
-        // setup kartik\mpdf\Pdf component
+        $usage = 'order-invoice';
+        $usageExplains = EmailLog::$usageExplain;
+        $subject  = $usageExplains[$usage]??'';
+        $subject = Yii::t('mail', $subject,[],$result['language']);
         $pdf = new Pdf([
             // set to use core fonts only
-            'mode' => Pdf::MODE_CORE,
+            'mode' => Pdf::MODE_UTF8,
             // A4 paper format
             'format' => Pdf::FORMAT_A4,
             // portrait orientation
@@ -331,21 +322,94 @@ class OrderController extends BaseController
             'content' => $content,
             // format content from your own css file if needed or use the
             // enhanced bootstrap css built by Krajee for mPDF formatting
-            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'cssFile' => \Yii::getAlias('@webroot').'/resources/css/invoice.css',
             // any css to be embedded if required
             'cssInline' => '.kv-heading-1{font-size:18px}',
             // set mPDF properties on the fly
-            'options' => ['title' => 'Krajee Report Title'],
+            'options' => [
+                'title' => '中文',
+                'autoLangToFont' => true,    //这几个配置加上可以显示中文
+                'autoScriptToLang' => true,  //这几个配置加上可以显示中文
+                'autoVietnamese' => true,    //这几个配置加上可以显示中文
+                'autoArabic' => true,        //这几个配置加上可以显示中文
+            ],
             // call mPDF methods on the fly
             'methods' => [
-                'SetHeader'=>['Krajee Report Header'],
+                'SetHeader'=>[$subject],
                 'SetFooter'=>['{PAGENO}'],
             ]
         ]);
 
-        // return the pdf output as per the destination setting
         return $pdf->render();
+
     }
+
+    //电子发票发送（PDF）
+    public function actionEleInvoiceSend(){
+        $order_id = Yii::$app->request->post('order_id');
+        if(!$order_id){
+            return ResultHelper::json(422, '非法调用');
+        }
+        $result = Yii::$app->services->orderInvoice->getEleInvoiceInfo($order_id);
+        if($result['is_electronic'] != 1){
+            return ResultHelper::json(422, '此订单没有电子发票');
+        }
+        if($result['payment_status'] != 1){
+            return ResultHelper::json(422, '此订单没有支付');
+        }
+        $content = $this->renderPartial($result['template'],['result'=>$result]);
+
+        $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_UTF8,
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4,
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            // stream to browser inline
+            'destination' => Pdf::DEST_DOWNLOAD,
+            // your html content input
+            'content' => $content,
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting
+            'cssFile' => \Yii::getAlias('@webroot').'/resources/css/invoice.css',
+            // any css to be embedded if required
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+            // set mPDF properties on the fly
+            'options' => [
+                'title' => '中文',
+                'autoLangToFont' => true,    //这几个配置加上可以显示中文
+                'autoScriptToLang' => true,  //这几个配置加上可以显示中文
+                'autoVietnamese' => true,    //这几个配置加上可以显示中文
+                'autoArabic' => true,        //这几个配置加上可以显示中文
+            ],
+            // call mPDF methods on the fly
+            'methods' => [
+                'SetHeader'=>['中文'],
+                'SetFooter'=>['{PAGENO}'],
+            ]
+        ]);
+
+        $usage = 'order-invoice';
+        $file = [
+            'file_content' => $pdf->render(),
+            'file_ext' => 'pdf',
+            'contentType' => 'application/pdf'
+        ];
+
+        \Yii::$app->services->mailer->queue(false)->send($result['email'],$usage,['code'=>$order_id,'file'=>$file],$result['language']);
+
+        $invoice_model = OrderInvoice::find()
+        ->where(['order_id'=>$order_id])
+        ->one();
+        $send_num = $invoice_model->send_num + 1;
+        $invoice_model->send_num = $send_num;
+        $invoice_model->save();
+        return ResultHelper::json(200,'发送成功',['send_num'=>$send_num]);
+    }
+
+
+
 
 }
 

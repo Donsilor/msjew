@@ -268,19 +268,11 @@ class OrderController extends BaseController
 
 
     public  function actionEleInvoiceAjaxEdit(){
-        $id = Yii::$app->request->get('id');
-        $order_id = Yii::$app->request->get('order_id');
+        $invoice_id = Yii::$app->request->get('invoice_id');
         $returnUrl = Yii::$app->request->get('returnUrl',['index']);
 
-        if(!$id){
-            $model = OrderInvoiceEle::find()
-                ->where(['order_id'=>$order_id])
-                ->one();
-            $id = $model->id;
-        }
-
         $this->modelClass = OrderInvoiceEle::class;
-        $model = $this->findModel($id);
+        $model = $this->findModel($invoice_id);
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
             if(false === $model->save()){
@@ -291,7 +283,7 @@ class OrderController extends BaseController
         }
         return $this->renderAjax($this->action->id, [
             'model' => $model,
-            'order_id'=>$order_id,
+            'invoice_id'=>$invoice_id,
             'returnUrl'=>$returnUrl
         ]);
 

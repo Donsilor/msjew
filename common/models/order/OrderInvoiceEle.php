@@ -9,7 +9,7 @@ use Yii;
  * This is the model class for table "order_invoice_ele".
  *
  * @property int $id
- * @property int $order_id
+ * @property int $invoice_id
  * @property int $invoice_date 发票日期
  * @property string $sender_name 发件人
  * @property string $sender_address 发件人地址
@@ -36,9 +36,9 @@ class OrderInvoiceEle extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['order_id'], 'required'],
-            [['order_id'], 'unique'],
-            [['order_id'], 'integer'],
+            [['invoice_id'], 'required'],
+            [['invoice_id'], 'unique'],
+            [['invoice_id'], 'integer'],
             [['invoice_date','language', 'delivery_time','created_at'],'safe'],
             [['sender_name', 'shipper_name'], 'string', 'max' => 50],
             [['sender_address', 'shipper_address'], 'string', 'max' => 255],
@@ -53,7 +53,7 @@ class OrderInvoiceEle extends \common\models\base\BaseModel
     {
         return [
             'id' => 'ID',
-            'order_id' => 'Order ID',
+            'invoice_id' => 'Invoice ID',
             'invoice_date' => '发票日期',
             'sender_name' => '托运人',
             'sender_address' => '托运人地址',

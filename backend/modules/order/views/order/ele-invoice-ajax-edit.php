@@ -7,7 +7,7 @@ use kartik\datetime\DateTimePicker;
 $form = ActiveForm::begin([
     'id' => $model->formName(),
     'enableAjaxValidation' => true,
-    'validationUrl' => Url::to(['ele-invoice-ajax-edit','id' => $model['id'],'returnUrl'=>$returnUrl]),
+    'validationUrl' => Url::to(['ele-invoice-ajax-edit','invoice_id' => $invoice_id,'returnUrl'=>$returnUrl]),
     'fieldConfig' => [
         'template' => "<div class='col-sm-2 text-right'>{label}</div><div class='col-sm-10'>{input}\n{hint}\n{error}</div>",
     ]
@@ -62,7 +62,7 @@ $form = ActiveForm::begin([
     </div>
     <!-- /.tab-content -->
     <div class="modal-footer">
-        <input type="hidden" id="order_id" name="OrderInvoiceEle[order_id]" value="<?php echo $order_id; ?>"/>
+        <input type="hidden" id="invoice_id" name="OrderInvoiceEle[invoice_id]" value="<?php echo $invoice_id; ?>"/>
         <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
         <button class="btn btn-primary" type="submit">保存</button>
     </div>

@@ -168,7 +168,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="col-lg-6">
 
                                 <div class="row" style="margin-top:20px; ">
-                                    <?= Html::edit(['ele-invoice-ajax-edit', 'order_id' => $model->id,'returnUrl' => Url::getReturnUrl()],'编辑', [
+                                    <?= Html::edit(['ele-invoice-ajax-edit', 'invoice_id' => $model->invoice->id,'returnUrl' => Url::getReturnUrl()],'编辑', [
                                         'data-toggle' => 'modal',
                                         'data-target' => '#ajaxModalLg',
                                         'style'=>'height:25px;font-size:10px;'

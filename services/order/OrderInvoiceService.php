@@ -60,7 +60,7 @@ class OrderInvoiceService extends OrderBaseService
 
 
         $order_invoice_exe = OrderInvoiceEle::find()
-            ->where(['order_id'=>$order_id])
+            ->where(['invoice_id'=>$order->invoice->id])
             ->asArray()
             ->one();
         if($order_invoice_exe){

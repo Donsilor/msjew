@@ -163,12 +163,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <div class="col-lg-5 text-right"><?= $model->getAttributeLabel('invoice.email') ?>：</label></div>
                                     <div class="col-lg-7"><?= $model->invoice->email ?></div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-lg-5 text-right">电子凭证：</label></div>
+                                    <div class="col-lg-7"><?= $model->invoice->invoiceEle ? '已修改': '未修改' ?></div>
+                                </div>
                             </div>
 
                             <div class="col-lg-6">
 
                                 <div class="row" style="margin-top:20px; ">
-                                    <?= Html::edit(['ele-invoice-ajax-edit', 'invoice_id' => $model->invoice->id,'returnUrl' => Url::getReturnUrl()],'编辑', [
+                                    <?= Html::edit(['ele-invoice-ajax-edit', 'invoice_id' => $model->invoice->id, 'language'=>$model->language,'returnUrl' => Url::getReturnUrl()],'编辑', [
                                         'data-toggle' => 'modal',
                                         'data-target' => '#ajaxModalLg',
                                         'style'=>'height:25px;font-size:10px;'

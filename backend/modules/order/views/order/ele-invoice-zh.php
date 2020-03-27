@@ -42,8 +42,8 @@
             <div class="list fl clf">
                 <div class="list-tit fl">进口商:</div>
                 <div class="list-details fl">
-                    <div class="child-name"><?php echo $result['shipper_name']?$result['shipper_name']: 'BDD Co.Ltd';?></div>
-                    <div class="child-addr"><?php echo $result['shipper_address']?$result['shipper_address']: '中环亚毕诺道3号环球贸易中心23楼04室';?></div>
+                    <div class="child-name"><?php echo $result['realname'];?></div>
+                    <div class="child-addr"><?php echo $result['address_details'];?></div>
                 </div>
             </div>
 
@@ -98,7 +98,7 @@
             </tr>
             <?php foreach ($result['order_goods'] as $val){ ?>
             <tr>
-                <td><?php echo $val['goods_name'].$val['goods_name'];?></td>
+                <td><?php echo $val['goods_name'];?></td>
                 <td>中国</td>
                 <td><?php echo $val['goods_num'];?></td>
                 <td><?php echo $val['goods_pay_price']. " ".$val['currency']; ?></td>

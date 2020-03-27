@@ -270,9 +270,12 @@ class OrderController extends BaseController
     public  function actionEleInvoiceAjaxEdit(){
         $invoice_id = Yii::$app->request->get('invoice_id');
         $returnUrl = Yii::$app->request->get('returnUrl',['index']);
+        $language = Yii::$app->request->get('language');
+
 
         $this->modelClass = OrderInvoiceEle::class;
         $model = $this->findModel($invoice_id);
+        $model->language = $model->language ? $model->language : $language ;
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
             if(false === $model->save()){

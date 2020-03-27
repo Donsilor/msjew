@@ -41,8 +41,6 @@ $form = ActiveForm::begin([
             ]);?>
             <?= $form->field($model, 'sender_name')->textInput(); ?>
             <?= $form->field($model, 'sender_address')->textArea(); ?>
-            <?= $form->field($model, 'shipper_name')->textInput(); ?>
-            <?= $form->field($model, 'shipper_address')->textArea(); ?>
             <?= $form->field($model, 'express_company_name')->textInput(); ?>
             <?= $form->field($model, 'express_no')->textInput(); ?>
             <?= $form->field($model, 'delivery_time')->widget(DateTimePicker::class, [

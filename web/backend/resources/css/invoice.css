@@ -89,13 +89,12 @@ img {
 
 .site-type .list {
     width: 50%;
-    margin-top: 20px;
+    padding-top: 20px;
 }
 
 .site-type .list-tit {
     font-size: 14px;
     color: #333;
-    font-weight: 600;
     width: 100px;
 }
 

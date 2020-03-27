@@ -43,8 +43,8 @@
             <div class="list fl clf">
                 <div class="list-tit fl">Importer:</div>
                 <div class="list-details fl">
-                    <div class="child-name"><?php echo $result['shipper_name']?$result['shipper_name']: 'BDD Co.';?></div>
-                    <div class="child-addr"><?php echo $result['shipper_address']?$result['shipper_address']: 'Rm4, 23/F,Universal Trade Centre 3 Arbuthnot Road Central';?></div>
+                    <div class="child-name"><?php echo $result['realname'];?></div>
+                    <div class="child-addr"><?php echo $result['address_details'];?></div>
                 </div>
             </div>
 
@@ -99,7 +99,7 @@
             </tr>
             <?php foreach ($result['order_goods'] as $val){ ?>
             <tr>
-                <td><?php echo $val['goods_name'].$val['goods_name'];?></td>
+                <td><?php echo $val['goods_name'];?></td>
                 <td>CHINA</td>
                 <td><?php echo $val['goods_num'];?></td>
                 <td><?php echo $val['goods_pay_price']. " ".$val['currency']; ?></td>

@@ -66,7 +66,7 @@ class OrderAccount extends \common\models\base\BaseModel
             'safe_fee' => \Yii::t('order','保险费'),
             'other_fee' => \Yii::t('order','附加费'),
             'exchange_rate'=> \Yii::t('common','汇率'),
-            'currency'=> \Yii::t('common','货币'),
+            'currency'=> \Yii::t('common','订单货币'),
         ];
     }
 }

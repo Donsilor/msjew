@@ -3,6 +3,7 @@
 namespace api\modules\wap\controllers\home;
 
 use api\controllers\OnAuthController;
+use common\helpers\ImageHelper;
 use common\models\goods\Style;
 
 
@@ -25,17 +26,17 @@ class IndexController extends OnAuthController
         $limit = 6;
         $language = $this->language;
         $order = 'sale_volume desc';
-        $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
+        $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit,$order, $fields ,$language);
         $webSite = array();
-        $webSite['moduleTitle'] = '首页珠宝饰品推广位';
+        $webSite['moduleTitle'] = \Yii::t('common','首页珠宝饰品推广位');
         foreach ($style_list as $val){
             $moduleGoods = array();
             $moduleGoods['id'] = $val['id'];
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->currency;
             $moduleGoods['goodsCode'] = $val['style_sn'];
-            $moduleGoods['goodsImages'] = $val['goods_images'];
+            $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'mid');
             $moduleGoods['goodsName'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $webSite['moduleGoods'][] = $moduleGoods;

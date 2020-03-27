@@ -66,7 +66,16 @@ class SmsService extends Service
             ],
         ];
     }
-
+    /**
+     * 是否消息队列
+     * @param string $queueSwitch
+     * @return \services\common\SmsService
+     */
+    public function queue($queueSwitch = false)
+    {
+        $this->queueSwitch = $queueSwitch;
+        return $this;
+    }
     /**
      * 发送短信
      *
@@ -81,20 +90,22 @@ class SmsService extends Service
      * @return string|null
      * @throws UnprocessableEntityHttpException
      */
-    public function send($mobile, $usage, $params = [])
+    public function send($mobile, $usage, $data = [])
     {
+        
+        $data['ip'] = Yii::$app->request->userIP;
         if ($this->queueSwitch == true) {
             
             $messageId = Yii::$app->queue->push(new SmsJob([
                 'mobile' => $mobile,
                 'usage' => $usage,
-                'params' => $params,
+                'data' => $data,
             ]));
 
             return $messageId;
         }
 
-        return $this->realSend($mobile, $usage,$params);
+        return $this->realSend($mobile, $usage,$data);
     }
 
     /**
@@ -106,7 +117,7 @@ class SmsService extends Service
      * @param int $member_id
      * @throws UnprocessableEntityHttpException
      */
-    public function realSend($mobile, $usage, $params = [])
+    public function realSend($mobile, $usage, $data = [])
     {
         $template = Yii::$app->debris->config('sms_aliyun_template');
        // print_r($template);exit;
@@ -115,19 +126,21 @@ class SmsService extends Service
         $group = SmsLog::$usageExplain[$usage]??$usage; 
         
         $templateID = $template[$group] ?? '';
-        $code  = $params['code']??null;
-        $member_id = $params['member_id']??0;
-        
+        $code  = $data['code']??null;
+        $member_id = $data['member_id']??0;
+        $ip = $data['ip']??'';
+        if(isset($data['ip'])) unset($data['ip']);
+        if(isset($data['member_id'])) unset($data['member_id']);
         try {
             // 校验发送是否频繁
             if (($smsLog = $this->findByMobile($mobile)) && $smsLog['created_at'] + 60 > time()) {
                 throw new NotFoundHttpException('请不要频繁发送短信');
             }
-            if($templateID){
+            if($templateID){              
                 $easySms = new EasySms($this->config);
                 $result = $easySms->send($mobile, [
                     'template' => $templateID,
-                    'data' => $params,
+                    'data' => $data,
                 ]); 
             } else {
                 $result = '测试：未设置模板'.$usage;
@@ -138,11 +151,13 @@ class SmsService extends Service
                 'code' => $code,
                 'member_id' => $member_id,
                 'usage' => $usage,
+                'ip'=>$ip,
                 'error_code' => 200,
                 'error_msg' => 'ok',
                 'error_data' => Json::encode($result),
                 'status' =>StatusEnum::ENABLED
             ]);
+            return true;
         } catch (NotFoundHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
@@ -161,6 +176,7 @@ class SmsService extends Service
                 'code' => $code,
                 'member_id' => $member_id,
                 'usage' => $usage,
+                'ip'=>$ip,
                 'error_code' => 422,
                 'error_msg' => '发送失败',
                 'error_data' => Json::encode($errorMessage),
@@ -179,7 +195,7 @@ class SmsService extends Service
             throw new UnprocessableEntityHttpException('短信发送失败');
         }
         
-        return $params;
+        return false;
     }
 
     /**
@@ -230,8 +246,7 @@ class SmsService extends Service
         $log = new SmsLog();
         $log = $log->loadDefaultValues();
         $log->attributes = $data;
-        $log->save();
-
+        $log->save(false);
         return $log;
     }
 }

@@ -6,6 +6,8 @@ use common\widgets\langbox\LangBox;
 use yii\base\Widget;
 use common\widgets\skutable\SkuTable;
 use common\helpers\Url;
+use common\enums\AreaEnum;
+use common\helpers\AmountHelper;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\goods\Style */
@@ -27,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ]); ?>
 <div class="box-body nav-tabs-custom">
      <h2 class="page-header"><?php echo Yii::t('goods', '裸钻发布');?></h2>
-      <?php $tab_list = [0=>'全部',1=>'基础信息',2=>'商品属性',3=>'图文信息',4=>'SEO优化'];?>
+      <?php $tab_list = [0=>'全部',1=>'基础信息',2=>'商品属性',3=>'图文信息',4=>'SEO优化',5=>'地区价格'];?>
      <?php echo Html::tab($tab_list,0,'tab')?>
      <div class="tab-content">     
        <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_1">
@@ -62,6 +64,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="row">
                     <div class="col-lg-4">
                         <?= $form->field($model, 'market_price')->textInput(['maxlength' => true]) ?>
+                    </div>
+                    <div class="col-lg-4">
+                        <?= $form->field($model, 'sale_volume')->textInput(['maxlength'=>true,'disabled'=>true]) ?>
+                    </div>
+                    <div class="col-lg-4">
+                        <?= $form->field($model, 'virtual_volume')->textInput(['maxlength'=>true]) ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <?= $form->field($model, 'goods_clicks')->textInput(['maxlength'=>true,'disabled'=>true]) ?>
+                    </div>
+                    <div class="col-lg-4">
+                        <?= $form->field($model, 'virtual_clicks')->textInput(['maxlength'=>true]) ?>
                     </div>
                 </div>
 
@@ -259,7 +275,101 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- ./box-body -->
       </div>
       <!-- ./row -->
-    
+      <?php if(AreaEnum::isMarkupRate())  {?>  
+    <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_5">
+            <ul class="nav nav-tabs pull-right">
+              <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[5]??'';?></li>
+            </ul>
+            <div class="box-body nav-tabs-custom none-shadow" style="margin-left:10px">
+         
+        		  <div class="tab-content">            
+                    <?php 
+                    $sale_policy = json_decode($model->sale_policy,true) ??[]; 
+                    $areaValues = []; 
+                    foreach (AreaEnum::getMap() as $area_id=>$area_name) {                        
+                        $area = $sale_policy[$area_id] ?? [];
+                        $markup_rate  = isset($area['markup_rate']) ? abs($area['markup_rate']):1;
+                        $markup_value =  isset($area['markup_value']) ? $area['markup_value']:0;
+                        $sale_price = AmountHelper::calcMarkupPrice($model->sale_price,$markup_rate,$markup_value,2);
+                        $areaValues[$area_id] = [
+                                'area_id' =>$area_id,
+                                'area_name'=>$area_name,
+                                'sale_price'=>$sale_price,
+                                'markup_rate' => $markup_rate,
+                                'markup_value'=> $markup_value,
+                                'status'=> isset($area['status']) ? $area['status']:1,
+                        ]; 
+                    }    
+                    $areaColomns = [
+                            [
+                                    'name' => 'area_id',
+                                    'title'=>"地区ID",
+                                    'enableError'=>false,
+                                    'options' => [
+                                            'class' => 'input-priority',
+                                            'readonly' =>'true',
+                                    ]
+                            ],
+                            [
+                                    'name' =>'area_name',
+                                    'title'=>"地区",
+                                    'enableError'=>false,
+                                    'options' => [
+                                            'class' => 'input-priority',
+                                            'readonly' =>'true',
+                                    ]
+                            ],
+                            [
+                                    'name' => "sale_price",
+                                    'title'=>"加价销售价",
+                                    'enableError'=>false,
+                                    'options' => [
+                                            'class' => 'input-priority',
+                                            'readonly' =>'true',
+                                    ]
+                            ],
+                            [
+                                    'name' => "markup_rate",
+                                    'title'=>"加价率",
+                                    'enableError'=>false,
+                                    'options' => [
+                                            'class' => 'input-priority'
+                                    ]
+                            ],
+                            [
+                                    'name' => "markup_value",
+                                    'title'=>"固定值",
+                                    'enableError'=>false,
+                                    'options' => [
+                                            'class' => 'input-priority'
+                                    ]
+                            ],
+                            [
+                                    'name' => "status",
+                                    'title'=>"状态",
+                                    'enableError'=>false,
+                                    'type'  => 'dropDownList',
+                                    'options' => [
+                                            'class' => 'input-priority'
+                                    ],
+                                    'defaultValue' => 1,
+                                    'items' => common\enums\StatusEnum::getMap()
+                            ],
+                    ];
+                    ?>
+                    <?= unclead\multipleinput\MultipleInput::widget([                            
+                            'name' => "Diamond[sale_policy]",
+                            'removeButtonOptions'=>['label'=>'','class'=>''], 
+                            'value' => $areaValues,
+                            'columns' => $areaColomns
+                    ]) ?>
+            	  </div>  
+    		    <!-- ./tab-content -->
+            </div>
+            <!-- ./box-body -->
+            <?php }?>
+      </div>
+      <!-- ./row -->
     </div>
     <div class="modal-footer">
         <div class="col-sm-12 text-center">

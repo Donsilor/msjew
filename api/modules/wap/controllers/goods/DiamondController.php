@@ -3,10 +3,12 @@
 namespace api\modules\wap\controllers\goods;
 
 use common\enums\StatusEnum;
+use common\helpers\ImageHelper;
 use common\models\goods\Diamond;
 use common\models\goods\DiamondLang;
 use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
+use common\models\goods\StyleMarkup;
 use yii\db\Expression;
 
 
@@ -30,13 +32,13 @@ class DiamondController extends OnAuthController
 
     public function actionSearch(){
         $sort_map = [
-            "sale_price"=>'m.sale_price',//价格
-            "sale_volume"=>'m.sale_volume',//销量
+            "sale_price"=>'sale_price',//价格
+            "sale_volume"=>'virtual_volume',//销量
             "carat"=>'m.carat',//价格
         ];
         $params_map = [
             'shape'=>'m.shape',//形状
-            'sale_price'=>'m.sale_price',//销售价
+            'sale_price'=>'IFNULL(markup.sale_price,m.sale_price)',//销售价
             'carat'=>'m.carat',//石重
             'cut'=>'m.cut',//切工
             'color'=>'m.color',//颜色
@@ -66,19 +68,24 @@ class DiamondController extends OnAuthController
         $order_type = \Yii::$app->request->get("sortType", 1);//排序方式 1-升序；2-降序;
 
         //排序
-        $order = '';
+        $order = 'virtual_volume desc';
         if(!empty($order_param)){
           $order_type = $order_type == 1? "asc": "desc";
           $order = $sort_map[$order_param]. " ".$order_type;
         }
 
 
-        $fields = ['m.id','m.goods_id','m.goods_sn','lang.goods_name','m.goods_image','m.sale_price'
+        $fields = ['m.id','m.goods_id','m.style_id','m.goods_sn','lang.goods_name','m.goods_image','IFNULL(markup.sale_price,m.sale_price) as sale_price'
                     ,'m.carat','m.cert_id','m.depth_lv','m.table_lv','m.clarity','m.cert_type','m.color'
                     ,'m.cut','m.fluorescence','m.polish','m.shape','m.symmetry'];
+
+        $area_id = $this->getAreaId(); 
         $query = Diamond::find()->alias('m')->select($fields)
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->where(['m.status'=>StatusEnum::ENABLED])->orderby($order);
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.area_id='.$area_id)
+            ->where(['m.status'=>StatusEnum::ENABLED])
+            ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]])
+            ->orderby($order);
 
         $ev = \Yii::$app->request->get("ev");  //属性帅选
         if(!empty($ev)){
@@ -116,8 +123,9 @@ class DiamondController extends OnAuthController
             $arr = array();
             $arr['categoryId'] = $type_id;
             $arr['coinType'] = $this->getCurrencySign();
-            $arr['id'] = $val['id'];
-            $arr['goodsImages'] = $val['goods_image'];
+            $arr['id'] = $val['style_id'];
+            $arr['goodsImages'] = ImageHelper::goodsThumbs($val['goods_image'],'mid');
+
             $arr['goodsName'] = $val['goods_name'];
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $arr['isJoin'] = null;
@@ -157,28 +165,34 @@ class DiamondController extends OnAuthController
         if(empty($id)) {
             return ResultHelper::api(422,"id不能为空");
         }
+
+        $area_id = $this->getAreaId(); 
         $query = Diamond::find()->alias('m')
             ->leftJoin(DiamondLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
-            ->select(['m.*','lang.goods_name', 'lang.meta_title','lang.meta_word','lang.meta_desc'])
-            ->where(['m.id'=>$id, 'm.status'=>StatusEnum::ENABLED]);
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.style_id=markup.style_id and markup.area_id='.$area_id)
+            ->select(['m.*','IFNULL(markup.sale_price,m.sale_price) as sale_price','lang.goods_name', 'lang.meta_title','lang.meta_word','lang.meta_desc'])
+            ->where(['m.style_id'=>$id, 'm.status'=>StatusEnum::ENABLED])
+            ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]]);
+
         $model = $query->one();
         if(empty($model)) {
             return ResultHelper::api(422,"裸钻信息不存在或者已下架");
         }
         $type_id = $model->type_id;
+
+
         $diamond_array = $query->asArray()->one();
 
-
         $diamond = array();
-        $diamond['id'] = $model->id;
+        $diamond['id'] = $model->style_id;
         $diamond['categoryId'] = $model->type_id;
         $diamond['coinType'] = $this->getCurrencySign();
         $diamond['goodsName'] = $model->lang->goods_name;
         $diamond['goodsCode'] = $model->goods_sn;
         $diamond['salePrice'] = $this->exchangeAmount($model->sale_price);
         $diamond['goods3ds'] = $model->goods_3ds;
-        $diamond['goodsGiaImage'] = $model->goods_gia_image;
-        $diamond['goodsImages'] = $model->goods_image.",".$model->parame_images;
+        $diamond['goodsGiaImage'] = ImageHelper::goodsThumbs($model->goods_gia_image,'big');
+        $diamond['goodsImages'] = ImageHelper::goodsThumbs($model->goods_image,'big').",".ImageHelper::goodsThumbs($model->parame_images,'big');
         $diamond['goodsDesc'] = $model->lang->goods_desc;
         $diamond['goodsMod'] = 2;
         $diamond['goodsServices'] = $model->sale_services;
@@ -205,7 +219,7 @@ class DiamondController extends OnAuthController
               'barCode' => null,
               'categoryId' => $model->type_id,
               'goodsDetailsCode' => $model->goods_sn,
-              'goodsId' => $model->id,
+              'goodsId' => $model->style_id,
               'stock' => $model->goods_num,
               'retailMallPrice' => (float)$this->exchangeAmount($model->sale_price),
               'productNumber' => null,
@@ -278,10 +292,10 @@ class DiamondController extends OnAuthController
         $limit = 5;
         $language = $this->language;
         $order = 'virtual_clicks desc';
-        $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
+        $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id,$limit,$order, $fields ,$language);
         $webSite = array();
-        $webSite['moduleTitle'] = '最畅销订婚戒指';
+        $webSite['moduleTitle'] = \Yii::t('common','最畅销订婚戒指');
         $webSite['type'] = $type_id;
         foreach ($style_list as $val){
             $moduleGoods = array();
@@ -289,7 +303,7 @@ class DiamondController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['goodsCode'] = $val['style_sn'];
-            $moduleGoods['goodsImages'] = $val['goods_images'];
+            $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'mid');
             $moduleGoods['goodsName'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $webSite['moduleGoods'][] = $moduleGoods;

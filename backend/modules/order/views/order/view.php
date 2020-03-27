@@ -23,110 +23,112 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="tab-content">
             <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_1">
                 <ul class="nav nav-tabs pull-right">
-                    <li class="pull-left header"><i class="fa fa-th"></i> 订单信息 <span
-                                class="btn btn-success btn-sm"><?= \common\enums\OrderStatusEnum::getValue($model->order_status) ?></span>
+                    <li class="pull-left header"><i class="fa fa-th"></i> 订单信息&nbsp; <span class="label label-primary"><?= \common\enums\OrderStatusEnum::getValue($model->order_status) ?></span>
                     </li>
                 </ul>
-                <div class="box-body" style="margin-left:9px">
+                <div class="box-body col-lg-12" style="margin-left:9px">
                     <div class="row">
-                        <div class="col-lg-3"><label
-                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('order_sn') ?>
-                                ：</label><?= $model->order_sn ?></div>
-                        <div class="col-lg-3">
-                        	<label class="col-lg-6 text-right"><?= $model->getAttributeLabel('language') ?>：</label>
-                        	<?= \common\enums\LanguageEnum::getValue($model->language) ?>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('order_sn') ?> ：</label>                        
+                            <?= $model->order_sn ?>
                         </div>
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('account.currency') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('language') ?>：</label>
+                            <?= \common\enums\LanguageEnum::getValue($model->language) ?>
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('account.currency') ?>：</label>
                             <?= $model->account->currency ?>(<?= $model->account->exchange_rate ?>)
-                        </div>                        
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.realname') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('address.realname') ?>：</label>
                             <?= $model->address->realname ?>
                         </div>
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_type') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('payment_type') ?>：</label>
                             <?= \common\enums\PayEnum::getValue($model->payment_type) ?>
                         </div>
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('order_status') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('order_status') ?>：</label>
                             <?= \common\enums\OrderStatusEnum::getValue($model->order_status) ?>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-3"><label
-                                    class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.mobile') ?>
-                                ：</label><?= $model->address->mobile_code ?>-<?= $model->address->mobile ?></div>
+                         <div class="col-lg-4">
+                        	<label class="text-right col-lg-4"><?= $model->getAttributeLabel('address.mobile') ?>：</label>
+                            <?= $model->address->mobile_code ?>-<?= $model->address->mobile ?>
+                         </div>
 
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('pay_sn') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('pay_sn') ?>：</label>
                             <?= $model->pay_sn?>
                         </div>
-                        <div class="col-lg-3"><label class="col-lg-6 text-right"><?= $model->getAttributeLabel('payment_status') ?>
-                                ：</label><?= \common\enums\PayStatusEnum::getValue($model->payment_status) ?>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('payment_status') ?>：</label>
+                            <?= \common\enums\PayStatusEnum::getValue($model->payment_status)?>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('member.username') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('member.username') ?>：</label>
                             <?= $model->member->username ?>
                         </div>
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('order_from') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('order_from') ?>：</label>
                             <?= \common\enums\OrderFromEnum::getValue($model->order_from) ?>
                         </div>
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('status') ?></label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('status') ?>：</label>
                             <?= \common\enums\AuditStatusEnum::getValue($model->status) ?>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.country_name') ?> ：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('address.country_name') ?> ：</label>
                             <?= $model->address->country_name ?>
                         </div>
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('ip') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('ip') ?>：</label>
                             <?= $model->ip ?>(<?= \common\enums\AreaEnum::getValue($model->ip_area_id) ?>)
                         </div>
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('follower_id') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('follower_id') ?>：</label>
                             <?= $model->follower ? $model->follower->username:'' ?>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.city_name') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('address.city_name') ?>：</label>
                             <?= $model->address->city_name ?>
                         </div>
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('ip_location') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('ip_location') ?>：</label>
                             <?= $model->ip_location ?>
                         </div>
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('created_at') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('created_at') ?>：</label>
                             <?= Yii::$app->formatter->asDatetime($model->created_at); ?>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.address_details') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('address.address_details') ?>：</label>
                             <?= $model->address->address_details ?>
                         </div>
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.zip_code') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('address.zip_code') ?>：</label>
                             <?= $model->address->zip_code ?>
                         </div>
-                        <div class="col-lg-3">
-                            <label class="col-lg-6 text-right"><?= $model->getAttributeLabel('address.email') ?>：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('address.email') ?>：</label>
                             <?= $model->address->email ?>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-3">
-                            <label class="col-sm-6 text-right"><?= $model->getAttributeLabel('buyer_remark') ?> ：</label>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('buyer_remark') ?> ：</label>
                             <?= $model->buyer_remark ?>
                         </div>
                     </div>
@@ -134,11 +136,43 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_2">
                 <ul class="nav nav-tabs pull-right">
+                    <li class="pull-left header"><i class="fa fa-th"></i> 发票信息 </li>
+                </ul>
+                <div class="box-body col-lg-12" style="margin-left:9px">
+                    <?php if($model->invoice) {?>
+                    <div class="row">
+                        <div class="col-lg-4">
+                        <label  class="text-right col-lg-4"><?= $model->getAttributeLabel('invoice.invoice_type') ?>：</label>
+                        <?= \common\enums\InvoiceTypeEnum::getValue($model->invoice->invoice_type) ?></div>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('invoice.invoice_title') ?>：</label>
+                            <?= $model->invoice->invoice_title ?>
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('invoice.tax_number') ?>：</label>
+                            <?= $model->invoice->tax_number ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label
+                                    class="text-right col-lg-4"><?= $model->getAttributeLabel('invoice.is_electronic') ?>
+                                ：</label><?= \common\enums\InvoiceElectronicEnum::getValue($model->invoice->is_electronic) ?></div>
+                        <div class="col-lg-3">
+                            <label class="text-right col-lg-4"><?= $model->getAttributeLabel('invoice.email') ?>：</label>
+                            <?= $model->invoice->email ?>
+                        </div>
+                    </div>
+                    <?php } else {?>
+                    	不开发票
+                    <?php }?>
+                </div>
+            </div>
+            <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_3">
+                <ul class="nav nav-tabs pull-right">
                     <li class="pull-left header"><i class="fa fa-th"></i> 商品信息</li>
                 </ul>
-                <div class="box-body col-lg-9">
-                    <div class="box-body table-responsive">
-                        <?= GridView::widget([
+                <div class="box-body table-responsive col-lg-12">
+                         <?= GridView::widget([
                             'dataProvider' => $dataProvider,
                             'tableOptions' => ['class' => 'table table-hover'],
                             'columns' => [
@@ -195,23 +229,24 @@ DOM;
                                 ],
                             ]
                         ]); ?>
-                    </div>
-                </div>
-                <div class="box-body col-lg-9">
+                 </div>
+                <div class="box-body col-lg-12">
                     <div class="row">
                         <div class="col-lg-6">
+                            <?php  if($model->express_id){?>
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_id') ?>：</label></div>
-                                <div class="col-lg-9"></div>
+                                <div class="col-lg-9"><?= \Yii::$app->services->express->getExressName($model->express_id);?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('express_no') ?>：</label></div>
                                 <div class="col-lg-9"><?= $model->express_no ?></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-3 text-right"><label>&nbsp;</label></div>
-                                <div class="col-lg-9"></div>
+                                <div class="col-lg-3 text-right"><label><?= $model->getAttributeLabel('delivery_time') ?>：</label></div>
+                                <div class="col-lg-9"><?= date('Y-m-d H:i:s',$model->delivery_time)?></div>
                             </div>
+                            <?php } ?>
                             <div class="row">
                                 <div class="col-lg-3 text-right">
                                     <label><?= $model->getAttributeLabel('seller_remark') ?>：</label></div>
@@ -258,7 +293,7 @@ DOM;
             </div>
         </div>
         <div class="modal-footer">
-            <div class="col-sm-9 text-center">
+            <div class="text-center">
                 <span class="btn btn-white" onclick="history.go(-1)">返回</span>
             </div>
         </div>

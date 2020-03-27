@@ -7,6 +7,7 @@ use yii\helpers\BaseHtml;
 use common\enums\StatusEnum;
 use common\enums\WhetherEnum;
 use common\enums\MessageLevelEnum;
+use common\enums\AreaEnum;
 
 /**
  * Class Html
@@ -296,6 +297,15 @@ Css
     public static function langTab($tab = 'tab',$title = null)
     {
         return self::tab(Yii::$app->params['languages'],Yii::$app->language,$tab,$title);
+    }
+    /**
+     * 地区tab 标签初始化
+     * @param array $options
+     * @param string $tab
+     */
+    public static function areaTab($tab = 'areaTab',$title = null)
+    {
+        return self::tab(AreaEnum::getMap(),Yii::$app->params['areaId'],$tab,$title);
     }
     /**
      * tab 标签初始化

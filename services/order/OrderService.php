@@ -2,8 +2,8 @@
 
 namespace services\order;
 
-use common\components\Service;
 use common\models\order\OrderCart;
+use common\models\order\OrderInvoice;
 use yii\web\UnprocessableEntityHttpException;
 use common\models\order\OrderGoods;
 use common\models\order\Order;
@@ -11,14 +11,9 @@ use common\models\member\Address;
 use common\models\order\OrderAccount;
 use common\models\order\OrderAddress;
 use common\enums\PayStatusEnum;
-use common\models\common\EmailLog;
 use common\models\member\Member;
-use common\helpers\RegularHelper;
-use common\models\common\SmsLog;
 use common\enums\OrderStatusEnum;
-use common\enums\ExpressEnum;
 use common\enums\StatusEnum;
-use common\models\order\OrderLog;
 
 /**
  * Class OrderService
@@ -29,11 +24,12 @@ class OrderService extends OrderBaseService
     /**
      * 创建订单
      * @param array $cart_ids
-     * @param array $order_info
      * @param int $buyer_id
      * @param int $buyer_address_id
+     * @param array $order_info
+     * @param array $invoice_info
      */
-    public function createOrder($cart_ids,$buyer_id, $buyer_address_id, $order_info)
+    public function createOrder($cart_ids,$buyer_id, $buyer_address_id, $order_info, $invoice_info)
     {
         $buyer = Member::find()->where(['id'=>$buyer_id])->one();
         
@@ -63,6 +59,7 @@ class OrderService extends OrderBaseService
         $order->payment_status = PayStatusEnum::UNPAID;
         $order->order_status = OrderStatusEnum::ORDER_UNPAID;
         $order->ip = \Yii::$app->request->userIP;  //用户下单ip
+        $order->is_invoice = empty($invoice_info)?0:1;//是否开发票
         list($order->ip_area_id,$order->ip_location) = \Yii::$app->ipLocation->getLocation($order->ip);
         if(false === $order->save()){
             throw new UnprocessableEntityHttpException($this->getError($order));
@@ -121,6 +118,17 @@ class OrderService extends OrderBaseService
         if(false === $orderAddress->save()) {
             throw new UnprocessableEntityHttpException($this->getError($orderAddress));
         }
+
+        //如果有发票信息
+        if(!empty($invoice_info)) {
+            $invoice = new OrderInvoice();
+            $invoice->attributes = $invoice_info;
+            $invoice->order_id   = $order->id;
+            if(false === $invoice->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($invoice));
+            }
+        }
+
         //订单日志
         $log_msg = "创建订单,订单编号：".$order->order_sn;
         $log_role = 'buyer';
@@ -128,9 +136,6 @@ class OrderService extends OrderBaseService
         $this->addOrderLog($order->id, $log_msg, $log_role, $log_user,$order->order_status);
         //清空购物车
         OrderCart::deleteAll(['id'=>$cart_ids,'member_id'=>$buyer_id]);
-
-        //订单发送邮件
-        $this->sendOrderNotification($order->id);
         
         return [
                 "currency" => $currency,
@@ -202,7 +207,7 @@ class OrderService extends OrderBaseService
                 'discount_amount'=>$discount_amount,                
                 'currency' => $this->getCurrency(),
                 'exchange_rate'=>$this->getExchangeRate(),
-                'plan_days' =>'1-12',
+                'plan_days' =>'5-12',
                 'buyerAddress'=>$buyerAddress,
                 'orderGoodsList'=>$orderGoodsList,
         ];
@@ -225,10 +230,10 @@ class OrderService extends OrderBaseService
     }
     /**
      * 取消订单
-     * @param unknown $order_id 订单ID
-     * @param unknown $remark 操作备注
-     * @param unknown $log_role 用户角色
-     * @param unknown $log_user 用户名
+     * @param int $order_id 订单ID
+     * @param string $remark 操作备注
+     * @param string $log_role 用户角色
+     * @param string $log_user 用户名
      * @return boolean
      */
     public function changeOrderStatusCancel($order_id,$remark, $log_role, $log_user)
@@ -239,9 +244,10 @@ class OrderService extends OrderBaseService
         }
         $order_goods_list = OrderGoods::find()->select(['id','goods_id','goods_type','goods_num'])->where(['order_id'=>$order_id])->all();
         foreach ($order_goods_list as $goods) {
-            \Yii::$app->services->goods->updateGoodsStorageForOrder($goods->goods_id, $goods->goods_num, $goods->goods_type);
+            //\Yii::$app->services->goods->updateGoodsStorageForOrder($goods->goods_id, $goods->goods_num, $goods->goods_type);
         }
         //更改订单状态
+        $order->seller_remark = $remark;
         $order->order_status = OrderStatusEnum::ORDER_CANCEL;
         $order->save(false);
         //订单日志

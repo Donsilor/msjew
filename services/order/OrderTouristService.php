@@ -12,8 +12,10 @@ use common\models\order\OrderAccount;
 use common\models\order\OrderAddress;
 use common\models\order\OrderCart;
 use common\models\order\OrderGoods;
+use common\models\order\OrderInvoice;
 use common\models\order\OrderTourist;
 use common\models\order\OrderTouristDetails;
+use common\models\order\OrderTouristInvoice;
 use PayPal\Api\PayerInfo;
 use PayPal\Api\Payment;
 use PayPal\Api\ShippingAddress;
@@ -30,7 +32,7 @@ class OrderTouristService extends OrderBaseService
     /**
      * @param $cartList
      */
-    public function createOrder($cartList)
+    public function createOrder($cartList, $invoice_info)
     {
 
         $goods_amount = 0;
@@ -54,7 +56,7 @@ class OrderTouristService extends OrderBaseService
             $detail->promotions_id = 0;//$item['promotions_id'];//促销活动ID
             $detail->group_id = $item['group_id'];//组ID
             $detail->group_type = $item['group_type'];//分组类型
-            $detail->goods_spec = json_encode($goods['goods_spec']);//商品规格
+            $detail->goods_spec = $goods['goods_spec'];//商品规格
             $detail->goods_attr = $goods['goods_attr'];//商品规格
 
             $details[] = $detail;
@@ -107,6 +109,16 @@ class OrderTouristService extends OrderBaseService
             }
         }
 
+        //如果有发票信息
+        if(!empty($invoice_info)) {
+            $invoice = new OrderTouristInvoice();
+            $invoice->attributes = $invoice_info;
+            $invoice->order_tourist_id = $order->id;;
+            if(false === $invoice->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($invoice));
+            }
+        }
+
         return $order->id;
     }
 
@@ -127,28 +139,35 @@ class OrderTouristService extends OrderBaseService
         $payment = $pay->getPayment(['model'=>$payLog]);
 //        $payment->getPayer();
 
+        //记录订单日志
+        \Yii::error($payment->toArray());
+
         /** @var PayerInfo $payerInfo */
         $payerInfo = $payment->getPayer()->getPayerInfo();
 
         /** @var ShippingAddress $shippingAddressInfo */
         $shippingAddressInfo = $payerInfo->getShippingAddress();
 
-        //创建用户信息
-        $member = new Member();
-        $member->attributes = [
-            'username' => '游客-'.$payerInfo->getPayerId(),
-            'password_hash' => 'password_hash',
-            'firstname' => $payerInfo->getFirstName(),
-            'lastname' => $payerInfo->getLastName(),
-            'realname' => $shippingAddressInfo->getRecipientName(),
-            'email' => $payerInfo->getEmail(),
-            'last_ip' => $orderTourist->ip,
-            'first_ip' => $orderTourist->ip,
-            'first_ip_location' => $ip_location,
+        //用户信息处理
+        $username = '游客-'.$payerInfo->getPayerId();
+        if(!($member = Member::findByUsername($username))) {
+            //创建用户信息
+            $member = new Member();
+            $member->attributes = [
+                'username' => '游客-'.$payerInfo->getPayerId(),
+                'password_hash' => 'password_hash',
+                'firstname' => $payerInfo->getFirstName(),
+                'lastname' => $payerInfo->getLastName(),
+                'realname' => $shippingAddressInfo->getRecipientName(),
+                'email' => $payerInfo->getEmail(),
+                'last_ip' => $orderTourist->ip,
+                'first_ip' => $orderTourist->ip,
+                'first_ip_location' => $ip_location,
 //            'mobile' => $payerInfo->getPhone()
-        ];
-        if(false === $member->save()) {
-            throw new UnprocessableEntityHttpException($this->getError($member));
+            ];
+            if(false === $member->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($member));
+            }
         }
 
         //订单信息
@@ -175,6 +194,7 @@ class OrderTouristService extends OrderBaseService
 //            'order_from' => '',
 //            'order_type' => '',
             'is_tourist' => 1,//游客订单
+            'is_invoice' => empty($orderTourist->invoice)?0:1,//是否开发票
             'api_pay_time' => $payLog->pay_time,
 //            'trade_no' => '',
             'buyer_remark' => '',
@@ -284,6 +304,16 @@ class OrderTouristService extends OrderBaseService
                 if(false === $langModel->save()){
                     throw new UnprocessableEntityHttpException($this->getError($langModel));
                 }
+            }
+        }
+
+        //如果有发票信息
+        if(!empty($orderTourist->invoice)) {
+            $invoice = new OrderInvoice();
+            $invoice->attributes = $orderTourist->invoice->toArray();
+            $invoice->order_id   = $order->id;
+            if(false === $invoice->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($invoice));
             }
         }
 

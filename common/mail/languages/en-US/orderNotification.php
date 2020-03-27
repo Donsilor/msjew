@@ -8,6 +8,7 @@ use common\helpers\AmountHelper;
 $order_id = $code;
 $order = Order::find()->where(['id'=>$order_id])->one();
 
+\Yii::$app->params['language'] = $order->language;
 ?>
 <!DOCTYPE html>
 <html>
@@ -48,7 +49,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 							<?php }elseif($order->order_status == OrderStatusEnum::ORDER_PAID) {?>
 							<dd><span>Payment time：</span><span><?= \Yii::$app->formatter->asDatetime($order->payment_time); ?></span></dd>
 							<?php }elseif($order->order_status == OrderStatusEnum::ORDER_SEND) {?>
-							<dd><span>Logistics Company：</span><span><?= ExpressEnum::getValue($order->express_id); ?></span></dd>
+							<dd><span>Logistics Company：</span><span><?= \Yii::$app->services->express->getExressName($order->express_id,$order->language);?></span></dd>
 							<dd><span>Logistics NO：</span><span><?= $order->express_no; ?></span></dd>
 							<dd><span>Delivery Time：</span><span><?= \Yii::$app->formatter->asDatetime($order->delivery_time); ?></span></dd>
 							<?php }?>
@@ -76,7 +77,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 									<dt><img src="<?= ImageHelper::thumb($goods->goods_image)?>"></dt>
 								</dl>
 								<dl>
-									<dd class="good"><?= $goods->goods_name?></dd>
+									<dd class="good"><?= $goods->lang->goods_name?></dd>
 									<dd class="attr"><?= $goods_attr?></dd>
 									<dd class="price"><?= AmountHelper::outputAmount($goods->goods_price,2,$currency)?></dd>
 								</dl>

@@ -13,6 +13,7 @@ use Yii;
  * @property int $goods_num 商品数量
  * @property string $cert_type 证书类型
  * @property string $cert_id 证书号
+ * @property string $sale_policy 销售政策
  * @property string $market_price 市场价
  * @property string $sale_price 销售价
  * @property string $cost_price
@@ -49,8 +50,8 @@ class Diamond extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id','goods_num', 'shape', 'source_id', 'is_stock', 'status', 'created_at', 'updated_at'], 'integer'],
-            [[ 'sale_price','source_id','shape','goods_num','goods_sn', 'carat', 'clarity', 'cut', 'color', 'symmetry', 'polish', 'fluorescence'], 'required'],
+            [['id','goods_num', 'shape', 'source_id', 'is_stock', 'status', 'created_at', 'updated_at','onsale_time','type_id','goods_id','sale_volume','virtual_volume','virtual_clicks','goods_clicks'], 'integer'],
+            [['sale_price','source_id','shape','goods_num','goods_sn', 'carat', 'clarity', 'cut', 'color', 'symmetry', 'polish', 'fluorescence'], 'required'],
             [['goods_num','market_price', 'sale_price', 'cost_price', 'carat', 'source_discount','length','width','aspect_ratio'], 'number'],
             ['sale_price','compare','compareValue' => 0, 'operator' => '>'],
             ['market_price','compare','compareValue' => 0, 'operator' => '>'],
@@ -68,6 +69,7 @@ class Diamond extends \yii\db\ActiveRecord
             [['cert_id'], 'unique'],
             [['parame_images'],'parseParameImages'],
             [['sale_services'],'parseSaleServices'],
+            [['sale_policy'],'parseSalePolicy'],//销售政策
             [['goods_name','language'],'safe'],
             [['cert_type', 'cert_id'], 'unique', 'targetAttribute' => ['cert_type', 'cert_id']],
         ];
@@ -95,7 +97,16 @@ class Diamond extends \yii\db\ActiveRecord
         return $this->sale_services;
     }
 
-
+    /**
+     * 销售政策（地区价格）
+     */
+    public function parseSalePolicy()
+    {
+        if(is_array($this->sale_policy)){
+            $this->sale_policy = json_encode($this->sale_policy);
+        }
+        return $this->sale_policy;
+    }
     /**
      * {@inheritdoc}
      */
@@ -103,7 +114,7 @@ class Diamond extends \yii\db\ActiveRecord
     {
         $currency = \Yii::$app->params['currency'];
         return [
-            'id' => Yii::t('goods_diamond', 'ID'),
+            'id' => "ID",
             'goods_sn' => '商品编码',
             'goods_image' => '主图',
             'goods_num' => '库存',
@@ -125,6 +136,7 @@ class Diamond extends \yii\db\ActiveRecord
             'length' => '长度',
             'width' => '宽度',
             'aspect_ratio' => '长宽比(%)',
+            'sale_policy' =>'销售政策',
             'sale_services' => '售后服务',
             'goods_3ds' => '360°主图',
             'parame_images' => '参数示意图',
@@ -133,6 +145,11 @@ class Diamond extends \yii\db\ActiveRecord
             'source_id' => '货品来源 ',
             'source_discount' => '来源折扣',
             'is_stock' => '库存类型',
+            'onsale_time' => '上架时间',
+            'sale_volume' => Yii::t('goods', '销量'),
+            'virtual_volume' => Yii::t('goods', '虚拟销量'),
+            'goods_clicks' => Yii::t('goods', '浏览量'),
+            'virtual_clicks' => Yii::t('goods', '虚拟浏览量'),
             'status' => '上架状态',
             'created_at' => Yii::t('common', '创建时间'),
             'updated_at' => Yii::t('common', '更新时间'),

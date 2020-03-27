@@ -2,13 +2,16 @@
 
 namespace common\models\forms;
 
+use common\enums\PayStatusEnum;
 use common\models\order\OrderTourist;
+use Omnipay\Common\Message\AbstractResponse;
 use Yii;
 use yii\base\Model;
 use yii\web\UnprocessableEntityHttpException;
 use common\enums\PayEnum;
 use common\enums\OrderStatusEnum;
 use common\models\order\Order;
+use common\enums\CurrencyEnum;
 
 /**
  * Class PayForm
@@ -87,8 +90,8 @@ class PayForm extends Model
                 if (!in_array($this->tradeType, ['pc', 'wap'])) {
                     $this->addError($attribute, 'PayPal交易类型不符');
                 }
-                if($this->coinType == 'CNY') {
-                    $this->addError($attribute, \Yii::t('payment', 'NOT_SUPPORT_PAYPAL'));
+                if($this->coinType == CurrencyEnum::CNY) {
+                    $this->addError($attribute, \Yii::t('payment', 'PAYPAL_NOT_SUPPORT_RMB'));
                 }
                 break;
             case PayEnum::PAY_TYPE_GLOBAL_ALIPAY :
@@ -96,6 +99,13 @@ class PayForm extends Model
                     $this->addError($attribute, 'GlobalAlipay交易类型不符');
                 }
                 break;
+            case PayEnum::PAY_TYPE_PAYDOLLAR :{                
+                if(in_array($this->coinType,[CurrencyEnum::CNY,CurrencyEnum::USD])) {
+                    $this->addError($attribute, \Yii::t('payment', 'PAYDOLLAR_NOT_SUPPORT_RMB_AND_USD'));
+                }
+                break;
+            }
+                
         }
     }
 
@@ -128,8 +138,35 @@ class PayForm extends Model
 
                 $order = Order::find()->where(['id'=>$this->orderId,'member_id'=>$this->memberId])->one();
                 if(empty($order) || $order->order_status != OrderStatusEnum::ORDER_UNPAID) {
-                    throw new UnprocessableEntityHttpException("支付失败,订单状态已变更");
+                    if($order && $order->order_status === OrderStatusEnum::ORDER_PAID) {
+                        throw new UnprocessableEntityHttpException(\Yii::t('payment', 'ORDER_PAID'));
+                    }
+                    else {
+                        throw new UnprocessableEntityHttpException(\Yii::t('payment', 'ORDER_STATUS_CHANGED'));
+                    }
                 }
+
+                //验证重复支付
+                if(!empty($order->paylogs)) {
+                    foreach ($order->paylogs as $paylog) {
+                        //获取支付类
+                        $pay = Yii::$app->services->pay->getPayByType($paylog->pay_type);
+
+                        /**
+                         * @var $state AbstractResponse
+                         */
+                        $state = $pay->verify(['model'=>$paylog, 'isVerify'=>true]);
+
+                        if(in_array($state->getCode(), ['null'])) {
+                            throw new UnprocessableEntityHttpException(\Yii::t('payment','ORDER_PAYMENT_VERIFICATION_ERROR'));
+                        }
+                        elseif(in_array($state->getCode(), ['completed', 'pending', 'payer']) || $paylog->pay_status==PayStatusEnum::PAID) {
+                            //此订单正在付款中
+                            throw new UnprocessableEntityHttpException(\Yii::t('payment','ORDER_BEING_PAID'));
+                        }
+                    }
+                }
+
                 // TODO 查询订单获取订单信息
                 $orderSn = $order->order_sn;
                 $totalFee = $order->account->order_amount - $order->account->discount_amount;

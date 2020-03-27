@@ -2,6 +2,7 @@
 
 namespace common\models\order;
 
+use common\models\common\PayLog;
 use common\models\member\Member;
 use Yii;
 
@@ -55,7 +56,7 @@ class Order extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id','ip_area_id','payment_type','payment_status', 'payment_time', 'member_id', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'is_tourist', 'api_pay_time', 'status', 'created_at', 'updated_at', 'follower_id','followed_status' ,'followed_time', 'express_id','delivery_time','delivery_status'], 'integer'],
+            [['merchant_id','ip_area_id','payment_type','payment_status', 'payment_time', 'member_id', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'is_tourist', 'is_invoice','api_pay_time', 'status', 'created_at', 'updated_at', 'follower_id','followed_status' ,'followed_time', 'express_id','delivery_time','delivery_status'], 'integer'],
             [['language'], 'safe'],
             [['order_sn','pay_sn'], 'string', 'max' => 20],
             [['express_no', 'trade_no'], 'string', 'max' => 50],
@@ -72,7 +73,7 @@ class Order extends \common\models\base\BaseModel
         return [
             'id' => 'ID',
             'merchant_id' => '商户ID',
-            'language' => '下单时语言',
+            'language' => '订单语言',
             'order_sn' => '订单编号',
             'pay_sn' => '支付单号',
             'member_id' => '客户',
@@ -91,6 +92,7 @@ class Order extends \common\models\base\BaseModel
             'order_from' => '订单来源',
             'order_type' => '订单类型',
             'is_tourist' => '是否游客订单',
+            'is_invoice' => '是否开发票',
             'api_pay_time' => 'Api支付时间',
             'trade_no' => '外部单号',
             'buyer_remark' => '客户留言',
@@ -132,6 +134,15 @@ class Order extends \common\models\base\BaseModel
     }
 
     /**
+     * 对应订单付款信息模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInvoice()
+    {
+        return $this->hasOne(OrderInvoice::class, ['order_id'=>'id']);
+    }
+
+    /**
      * 对应订单地址模型
      * @return \yii\db\ActiveQuery
      */
@@ -165,5 +176,21 @@ class Order extends \common\models\base\BaseModel
     public function getGoods()
     {
         return $this->hasMany(OrderGoods::class,['order_id'=>'id']);
+    }
+    /**
+     * 对应快递模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getExpress()
+    {
+        return $this->hasOne(\common\models\common\Express::class, ['id'=>'express_id']);
+	}
+    /**
+     * 对应订单商品信息模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPaylogs()
+    {
+        return $this->hasMany(PayLog::class,['order_sn'=>'order_sn']);
     }
 }

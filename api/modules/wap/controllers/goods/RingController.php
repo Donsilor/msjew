@@ -3,6 +3,7 @@
 namespace api\modules\wap\controllers\goods;
 
 use common\enums\StatusEnum;
+use common\helpers\ImageHelper;
 use common\models\goods\Ring;
 use common\models\goods\RingLang;
 use common\models\goods\RingRelation;
@@ -10,6 +11,7 @@ use common\models\goods\Style;
 use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
+use common\models\goods\StyleMarkup;
 use yii\base\Exception;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
@@ -35,21 +37,21 @@ class RingController extends OnAuthController
     public function actionSearch(){
         $sort_map = [
             "sale_price"=>'m.sale_price',//价格
-            "sale_volume"=>'m.sale_volume',//销量
+            "sale_volume"=>'virtual_volume',//销量
         ];
         //$type_id = \Yii::$app->request->get("type_id", 12);//产品线ID
         $order_param = \Yii::$app->request->post("orderParam");//排序参数
         $order_type = \Yii::$app->request->post("orderType", 1);//排序方式 1-升序；2-降序;
 
         //排序
-        $order = '';
+        $order = 'virtual_volume desc';
         if(!empty($order_param)){
           $order_type = $order_type == 1? "asc": "desc";
           $order = $sort_map[$order_param]. " ".$order_type;
         }
 
 
-        $fields = ['m.id','m.ring_sn','lang.ring_name','m.ring_images','m.sale_price','m.ring_style','m.status'];
+        $fields = ['m.id','m.ring_sn','lang.ring_name','m.ring_images','m.sale_price','m.ring_style','m.status','m.virtual_volume'];
         $query = Ring::find()->alias('m')->select($fields)
             ->innerJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'");
 
@@ -90,7 +92,7 @@ class RingController extends OnAuthController
             $arr['coinType'] = $this->getCurrencySign();
             $arr['ringId'] = $val['id'];
             $arr['goodsCode'] = $val['ring_sn'];
-            $arr['goodsImages'] = $val['ring_images'];
+            $arr['goodsImages'] = ImageHelper::goodsThumbs($val['ring_images'],'mid');
             $arr['ringStyle'] = $val['ring_style'];
             $arr['goodsName'] = $val['ring_name'];
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price']);
@@ -123,7 +125,7 @@ class RingController extends OnAuthController
         }
         $style_list = $query->asArray()->select($fields)->all();
         $ring_web_site = array();
-        $ring_web_site['moduleTitle'] = '精选结婚对戒';
+        $ring_web_site['moduleTitle'] = \Yii::t('common','精选结婚对戒');
         $ring_web_site['id'] = $type_id;
         foreach ($style_list as $val){
             $moduleGoods = array();
@@ -131,7 +133,7 @@ class RingController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['ringCode'] = $val['ring_sn'];
-            $moduleGoods['ringImg'] = $val['ring_images'];
+            $moduleGoods['ringImg'] = ImageHelper::goodsThumbs($val['ring_images'],'mid');
             $moduleGoods['name'] = $val['ring_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $ring_web_site['moduleGoods'][] = $moduleGoods;
@@ -140,16 +142,16 @@ class RingController extends OnAuthController
 
         $where = ['a.attr_id'=>26, 'a.attr_value_id'=>41];
         $man_web_site = $this->getAdvertStyle($where);
-        $man_web_site['moduleTitle'] = '自由搭配 爱我所爱';
+        $man_web_site['moduleTitle'] = \Yii::t('common','自由搭配 爱我所爱');
         $man_web_site['recommendInfo'] = 'Go for the traditional, classic wedding band, or dare to be different with a unique alternative metal wedding ring made from cobalt, tantalum or titanium.';
-        $man_web_site['title'] = '男士结婚戒指';
+        $man_web_site['title'] = \Yii::t('common','男士结婚戒指');
         $man_web_site['id'] = $type_id;
 
         $where = ['a.attr_id'=>26, 'a.attr_value_id'=>42];
         $woman_web_site = $this->getAdvertStyle($where);
-        $woman_web_site['moduleTitle'] = '自由搭配 爱我所爱';
+        $woman_web_site['moduleTitle'] = \Yii::t('common','自由搭配 爱我所爱');
         $woman_web_site['recommendInfo'] = 'Go for the traditional, classic wedding band, or dare to be different with a unique alternative metal wedding ring made from cobalt, tantalum or titanium.';
-        $woman_web_site['title'] = '女士结婚戒指';
+        $woman_web_site['title'] = \Yii::t('common','女士结婚戒指');
         $woman_web_site['id'] = $type_id;
 
         $activity_list = \Yii::$app->services->advert->getTypeAdvertImage(0,5, $language);
@@ -198,7 +200,7 @@ class RingController extends OnAuthController
         $ring = array();
         $ring['id'] = $model->id;
         $ring['name'] = $model->lang->ring_name;
-        $ring['ringImg'] = $model->ring_images;
+        $ring['ringImg'] = ImageHelper::goodsThumbs($model->ring_images,'big');
         $ring['ringCode'] = $model->ring_sn;
         $ring['ringDesc'] = $model->lang->ring_body;
         $ring['salePrice'] = $this->exchangeAmount($model->sale_price);
@@ -218,6 +220,7 @@ class RingController extends OnAuthController
             foreach ($style_ids as $style_id){
                 $style_id = $style_id['style_id'];
                 $style = \Yii::$app->services->goods->formatStyleGoodsById($style_id, $this->language);
+                $style['goodsImages'] = ImageHelper::goodsThumbs($style['goodsImages'],'mid');
                 $goodsModels[] = $style;
                 $searchGoods = array();
                 $searchGoods['categoryId'] = $style['categoryId'];
@@ -247,15 +250,18 @@ class RingController extends OnAuthController
 
     //获取商品信息
     public function getAdvertStyle($where=null){
+        $area_id = $this->getAreaId(); 
         $type_id = 2;
         $limit = 3;
         $order = 'goods_clicks desc';
-        $fields =  ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','m.sale_price'];
+        $fields =  ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $language = $this->language;
         $query = Style::find()->alias('m')
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
+            ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.area_id='.$area_id)
             ->leftJoin(AttributeIndex::tableName().' a','a.style_id=m.id')
-            ->where(['m.status'=>StatusEnum::ENABLED,'m.type_id'=>$type_id]);
+            ->where(['m.status'=>StatusEnum::ENABLED,'m.type_id'=>$type_id])
+            ->andWhere(['or',['=','markup.status',1],['IS','markup.status',new \yii\db\Expression('NULL')]]);
 
         if($where){
             $query->andWhere($where);
@@ -268,7 +274,7 @@ class RingController extends OnAuthController
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->getCurrencySign();
             $moduleGoods['goodsCode'] = $val['style_sn'];
-            $moduleGoods['goodsImages'] = $val['goods_images'];
+            $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'mid');
             $moduleGoods['goodsName'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
             $result['moduleGoods'][] = $moduleGoods;

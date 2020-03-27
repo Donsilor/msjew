@@ -58,6 +58,6 @@ class AmountHelper
     public static function outputAmount($amount,$scale = 2,$currency = 'CNY' ,$sep = ',') 
     {
         $amount = self::formatAmount($amount, $scale, $sep);
-        return $currency.$amount;
+        return $currency.' '.$amount;
     }
 }

@@ -54,11 +54,13 @@ use common\components\Service;
  * @property \services\goods\DiamondService $diamond 裸钻
  * @property \services\goods\DiamondSourceService $diamondSource 裸钻来源
  * @property \services\goods\GoodsService $goods 商品
+ * @property \services\goods\SalepolicyService $salepolicy 销售政策
  * @property \services\goods\StyleService $goodsStyle 款式
  * @property \services\common\AdvertService $advert 广告位
  * @property \services\common\CurrencyService $currency 货币汇率
  * @property \services\order\OrderService $order 订单
  * @property \services\order\OrderTouristService $orderTourist 订单
+ * @property \services\common\ExpressService $express 快递
  */
 class Application extends Service
 {
@@ -133,6 +135,7 @@ class Application extends Service
         'goodsType' => 'services\goods\TypeService',        
         'goodsStyle' => 'services\goods\StyleService',
         'goods' => 'services\goods\GoodsService',
+        'salepolicy' => 'services\goods\SalepolicyService',
         
         'diamond' => 'services\goods\DiamondService',
         'diamondSource' => 'services\goods\DiamondSourceService',
@@ -140,5 +143,6 @@ class Application extends Service
         /*********订单相关*********/
         'order' => 'services\order\OrderService',
         'orderTourist' => 'services\order\OrderTouristService',
+        'express' => 'services\common\ExpressService',
     ];
 }

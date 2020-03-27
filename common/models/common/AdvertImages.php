@@ -65,14 +65,14 @@ class AdvertImages extends \common\models\base\BaseModel
 
 
     /**
-     * 售后服务
+     * 地区
      */
     public function parseAreaIds()
     {
         if(is_array($this->area_ids)){
-            $this->area_ids = implode(',',$this->area_ids);
+            $this->area_ids = ','.implode(',',$this->area_ids).',';
         }
-        return $this->area_ids;
+        return ','.$this->area_ids.',';
     }
 
 

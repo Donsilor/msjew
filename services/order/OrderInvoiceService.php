@@ -73,10 +73,9 @@ class OrderInvoiceService extends OrderBaseService
             $result['express_no'] = $order_invoice_exe['express_no'] ? $order_invoice_exe['express_no'] : $result['express_no'];
             $result['delivery_time'] = $order_invoice_exe['delivery_time'] ? $order_invoice_exe['delivery_time'] : $result['delivery_time'];
             $result['delivery_time'] = $order_invoice_exe['delivery_time'] ? $order_invoice_exe['delivery_time'] : $result['delivery_time'];
-            $result['language'] = $order_invoice_exe['language'] ? $order_invoice_exe['language'] : $language;
-            $language = $result['language'];
+            $language = $order_invoice_exe['language'] ? $order_invoice_exe['language'] : $language;
         }
-
+        $result['language'] = $language;
 
         //商品明细
         $order_goods = OrderGoods::find()->alias('m')

@@ -66,6 +66,9 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                             [
                                 'attribute' => 'ip',
+                                'value' => function ($model) {
+                                    return $model->ip."(".$model->ip_location.")";
+                                },
                             ],
                             [
                                 'attribute' => 'ip_area_id',

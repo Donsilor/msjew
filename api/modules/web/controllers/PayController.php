@@ -123,7 +123,8 @@ class PayController extends OnAuthController
 
         $urlInfo = parse_url($returnUrl);
         $query = parse_query($urlInfo['query']);
-
+        //记录验证日志
+        Yii::$app->services->actionLog->create('verify',$query['order_sn']);
         //获取支付记录模型
         /**
          * @var $model PayLog
@@ -134,14 +135,12 @@ class PayController extends OnAuthController
             $result['verification_status'] = 'failed';
             return $result;
         }
-
-        //记录验证日志
-        Yii::$app->services->actionLog->create('verify', $model->out_trade_no);
+        //记录验证日志   
 
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
-
+            Yii::$app->services->actionLog->create('verify',$model->out_trade_no);
             //判断订单支付状态
             if ($model->pay_status == PayStatusEnum::PAID) {
                 $result['verification_status'] = 'completed';
@@ -239,6 +238,6 @@ class PayController extends OnAuthController
      */
     protected function getLogPath($type)
     {
-        return Yii::getAlias('@runtime') . "/pay-logs/" . date('Y_m_d') . '/' . $type . '.txt';
+        return Yii::getAlias('@runtime') . "/pay-logs/" . date('Y-m-d') . '/' . $type . '.log';
     }
 }

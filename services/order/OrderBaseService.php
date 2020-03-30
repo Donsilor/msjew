@@ -9,6 +9,7 @@ use common\enums\ExpressEnum;
 use common\enums\OrderStatusEnum;
 use common\enums\OrderTouristStatusEnum;
 use common\helpers\RegularHelper;
+use common\models\common\DeliveryTime;
 use common\models\common\EmailLog;
 use common\models\common\SmsLog;
 use common\models\order\Order;
@@ -146,7 +147,22 @@ class OrderBaseService extends Service
 
         $orderInfo = $order->toArray();
         $orderInfo['details'] = $details;
+        $orderInfo['planDays'] = '4-5';
 
         return $orderInfo;
+    }
+
+
+    /**
+     * 预计下单送达时间
+     * @param unknown $goods_id  商品ID
+     * @param unknown $quantity  变化数量
+     * @param unknown $for_sale 销售
+     */
+    public function getDeliveryTimeByGoods(){
+        $area_id = $this->getAreaId();
+        $model = DeliveryTime::find()
+            ->where();
+
     }
 }

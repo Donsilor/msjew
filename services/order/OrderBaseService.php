@@ -161,7 +161,7 @@ class OrderBaseService extends Service
      * @param unknown $for_sale 销售
      */
     public function getDeliveryTimeByGoods($goods_list){
-        $plan_days = '4-12';
+        $plan_days = '5-12';
         $area_id = $this->getAreaId();
         $model = DeliveryTime::find()
             ->where(['area_id' => $area_id, 'status' => StatusEnum::ENABLED])

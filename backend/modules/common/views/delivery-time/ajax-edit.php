@@ -12,7 +12,7 @@ $form = ActiveForm::begin([
     'enableAjaxValidation' => true,
     'validationUrl' => Url::to(['ajax-edit','id' => $model['id']]),
     'fieldConfig' => [
-        'template' => "<div class='col-sm-2 text-right'>{label}</div><div class='col-sm-10'>{input}\n{hint}\n{error}</div>",
+        'template' => "<div class='col-sm-2 text-right'>{label}</div><div class='col-sm-10'>{input}\n<span style='color: #bac1c6'>{hint}</span>\n{error}</div>",
     ]
 ]);
 ?>
@@ -30,8 +30,8 @@ $form = ActiveForm::begin([
                     'allowClear' => true
                 ],
             ]);?>
-            <?= $form->field($model, 'futures_time')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'stock_time')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'futures_time')->hint('格式：XX-XX')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'stock_time')->hint('格式：XX-XX')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'status')->radioList(\common\enums\StatusEnum::getMap()); ?>
 
 

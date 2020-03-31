@@ -35,6 +35,8 @@ class DeliveryTime extends \common\models\base\BaseModel
             [['area_id'], 'unique'],
             [['area_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['futures_time', 'stock_time'], 'string', 'max' => 20],
+            ['futures_time', 'match', 'pattern' => '/^[1-9]\d*-{1}[1-9]\d*$/', 'message' => '请输入正确的格式'],
+            ['stock_time', 'match', 'pattern' => '/^[1-9]\d*-{1}[1-9]\d*$/', 'message' => '请输入正确的格式'],
         ];
     }
 
@@ -46,11 +48,11 @@ class DeliveryTime extends \common\models\base\BaseModel
         return [
             'id' => 'ID',
             'area_id' => '地区',
-            'futures_time' => '期货送达时间',
-            'stock_time' => '现货送达时间',
+            'futures_time' => '期货时间（天）',
+            'stock_time' => '现货时间（天）',
             'status' => '状态',
-            'created_at' => '创建时间',
-            'updated_at' => '更新时间',
+            'created_at' => '创建时间（天）',
+            'updated_at' => '更新时间（天）',
         ];
     }
 }

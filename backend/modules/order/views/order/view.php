@@ -186,7 +186,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 </div>
                                 <div class="row" style="margin-top:20px; ">
-                                    <?= Html::button('发送('.$model->invoice->send_num.')',['class'=>'btn btn-sm btn-success ele-invoice-send','style'=>'height:25px;font-size:10px;'])?>
+                                    <?= Html::button('发送('.$model->invoice->send_num.')',['class'=>'btn btn-sm btn-success ele-invoice-send','url'=>Yii::$app->homeUrl."/order/order/ele-invoice-send",'style'=>'height:25px;font-size:10px;'])?>
                                 </div>
                                 <div class="row" style="margin-top:20px; ">
                                     <?= Html::button('打印',['class'=>'btn btn-primary btn-sm','style'=>'height:25px;font-size:10px;'])?>
@@ -343,8 +343,8 @@ DOM;
 <script>
 
     $(document).on("click", ".ele-invoice-send", function (e) {
-        var postUrl = '/backend/index.php/order/order/ele-invoice-send';
         var that = $(this);
+        var postUrl = that.attr('url');
         that.attr('class','btn btn-sm btn-default').attr('disabled',true);
         $.ajax({
             type: "post",

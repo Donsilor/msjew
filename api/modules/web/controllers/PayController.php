@@ -124,7 +124,7 @@ class PayController extends OnAuthController
         $urlInfo = parse_url($returnUrl);
         $query = parse_query($urlInfo['query']);
         //记录验证日志
-        Yii::$app->services->actionLog->create('verify',$query['order_sn']);
+        Yii::$app->services->actionLog->create('verify',$query['order_sn']??($query['orderId']??''));
         //获取支付记录模型
         /**
          * @var $model PayLog

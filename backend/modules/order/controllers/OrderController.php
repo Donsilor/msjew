@@ -4,6 +4,7 @@ namespace backend\modules\order\controllers;
 
 use backend\controllers\BaseController;
 use common\enums\CurrencyEnum;
+use common\enums\InvoiceElectronicEnum;
 use common\enums\OrderStatusEnum;
 use common\enums\PayStatusEnum;
 use common\helpers\ResultHelper;
@@ -346,10 +347,10 @@ class OrderController extends BaseController
             return ResultHelper::json(422, '非法调用');
         }
         $result = Yii::$app->services->orderInvoice->getEleInvoiceInfo($order_id);
-        if($result['is_electronic'] != 1){
+        if($result['is_electronic'] != InvoiceElectronicEnum::YES){
             return ResultHelper::json(422, '此订单没有电子发票');
         }
-        if($result['payment_status'] != 1){
+        if($result['payment_status'] != PayStatusEnum::PAID || $result['order_status'] < OrderStatusEnum::ORDER_PAID ){
             return ResultHelper::json(422, '此订单没有支付');
         }
 

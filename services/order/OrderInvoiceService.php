@@ -56,6 +56,7 @@ class OrderInvoiceService extends OrderBaseService
             'email' => $order->invoice->email,
             'is_electronic' => $order->invoice->is_electronic, //是否电子发票
             'payment_status' => $order->payment_status,
+            'order_status' => $order->order_status,
             'send_num' => $order->invoice->send_num,
         );
 

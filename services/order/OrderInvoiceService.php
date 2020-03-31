@@ -51,7 +51,7 @@ class OrderInvoiceService extends OrderBaseService
             'express_company_name' => '',
             'delivery_time' => $order->delivery_time,
             'country' => $order->address->country_name,
-            'currency' => CurrencyEnum::getValue($order->account->currency),
+            'currency' => $order->account->currency,
             'order_amount' => $order->account->order_amount,
             'email' => $order->invoice->email,
             'is_electronic' => $order->invoice->is_electronic, //是否电子发票

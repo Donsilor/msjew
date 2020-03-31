@@ -281,7 +281,7 @@ class OrderController extends BaseController
             if(false === $model->save()){
                 throw new Exception($this->getError($model));
             }
-//            return $this->redirect($returnUrl);
+         // return $this->redirect($returnUrl);
             return $this->message("保存成功", $this->redirect($returnUrl), 'success');
         }
         return $this->renderAjax($this->action->id, [
@@ -352,6 +352,12 @@ class OrderController extends BaseController
         if($result['payment_status'] != 1){
             return ResultHelper::json(422, '此订单没有支付');
         }
+
+        if($result['send_num'] > 5){
+            return ResultHelper::json(422, '发送次数已经超过5次');
+        }
+
+
         $content = $this->renderPartial($result['template'],['result'=>$result]);
 
         $pdf = new Pdf([

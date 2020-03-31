@@ -41,7 +41,13 @@ $form = ActiveForm::begin([
             ]);?>
             <?= $form->field($model, 'sender_name')->textInput(); ?>
             <?= $form->field($model, 'sender_address')->textArea(); ?>
-            <?= $form->field($model, 'express_company_name')->textInput(); ?>
+            <?= $form->field($model, 'express_id')->widget(kartik\select2\Select2::class, [
+                'data' => Yii::$app->services->express->getDropDown(),
+                'options' => ['placeholder' => '请选择'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);?>
             <?= $form->field($model, 'express_no')->textInput(); ?>
             <?= $form->field($model, 'delivery_time')->widget(DateTimePicker::class, [
                 'language' => 'zh-CN',

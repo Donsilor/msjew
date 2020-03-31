@@ -345,6 +345,7 @@ DOM;
     $(document).on("click", ".ele-invoice-send", function (e) {
         var postUrl = '/backend/index.php/order/order/ele-invoice-send';
         var that = $(this);
+        that.attr('class','btn btn-sm btn-default').attr('disabled',true);
         $.ajax({
             type: "post",
             url: postUrl,
@@ -355,6 +356,8 @@ DOM;
                     rfMsg(data.message);
                 } else {
                     that.text('发送（' + data.data.send_num + ')')
+                    rfMsg('发送成功');
+                    // that.attr('class','btn btn-sm btn-success ele-invoice-send').attr('disabled',false);
                     console.log(data)
                 }
             }

@@ -48,7 +48,7 @@ class OrderInvoiceService extends OrderBaseService
             'realname' => $order->address->realname,
             'address_details' => $order->address->address_details,
             'express_no' => $order->express_no,
-            'express_company_name' => $order->express_id ? $order->express->lang->express_name:'',
+            'express_company_name' => '',
             'delivery_time' => $order->delivery_time,
             'country' => $order->address->country_name,
             'currency' => CurrencyEnum::getValue($order->account->currency),
@@ -56,25 +56,33 @@ class OrderInvoiceService extends OrderBaseService
             'email' => $order->invoice->email,
             'is_electronic' => $order->invoice->is_electronic, //是否电子发票
             'payment_status' => $order->payment_status,
+            'send_num' => $order->invoice->send_num,
         );
 
 
-        $order_invoice_exe = OrderInvoiceEle::find()
+        $order_invoice_exe_model = OrderInvoiceEle::find()
             ->where(['invoice_id'=>$order->invoice->id])
-            ->asArray()
             ->one();
-        if($order_invoice_exe){
+        if($order_invoice_exe_model){
+            $order_invoice_exe = $order_invoice_exe_model->toArray();
             $result['invoice_date'] = $order_invoice_exe['invoice_date'] ? $order_invoice_exe['invoice_date'] : $result['invoice_date'];
             $result['sender_name'] = $order_invoice_exe['sender_name'] ? $order_invoice_exe['sender_name'] : $result['sender_name'];
             $result['sender_address'] = $order_invoice_exe['sender_address'] ? $order_invoice_exe['sender_address'] : $result['sender_address'];
             $result['shipper_name'] = $order_invoice_exe['shipper_name'] ? $order_invoice_exe['shipper_name'] : $result['shipper_name'];
             $result['shipper_address'] = $order_invoice_exe['shipper_address'] ? $order_invoice_exe['shipper_address'] : $result['shipper_address'];
-            $result['express_company_name'] = $order_invoice_exe['express_company_name'] ? $order_invoice_exe['express_company_name'] : $result['express_company_name'];
-            $result['express_no'] = $order_invoice_exe['express_no'] ? $order_invoice_exe['express_no'] : $result['express_no'];
             $result['delivery_time'] = $order_invoice_exe['delivery_time'] ? $order_invoice_exe['delivery_time'] : $result['delivery_time'];
             $result['delivery_time'] = $order_invoice_exe['delivery_time'] ? $order_invoice_exe['delivery_time'] : $result['delivery_time'];
             $language = $order_invoice_exe['language'] ? $order_invoice_exe['language'] : $language;
+
+            \Yii::$app->params['language'] = $language; //设置语言
+            $result['express_company_name'] = $order_invoice_exe['express_id'] ? $order_invoice_exe_model->express->lang->express_name : '';
+            $result['express_no'] = $order_invoice_exe['express_no'] ? $order_invoice_exe['express_no'] : $result['express_no'];
         }
+        //因为可能会重置语言，故把根据订单获取快递放到这里
+        if(empty($result['express_company_name'])){
+            $result['express_company_name'] = $order->express_id ? $order->express->lang->express_name : '';
+        }
+
         $result['language'] = $language;
 
         //商品明细

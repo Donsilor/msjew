@@ -64,8 +64,10 @@ class GoodsService extends Service
               $model->attributes = $attributes;
               $model->save(false);
         }
+        //先标注所有sku已删除
+        Goods::updateAll(['status'=>StatusEnum::DELETE],['style_id'=>$style_id]);
         //商品更新
-        $sale_prices= [];
+        $sale_prices= [];        
         foreach ($goods_list as $key=>$goods){
             //禁用没有填写商品编号的，过滤掉
             if(empty($goods['goods_sn']) && empty($goods['status'])){
@@ -84,7 +86,7 @@ class GoodsService extends Service
             $goodsModel->market_price = $goods['market_price']??0; //成本价
             $goodsModel->cost_price = $goods['cost_price']??0;//成本价
             $goodsModel->goods_storage = $goods['goods_storage']??0;//库存
-            $goodsModel->status = $goods['status']??0;//上下架状态 
+            $goodsModel->status = $goods['status'] ?? StatusEnum::DISABLED;//上下架状态 
             $goodsModel->spec_key = $key;
             
             if(!empty($default_data['style_spec_b'][$key])){

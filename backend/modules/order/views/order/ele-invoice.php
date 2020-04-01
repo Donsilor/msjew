@@ -34,8 +34,8 @@
             <div class="list clf">
                 <div class="list-tit fl">托運人:</div>
                 <div class="list-details fl">
-                    <div class="child-name"><?php echo $result['sender_name']?$result['sender_name']:'BDD Co.';?></div>
-                    <div class="child-addr"><?php echo $result['sender_address']?$result['sender_address']: 'Rm4, 23/F,Universal Trade Centre 3 Arbuthnot Road Central';?></div>
+                    <div class="child-name"><?php echo $result['sender_name']?$result['sender_name']:'BDD Co.Ltd';?></div>
+                    <div class="child-addr"><?php echo $result['sender_address']?$result['sender_address']: '中環亞畢諾道3號環球貿易中心23樓04室';?></div>
                 </div>
             </div>
         </div>

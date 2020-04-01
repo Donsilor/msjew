@@ -33,8 +33,8 @@ class SearchController extends OnAuthController
     public function actionIndex(){
         $sort_map = [
             '1'=>'virtual_volume desc',//最暢銷
-            '2'=>'sale_volume asc ',//價格 - 從低到高
-            '3'=>'sale_volume desc',//價格 - 從高到低
+            '2'=>'sale_price asc ',//價格 - 從低到高
+            '3'=>'sale_price desc',//價格 - 從高到低
         ];
         $keyword = \Yii::$app->request->get("keyword");//产品线ID
         $order_type = \Yii::$app->request->get("sortType", 1);//排序方式 1-升序；2-降序;

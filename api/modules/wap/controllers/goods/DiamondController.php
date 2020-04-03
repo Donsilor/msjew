@@ -68,10 +68,10 @@ class DiamondController extends OnAuthController
         $order_type = \Yii::$app->request->get("sortType", 1);//排序方式 1-升序；2-降序;
 
         //排序
-        $order = 'virtual_volume desc';
+        $order = 'virtual_volume desc ,id desc';
         if(!empty($order_param)){
           $order_type = $order_type == 1? "asc": "desc";
-          $order = $sort_map[$order_param]. " ".$order_type;
+          $order = $sort_map[$order_param]. " ".$order_type . ",id desc";
         }
 
 

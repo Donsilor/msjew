@@ -45,10 +45,10 @@ class StyleController extends OnAuthController
         $ev = \Yii::$app->request->get("ev");  //属性帅选
 
         //排序
-        $order = 'virtual_volume desc';
+        $order = 'virtual_volume desc ,id desc';
         if(!empty($order_param)){
-            $order_type = $order_type == 1? "asc": "desc";
-            $order = $sort_map[$order_param]. " ".$order_type;
+            $order_type = $order_type == 1 ? "asc": "desc";
+            $order = $sort_map[$order_param]. " ".$order_type . ",id desc";
         }
 
         $area_id = $this->getAreaId(); 

@@ -33,6 +33,9 @@ class ClientQueryResponse extends AbstractResponse
                     break;
                 }
             }
+            if(empty($data)) {
+                $data = $this->data[0]??[];
+            }
         }
         else {
             $data = $this->data;

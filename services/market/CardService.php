@@ -10,6 +10,21 @@ use common\components\Service;
  */
 class CardService extends Service
 {
-      
-    
+    //调整金额
+    //消费金额
+    static public function consume()
+    {
+
+    }
+
+    static public function getUseAmount($order_id)
+    {
+        return 0;
+    }
+
+    //生成卡密码
+    //生成卡号
+
+    //批量生成购物卡
+    //导出|导入数据
 }

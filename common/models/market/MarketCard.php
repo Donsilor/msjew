@@ -36,7 +36,7 @@ class MarketCard extends \common\models\base\BaseModel
         return [
             [['balance', 'amount'], 'number'],
             [['start_time', 'end_time', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['sn', 'password'], 'string', 'max' => 80],
+            [['sn', 'password'], 'string', 'max' => 255],
         ];
     }
 
@@ -58,4 +58,29 @@ class MarketCard extends \common\models\base\BaseModel
             'updated_at' => '更新时间',
         ];
     }
+
+    /**
+     * 验证密码
+     * @param $password
+     * @return bool
+     */
+    public function validatePassword($pw)
+    {
+        list($password, $salt) = explode('|', $this->password);
+
+        $key = (\Yii::$app->params['card-key']??'card-default-key') . $salt;
+
+        return Yii::$app->getSecurity()->decryptByPassword(base64_decode($password), $key) == $pw;
+    }
+
+    public function setPassword($password)
+    {
+        $salt = Yii::$app->getSecurity()->generatePasswordHash($password);
+
+        $key = (\Yii::$app->params['card-key']??'card-default-key') . $salt;;
+
+        $this->password = base64_encode(Yii::$app->getSecurity()->encryptByPassword($password, $key)).'|'.$salt;
+    }
+
+
 }

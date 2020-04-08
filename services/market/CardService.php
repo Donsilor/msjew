@@ -11,8 +11,9 @@ use common\components\Service;
 class CardService extends Service
 {
     //调整金额
+
     //消费金额
-    static public function consume()
+    static public function consume($order, $cards)
     {
 
     }

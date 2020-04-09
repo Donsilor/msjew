@@ -178,6 +178,10 @@ class PayForm extends Model
                 //验证重复支付
                 if(!empty($order->paylogs)) {
                     foreach ($order->paylogs as $paylog) {
+                        if($paylog->pay_type==PayEnum::PAY_TYPE_CARD) {
+                            continue;
+                        }
+
                         //获取支付类
                         $pay = Yii::$app->services->pay->getPayByType($paylog->pay_type);
 

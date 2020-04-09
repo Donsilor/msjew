@@ -2,8 +2,11 @@
 
 namespace services\order;
 
+use common\models\market\MarketCard;
+use common\models\market\MarketCardDetails;
 use common\models\order\OrderCart;
 use common\models\order\OrderInvoice;
+use yii\db\Expression;
 use yii\web\UnprocessableEntityHttpException;
 use common\models\order\OrderGoods;
 use common\models\order\Order;
@@ -152,7 +155,7 @@ class OrderService extends OrderBaseService
      * @throws UnprocessableEntityHttpException
      * @return array
      */
-    public function getOrderAccountTax($cart_ids, $buyer_id, $buyer_address_id, $promotion_id = 0)
+    public function getOrderAccountTax($cart_ids, $buyer_id, $buyer_address_id, $cards = [])
     {
         if($cart_ids && !is_array($cart_ids)) {
             $cart_ids = explode(',', $cart_ids);
@@ -165,6 +168,10 @@ class OrderService extends OrderBaseService
         $buyerAddress = Address::find()->where(['id'=>$buyer_address_id,'member_id'=>$buyer_id])->one();
         $orderGoodsList = [];
         $goods_amount = 0;
+
+        //产品线金额
+        $goodsTypeAmounts = [];
+
         foreach ($cart_list as $cart) {
             
             $goods = \Yii::$app->services->goods->getGoodsInfo($cart->goods_id,$cart->goods_type,false);
@@ -172,6 +179,9 @@ class OrderService extends OrderBaseService
                 continue;
             }
             $sale_price = $this->exchangeAmount($goods['sale_price']);
+
+            $goodsTypeAmounts[$goods['type_id']] = $sale_price;
+
             $goods_amount += $sale_price;
             $orderGoodsList[] = [
                     'goods_id' => $cart->goods_id,
@@ -189,6 +199,39 @@ class OrderService extends OrderBaseService
                     'goods_spec' =>$goods['goods_spec'],
             ];
         }
+
+        if(!empty($cards)) {
+            foreach ($cards as &$card) {
+
+                $cardInfo = MarketCard::findOne(['sn'=>$card['sn']]);
+                $balance = $cardInfo->balance;
+
+                if($balance==0) {
+                    continue;
+                }
+
+                $cardUseAmount = 0;
+
+                foreach ($goodsTypeAmounts as $goodsType => &$goodsTypeAmount) {
+                    if(!empty($cardInfo->goods_type_attach) && in_array($goodsType, $cardInfo->goods_type_attach) && $goodsTypeAmount > 0) {
+                        if($goodsTypeAmount >= $balance) {
+                            //购物卡余额不足时
+                            $cardUseAmount = $balance;
+                            $goodsTypeAmount -= $balance;
+                            $balance = 0;
+                        }
+                        else {
+                            $cardUseAmount = $goodsTypeAmount;
+                            $goodsTypeAmount = 0;
+                            $balance -=$goodsTypeAmount;
+                        }
+                    }
+                }
+
+                $card['useAmount'] = $cardUseAmount;
+            }
+        }
+
         //金额
         $discount_amount = 0;//优惠金额 
         $shipping_fee = 0;//运费 
@@ -199,17 +242,18 @@ class OrderService extends OrderBaseService
         $order_amount = $goods_amount + $shipping_fee + $tax_fee + $safe_fee + $other_fee;//订单总金额 
 
         return [
-                'shipping_fee' => $shipping_fee,
-                'order_amount'  => $order_amount,           
-                'goods_amount' => $goods_amount,
-                'safe_fee' => $safe_fee,
-                'tax_fee'  => $tax_fee,
-                'discount_amount'=>$discount_amount,                
-                'currency' => $this->getCurrency(),
-                'exchange_rate'=>$this->getExchangeRate(),
-                'plan_days' =>'5-12',
-                'buyerAddress'=>$buyerAddress,
-                'orderGoodsList'=>$orderGoodsList,
+            'shipping_fee' => $shipping_fee,
+            'order_amount'  => $order_amount,
+            'goods_amount' => $goods_amount,
+            'safe_fee' => $safe_fee,
+            'tax_fee'  => $tax_fee,
+            'discount_amount'=>$discount_amount,
+            'currency' => $this->getCurrency(),
+            'exchange_rate'=>$this->getExchangeRate(),
+            'plan_days' =>'5-12',
+            'buyerAddress'=>$buyerAddress,
+            'orderGoodsList'=>$orderGoodsList,
+            'cards'=>$cards,
         ];
     }
     /**

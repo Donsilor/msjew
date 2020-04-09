@@ -9,8 +9,8 @@ use Yii;
  *
  * @property int $id ID
  * @property int $card_id 购物卡ID
+ * @property int $order_id 购物卡ID
  * @property string $use_amount 使用金额
- * @property string $balance 使用后余额
  * @property string $ip IP
  * @property int $user_id 管理员ID
  * @property int $member_id 客户ID
@@ -35,9 +35,9 @@ class MarketCardDetails extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['card_id', 'use_amount', 'balance', 'ip', 'created_at', 'updated_at'], 'required'],
-            [['card_id', 'user_id', 'member_id', 'type', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['use_amount', 'balance'], 'number'],
+            [['card_id', 'use_amount', 'ip'], 'required'],
+            [['card_id', 'order_id', 'user_id', 'member_id', 'type', 'status'], 'integer'],
+            [['use_amount'], 'number'],
             [['ip'], 'string', 'max' => 50],
         ];
     }
@@ -50,8 +50,8 @@ class MarketCardDetails extends \common\models\base\BaseModel
         return [
             'id' => 'ID',
             'card_id' => '购物卡ID',
+            'order_id' => '订单ID',
             'use_amount' => '使用金额',
-            'balance' => '使用后余额',
             'ip' => 'IP',
             'user_id' => '管理员ID',
             'member_id' => '客户ID',
@@ -60,5 +60,14 @@ class MarketCardDetails extends \common\models\base\BaseModel
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
         ];
+    }
+
+    /**
+     * 对应订单购物卡记录
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCard()
+    {
+        return $this->hasOne(MarketCard::class, ['id'=>'card_id']);
     }
 }

@@ -2,10 +2,15 @@
 
 namespace api\modules\web\controllers\member;
 
+use api\modules\web\forms\CardForm;
+use common\enums\PayEnum;
 use common\helpers\ImageHelper;
 use common\helpers\ResultHelper;
 use api\controllers\UserAuthController;
+use common\helpers\Url;
+use common\models\forms\PayForm;
 use common\models\member\Member;
+use services\market\CardService;
 use yii\base\Exception;
 use common\models\order\Order;
 use api\modules\web\forms\OrderCreateForm;
@@ -14,6 +19,7 @@ use common\models\order\OrderAccount;
 use common\models\order\OrderAddress;
 use common\models\order\OrderGoods;
 use services\order\OrderService;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * 用户订单
@@ -132,14 +138,51 @@ class OrderController extends UserAuthController
             if(!$model->validate()) {
                 return ResultHelper::api(422,$this->getError($model));
             }
+
+            $cards = \Yii::$app->request->post('card');
+            foreach ($cards as $card) {
+                $model = new CardForm();
+                $model->setAttributes($card);
+
+                if(!$model->validate()) {
+                    return ResultHelper::api(422, $this->getError($model));
+                }
+            }
+
             $result = \Yii::$app->services->order->createOrder($model->cart_ids, $this->member_id, $model->buyer_address_id,$model->toArray(),$invoiceInfo);
+
+            //购物券消费
+            CardService::consume($result['order_id'], $cards);
+
+            //购物券使用金额
+            $cardUseAmount = CardService::getUseAmount($result['order_id']);
+
+            //如果订单金额为0
+            if($result['order_amount']-$cardUseAmount==0) {
+                //自动 支付
+                //调用支付接口
+                $payForm = new PayForm();
+                $payForm->orderId = $result['order_id'];
+                $payForm->coinType = $this->getCurrency();
+                $payForm->payType = PayEnum::PAY_TYPE_CARD;
+                $payForm->memberId = $this->member_id;
+
+                //验证支付订单数据
+                if (!$payForm->validate()) {
+                    throw new UnprocessableEntityHttpException($this->getError($payForm));
+                }
+
+                $pay = $payForm->getConfig();
+            }
+
             $trans->commit();
             //订单发送邮件
             \Yii::$app->services->order->sendOrderNotification($result['order_id']);
             return [
                 "coinType" => $result['currency'],
-                "orderAmount"=> $result['order_amount'],
+                "orderAmount"=> $result['order_amount']-$cardUseAmount,
                 "orderId" => $result['order_id'],
+                "payStatus" => $pay['payStatus']??0,
             ];            
         }catch(Exception $e) {
             
@@ -257,6 +300,17 @@ class OrderController extends UserAuthController
             $invoiceInfo = [];
         }
 
+        $cards = [];
+        if($order->cards) {
+            foreach ($order->cards as $card) {
+                $cards[] = [
+                    'sn' => $card->card['sn'],
+                    'useAmount' => $card['use_amount'],
+                    'status' => $card['status'],
+                ];
+            }
+        }
+
         //快递信息
         if($order->order_status >= OrderStatusEnum::ORDER_SEND){
             $express = array();
@@ -290,6 +344,7 @@ class OrderController extends UserAuthController
             'userId' => $order->member_id,
             'details' => $orderDetails,
             'invoice' => $invoiceInfo,
+            'cards' => $cards,
             'express'=>empty($express)? null : $express
         );
 
@@ -359,16 +414,30 @@ class OrderController extends UserAuthController
         if(empty($cartIds)) {
             return ResultHelper::api(422,"cartIds不能为空");
         }
-        $taxInfo = \Yii::$app->services->order->getOrderAccountTax($cartIds, $this->member_id, $addressId); 
+
+        $cards = \Yii::$app->request->post('cards', []);
+        if(!empty($cards)) {
+            foreach ($cards as $card) {
+                $model = new CardForm();
+                $model->setAttributes($card);
+
+                if(!$model->validate()) {
+                    return ResultHelper::api(422, $this->getError($model));
+                }
+            }
+        }
+
+        $taxInfo = \Yii::$app->services->order->getOrderAccountTax($cartIds, $this->member_id, $addressId, $cards);
         return [
-                'logisticsFee' => $taxInfo['shipping_fee'],
-                'orderAmount'  => $taxInfo['order_amount'],
-                'productAmount' => $taxInfo['goods_amount'],
-                'safeFee'=> $taxInfo['safe_fee'],
-                'taxFee'  => $taxInfo['tax_fee'],
-                'planDays' => $taxInfo['plan_days'],
-                'currency' => $taxInfo['currency'],
-                'exchangeRate'=> $taxInfo['exchange_rate']
+            'logisticsFee' => $taxInfo['shipping_fee'],
+            'orderAmount'  => $taxInfo['order_amount'],
+            'productAmount' => $taxInfo['goods_amount'],
+            'safeFee'=> $taxInfo['safe_fee'],
+            'taxFee'  => $taxInfo['tax_fee'],
+            'planDays' => $taxInfo['plan_days'],
+            'currency' => $taxInfo['currency'],
+            'exchangeRate'=> $taxInfo['exchange_rate'],
+            'cards'=> $taxInfo['cards']
         ];
     }
     

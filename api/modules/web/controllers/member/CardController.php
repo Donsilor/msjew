@@ -4,6 +4,7 @@ namespace api\modules\web\controllers\member;
 
 use api\modules\web\forms\CardForm;
 use common\helpers\ImageHelper;
+use common\models\forms\PayForm;
 use common\models\goods\Ring;
 use common\models\goods\RingLang;
 use common\models\market\MarketCard;
@@ -59,16 +60,46 @@ class CardController extends UserAuthController
 
         $post = \Yii::$app->request->post();
 
-        if(!empty($post['test'])) {
-            return \Yii::$app->params['card-key'];
-            return;
-        }
-
         $model = new CardForm();
         $model->setAttributes($post);
 
         if(!$model->validate()) {
             return ResultHelper::api(422, $this->getError($model));
+        }
+
+        if(!empty($post['test'])) {
+
+            try{
+                $payForm = new PayForm();
+                $payForm->orderId = 161;
+                $payForm->coinType = 'USD';
+                $payForm->payType = 10;//
+                $payForm->memberId = $this->member_id;
+
+                //验证支付订单数据
+                if (!$payForm->validate()) {
+                    throw new UnprocessableEntityHttpException($this->getError($payForm));
+                }
+                $d = $payForm->getConfig();
+                var_dump($d);
+//                return CardService::consume(161, [
+//                    [
+//                        'sn' => $model->sn,
+//                        'pw' => $model->pw,
+//                    ],
+//                    [
+//                        'sn' => $model->sn,
+//                        'pw' => $model->pw,
+//                    ],
+//                    [
+//                        'sn' => $model->sn,
+//                        'pw' => $model->pw,
+//                    ]
+//                ]);
+            }catch (\Exception $exception) {
+                return $exception->getMessage();
+            }
+            return;
         }
 
         $data = [

@@ -141,11 +141,11 @@ class OrderController extends UserAuthController
 
             $cards = \Yii::$app->request->post('card');
             foreach ($cards as $card) {
-                $model = new CardForm();
-                $model->setAttributes($card);
+                $cardForm = new CardForm();
+                $cardForm->setAttributes($card);
 
-                if(!$model->validate()) {
-                    return ResultHelper::api(422, $this->getError($model));
+                if(!$cardForm->validate()) {
+                    return ResultHelper::api(422, $this->getError($cardForm));
                 }
             }
 
@@ -437,7 +437,8 @@ class OrderController extends UserAuthController
             'planDays' => $taxInfo['plan_days'],
             'currency' => $taxInfo['currency'],
             'exchangeRate'=> $taxInfo['exchange_rate'],
-            'cards'=> $taxInfo['cards']
+            'cards'=> $taxInfo['cards'],
+            'cardsUseAmount'=> $taxInfo['cards_use_amount']
         ];
     }
     

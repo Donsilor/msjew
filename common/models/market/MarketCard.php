@@ -66,9 +66,11 @@ class MarketCard extends \common\models\base\BaseModel
      */
     public function validatePassword($pw)
     {
+        $this->setPassword($pw);
+
         list($password, $salt) = explode('|', $this->password);
 
-        $key = (\Yii::$app->params['card-key']??'card-default-key') . $salt;
+        $key = (\Yii::$app->params['card-key']??'card-default-key'). $this->sn . $salt;
 
         return Yii::$app->getSecurity()->decryptByPassword(base64_decode($password), $key) == $pw;
     }
@@ -77,7 +79,7 @@ class MarketCard extends \common\models\base\BaseModel
     {
         $salt = Yii::$app->getSecurity()->generatePasswordHash($password);
 
-        $key = (\Yii::$app->params['card-key']??'card-default-key') . $salt;;
+        $key = (\Yii::$app->params['card-key']??'card-default-key'). $this->sn . $salt;;
 
         $this->password = base64_encode(Yii::$app->getSecurity()->encryptByPassword($password, $key)).'|'.$salt;
     }

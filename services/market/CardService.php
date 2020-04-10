@@ -120,28 +120,62 @@ class CardService extends Service
     }
 
     //生成卡密码
-    public function generatePw($prefix = '')
+    static public function generatePw($prefix = '')
     {
         return $prefix.str_pad(mt_rand(1, 99999999999),11,'0',STR_PAD_LEFT);
     }
 
     //生成卡号
-    public function generateSn($prefix = 'BDD')
+    static public function generateSn($prefix = 'BDD')
     {
         return $prefix.date('Y').str_pad(mt_rand(1, 999999),6,'0',STR_PAD_LEFT);
     }
 
-    //批量生成购物卡
+    /**
+     * 批量生成购物卡
+     * @param array $card 基本数据
+     * @param int $count
+     * @throws \Exception
+     */
+    public function generateCards($card, $count=1)
+    {
+        for ($i = 0; $i < $count; $i++) {
+            if(!$this->generateCard($card)) {
+                $i--;
+            }
+        }
+    }
 
     /**
      * 生成购物卡
      * @param array $card 基本数据
-     * @param int $count
-     * @param string $batch
+     * @return bool
+     * @throws \Exception
      */
-    public function generateCard($card, $count, $batch)
+    private function generateCard($card)
     {
+        try {
+            $pw = self::generatePw();
+            $card['sn'] = self::generateSn();
+            $card['balance'] = $card['amount'];
 
+            $newCard = new MarketCard();
+            $newCard->setAttributes($card);
+            $newCard->setPassword($pw);
+
+            if(!$newCard->validate()) {
+                throw new UnprocessableEntityHttpException($this->getError($newCard));
+            }
+
+            return $newCard->save();
+        } catch (\Exception $exception) {
+            if($exception instanceof UnprocessableEntityHttpException) {
+                throw $exception;
+            }
+
+            $result = false;
+        }
+        return $result;
     }
 
     //导出|导入数据

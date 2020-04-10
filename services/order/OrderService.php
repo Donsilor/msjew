@@ -171,6 +171,8 @@ class OrderService extends OrderBaseService
 
         //产品线金额
         $goodsTypeAmounts = [];
+        //所有卡共用了多少金额
+        $cardsUseAmount = 0;
 
         foreach ($cart_list as $cart) {
             
@@ -229,6 +231,7 @@ class OrderService extends OrderBaseService
                 }
 
                 $card['useAmount'] = $cardUseAmount;
+                $cardsUseAmount += $cardUseAmount;
             }
         }
 
@@ -248,6 +251,7 @@ class OrderService extends OrderBaseService
             'safe_fee' => $safe_fee,
             'tax_fee'  => $tax_fee,
             'discount_amount'=>$discount_amount,
+            'cards_use_amount'=>$cardsUseAmount,
             'currency' => $this->getCurrency(),
             'exchange_rate'=>$this->getExchangeRate(),
             'plan_days' =>'5-12',

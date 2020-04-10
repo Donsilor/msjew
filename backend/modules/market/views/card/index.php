@@ -25,7 +25,10 @@ $type_id = Yii::$app->request->get('type_id', 0);
                 </li>
                 <li class="pull-right">
                     <div class="box-header box-tools">
-                        <?= Html::create(['edit-lang', 'type_id' => $type_id]) ?>
+                        <?= Html::create(['ajax-edit'], '生成购物卡', [
+                            'data-toggle' => 'modal',
+                            'data-target' => '#ajaxModalLg',
+                        ])?>
                     </div>
                 </li>
             </ul>
@@ -71,20 +74,31 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         ],
                         [
                             'label' => '总金额',
+                            'filter' => false,
                             'attribute' => 'amount',
                         ],
                         [
                             'label' => '余额',
+                            'filter' => false,
                             'attribute' => 'balance',
                         ],
                         [
                             'label' => '有效时间',
+                            'format' => 'raw',
                             'value' => function($model) {
-                                return Yii::$app->formatter->asDatetime($model->created_at);
+                                return Yii::$app->formatter->asDatetime($model->start_time, 'Y-M-d')."<br />".Yii::$app->formatter->asDatetime($model->end_time-1, 'Y-M-d');
                             }
                         ],
                         [
                             'label' => '使用范围',
+                            'value' => function($model) {
+                                $typeList = \services\goods\TypeService::getTypeList();
+                                $val = [];
+                                foreach ($model->goods_type_attach as $goods_type) {
+                                    $val[] = $typeList[$goods_type];
+                                }
+                                return implode('/', $val);
+                            }
                         ],
                         [
                             'label' => '操作人',
@@ -95,12 +109,9 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             'format' => 'raw',
                             'headerOptions' => ['class' => 'col-md-1'],
                             'value' => function ($model) {
-                                return \common\enums\FrameEnum::getValue($model->status);
+                                return \common\enums\StatusEnum::getValue($model->status);
                             },
-                            'filter' => Html::activeDropDownList($searchModel, 'status', \common\enums\FrameEnum::getMap(), [
-                                'prompt' => '全部',
-                                'class' => 'form-control',
-                            ]),
+                            'filter' => false,
                         ],
                         [
                             'class' => 'yii\grid\ActionColumn',

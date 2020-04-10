@@ -300,6 +300,7 @@ class OrderController extends UserAuthController
             $invoiceInfo = [];
         }
 
+        $cardsUseAmount = 0;
         $cards = [];
         if($order->cards) {
             foreach ($order->cards as $card) {
@@ -308,6 +309,7 @@ class OrderController extends UserAuthController
                     'useAmount' => $card['use_amount'],
                     'status' => $card['status'],
                 ];
+                $cardsUseAmount += $card['use_amount'];
             }
         }
 
@@ -335,9 +337,10 @@ class OrderController extends UserAuthController
             'payChannel' => $order->payment_type,
             'productCount' => count($orderDetails),
             'preferFee' => $order->account->discount_amount, //优惠金额
-            'productAmount' => $order->account->goods_amount,            
+            'productAmount' => $order->account->goods_amount,
             'logisticsFee' => $order->account->shipping_fee,
             'orderAmount' => $order->account->order_amount,
+            'payAmount' => $order->account->order_amount - $cardsUseAmount - $order->account->discount_amount,
             'otherFee' => $order->account->other_fee,
             'safeFee' => $order->account->safe_fee,
             'taxFee' => $order->account->tax_fee,
@@ -438,7 +441,8 @@ class OrderController extends UserAuthController
             'currency' => $taxInfo['currency'],
             'exchangeRate'=> $taxInfo['exchange_rate'],
             'cards'=> $taxInfo['cards'],
-            'cardsUseAmount'=> $taxInfo['cards_use_amount']
+            'cardsUseAmount'=> $taxInfo['cards_use_amount'],
+            'payAmount'=> $taxInfo['order_amount'] - $taxInfo['cards_use_amount'] - $taxInfo['discount_amount']
         ];
     }
     

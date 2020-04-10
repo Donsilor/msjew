@@ -53,7 +53,7 @@ class MarketCard extends \common\models\base\BaseModel
             'amount' => '金额',
             'start_time' => '开始时间',
             'end_time' => '结束时间',
-            'status' => '状态：1=启用，0=禁用',
+            'status' => '状态',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
         ];

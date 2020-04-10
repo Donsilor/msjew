@@ -2,6 +2,7 @@
 
 namespace common\models\market;
 
+use common\models\order\Order;
 use Yii;
 
 /**
@@ -69,5 +70,14 @@ class MarketCardDetails extends \common\models\base\BaseModel
     public function getCard()
     {
         return $this->hasOne(MarketCard::class, ['id'=>'card_id']);
+    }
+
+    /**
+     * 对应订单购物卡记录
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrder()
+    {
+        return $this->hasOne(Order::class, ['id'=>'order_id']);
     }
 }

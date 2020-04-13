@@ -13,8 +13,10 @@ class CardFrom extends MarketCard
     public function rules()
     {
         return [
-            [['count', 'amount','start_time', 'end_time', 'goods_type_attach'], 'required'],
+            [['count', 'amount','start_time', 'end_time', 'goods_type_attach', 'batch'], 'required'],
             [['count', 'amount'], 'integer'],
+            [['batch'], 'string', 'max' => 50],
+            [['batch'], 'validateBatch'],
         ];
     }
 
@@ -24,12 +26,20 @@ class CardFrom extends MarketCard
     public function attributeLabels()
     {
         return [
+            'batch' => '批次',
             'count' => '生成数量',
             'amount' => '金额',
             'goods_type_attach' => '产品线',
             'start_time' => '开始时间',
             'end_time' => '结束时间',
         ];
+    }
+
+    public function validateBatch($attribute)
+    {
+        if(MarketCard::findOne(['batch'=>$this->batch])) {
+            $this->addError($attribute, \Yii::t('card','批次已生成'));
+        }
     }
 
     public function afterValidate()

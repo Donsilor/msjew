@@ -8,6 +8,7 @@ use Yii;
  * This is the model class for table "market_card".
  *
  * @property int $id
+ * @property string $batch 批次
  * @property string $sn 卡号
  * @property string $password 卡密
  * @property string $balance 可用余额
@@ -15,12 +16,14 @@ use Yii;
  * @property int $start_time 开始时间
  * @property int $end_time 结束时间
  * @property int $status 状态：1=启用，0=禁用
+ * @property int $user_id 用户ID
  * @property int $created_at 创建时间
  * @property int $updated_at 更新时间
  */
 class MarketCard extends \common\models\base\BaseModel
 {
     public $count;
+
     /**
      * {@inheritdoc}
      */
@@ -35,10 +38,11 @@ class MarketCard extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['start_time', 'end_time', 'goods_type_attach'], 'required'],
+            [['start_time', 'end_time', 'goods_type_attach','batch','user_id'], 'required'],
             [['balance', 'amount'], 'number'],
-            [['status', 'created_at', 'updated_at'], 'integer'],
+            [['status', 'created_at', 'updated_at','user_id'], 'integer'],
             [['sn', 'password'], 'string', 'max' => 255],
+            [['batch'], 'string', 'max' => 50],
         ];
     }
 
@@ -49,6 +53,7 @@ class MarketCard extends \common\models\base\BaseModel
     {
         return [
             'id' => 'ID',
+            'batch' => '批次',
             'sn' => '卡号',
             'password' => '卡密',
             'balance' => '可用余额',
@@ -57,6 +62,7 @@ class MarketCard extends \common\models\base\BaseModel
             'start_time' => '开始时间',
             'end_time' => '结束时间',
             'status' => '状态',
+            'user_id' => '操作人',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
         ];

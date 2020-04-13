@@ -20,6 +20,7 @@ $form = ActiveForm::begin([
     </div>
 
     <div class="modal-body">
+        <?= $form->field($model, 'batch')->textInput()->label('生成批次'); ?>
         <?= $form->field($model, 'count')->textInput()->label('生成数量'); ?>
         <?= $form->field($model, 'amount')->textInput()->label('购物卡金额'); ?>
         <?= $form->field($model, 'start_time')->widget('kartik\date\DatePicker', [

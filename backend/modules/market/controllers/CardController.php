@@ -86,25 +86,37 @@ class CardController extends BaseController
      */
     public function actionAjaxEdit()
     {
-
         $returnUrl = \Yii::$app->request->get('returnUrl',['index']);
         $model = new CardFrom();
 
         // ajax 校验
         $this->activeFormValidate($model);
         if ($model->load(\Yii::$app->request->post())) {
+
+            if(!\Yii::$app->cache->delete('actionAjaxEdit-'.\Yii::$app->getUser()->id)) {
+                return $this->message('请刷新表单后重新提交', $this->redirect($returnUrl), 'error');
+            }
+
             if(!$model->validate()) {
                 return $this->message($this->getError($model), $this->redirect($returnUrl), 'error');
             }
 
-            \Yii::$app->services->card->generateCards($model->toArray(), $model->count);
+            $trans = \Yii::$app->db->beginTransaction();
 
-//            var_dump($model->count);exit;
+            try {
+                \Yii::$app->services->card->generateCards($model->toArray(), $model->count);
 
-//            return $model->save()
+                $trans->commit();
+
+            } catch (\Exception $exception) {
+                $trans->rollBack();
+
+            }
+
             $this->redirect($returnUrl);
-//                : $this->message($this->getError($model), $this->redirect($returnUrl), 'error');
         }
+
+        \Yii::$app->cache->set('actionAjaxEdit-'.\Yii::$app->getUser()->id, true);
 
         return $this->renderAjax($this->action->id, [
             'model' => $model,

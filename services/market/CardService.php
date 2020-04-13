@@ -139,10 +139,16 @@ class CardService extends Service
      */
     public function generateCards($card, $count=1)
     {
+        $card['user_id'] = \Yii::$app->getUser()->id;
+
         for ($i = 0; $i < $count; $i++) {
             if(!$this->generateCard($card)) {
                 $i--;
             }
+        }
+
+        if(MarketCard::find()->where(['batch'=>$card['batch']])->count('id') > $count) {
+            throw new UnprocessableEntityHttpException(sprintf("[%s]批次重复生成" , $card['batch']));
         }
     }
 

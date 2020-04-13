@@ -101,7 +101,7 @@ class OrderBaseService extends Service
             $goods = \Yii::$app->services->goods->getGoodsInfo($item['goods_id'], $item['goods_type']);
 
             //商品价格
-            $sale_price = $this->exchangeAmount($goods['sale_price']*$item['goods_num']);
+            $sale_price = $this->exchangeAmount($goods['sale_price'],0)*$item['goods_num'];
             $goods_amount += $sale_price;
 
             $detail = new OrderTouristDetails();

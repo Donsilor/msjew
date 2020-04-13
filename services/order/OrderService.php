@@ -171,7 +171,7 @@ class OrderService extends OrderBaseService
             if(empty($goods) || $goods['status'] != StatusEnum::ENABLED) {
                 continue;
             }
-            $sale_price = $this->exchangeAmount($goods['sale_price']);
+            $sale_price = $this->exchangeAmount($goods['sale_price'],0);
             $goods_amount += $sale_price;
             $orderGoodsList[] = [
                     'goods_id' => $cart->goods_id,

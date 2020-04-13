@@ -451,7 +451,7 @@ class GoodsService extends Service
         $style['goodsName'] = $model['style_name'];
         $style['goodsCode'] = $model['style_sn'];
         $style['goodsImages'] = $model['goods_images'];
-        $style['salePrice'] = $this->exchangeAmount($model['sale_price']);
+        $style['salePrice'] = $this->exchangeAmount($model['sale_price'],0);
         $style['coinType'] = $this->getCurrencySign();
         $style['goods3ds'] = $model['style_3ds'];
         $style['goodsDesc'] = $model['goods_body'];

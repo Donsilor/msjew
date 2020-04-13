@@ -573,7 +573,7 @@ class GoodsService extends Service
             $details[$key]['warehouse'] = $val['warehouse'];
             $details[$key]['categoryId'] = $model['type_id'];
             $details[$key]['goodsDetailsCode'] = $val['goods_sn'];
-            $details[$key]['retailMallPrice'] = (float)$this->exchangeAmount($val['sale_price']);
+            $details[$key]['retailMallPrice'] = (float)$this->exchangeAmount($val['sale_price'],0);
             $details[$key]['retailPrice'] = null;
             $details[$key]['goodsId'] = $style_id;
             $details[$key]['id'] = $val['id'];

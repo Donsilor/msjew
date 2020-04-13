@@ -109,8 +109,9 @@ class CardController extends BaseController
                 $trans->commit();
 
             } catch (\Exception $exception) {
-                $trans->rollBack();
 
+                $trans->rollBack();
+                return $this->message($exception->getMessage(), $this->redirect($returnUrl), 'error');
             }
 
             $this->redirect($returnUrl);

@@ -122,7 +122,7 @@ class CardService extends Service
     //生成卡密码
     static public function generatePw($prefix = '')
     {
-        return $prefix.str_pad(mt_rand(1, 99999999999),11,'0',STR_PAD_LEFT);
+        return '123456';//$prefix.str_pad(mt_rand(1, 99999999999),11,'0',STR_PAD_LEFT);
     }
 
     //生成卡号
@@ -140,6 +140,9 @@ class CardService extends Service
     public function generateCards($card, $count=1)
     {
         $card['user_id'] = \Yii::$app->getUser()->id;
+
+        $card['ip'] = \Yii::$app->request->userIP;
+        list($card['ip_area_id'],$card['ip_location']) = \Yii::$app->ipLocation->getLocation($card['ip']);
 
         for ($i = 0; $i < $count; $i++) {
             if(!$this->generateCard($card)) {
@@ -169,11 +172,33 @@ class CardService extends Service
             $newCard->setAttributes($card);
             $newCard->setPassword($pw);
 
-            if(!$newCard->validate()) {
+            if(!$newCard->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($newCard));
             }
 
-            return $newCard->save();
+//            $result = $newCard->save();
+
+            $cardDetail = [];
+            $cardDetail['card_id'] = $newCard->id;
+            $cardDetail['balance'] = $card['balance'];
+            $cardDetail['use_amount'] = 0;
+            $cardDetail['use_amount_cny'] = 0;
+            $cardDetail['ip'] = $card['ip'];
+            $cardDetail['ip_area_id'] = $card['ip_area_id'];
+            $cardDetail['ip_location'] = $card['ip_location'];
+            $cardDetail['user_id'] = $card['user_id'];
+            $cardDetail['type'] = 1;
+            $cardDetail['status'] = 1;
+
+            $newCardDetail = new MarketCardDetails();
+            $newCardDetail->setAttributes($cardDetail);
+//            $newCardDetail->save();
+            if(!$newCardDetail->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($newCardDetail));
+            }
+
+            $result = true;
+
         } catch (\Exception $exception) {
             if($exception instanceof UnprocessableEntityHttpException) {
                 throw $exception;

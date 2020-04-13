@@ -207,7 +207,7 @@ class OrderService extends OrderBaseService
                 'discount_amount'=>$discount_amount,                
                 'currency' => $this->getCurrency(),
                 'exchange_rate'=>$this->getExchangeRate(),
-                'plan_days' =>'5-12',
+                'plan_days' =>\Yii::$app->services->orderTourist->getDeliveryTimeByGoods($orderGoodsList),
                 'buyerAddress'=>$buyerAddress,
                 'orderGoodsList'=>$orderGoodsList,
         ];

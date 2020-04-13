@@ -91,6 +91,10 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         ],
                         [
                             'label' => '使用范围',
+                            'filter' => Html::activeDropDownList($searchModel, 'goods_type_attach', \services\goods\TypeService::getTypeList(), [
+                                'prompt' => '全部',
+                                'class' => 'form-control',
+                            ]),
                             'value' => function($model) {
                                 $typeList = \services\goods\TypeService::getTypeList();
                                 $val = [];
@@ -102,6 +106,7 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         ],
                         [
                             'label' => '操作人',
+                            'attribute' => 'user.username',
                         ],
                         [
                             'label' => '购物卡状态',
@@ -121,6 +126,7 @@ $type_id = Yii::$app->request->get('type_id', 0);
                                 'edit' => function ($url, $model, $key) {
                                     return Html::edit(['edit-lang', 'id' => $model->id, 'type_id' => Yii::$app->request->get('type_id'), 'returnUrl' => Url::getReturnUrl()]);
                                 },
+
                                 'status' => function ($url, $model, $key) {
                                     return Html::status($model['status']);
                                 }

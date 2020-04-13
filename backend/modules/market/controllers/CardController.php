@@ -9,6 +9,7 @@ use common\enums\StatusEnum;
 use common\models\base\SearchModel;
 use common\models\market\MarketCard;
 use common\models\market\MarketCardDetails;
+use common\models\market\MarketCardGoodsType;
 use common\models\order\Order;
 use services\market\CardService;
 use yii\web\Controller;
@@ -31,6 +32,8 @@ class CardController extends BaseController
      */
     public function actionIndex()
     {
+        $search = \Yii::$app->request->get('SearchModel');
+
         $searchModel = new SearchModel([
             'model' => $this->modelClass,
             'scenario' => 'default',
@@ -38,9 +41,14 @@ class CardController extends BaseController
             'defaultOrder' => [
                 'id' => SORT_DESC
             ],
-            'pageSize' => $this->pageSize
+            'pageSize' => $this->pageSize,
         ]);
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams,['goods_type_attach']);
+
+        if(!empty($search['goods_type_attach'])) {
+            $query = MarketCardGoodsType::find()->where(['goods_type'=>$search['goods_type_attach']])->select(['batch']);
+            $dataProvider->query->andWhere(['batch'=>$query]);
+        }
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,

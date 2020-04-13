@@ -92,5 +92,23 @@ class MarketCard extends \common\models\base\BaseModel
         $this->password = base64_encode(Yii::$app->getSecurity()->encryptByPassword($password, $key));
     }
 
+    /**
+     * 对应订单购物卡记录
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(\common\models\backend\Member::class, ['id'=>'user_id']);
+    }
+
+    /**
+     * 产品线
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGoodsType()
+    {
+        return $this->hasMany(MarketCardGoodsType::class, ['batch'=>'batch']);
+    }
+
 
 }

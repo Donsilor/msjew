@@ -5,6 +5,7 @@ namespace services\market;
 use common\components\Service;
 use common\models\market\MarketCard;
 use common\models\market\MarketCardDetails;
+use common\models\market\MarketCardGoodsType;
 use common\models\order\Order;
 use yii\db\Exception;
 use yii\db\Expression;
@@ -143,6 +144,21 @@ class CardService extends Service
 
         $card['ip'] = \Yii::$app->request->userIP;
         list($card['ip_area_id'],$card['ip_location']) = \Yii::$app->ipLocation->getLocation($card['ip']);
+
+        $goodsType = [
+            'batch' => $card['batch']
+        ];
+
+        //保存产品线
+        foreach ($card['goods_type_attach'] as $goods_type) {
+            $goodsType['goods_type'] = $goods_type;
+            $newGoodsType = new MarketCardGoodsType();
+            $newGoodsType->setAttributes($goodsType);
+
+            if(!$newGoodsType->save()) {
+                throw new UnprocessableEntityHttpException($this->getError($newGoodsType));
+            }
+        }
 
         for ($i = 0; $i < $count; $i++) {
             if(!$this->generateCard($card)) {

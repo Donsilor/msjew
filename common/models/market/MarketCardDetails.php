@@ -38,10 +38,11 @@ class MarketCardDetails extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['card_id', 'use_amount', 'use_amount_cny', 'balance', 'ip'], 'required'],
+            [['card_id', 'use_amount', 'use_amount_cny', 'balance', 'ip', 'currency'], 'required'],
             [['card_id', 'order_id', 'user_id', 'member_id', 'type', 'status'], 'integer'],
             [['use_amount','use_amount_cny','balance'], 'number'],
             [['ip'], 'string', 'max' => 50],
+            [['currency'], 'string', 'length' => [3,3]],
         ];
     }
 
@@ -54,6 +55,7 @@ class MarketCardDetails extends \common\models\base\BaseModel
             'id' => 'ID',
             'card_id' => '购物卡ID',
             'order_id' => '订单ID',
+            'currency' => '货币',
             'use_amount' => '使用金额',
             'use_amount_cny' => '使用金额(人民币)',
             'balance' => '使用后余额',

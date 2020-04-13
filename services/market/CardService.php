@@ -3,6 +3,7 @@
 namespace services\market;
 
 use common\components\Service;
+use common\enums\CurrencyEnum;
 use common\models\market\MarketCard;
 use common\models\market\MarketCardDetails;
 use common\models\market\MarketCardGoodsType;
@@ -50,13 +51,20 @@ class CardService extends Service
         }
 
         foreach ($cards as $card) {
+            //状态，是否过期，是否有余额
+            $where = ['and'];
+            $where[] = [
+                'sn' => $card['sn'],
+                'status' => 1,
+            ];
+            $where[] = ['>=', 'start_time', time()];
+            $where[] = ['<', 'end_time', time()];
 
-            $cardInfo = MarketCard::findOne(['sn'=>$card['sn']]);
-            $balance = $cardInfo->balance;
-
-            if($balance==0) {
+            if(!($cardInfo = MarketCard::find()->where($where)->one()) || $cardInfo->balance==0) {
                 continue;
             }
+
+            $balance = \Yii::$app->services->currency->exchangeAmount($cardInfo->balance);
 
             $cardUseAmount = 0;
 
@@ -80,17 +88,21 @@ class CardService extends Service
                 continue;
             }
 
-//            if($cardUseAmount > $cardInfo->balance) {
-//
-//            }
+            //转人民币,如果余额为0，直接使用人民币余额，避免小数出错
+            if($balance==0) {
+                $cardUseAmountCny = $cardInfo->balance;
+            }
+            else {
+                $cardUseAmountCny = \Yii::$app->services->currency->exchangeAmount($cardUseAmount,2, CurrencyEnum::CNY, \Yii::$app->params['currency']);
+            }
 
             //扣除购物卡余额
             $data = [];
-            $data['balance'] = new Expression("balance-{$cardUseAmount}");
+            $data['balance'] = new Expression("balance-{$cardUseAmountCny}");
 
             $where = ['and'];
             $where[] = ['id'=>$cardInfo->id, 'status'=>1];
-            $where[] = ['>=', 'balance', $cardUseAmount];
+            $where[] = ['>=', 'balance', $cardUseAmountCny];
             if(!MarketCard::updateAll($data, $where)) {
                 throw new UnprocessableEntityHttpException("test1");
             }
@@ -100,7 +112,10 @@ class CardService extends Service
             $cardDetail->setAttributes([
                 'card_id' => $cardInfo->id,
                 'order_id' => $order->id,
+                'balance' => $cardInfo->balance - $cardUseAmountCny,//余额
+                'currency' => \Yii::$app->params['currency'],
                 'use_amount' => $cardUseAmount,
+                'use_amount_cny' => $cardUseAmountCny,
                 'ip' => $order->ip,
                 'member_id' => $order->member_id,
                 'type' => 2,

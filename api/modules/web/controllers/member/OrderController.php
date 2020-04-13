@@ -139,7 +139,7 @@ class OrderController extends UserAuthController
                 return ResultHelper::api(422,$this->getError($model));
             }
 
-            $cards = \Yii::$app->request->post('card');
+            $cards = \Yii::$app->request->post('card',[]);
             foreach ($cards as $card) {
                 $cardForm = new CardForm();
                 $cardForm->setAttributes($card);

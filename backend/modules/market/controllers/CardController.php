@@ -71,7 +71,7 @@ class CardController extends BaseController
             'defaultOrder' => [
                 'id' => SORT_DESC
             ],
-            'pageSize' => $this->pageSize,
+            'pageSize' => 1000,
         ]);
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 

@@ -57,8 +57,8 @@ class CardService extends Service
                 'sn' => $card['sn'],
                 'status' => 1,
             ];
-            $where[] = ['>=', 'start_time', time()];
-            $where[] = ['<', 'end_time', time()];
+            $where[] = ['<=', 'start_time', time()];
+            $where[] = ['>', 'end_time', time()];
 
             if(!($cardInfo = MarketCard::find()->where($where)->one()) || $cardInfo->balance==0) {
                 continue;
@@ -114,8 +114,8 @@ class CardService extends Service
                 'order_id' => $order->id,
                 'balance' => $cardInfo->balance - $cardUseAmountCny,//余额
                 'currency' => \Yii::$app->params['currency'],
-                'use_amount' => $cardUseAmount,
-                'use_amount_cny' => $cardUseAmountCny,
+                'use_amount' => -$cardUseAmount,
+                'use_amount_cny' => -$cardUseAmountCny,
                 'ip' => $order->ip,
                 'member_id' => $order->member_id,
                 'type' => 2,
@@ -132,7 +132,7 @@ class CardService extends Service
     //获取订单所购物卡金额
     static public function getUseAmount($order_id)
     {
-        return MarketCardDetails::find()->where(['order_id'=>$order_id,'status'=>[1,2]])->sum('use_amount');
+        return abs(MarketCardDetails::find()->where(['order_id'=>$order_id,'status'=>[1,2]])->sum('use_amount'));
     }
 
     //生成卡密码
@@ -158,7 +158,7 @@ class CardService extends Service
         $card['user_id'] = \Yii::$app->getUser()->id;
 
         $card['ip'] = \Yii::$app->request->userIP;
-        list($card['ip_area_id'],$card['ip_location']) = \Yii::$app->ipLocation->getLocation($card['ip']);
+        list($card['ip_area_id'], $card['ip_location']) = \Yii::$app->ipLocation->getLocation($card['ip']);
 
         $goodsType = [
             'batch' => $card['batch']
@@ -212,8 +212,9 @@ class CardService extends Service
             $cardDetail = [];
             $cardDetail['card_id'] = $newCard->id;
             $cardDetail['balance'] = $card['balance'];
-            $cardDetail['use_amount'] = 0;
-            $cardDetail['use_amount_cny'] = 0;
+            $cardDetail['currency'] = CurrencyEnum::CNY;
+            $cardDetail['use_amount'] = $card['balance'];
+            $cardDetail['use_amount_cny'] = $card['balance'];
             $cardDetail['ip'] = $card['ip'];
             $cardDetail['ip_area_id'] = $card['ip_area_id'];
             $cardDetail['ip_location'] = $card['ip_location'];

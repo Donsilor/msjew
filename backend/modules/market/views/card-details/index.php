@@ -74,11 +74,12 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             }
                         ],
                         [
-                            'label' => '订单使用金额',
+                            'label' => '余额变动',
                             'filter' => false,
+                            'format' => 'raw',
                             'attribute' => 'use_amount_cny',
                             'value' => function($model) {
-                                return $model->use_amount_cny . ' ( USD ' . $model->use_amount . ')';
+                                return $model->currency . ' ' . $model->use_amount . ' <br/> CNY ' . $model->use_amount_cny;
                             }
                         ],
                         [

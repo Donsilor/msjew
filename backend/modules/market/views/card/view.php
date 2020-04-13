@@ -13,16 +13,52 @@ $this->params['breadcrumbs'][] = $this->title;
 $type_id = Yii::$app->request->get('type_id', 0);
 ?>
 
+
 <div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title"><i class="fa fa-cog"></i> 购物卡详情：</h3>
+            </div>
+            <div class="box-body table-responsive">
+                <table class="table table-hover">
+                    <tr>
+                        <td width="20%" align="center">卡号：</td>
+                        <td><?= $cardModel->sn; ?></td>
+                        <td width="20%" align="center">购物卡总金额：</td>
+                        <td><?= $cardModel->amount; ?></td>
+                    </tr>
+                    <tr>
+                        <td align="center">发卡时间：</td>
+                        <td><?= \Yii::$app->formatter->asDatetime($cardModel->created_at); ?></td>
+                        <td align="center">购物卡剩余金额：</td>
+                        <td><?= $cardModel->balance; ?></td>
+                    </tr>
+                    <tr>
+                        <td align="center">发卡人：</td>
+                        <td><?= $cardModel->user->username; ?></td>
+                        <td align="center">购物卡状态：</td>
+                        <td><?= '?'; ?></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
     <div class="col-sm-12">
         <div class="nav-tabs-custom">
             <div class="box-body table-responsive">
                 <?php echo Html::batchButtons(false) ?>
                 <?= GridView::widget([
+                    'layout' => "{items}",
                     'dataProvider' => $dataProvider,
-                    'filterModel' => $searchModel,
                     'tableOptions' => ['class' => 'table table-hover'],
-                    'showFooter' => true,//显示footer行
+                    'showFooter' => false,//显示footer行
                     'id' => 'grid',
                     'columns' => [
                         [

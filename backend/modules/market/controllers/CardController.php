@@ -60,7 +60,7 @@ class CardController extends BaseController
     {
         $id = \Yii::$app->request->get('id', null);
 
-        if(empty($id)) {
+        if(!($cardModel = MarketCard::findOne($id))) {
             exit;
         }
 
@@ -72,15 +72,13 @@ class CardController extends BaseController
                 'id' => SORT_DESC
             ],
             'pageSize' => $this->pageSize,
-            'relations' => [
-                'card' => ['id'],
-            ]
         ]);
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
-        $dataProvider->query->andWhere(['market_card.id'=>$id]);
+        $dataProvider->query->andWhere(['card_id'=>$id]);
 
         return $this->render($this->action->id, [
+            'cardModel' => $cardModel,
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
         ]);

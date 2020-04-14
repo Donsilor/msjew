@@ -20,6 +20,76 @@ class CardService extends Service
 {
     //调整金额
 
+    /**
+     * 订单取消，解除冻结
+     * @param $orderId
+     * @return bool|null
+     * @throws \Exception
+     */
+    static public function deFrozen($orderId)
+    {
+        //判断订单状态
+        if(!($orderInfo = Order::findone($orderId)) || $orderInfo->order_status==0) {
+            return null;
+        }
+
+        $where = [];
+        $where['order_id'] = $orderId;
+        $where['status'] = 2;
+        $cards = MarketCardDetails::find()->where($where)->all();
+
+        if(empty($cards)) {
+            return null;
+        }
+
+        $newCard = [];
+        $newCard['ip'] = \Yii::$app->request->userIP;
+        list($newCard['ip_area_id'], $newCard['ip_location']) = \Yii::$app->ipLocation->getLocation($newCard['ip']);
+
+        try {
+            foreach ($cards as $card) {
+                $marketCard = MarketCard::findOne($card['card_id']);
+
+                //更新状态为取消
+                if(!MarketCardDetails::updateAll(['status'=>0], ['status'=>2, 'id'=>$card->id])) {
+                    throw new UnprocessableEntityHttpException("test1");
+                }
+
+                //添加解冻费用记录
+                $newCard['card_id'] = $card['card_id'];
+                $newCard['order_id'] = $card['order_id'];
+                $newCard['currency'] = $card['currency'];
+                $newCard['use_amount'] = abs($card['use_amount']);
+                $newCard['use_amount_cny'] = abs($card['use_amount_cny']);
+                $newCard['balance'] = $marketCard['balance'];
+                $newCard['user_id'] = $card['user_id'];
+                $newCard['member_id'] = $card['member_id'];
+                $newCard['type'] = 3;
+                $newCard['status'] = 1;
+
+                $newCardObj = new MarketCardDetails();
+                $newCardObj->setAttributes($newCard);
+                if(!$newCardObj->save()) {
+                    throw new UnprocessableEntityHttpException(\Yii::$app->debris->analyErr($newCardObj->getFirstErrors()));
+                }
+
+                //购物卡返回金额
+                $data = [];
+                $data['balance'] = new Expression("balance+{$newCard['use_amount_cny']}");
+
+                $where = ['and'];
+                $where[] = ['id'=>$card['card_id']];
+                if(!MarketCard::updateAll($data, $where)) {
+                    throw new UnprocessableEntityHttpException("更新购物卡余额失败");
+                }
+            }
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());
+            throw $exception;
+        }
+        return null;
+    }
+
     //购物卡消费
     static public function consume($orderId, $cards)
     {
@@ -122,17 +192,16 @@ class CardService extends Service
                 'status' => 2,
             ]);
             if(!$cardDetail->save()) {
-                var_dump($cardDetail->getErrors());exit;
-                throw new UnprocessableEntityHttpException($cardDetail->getErrors());
+                throw new UnprocessableEntityHttpException(\Yii::$app->debris->analyErr($cardDetail->getFirstErrors()));
             }
 
         }
     }
 
     //获取订单所购物卡金额
-    static public function getUseAmount($order_id)
+    static public function getUseAmount($orderId)
     {
-        return abs(MarketCardDetails::find()->where(['order_id'=>$order_id,'status'=>[1,2]])->sum('use_amount'));
+        return abs(MarketCardDetails::find()->where(['order_id'=>$orderId,'status'=>[1,2]])->sum('use_amount'));
     }
 
     //生成卡密码

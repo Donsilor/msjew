@@ -206,7 +206,7 @@ class OrderService extends OrderBaseService
             foreach ($cards as &$card) {
 
                 $cardInfo = MarketCard::findOne(['sn'=>$card['sn']]);
-                $balance = $cardInfo->balance;
+                $balance = $this->exchangeAmount($cardInfo->balance);
 
                 if($balance==0) {
                     continue;

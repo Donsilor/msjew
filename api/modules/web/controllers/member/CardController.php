@@ -69,16 +69,11 @@ class CardController extends UserAuthController
 
         if(!empty($post['test'])) {
             //状态，是否过期，是否有余额
-            $where = ['and'];
-            $where[] = [
-                'sn' => $model['sn'],
-                'status' => 1,
-            ];
-            $where[] = ['<=', 'start_time', time()];
-            $where[] = ['>', 'end_time', time()];
 
-            $cardInfo = MarketCard::find()->where($where)->one();
-            var_dump($cardInfo);
+            $result = CardService::deFrozen(391);
+
+            var_dump($result);
+
             exit;
 
             try{

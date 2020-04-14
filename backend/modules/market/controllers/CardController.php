@@ -107,6 +107,9 @@ class CardController extends BaseController
                 return $this->message($this->getError($model), $this->redirect($returnUrl), 'error');
             }
 
+            ignore_user_abort(true);
+            set_time_limit(900);
+
             $trans = \Yii::$app->db->beginTransaction();
 
             try {

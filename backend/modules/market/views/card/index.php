@@ -64,8 +64,15 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             }
                         ],
                         [
+                            'label' => '批次',
+                            'attribute' => 'batch',
+//                            'value' => function($model) {
+//                                return $model->batch;
+//                            }
+                        ],
+                        [
                             'label' => '卡号',
-                            'filter' => false,
+//                            'filter' => false,
                             'attribute' => 'sn',
                             'format' => 'raw',
                             'value' => function($model) {
@@ -118,20 +125,20 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             },
                             'filter' => false,
                         ],
-                        [
-                            'class' => 'yii\grid\ActionColumn',
-                            'header' => '操作',
-                            'template' => '{edit} {status}',
-                            'buttons' => [
-                                'edit' => function ($url, $model, $key) {
-                                    return Html::edit(['edit-lang', 'id' => $model->id, 'type_id' => Yii::$app->request->get('type_id'), 'returnUrl' => Url::getReturnUrl()]);
-                                },
-
-                                'status' => function ($url, $model, $key) {
-                                    return Html::status($model['status']);
-                                }
-                            ]
-                        ]
+//                        [
+//                            'class' => 'yii\grid\ActionColumn',
+//                            'header' => '操作',
+//                            'template' => '{edit} {status}',
+//                            'buttons' => [
+//                                'edit' => function ($url, $model, $key) {
+//                                    return Html::edit(['edit-lang', 'id' => $model->id, 'type_id' => Yii::$app->request->get('type_id'), 'returnUrl' => Url::getReturnUrl()]);
+//                                },
+//
+//                                'status' => function ($url, $model, $key) {
+//                                    return Html::status($model['status']);
+//                                }
+//                            ]
+//                        ]
                     ]
                 ]); ?>
             </div>

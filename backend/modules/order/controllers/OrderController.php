@@ -6,6 +6,7 @@ use backend\controllers\BaseController;
 use common\enums\CurrencyEnum;
 use common\enums\InvoiceElectronicEnum;
 use common\enums\OrderStatusEnum;
+use common\enums\PayEnum;
 use common\enums\PayStatusEnum;
 use common\helpers\ResultHelper;
 use common\models\common\EmailLog;
@@ -221,6 +222,11 @@ class OrderController extends BaseController
                     if($paylog->pay_status != PayStatusEnum::PAID) {
                           continue;
                     }
+
+                    if($paylog->pay_type==PayEnum::PAY_TYPE_CARD) {
+                        continue;
+                    }
+
                     //获取支付类
                     $pay = Yii::$app->services->pay->getPayByType($paylog->pay_type);
 

@@ -14,6 +14,7 @@ use common\models\order\OrderCart;
 use api\modules\web\forms\CartForm;
 use common\helpers\ResultHelper;
 use api\controllers\UserAuthController;
+use services\goods\TypeService;
 use services\market\CardService;
 use yii\base\Exception;
 use yii\web\UnprocessableEntityHttpException;
@@ -70,53 +71,30 @@ class CardController extends UserAuthController
         if(!empty($post['test'])) {
             //状态，是否过期，是否有余额
 
-            $result = CardService::deFrozen(391);
-
-            var_dump($result);
 
             exit;
 
-            try{
-                $payForm = new PayForm();
-                $payForm->orderId = 161;
-                $payForm->coinType = 'USD';
-                $payForm->payType = 10;//
-                $payForm->memberId = $this->member_id;
 
-                //验证支付订单数据
-                if (!$payForm->validate()) {
-                    throw new UnprocessableEntityHttpException($this->getError($payForm));
-                }
-                $d = $payForm->getConfig();
-                var_dump($d);
-//                return CardService::consume(161, [
-//                    [
-//                        'sn' => $model->sn,
-//                        'pw' => $model->pw,
-//                    ],
-//                    [
-//                        'sn' => $model->sn,
-//                        'pw' => $model->pw,
-//                    ],
-//                    [
-//                        'sn' => $model->sn,
-//                        'pw' => $model->pw,
-//                    ]
-//                ]);
-            }catch (\Exception $exception) {
-                return $exception->getMessage();
-            }
             return;
         }
 
         $data = [
             'sn' => $model->getCard()->sn,
             'amount' => $model->getCard()->amount,
+            'goodsTypeAttach' => $model->getCard()->goods_type_attach,
             'balance' => $model->getCard()->balance,
             'startTime' => $model->getCard()->start_time,
             'endTime' => $model->getCard()->end_time,
             'status' => $model->getCard()->status
         ];
+
+        $goodsTypes = [];
+        foreach (TypeService::getTypeList() as $key => $item) {
+            if(in_array($key, $data['goodsTypeAttach'])) {
+                $goodsTypes[$key] = $item;
+            }
+        }
+        $data['goodsTypes'] = $goodsTypes;
 
         return $data;
     }

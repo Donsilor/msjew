@@ -23,11 +23,6 @@ $type_id = Yii::$app->request->get('type_id', 0);
                 <li class="active">
                     <a href="<?= Url::to(['card-details/index']) ?>"> <?= Html::encode($this->title) ?></a>
                 </li>
-                <li class="pull-right">
-                    <div class="box-header box-tools">
-                        <?= Html::create(['edit-lang', 'type_id' => $type_id]) ?>
-                    </div>
-                </li>
             </ul>
             <div class="box-body table-responsive">
                 <?php echo Html::batchButtons(false) ?>
@@ -57,8 +52,9 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         ],
                         [
                             'label' => '卡号',
-                            'filter' => false,
+//                            'filter' => false,
                             'attribute' => 'card.sn',
+                            'headerOptions' => ['class' => 'col-md-1'],
                             'format' => 'raw',
                             'value' => function($model) {
                                 return Html::a($model->card->sn, ['card/view', 'id' => $model->card->id], ['style'=>"text-decoration:underline;color:#3c8dbc"]);
@@ -88,9 +84,26 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         ],
                         [
                             'label' => '剩余金额',
+                            'filter' => false,
                             'attribute' => 'balance',
                         ],
                         [
+                            'label' => '费用类型',
+                            'filter' => false,
+                            'attribute' => 'type',
+                            'value' => function($model) {
+                                return \common\enums\CardTypeEnum::getValue($model->type);
+                            }
+                        ],
+                        [
+                            'label' => '费用状态',
+                            'filter' => false,
+                            'attribute' => 'status',
+                            'value' => function($model) {
+                                return \common\enums\CardDetailStatusEnum::getValue($model->status);
+                            }
+                        ],
+     /*                   [
                             'label' => '购物卡状态',
                             'attribute' => 'status',
                             'format' => 'raw',
@@ -98,11 +111,12 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             'value' => function ($model) {
                                 return \common\enums\FrameEnum::getValue($model->status);
                             },
-                            'filter' => Html::activeDropDownList($searchModel, 'status', \common\enums\FrameEnum::getMap(), [
-                                'prompt' => '全部',
-                                'class' => 'form-control',
-                            ]),
-                        ],
+                            'filter' => false,
+//                            'filter' => Html::activeDropDownList($searchModel, 'status', \common\enums\FrameEnum::getMap(), [
+//                                'prompt' => '全部',
+//                                'class' => 'form-control',
+//                            ]),
+                        ],*/
 //                        [
 //                            'class' => 'yii\grid\ActionColumn',
 //                            'header' => '操作',

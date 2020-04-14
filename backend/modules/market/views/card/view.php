@@ -25,25 +25,25 @@ $type_id = Yii::$app->request->get('type_id', 0);
                     <tr>
                         <td width="20%" align="center">卡号：</td>
                         <td><?= $cardModel->sn; ?></td>
-                        <td width="20%" align="center">购物卡总金额：</td>
+                        <td width="20%" align="center">总金额：</td>
                         <td><?= $cardModel->amount; ?></td>
                     </tr>
                     <tr>
                         <td align="center">发卡时间：</td>
                         <td><?= \Yii::$app->formatter->asDatetime($cardModel->created_at); ?></td>
-                        <td align="center">购物卡剩余金额：</td>
+                        <td align="center">剩余金额：</td>
                         <td><?= $cardModel->balance; ?></td>
                     </tr>
                     <tr>
                         <td align="center">发卡人：</td>
                         <td><?= $cardModel->user->username; ?></td>
-                        <td align="center">购物卡状态：</td>
-                        <td><?= '?'; ?></td>
+                        <td align="center">有效期：</td>
+                        <td><?= Yii::$app->formatter->asDatetime($cardModel->start_time, 'Y-M-d')." / ".Yii::$app->formatter->asDatetime($cardModel->end_time-1, 'Y-M-d'); ?></td>
                     </tr>
                     <tr>
                         <td></td>
                         <td></td>
-                        <td></td>
+                        <td align="center">购物卡状态：</td>
                         <td></td>
                     </tr>
                 </table>
@@ -109,15 +109,22 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             'attribute' => 'balance',
                         ],
                         [
-                            'label' => '购物卡状态',
-                            'filter' => false,
-                            'attribute' => 'status',
-                            'format' => 'raw',
-                            'headerOptions' => ['class' => 'col-md-1'],
-                            'value' => function ($model) {
-                                return \common\enums\FrameEnum::getValue($model->status);
-                            },
+                            'label' => '使用IP区域',
+                            'attribute' => 'ip',
+                            'value' => function($model) {
+                                return $model->ip . ' (' . \common\enums\AreaEnum::getValue($model->ip_area_id) . ')';
+                            }
                         ],
+//                        [
+//                            'label' => '购物卡状态',
+//                            'filter' => false,
+//                            'attribute' => 'status',
+//                            'format' => 'raw',
+//                            'headerOptions' => ['class' => 'col-md-1'],
+//                            'value' => function ($model) {
+//                                return \common\enums\FrameEnum::getValue($model->status);
+//                            },
+//                        ],
                     ]
                 ]); ?>
             </div>

@@ -32,7 +32,10 @@ class CardDetailsController extends BaseController
             'defaultOrder' => [
                 'id' => SORT_DESC
             ],
-            'pageSize' => $this->pageSize
+            'pageSize' => $this->pageSize,
+            'relations' => [
+                'card' => ['sn'],
+            ]
         ]);
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 

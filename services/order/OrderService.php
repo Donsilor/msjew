@@ -6,6 +6,7 @@ use common\models\market\MarketCard;
 use common\models\market\MarketCardDetails;
 use common\models\order\OrderCart;
 use common\models\order\OrderInvoice;
+use services\market\CardService;
 use yii\db\Expression;
 use yii\web\UnprocessableEntityHttpException;
 use common\models\order\OrderGoods;
@@ -298,6 +299,8 @@ class OrderService extends OrderBaseService
         $order->seller_remark = $remark;
         $order->order_status = OrderStatusEnum::ORDER_CANCEL;
         $order->save(false);
+        //解冻购物卡
+        CardService::deFrozen($order_id);
         //订单日志
         $this->addOrderLog($order_id, $remark, $log_role, $log_user,$order->order_status);
     }

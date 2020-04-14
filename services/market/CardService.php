@@ -20,6 +20,29 @@ class CardService extends Service
 {
     //调整金额
 
+    //购物卡消费成功
+    static public function setSuccess($orderId)
+    {
+        //判断订单状态
+        if(!($orderInfo = Order::findone($orderId)) || $orderInfo->order_status!=10) {
+            return null;
+        }
+
+        $where = [];
+        $where['order_id'] = $orderId;
+        $where['status'] = 2;
+        $cards = MarketCardDetails::find()->where($where)->all();
+
+        if(empty($cards)) {
+            return null;
+        }
+
+        foreach ($cards as $card) {
+            $card->status=1;
+            $card->save();
+        }
+    }
+
     /**
      * 订单取消，解除冻结
      * @param $orderId
@@ -29,7 +52,7 @@ class CardService extends Service
     static public function deFrozen($orderId)
     {
         //判断订单状态
-        if(!($orderInfo = Order::findone($orderId)) || $orderInfo->order_status==0) {
+        if(!($orderInfo = Order::findone($orderId)) || $orderInfo->order_status!=0) {
             return null;
         }
 

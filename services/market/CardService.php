@@ -71,12 +71,6 @@ class CardService extends Service
 
         try {
             foreach ($cards as $card) {
-                $marketCard = MarketCard::findOne($card['card_id']);
-
-                //更新状态为取消
-                if(!MarketCardDetails::updateAll(['status'=>0], ['status'=>2, 'id'=>$card->id])) {
-                    throw new UnprocessableEntityHttpException("test1");
-                }
 
                 //添加解冻费用记录
                 $newCard['card_id'] = $card['card_id'];
@@ -84,16 +78,14 @@ class CardService extends Service
                 $newCard['currency'] = $card['currency'];
                 $newCard['use_amount'] = abs($card['use_amount']);
                 $newCard['use_amount_cny'] = abs($card['use_amount_cny']);
-                $newCard['balance'] = $marketCard['balance'];
                 $newCard['user_id'] = $card['user_id'];
                 $newCard['member_id'] = $card['member_id'];
                 $newCard['type'] = 3;
                 $newCard['status'] = 1;
 
-                $newCardObj = new MarketCardDetails();
-                $newCardObj->setAttributes($newCard);
-                if(!$newCardObj->save()) {
-                    throw new UnprocessableEntityHttpException(\Yii::$app->debris->analyErr($newCardObj->getFirstErrors()));
+                //更新状态为取消
+                if(!MarketCardDetails::updateAll(['status'=>0], ['status'=>2, 'id'=>$card->id])) {
+                    throw new UnprocessableEntityHttpException("购物卡使用记录取消失败");
                 }
 
                 //购物卡返回金额
@@ -104,6 +96,16 @@ class CardService extends Service
                 $where[] = ['id'=>$card['card_id']];
                 if(!MarketCard::updateAll($data, $where)) {
                     throw new UnprocessableEntityHttpException("更新购物卡余额失败");
+                }
+
+                $marketCard = MarketCard::findOne($card['card_id']);
+
+                $newCard['balance'] = $marketCard['balance'];
+
+                $newCardObj = new MarketCardDetails();
+                $newCardObj->setAttributes($newCard);
+                if(!$newCardObj->save()) {
+                    throw new UnprocessableEntityHttpException(\Yii::$app->debris->analyErr($newCardObj->getFirstErrors()));
                 }
             }
         } catch (\Exception $exception) {

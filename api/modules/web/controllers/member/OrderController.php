@@ -304,6 +304,9 @@ class OrderController extends UserAuthController
         $cards = [];
         if($order->cards) {
             foreach ($order->cards as $card) {
+                if($card->status==0) {
+                    continue;
+                }
                 $cards[] = [
                     'sn' => $card->card['sn'],
                     'useAmount' => $card['use_amount'],

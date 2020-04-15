@@ -94,6 +94,7 @@ class OrderTouristController extends OnAuthController
             return $config;
         } catch (Exception $e) {
             $trans->rollBack();
+            \Yii::$app->services->actionLog->create('create',$e->getTraceAsString());
             throw $e;
         }
     }

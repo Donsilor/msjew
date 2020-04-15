@@ -141,9 +141,9 @@ class OrderController extends UserAuthController
                 "orderAmount"=> $result['order_amount'],
                 "orderId" => $result['order_id'],
             ];            
-        }catch(Exception $e) {
-            
+        }catch(Exception $e) {            
             $trans->rollBack();
+            \Yii::$app->services->actionLog->create('create',$e->getTraceAsString());
             throw $e;
         }
     }

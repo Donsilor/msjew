@@ -42,7 +42,7 @@ class ClientQueryResponse extends AbstractResponse
         }
 
         if(!isset($data['prc'])) {
-            return 'null';
+            return 'nopayer';
         }
 
         switch($data['prc'])

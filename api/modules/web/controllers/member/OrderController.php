@@ -143,7 +143,7 @@ class OrderController extends UserAuthController
             ];            
         }catch(Exception $e) {            
             $trans->rollBack();
-            \Yii::$app->services->actionLog->create('create',$e->getTraceAsString());
+            \Yii::$app->services->actionLog->create('create',$e->getMessage());
             throw $e;
         }
     }

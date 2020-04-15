@@ -157,7 +157,6 @@ class OrderService extends OrderBaseService
         if($cart_ids && !is_array($cart_ids)) {
             $cart_ids = explode(',', $cart_ids);
         }
-        
         $cart_list = OrderCart::find()->where(['member_id'=>$buyer_id,'id'=>$cart_ids])->all();
         if(empty($cart_list)) {
             $message = '订单商品查询失败:buyer_id=>'.$buyer_id.',card_ids=>'.implode(',',$cart_ids).',cart_list=>'.var_export($cart_list,true);

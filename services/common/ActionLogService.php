@@ -37,7 +37,7 @@ class ActionLogService extends Service
         $model = new ActionLog();
         $model->behavior = $behavior;
         $model->remark = $remark;
-        $model->user_id = Yii::$app->user->id ?? 0;
+        $model->user_id = Yii::$app->services->backend->getUserId();
         $model->url = $url;
         $model->app_id = Yii::$app->id;
         $model->get_data = Yii::$app->request->get();

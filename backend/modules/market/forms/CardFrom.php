@@ -17,6 +17,7 @@ class CardFrom extends MarketCard
             [['count', 'amount'], 'integer'],
             [['batch'], 'string', 'max' => 50],
             [['batch'], 'validateBatch'],
+            [['batch'], 'safe'],
         ];
     }
 

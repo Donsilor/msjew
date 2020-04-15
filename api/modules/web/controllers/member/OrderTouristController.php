@@ -94,7 +94,7 @@ class OrderTouristController extends OnAuthController
             return $config;
         } catch (Exception $e) {
             $trans->rollBack();
-            \Yii::$app->services->actionLog->create('create',$e->getMessage());
+            \Yii::$app->services->actionLog->create('游客创建订单',$e->getMessage());
             throw $e;
         }
     }
@@ -246,8 +246,9 @@ class OrderTouristController extends OnAuthController
 
         try {
             $taxInfo = \Yii::$app->services->orderTourist->getCartAccountTax($cartList);
-        } catch (\Exception $exception) {
-            throw new UnprocessableEntityHttpException($exception->getMessage());
+        } catch (\Exception $e) {
+            \Yii::$app->services->actionLog->create('游客订单金额汇总',$e->getMessage());
+            throw $e;
         }
 
         return $taxInfo;

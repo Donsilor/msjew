@@ -62,12 +62,12 @@ class ActionLogService extends Service
         
         //短信提醒 begin
         $route = $model->controller.'/'.$model->action;
-        $errorSmsNoice  = Yii::$app->params['errorSmsNoice']??[]; 
-        if(!empty($errorSmsNoice['open']) && in_array($route,$errorSmsNoice['routes']) ) {
+        $smsConfig  = Yii::$app->params['errorSmsNoice']??[]; 
+        if(!empty($errorSmsNoice['open']) && in_array($route,$smsConfig['routes']) ) {
             $key = md5(Yii::$app->id.':'.$route.':'.$model->user_id);
             if(!Yii::$app->cache->get($key)){
-                foreach ($errorSmsNoice['mobiles'] as $mobile){
-                    Yii::$app->services->sms->queue(true)->send($mobile,SmsLog::USAGE_ERROR_NOTICE,['username'=>'管理员','sitename'=>'BDD官网','action'=>'['.$model->behavior.']','code'=>$model->id]);
+                foreach ($smsConfig['mobiles'] as $mobile){
+                    Yii::$app->services->sms->queue(true)->send($mobile,SmsLog::USAGE_ERROR_NOTICE,['username'=>$smsConfig['userName'],'sitename'=>$smsConfig['siteName'],'action'=>'['.$model->behavior.']','code'=>$model->id]);
                 }
                 Yii::$app->cache->set($key,$model->behavior,600);
             }

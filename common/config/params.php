@@ -18,6 +18,8 @@ return [
     'goodsType.diamond'=>15,//裸钻产品线    
     'errorSmsNoice'=>[
         'open'=>true,
+        'userName'=>'管理员',
+        'siteName'=>'BDD测试站',    
         'mobiles'=>['15989407534'],
         'routes'=>[
                 'member/order/create',

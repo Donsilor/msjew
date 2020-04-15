@@ -2,10 +2,15 @@
 
 namespace console\controllers;
 
+use common\helpers\ResultHelper;
 use common\models\market\MarketCard;
+use services\goods\TypeService;
+use services\market\CardService;
 use yii\console\Controller;
+use yii\db\Exception;
 use yii\helpers\BaseConsole;
 use yii\helpers\Console;
+use console\forms\CardForm;
 
 /**
  * 购物卡命令
@@ -18,10 +23,70 @@ class CardController extends Controller
     /**
      * 导入购物卡
      */
-    public function actionImport()
+    public function actionImport($fileName)
     {
-        $allArgs = func_get_args();
+        if(!file_exists($fileName)) {
+            exit("文件是不存在的");
+        }
 
+        $handle = fopen($fileName, 'r');
+
+        if(!$handle) {
+            exit("读取文件失败");
+        }
+
+        $trans = \Yii::$app->db->beginTransaction();
+
+        try {
+
+            $cards = [];
+
+            $i = 0;
+            while (($data = fgetcsv($handle)) != false) {
+                $i++;
+
+                if($i==1) {
+                    $title1 = '批次,卡号,密码,金额,开始时间,结束时间,使用范围（中文，多个用“|”隔开，同一批次的使用范围必需一至）';
+                    $title2 = implode(',', $data);
+
+                    if($title1!=$title2) {
+                        BaseConsole::output('请在第一行使用标准的标题名称：'.$title1);
+                        exit('现在第一行的标题是：'.$title2);
+                    }
+
+                    continue;
+                }
+
+                $cardForm = new CardForm();
+
+                $cardForm->batch = $data[0];
+                $cardForm->sn = $data[1];
+                $cardForm->password = $data[2];
+                $cardForm->amount = $data[3];
+                $cardForm->start_time = $data[4];
+                $cardForm->end_time = $data[5];
+                $cardForm->goods_types = $data[6];
+
+                if(!$cardForm->validate()) {
+                    $error = sprintf('第[%d]行：' . \Yii::$app->debris->analyErr($cardForm->getFirstErrors()), $i);
+                    throw new \Exception($error);
+                }
+
+                $cards[] = $cardForm->toArray();
+            }
+
+            $count = \Yii::$app->services->card->importCards($cards);
+
+            $trans->commit();
+
+            exit('导入成功：'.$count.' 条');
+
+        } catch (\Exception $exception) {
+            $trans->rollBack();
+
+            BaseConsole::output($exception->getMessage());
+            exit('error');
+        }
     }
 
     /**
@@ -45,7 +110,7 @@ class CardController extends Controller
         }
 
         if(!$this->confirm("请确定批次号记录条数是否正确?")) {
-            exit("退出\n");
+            exit("退出");
         }
 
         $fileName = \yii\helpers\BaseConsole::input("请输入导出文件名：");

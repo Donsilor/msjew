@@ -8,6 +8,7 @@ use common\models\market\MarketCard;
 use common\models\market\MarketCardDetails;
 use common\models\market\MarketCardGoodsType;
 use common\models\order\Order;
+use services\goods\TypeService;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\web\UnprocessableEntityHttpException;
@@ -280,6 +281,64 @@ class CardService extends Service
         }
     }
 
+    public function importCards($cards)
+    {
+        $count = 0;
+        $batchs = [];
+
+        $_card['user_id'] = 1;//\Yii::$app->getUser()->id;
+
+        $_card['ip'] = '127.0.0.1';//\Yii::$app->request->userIP;
+        list($_card['ip_area_id'], $_card['ip_location']) = \Yii::$app->ipLocation->getLocation($_card['ip']);
+
+        foreach ($cards as &$card) {
+            if(!isset($batchs[$card['batch']])) {
+                //创建批次地区记录
+                $goodsTypeSAttach = [];
+                $goodsTypes = explode('|', $card['goods_types']);
+                $typeList = TypeService::getTypeList();
+
+                $goodsType = [
+                    'batch' => $card['batch']
+                ];
+
+                foreach ($typeList as $key => $value) {
+                    if(in_array($value, $goodsTypes)) {
+                        $goodsTypeSAttach[] = $key;
+
+                        $goodsType['goods_type'] = $key;
+
+                        if(MarketCardGoodsType::findOne($goodsType)) {
+                            continue;
+                        }
+
+                        $newGoodsType = new MarketCardGoodsType();
+                        $newGoodsType->setAttributes($goodsType);
+
+                        if(!$newGoodsType->save()) {
+                            throw new UnprocessableEntityHttpException($this->getError($newGoodsType));
+                        }
+                    }
+                }
+
+                $batchs[$card['batch']] = $goodsTypeSAttach;
+            }
+
+            $card['goods_type_attach'] = $batchs[$card['batch']];
+            $card = array_merge($card, $_card);
+
+            if($this->generateCard($card)) {
+                $count++;
+            }
+        }
+
+        if(count($cards)!=$count) {
+            throw new UnprocessableEntityHttpException('有部份数据存在重新插入');
+        }
+
+        return $count;
+    }
+
     /**
      * 生成购物卡
      * @param array $card 基本数据
@@ -289,8 +348,8 @@ class CardService extends Service
     private function generateCard($card)
     {
         try {
-            $pw = self::generatePw();
-            $card['sn'] = self::generateSn();
+            $pw = $card['password']??self::generatePw();
+            $card['sn'] = $card['sn']??self::generateSn();
             $card['balance'] = $card['amount'];
 
             $newCard = new MarketCard();
@@ -300,8 +359,6 @@ class CardService extends Service
             if(!$newCard->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($newCard));
             }
-
-//            $result = $newCard->save();
 
             $cardDetail = [];
             $cardDetail['card_id'] = $newCard->id;
@@ -318,7 +375,6 @@ class CardService extends Service
 
             $newCardDetail = new MarketCardDetails();
             $newCardDetail->setAttributes($cardDetail);
-//            $newCardDetail->save();
             if(!$newCardDetail->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($newCardDetail));
             }

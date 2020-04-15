@@ -63,7 +63,7 @@ class ActionLogService extends Service
         //短信提醒 begin
         $route = $model->controller.'/'.$model->action;
         $smsConfig  = Yii::$app->params['errorSmsNoice']??[]; 
-        if(!empty($errorSmsNoice['open']) && in_array($route,$smsConfig['routes']) ) {
+        if(!empty($smsConfig['open']) && in_array($route,$smsConfig['routes']) ) {
             $key = md5(Yii::$app->id.':'.$route.':'.$model->user_id);
             if(!Yii::$app->cache->get($key)){
                 foreach ($smsConfig['mobiles'] as $mobile){

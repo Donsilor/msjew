@@ -68,6 +68,7 @@ class PayController extends OnAuthController
             $trans->commit();            
             return $config;
         }catch (\Exception $e) {
+            
             $trans->rollBack();
             \Yii::$app->services->actionLog->create('用户创建支付单号',$e->getMessage());
             throw  $e;

@@ -6,6 +6,7 @@ use common\models\market\MarketCard;
 use common\models\market\MarketCardDetails;
 use common\models\order\OrderCart;
 use common\models\order\OrderInvoice;
+use services\goods\TypeService;
 use services\market\CardService;
 use yii\db\Expression;
 use yii\web\UnprocessableEntityHttpException;
@@ -254,6 +255,17 @@ class OrderService extends OrderBaseService
                 }
 
                 $card['useAmount'] = $cardUseAmount;
+//                $card['balance'] = $cardInfo->balance;
+                $card['goodsTypeAttach'] = $cardInfo->goods_type_attach;
+                $card['balance'] = $this->exchangeAmount($cardInfo->balance);
+                $card['amount'] = $this->exchangeAmount($cardInfo->amount);
+                $goodsTypes = [];
+                foreach (TypeService::getTypeList() as $key => $item) {
+                    if(in_array($key, $card['goodsTypeAttach'])) {
+                        $goodsTypes[$key] = $item;
+                    }
+                }
+                $card['goodsTypes'] = $goodsTypes;
                 $cardsUseAmount += $cardUseAmount;
             }
         }

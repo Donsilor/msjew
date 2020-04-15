@@ -160,6 +160,8 @@ class OrderService extends OrderBaseService
         
         $cart_list = OrderCart::find()->where(['member_id'=>$buyer_id,'id'=>$cart_ids])->all();
         if(empty($cart_list)) {
+            $message = '订单商品查询失败:buyer_id=>'.$buyer_id.',card_ids=>'.implode(',',$cart_ids).',cart_list=>'.var_export($cart_list,true);
+            \Yii::$app->services->actionLog->create('getOrderAccountTax',$message);
             throw new UnprocessableEntityHttpException("订单商品查询失败");
         }
         $buyerAddress = Address::find()->where(['id'=>$buyer_address_id,'member_id'=>$buyer_id])->one();

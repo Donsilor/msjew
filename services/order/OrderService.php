@@ -183,7 +183,12 @@ class OrderService extends OrderBaseService
             }
             $sale_price = $this->exchangeAmount($goods['sale_price']);
 
-            $goodsTypeAmounts[$goods['type_id']] = $sale_price;
+            if(!isset($goodsTypeAmounts[$goods['type_id']])) {
+                $goodsTypeAmounts[$goods['type_id']] = $sale_price;
+            }
+            else {
+                $goodsTypeAmounts[$goods['type_id']] += $sale_price;
+            }
 
             $goods_amount += $sale_price;
             $orderGoodsList[] = [
@@ -206,7 +211,24 @@ class OrderService extends OrderBaseService
         if(!empty($cards)) {
             foreach ($cards as &$card) {
 
-                $cardInfo = MarketCard::findOne(['sn'=>$card['sn']]);
+                //状态，是否过期，是否有余额
+                $where = ['and'];
+                $where[] = [
+                    'sn' => $card['sn'],
+                    'status' => 1,
+                ];
+                $where[] = ['<=', 'start_time', time()];
+                $where[] = ['>', 'end_time', time()];
+
+                $cardInfo = MarketCard::find()->where($where)->one();
+
+                //验证状态
+                if(!$cardInfo || $cardInfo->balance==0) {
+                    continue;
+                }
+
+                //验证有效期
+
                 $balance = $this->exchangeAmount($cardInfo->balance);
 
                 if($balance==0) {

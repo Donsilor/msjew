@@ -25,7 +25,7 @@ class CardService extends Service
     static public function setSuccess($orderId)
     {
         //判断订单状态
-        if(!($orderInfo = Order::findone($orderId)) || $orderInfo->order_status!=10) {
+        if(!($orderInfo = Order::findone($orderId)) || $orderInfo->order_status!=20) {
             return null;
         }
 
@@ -142,7 +142,12 @@ class CardService extends Service
         //订单折扣后金额
         $goodsPayPrice = 0;
         foreach ($order->goods as $goods) {
-            $goodsTypeAmounts[$goods['goods_type']] = $goods['goods_pay_price'];
+            if(!isset($goodsTypeAmounts[$goods['goods_type']])) {
+                $goodsTypeAmounts[$goods['goods_type']] = $goods['goods_pay_price'];
+            }
+            else {
+                $goodsTypeAmounts[$goods['goods_type']] += $goods['goods_pay_price'];
+            }
             $goodsPayPrice += $goods['goods_pay_price'];
         }
 

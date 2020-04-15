@@ -67,7 +67,7 @@ class ActionLogService extends Service
             $key = md5(Yii::$app->id.':'.$route.':'.$model->user_id);
             if(!Yii::$app->cache->get($key)){
                 foreach ($errorSmsNoice['mobiles'] as $mobile){
-                    Yii::$app->services->sms->queue(true)->send($mobile,SmsLog::USAGE_ERROR_NOTICE,['username'=>'管理员','sitename'=>'BDD官网','action'=>$model->behavior,'code'=>$model->id]);
+                    Yii::$app->services->sms->queue(true)->send($mobile,SmsLog::USAGE_ERROR_NOTICE,['username'=>'管理员','sitename'=>'BDD官网','action'=>'['.$model->behavior.']','code'=>$model->id]);
                 }
                 Yii::$app->cache->set($key,$model->behavior,600);
             }

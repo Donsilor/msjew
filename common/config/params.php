@@ -20,10 +20,10 @@ return [
         'open'=>true,
         'mobiles'=>['15989407534'],
         'routes'=>[
-                'order/create',
-                'order/tax',
-                'order-tourist/create',
-                'order-tourist/tax',
+                'member/order/create',
+                'member/order/tax',
+                'member/order-tourist/create',
+                'member/order-tourist/tax',
                 'pay/create',
         ]
     ],//错误日志短信提醒 

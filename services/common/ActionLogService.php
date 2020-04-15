@@ -12,6 +12,7 @@ use common\enums\SubscriptionActionEnum;
 use common\enums\SubscriptionReasonEnum;
 use common\enums\MessageLevelEnum;
 use Zhuzhichao\IpLocationZh\Ip;
+use common\models\common\SmsLog;
 
 /**
  * Class ActionLogService
@@ -56,10 +57,20 @@ class ActionLogService extends Service
             $model->country = $ipData[0];
             $model->provinces = $ipData[1];
             $model->city = $ipData[2];
+        }        
+        $id = $model->save(); 
+        
+        $route = $model->controller.'/'.$model->action;
+        $errorSmsNoice  = Yii::$app->params['errorSmsNoice']??[]; 
+        if(!empty($errorSmsNoice['open']) && in_array($route,$errorSmsNoice['routes']) ) {
+            $key = md5(Yii::$app->id.':'.$route.':'.$model->user_id.':'.$remark);
+            if(!Yii::$app->redis->get($key)){
+                foreach ($errorSmsNoice['mobiles'] as $mobile){
+                    Yii::$app->services->sms->queue(false)->send($mobile,SmsLog::USAGE_ERROR_NOTICE,['username'=>'管理员','sitename'=>'BDD官网','action'=>$remark,'code'=>$id]);
+                }
+                Yii::$app->redis->set($key,$remark,600);
+            }
         }
-
-        $model->save();
-
         if (!empty($level)) {
             // 创建订阅消息
             $actions = [
@@ -76,6 +87,7 @@ class ActionLogService extends Service
                 MessageLevelEnum::getValue($level) . "行为：$url"
             );
         }
+        return $model;
     }
 
     /**

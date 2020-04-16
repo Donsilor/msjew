@@ -15,7 +15,7 @@ class ClientQueryResponse extends AbstractResponse
 {
     public function isPaid()
     {
-        return isset($this->data['prc']) && $this->data['prc'] == '0';
+        return $this->getCode()=='completed';
     }
 
     /**
@@ -25,11 +25,24 @@ class ClientQueryResponse extends AbstractResponse
      */
     public function getCode()
     {
-        if(!isset($this->data['prc'])) {
-            return null;
+        $key = key($this->data);
+        if(is_int($key)) {
+            foreach ($this->data as $datum) {
+                if(isset($datum['prc']) && $datum['prc']=='0') {
+                    $data = $datum;
+                    break;
+                }
+            }
+        }
+        else {
+            $data = $this->data;
         }
 
-        switch($this->data['prc'])
+        if(!isset($data['prc'])) {
+            return 'null';
+        }
+
+        switch($data['prc'])
         {
             case '0':
                 return 'completed';

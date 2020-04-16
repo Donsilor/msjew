@@ -36,7 +36,8 @@ class OrderTouristController extends OnAuthController
     {
         $orderSn = \Yii::$app->request->post('orderSn');
         $goodsCartList = \Yii::$app->request->post('goodsCartList');
-        $invoiceInfo = \Yii::$app->request->post('invoice');      
+        $invoiceInfo = \Yii::$app->request->post('invoice');
+
         if(empty($orderSn)) {
             if (empty($goodsCartList)) {
                 return ResultHelper::api(422, "goodsCartList不能为空");
@@ -52,14 +53,14 @@ class OrderTouristController extends OnAuthController
                 }
                 $cart_list[] = $model->toArray();
             }
-            $orderId = \Yii::$app->services->orderTourist->createOrder($cart_list, $invoiceInfo);
+            //$orderId = \Yii::$app->services->orderTourist->createOrder($cart_list, $invoiceInfo);
         }
         
         try {
             $trans = \Yii::$app->db->beginTransaction();
             if(empty($orderSn)) {
                 //创建订单
-                $orderId = \Yii::$app->services->orderTourist->createOrder($cart_list,$invoiceInfo);
+                $orderId = \Yii::$app->services->orderTourist->createOrder($cart_list, $invoiceInfo);
             }
             else {
                 //按单号支付
@@ -71,7 +72,6 @@ class OrderTouristController extends OnAuthController
                 
                 $orderId = $order->id;
             }
-            
 
             //调用支付接口
             $payForm = new PayForm();
@@ -92,8 +92,9 @@ class OrderTouristController extends OnAuthController
             $trans->commit();
 
             return $config;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $trans->rollBack();
+            \Yii::$app->services->actionLog->create('游客创建订单',$e->getMessage());
             throw $e;
         }
     }
@@ -230,7 +231,7 @@ class OrderTouristController extends OnAuthController
         if (empty($goodsCartList)) {
             return ResultHelper::api(422, "goodsCartList不能为空");
         }
-
+		
         //验证产品数据
         $cartList = array();
         foreach ($goodsCartList as $cartGoods) {
@@ -242,11 +243,12 @@ class OrderTouristController extends OnAuthController
             }
             $cartList[] = $model->toArray();
         }
-
+        
         try {
             $taxInfo = \Yii::$app->services->orderTourist->getCartAccountTax($cartList);
-        } catch (\Exception $exception) {
-            throw new UnprocessableEntityHttpException($exception->getMessage());
+        } catch (\Exception $e) {
+            \Yii::$app->services->actionLog->create('游客订单金额汇总','Exception:'.$e->getMessage());
+            throw $e;
         }
 
         return $taxInfo;

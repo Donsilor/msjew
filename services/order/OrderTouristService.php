@@ -34,6 +34,8 @@ class OrderTouristService extends OrderBaseService
      */
     public function createOrder($cartList, $invoice_info)
     {
+        //IP区域ID与地址
+        list($ip_area_id, $ip_location) = \Yii::$app->ipLocation->getLocation(\Yii::$app->request->userIP);
 
         $goods_amount = 0;
         $details = [];
@@ -41,7 +43,7 @@ class OrderTouristService extends OrderBaseService
             $goods = \Yii::$app->services->goods->getGoodsInfo($item['goods_id'], $item['goods_type']);
 
             //商品价格
-            $sale_price = $this->exchangeAmount($goods['sale_price']*$item['goods_num']);
+            $sale_price = $this->exchangeAmount($goods['sale_price'],0)*$item['goods_num'];
             $goods_amount += $sale_price;
 
             $detail = new OrderTouristDetails();
@@ -92,6 +94,10 @@ class OrderTouristService extends OrderBaseService
         $order->exchange_rate = $this->getExchangeRate();//汇率
         $order->language   = $this->getLanguage();//语言
         $order->ip = \Yii::$app->request->userIP;  //用户下单ip
+
+        $order->ip_location = $ip_location;
+        $order->ip_area_id = $ip_area_id;
+
         $order->status = OrderTouristStatusEnum::ORDER_UNPAID;  //状态
 
         //保存订单
@@ -137,11 +143,11 @@ class OrderTouristService extends OrderBaseService
 
         /** @var Payment $payment */
         $payment = $pay->getPayment(['model'=>$payLog]);
-//        $payment->getPayer();
+//      $payment->getPayer();
 
         //记录订单日志
-        \Yii::error($payment->toArray());
-
+        //\Yii::error($payment->toArray());
+        \Yii::$app->services->actionLog->create('同步游客订单','订单号:'.$orderTourist->order_sn,$payment->toArray());
         /** @var PayerInfo $payerInfo */
         $payerInfo = $payment->getPayer()->getPayerInfo();
 

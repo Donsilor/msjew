@@ -114,6 +114,10 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         [
                             'label' => '操作人',
                             'attribute' => 'user.username',
+                            'headerOptions' => ['class' => 'col-md-1'],
+                            'filter' => Html::activeTextInput($searchModel, 'user.username', [
+                                'class' => 'form-control',
+                            ]),
                         ],
                         [
                             'label' => '购物卡状态',

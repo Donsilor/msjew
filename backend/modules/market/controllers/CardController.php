@@ -42,6 +42,9 @@ class CardController extends BaseController
                 'id' => SORT_DESC
             ],
             'pageSize' => $this->pageSize,
+            'relations' => [
+                'user' => ['username']
+            ]
         ]);
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams,['goods_type_attach']);
 

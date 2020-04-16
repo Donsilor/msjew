@@ -326,7 +326,15 @@ DOM;
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->order_amount, 1, 2, ',') ?></div>
                             </div>
-                            <?php foreach() {} ?>
+                            <?php foreach($model->cards as $n => $card) {
+                            ?>
+                            <div class="row">
+                                <div class="col-lg-5 text-right"><label>购物卡<?= $n+1 ?>：</label></div>
+                                <div class="col-lg-7"><?= $card->currency ?>&nbsp;<?= $card->use_amount ?>&nbsp;（<?= $card->card->sn ?>）</div>
+                            </div>
+                            <?php
+                            }
+                            ?>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label style="font-weight:bold"><?= $model->getAttributeLabel('account.pay_amount') ?>：</label></div>
                                 <div class="col-lg-7 text-red"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->pay_amount, 1, 2, ',') ?></div>

@@ -146,8 +146,8 @@ class OrderTouristService extends OrderBaseService
 //        $payment->getPayer();
 
         //记录订单日志
-        \Yii::error($payment->toArray());
-
+        //\Yii::error($payment->toArray());
+        \Yii::$app->services->actionLog->create('同步游客订单','订单号:'.$orderTourist->order_sn,$payment->toArray());
         /** @var PayerInfo $payerInfo */
         $payerInfo = $payment->getPayer()->getPayerInfo();
 

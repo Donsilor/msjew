@@ -80,12 +80,12 @@ class OrderService extends OrderBaseService
                 $goods = \Yii::$app->services->goods->getGoodsInfo($orderGoods->goods_id,$orderGoods->goods_type,false,$language);
                 if($language == $this->getLanguage()) {
                     if(empty($goods) || $goods['status'] != 1) {
-                        throw new UnprocessableEntityHttpException("订单中有部分商品已下架");
+                        throw new UnprocessableEntityHttpException("订单中部分商品已下架,请重新下单");
                     }
     
                     //验证库存
                     if($orderGoods->goods_num > $goods['goods_storage']) {
-                        throw new UnprocessableEntityHttpException("订单中有部分商品已下架");
+                        throw new UnprocessableEntityHttpException("订单中部分商品已下架,请重新下单");
                     }
                 }
 

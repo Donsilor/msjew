@@ -181,7 +181,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 ]),
                                 'value' => function ($model) {
                                     $str = \common\enums\PayStatusEnum::getValue($model->payment_status);
-                                    if($model->payment_type) {
+                                    if($model->payment_type) {                                        
                                         $str   .= '<br/>'.(\common\enums\PayEnum::getValue($model->payment_type));
                                     }
                                     return $str;                                   

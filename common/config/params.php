@@ -16,7 +16,7 @@ return [
     'currencySign' =>'CNY',//当前货币符号
     'cachePrefix'=>'common',//缓存前缀
     'goodsType.diamond'=>15,//裸钻产品线    
-    'errorSmsNoice'=>[
+    'smsNotice'=>[
         'open'=>true,
         'userName'=>'管理员',
         'siteName'=>'BDD测试站',    

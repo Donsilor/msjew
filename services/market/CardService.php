@@ -206,7 +206,7 @@ class CardService extends Service
             $where[] = ['id'=>$cardInfo->id, 'status'=>1];
             $where[] = ['>=', 'balance', $cardUseAmountCny];
             if(!MarketCard::updateAll($data, $where)) {
-                throw new UnprocessableEntityHttpException("test1");
+                throw new UnprocessableEntityHttpException("购物卡金额不正确");
             }
 
             //冻结购物卡消费

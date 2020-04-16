@@ -40,11 +40,39 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         <td align="center">有效期：</td>
                         <td><?= Yii::$app->formatter->asDatetime($cardModel->start_time, 'Y-M-d')." / ".Yii::$app->formatter->asDatetime($cardModel->end_time-1, 'Y-M-d'); ?></td>
                     </tr>
+                    <?php
+                    $val = '';
+                    $time = time();
+
+                    if($cardModel->balance==0) {
+                        $val = '使用完毕作废';
+                    }
+                    else if($cardModel->end_time<=$time) {
+                        $val = '超时作废';
+                    }
+                    else if($cardModel->balance==$model->amount) {
+                        $val = '未使用';
+                    }
+                    else {
+                        $val = '使用中';
+                    }
+
+                    $typeList = \services\goods\TypeService::getTypeList();
+                    $goods_types = [];
+                    foreach ($cardModel->goods_type_attach as $goods_type) {
+                        $goods_types[] = $typeList[$goods_type];
+                    }
+                    $goods_types = implode('/', $goods_types);
+                    ?>
                     <tr>
-                        <td></td>
-                        <td></td>
+                        <td align="center">可用产品线：</td>
+                        <td>
+                            <?= $goods_types; ?>
+                        </td>
                         <td align="center">购物卡状态：</td>
-                        <td></td>
+                        <td>
+                            <?= $val; ?>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -113,6 +141,22 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             'attribute' => 'ip',
                             'value' => function($model) {
                                 return $model->ip . ' (' . \common\enums\AreaEnum::getValue($model->ip_area_id) . ')';
+                            }
+                        ],
+                        [
+                            'label' => '费用类型',
+                            'filter' => false,
+                            'attribute' => 'type',
+                            'value' => function($model) {
+                                return \common\enums\CardTypeEnum::getValue($model->type);
+                            }
+                        ],
+                        [
+                            'label' => '费用状态',
+                            'filter' => false,
+                            'attribute' => 'status',
+                            'value' => function($model) {
+                                return \common\enums\CardDetailStatusEnum::getValue($model->status);
                             }
                         ],
 //                        [

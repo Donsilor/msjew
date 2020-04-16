@@ -245,7 +245,7 @@ class OrderTouristController extends OnAuthController
         try {
             $taxInfo = \Yii::$app->services->orderTourist->getCartAccountTax($cartList);
         } catch (\Exception $e) {
-            \Yii::$app->services->actionLog->create('游客订单金额汇总',$e->getMessage());
+            \Yii::$app->services->actionLog->create('游客订单金额汇总','Exception:'.$e->getMessage());
             throw $e;
         }
 

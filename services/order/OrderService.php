@@ -79,12 +79,12 @@ class OrderService extends OrderBaseService
             foreach (array_keys($languages) as $language){
                 $goods = \Yii::$app->services->goods->getGoodsInfo($orderGoods->goods_id,$orderGoods->goods_type,false,$language);
                 if(empty($goods) || $goods['status'] != 1) {
-                    continue;
+                    throw new UnprocessableEntityHttpException("订单中有部分商品已下架");
                 }
 
                 //验证库存
-                if($orderGoods->goods_num>$goods['goods_storage']) {
-                    throw new UnprocessableEntityHttpException(sprintf("[%s]商品库存不足", $goods['goods_sn']));
+                if($orderGoods->goods_num > $goods['goods_storage']) {
+                    throw new UnprocessableEntityHttpException("订单中有部分商品已下架");
                 }
 
                 $langModel = $orderGoods->langModel();
@@ -159,9 +159,7 @@ class OrderService extends OrderBaseService
         }
         $cart_list = OrderCart::find()->where(['member_id'=>$buyer_id,'id'=>$cart_ids])->all();
         if(empty($cart_list)) {
-            $message = '订单商品查询失败:buyer_id=>'.$buyer_id.',card_ids=>'.implode(',',$cart_ids).',cart_list=>'.var_export($cart_list,true);
-            \Yii::$app->services->actionLog->create('getOrderAccountTax',$message);
-            throw new UnprocessableEntityHttpException("订单商品查询失败");
+            throw new UnprocessableEntityHttpException("您的购物车商品不存在");
         }
         $buyerAddress = Address::find()->where(['id'=>$buyer_address_id,'member_id'=>$buyer_id])->one();
         $orderGoodsList = [];

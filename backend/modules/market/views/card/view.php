@@ -50,7 +50,7 @@ $type_id = Yii::$app->request->get('type_id', 0);
                     else if($cardModel->end_time<=$time) {
                         $val = '超时作废';
                     }
-                    else if($cardModel->balance==$model->amount) {
+                    else if($cardModel->balance==$cardModel->amount) {
                         $val = '未使用';
                     }
                     else {

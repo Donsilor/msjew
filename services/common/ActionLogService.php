@@ -42,7 +42,11 @@ class ActionLogService extends Service
         $model->url = $url;
         $model->app_id = Yii::$app->id;
         $model->get_data = Yii::$app->request->get();
-        $model->post_data = $noRecordData == true ? Yii::$app->request->post() : [];
+        
+        $post_data = Yii::$app->request->post();
+        $post_data['recordData'] = $noRecordData;
+        $model->post_data = $post_data;
+        
         // $model->post_data = $noRecordData == true ? file_get_contents("php://input") : [];
         $model->header_data = ArrayHelper::toArray(Yii::$app->request->headers);
         $model->method = Yii::$app->request->method;

@@ -242,6 +242,7 @@ class OrderTouristController extends OnAuthController
             }
             $cartList[] = $model->toArray();
         }
+        
         try {
             $taxInfo = \Yii::$app->services->orderTourist->getCartAccountTax($cartList);
         } catch (\Exception $e) {

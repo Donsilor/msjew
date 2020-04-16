@@ -131,6 +131,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             <label class="text-right col-lg-4"><?= $model->getAttributeLabel('buyer_remark') ?> ：</label>
                             <?= $model->buyer_remark ?>
                         </div>
+                        <div class="col-lg-4">
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="text-right col-lg-4">是否使用购物卡：</label>
+                            <?= $model->cards?'是':'否' ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -320,6 +326,7 @@ DOM;
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->order_amount, 1, 2, ',') ?></div>
                             </div>
+                            <?php foreach() {} ?>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label style="font-weight:bold"><?= $model->getAttributeLabel('account.pay_amount') ?>：</label></div>
                                 <div class="col-lg-7 text-red"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->pay_amount, 1, 2, ',') ?></div>

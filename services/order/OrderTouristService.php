@@ -45,9 +45,9 @@ class OrderTouristService extends OrderBaseService
                 throw new UnprocessableEntityHttpException("订单中部分商品已下架,请重新下单");
             }
             //验证库存
-            if($item->goods_num > $goods['goods_storage']) {
+            /* if($item->goods_num > $goods['goods_storage']) {
                 throw new UnprocessableEntityHttpException("订单中部分商品已下架,请重新下单");
-            }
+            } */
             //商品价格
             $sale_price = $this->exchangeAmount($goods['sale_price'],0)*$item['goods_num'];
             $goods_amount += $sale_price;

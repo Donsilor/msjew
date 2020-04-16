@@ -92,7 +92,7 @@ class OrderTouristController extends OnAuthController
             $trans->commit();
 
             return $config;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $trans->rollBack();
             \Yii::$app->services->actionLog->create('游客创建订单',$e->getMessage());
             throw $e;

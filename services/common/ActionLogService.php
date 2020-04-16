@@ -12,6 +12,7 @@ use common\enums\SubscriptionActionEnum;
 use common\enums\SubscriptionReasonEnum;
 use common\enums\MessageLevelEnum;
 use Zhuzhichao\IpLocationZh\Ip;
+use common\models\common\SmsLog;
 
 /**
  * Class ActionLogService
@@ -56,10 +57,22 @@ class ActionLogService extends Service
             $model->country = $ipData[0];
             $model->provinces = $ipData[1];
             $model->city = $ipData[2];
-        }
-
-        $model->save();
-
+        }        
+        $model->save(); 
+        
+        //短信提醒 begin
+        $route = $model->controller.'/'.$model->action;
+        $smsConfig  = Yii::$app->params['errorSmsNoice']??[]; 
+        if(!empty($smsConfig['open']) && in_array($route,$smsConfig['routes']) ) {
+            $key = md5(Yii::$app->id.':'.$route.':'.$model->user_id);
+            if(!Yii::$app->cache->get($key)){
+                foreach ($smsConfig['mobiles'] as $mobile){
+                    Yii::$app->services->sms->queue(true)->send($mobile,SmsLog::USAGE_ERROR_NOTICE,['username'=>$smsConfig['userName'],'sitename'=>$smsConfig['siteName'],'action'=>'['.$model->behavior.']','code'=>$model->id]);
+                }
+                Yii::$app->cache->set($key,$model->behavior,600);
+            }
+       }
+       //短信提醒 end
         if (!empty($level)) {
             // 创建订阅消息
             $actions = [
@@ -76,6 +89,7 @@ class ActionLogService extends Service
                 MessageLevelEnum::getValue($level) . "行为：$url"
             );
         }
+        return $model;
     }
 
     /**

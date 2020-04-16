@@ -180,8 +180,8 @@ class CardService extends Service
                     }
                     else {
                         $cardUseAmount = bcadd($cardUseAmount, $goodsTypeAmount, 2);
-                        $goodsTypeAmount = 0;
                         $balance = bcsub($balance, $goodsTypeAmount, 2);
+                        $goodsTypeAmount = 0;
                     }
                 }
             }

@@ -231,7 +231,6 @@ class OrderTouristController extends OnAuthController
         if (empty($goodsCartList)) {
             return ResultHelper::api(422, "goodsCartList不能为空");
         }
-        \Yii::$app->services->actionLog->create('游客订单金额汇总','goodsCartList:'.var_export($goodsCartList,true));
         //验证产品数据
         $cartList = array();
         foreach ($goodsCartList as $cartGoods) {
@@ -243,10 +242,8 @@ class OrderTouristController extends OnAuthController
             }
             $cartList[] = $model->toArray();
         }
-        \Yii::$app->services->actionLog->create('游客订单金额汇总','cartList:'.var_export($cartList,true));
         try {
             $taxInfo = \Yii::$app->services->orderTourist->getCartAccountTax($cartList);
-            \Yii::$app->services->actionLog->create('游客订单金额汇总',var_export($taxInfo,true));
         } catch (\Exception $e) {
             \Yii::$app->services->actionLog->create('游客订单金额汇总',$e->getMessage());
             throw $e;

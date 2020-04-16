@@ -61,7 +61,9 @@ class StyleController extends OnAuthController
             ->orderby($order);
 
 
-        if($type_id) {
+        if(is_array($type_id)) {
+            $query ->andWhere(['in','m.type_id',$type_id]);
+        }else{
             $query ->andWhere(['m.type_id'=>$type_id]);
         }
 
@@ -109,6 +111,20 @@ class StyleController extends OnAuthController
                         $marry_style_man_attr = \Yii::$app->attr->valueList(54);
                         $param_value = array_column($marry_style_man_attr,'id');
                     }
+                }elseif($param_name == 'gender'){
+                    $attr_id = 26;
+                    if($param_value == -1){
+                        $marry_style_man_attr = \Yii::$app->attr->valueList(26);
+                        $param_value = array_column($marry_style_man_attr,'id');
+                    }
+
+                }elseif($param_name == 'theme'){
+                    $attr_id = 60;
+                    if($param_value == -1){
+                        $marry_style_man_attr = \Yii::$app->attr->valueList(26);
+                        $param_value = array_column($marry_style_man_attr,'id');
+                    }
+
                 }else{
                     continue;
                 }

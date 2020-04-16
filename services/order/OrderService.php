@@ -188,7 +188,7 @@ class OrderService extends OrderBaseService
                 $goodsTypeAmounts[$goods['type_id']] = $sale_price;
             }
             else {
-                $goodsTypeAmounts[$goods['type_id']] += $sale_price;
+                $goodsTypeAmounts[$goods['type_id']] = bcadd($goodsTypeAmounts[$goods['type_id']], $sale_price, 2);
             }
 
             $goods_amount += $sale_price;
@@ -242,14 +242,14 @@ class OrderService extends OrderBaseService
                     if(!empty($cardInfo->goods_type_attach) && in_array($goodsType, $cardInfo->goods_type_attach) && $goodsTypeAmount > 0) {
                         if($goodsTypeAmount >= $balance) {
                             //购物卡余额不足时
-                            $cardUseAmount = $balance;
-                            $goodsTypeAmount -= $balance;
+                            $cardUseAmount = bcadd($cardUseAmount, $balance, 2);
+                            $goodsTypeAmount = bcsub($goodsTypeAmount, $balance, 2);
                             $balance = 0;
                         }
                         else {
-                            $cardUseAmount = $goodsTypeAmount;
+                            $cardUseAmount = bcadd($cardUseAmount, $goodsTypeAmount, 2);
                             $goodsTypeAmount = 0;
-                            $balance -=$goodsTypeAmount;
+                            $balance = bcsub($balance, $goodsTypeAmount, 2);
                         }
                     }
                 }
@@ -266,7 +266,7 @@ class OrderService extends OrderBaseService
                     }
                 }
                 $card['goodsTypes'] = $goodsTypes;
-                $cardsUseAmount += $cardUseAmount;
+                $cardsUseAmount = bcadd($cardsUseAmount, $cardUseAmount, 2);
             }
         }
 

@@ -146,9 +146,10 @@ class CardService extends Service
                 $goodsTypeAmounts[$goods['goods_type']] = $goods['goods_pay_price'];
             }
             else {
-                $goodsTypeAmounts[$goods['goods_type']] += $goods['goods_pay_price'];
+                $goodsTypeAmounts[$goods['goods_type']] = bcadd($goodsTypeAmounts[$goods['goods_type']], $goods['goods_pay_price'], 2);
             }
-            $goodsPayPrice += $goods['goods_pay_price'];
+            $goodsPayPrice = bcadd($goodsPayPrice, $goods['goods_pay_price'], 2);
+
         }
 
         foreach ($cards as $card) {
@@ -173,14 +174,14 @@ class CardService extends Service
                 if(!empty($cardInfo->goods_type_attach) && in_array($goodsType, $cardInfo->goods_type_attach) && $goodsTypeAmount > 0) {
                     if($goodsTypeAmount >= $balance) {
                         //购物卡余额不足时
-                        $cardUseAmount = $balance;
-                        $goodsTypeAmount -= $balance;
+                        $cardUseAmount = bcadd($balance, $cardUseAmount, 2);
+                        $goodsTypeAmount = bcsub($goodsTypeAmount, $balance, 2);
                         $balance = 0;
                     }
                     else {
-                        $cardUseAmount = $goodsTypeAmount;
+                        $cardUseAmount = bcadd($cardUseAmount, $goodsTypeAmount, 2);
                         $goodsTypeAmount = 0;
-                        $balance -=$goodsTypeAmount;
+                        $balance = bcsub($balance, $goodsTypeAmount, 2);
                     }
                 }
             }
@@ -213,7 +214,7 @@ class CardService extends Service
             $cardDetail->setAttributes([
                 'card_id' => $cardInfo->id,
                 'order_id' => $order->id,
-                'balance' => $cardInfo->balance - $cardUseAmountCny,//余额
+                'balance' => bcsub($cardInfo->balance ,$cardUseAmountCny, 2),//余额
                 'currency' => \Yii::$app->params['currency'],
                 'use_amount' => -$cardUseAmount,
                 'use_amount_cny' => -$cardUseAmountCny,

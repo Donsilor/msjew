@@ -445,7 +445,7 @@ class OrderController extends UserAuthController
             'exchangeRate'=> $taxInfo['exchange_rate'],
             'cards'=> $taxInfo['cards'],
             'cardsUseAmount'=> $taxInfo['cards_use_amount'],
-            'payAmount'=> $taxInfo['order_amount'] - $taxInfo['cards_use_amount'] - $taxInfo['discount_amount']
+            'payAmount'=> bcsub($taxInfo['order_amount'] ,$taxInfo['cards_use_amount'], 2) - $taxInfo['discount_amount']
         ];
     }
     

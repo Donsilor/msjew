@@ -78,13 +78,15 @@ class OrderService extends OrderBaseService
              //订单商品明细
             foreach (array_keys($languages) as $language){
                 $goods = \Yii::$app->services->goods->getGoodsInfo($orderGoods->goods_id,$orderGoods->goods_type,false,$language);
-                if(empty($goods) || $goods['status'] != 1) {
-                    throw new UnprocessableEntityHttpException("订单中有部分商品已下架");
-                }
-
-                //验证库存
-                if($orderGoods->goods_num > $goods['goods_storage']) {
-                    throw new UnprocessableEntityHttpException("订单中有部分商品已下架");
+                if($language == $this->getLanguage()) {
+                    if(empty($goods) || $goods['status'] != 1) {
+                        throw new UnprocessableEntityHttpException("订单中有部分商品已下架");
+                    }
+    
+                    //验证库存
+                    if($orderGoods->goods_num > $goods['goods_storage']) {
+                        throw new UnprocessableEntityHttpException("订单中有部分商品已下架");
+                    }
                 }
 
                 $langModel = $orderGoods->langModel();

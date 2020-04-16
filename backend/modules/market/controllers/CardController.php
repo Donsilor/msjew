@@ -12,6 +12,7 @@ use common\models\market\MarketCardDetails;
 use common\models\market\MarketCardGoodsType;
 use common\models\order\Order;
 use services\market\CardService;
+use yii\db\Expression;
 use yii\web\Controller;
 use yii\web\UnprocessableEntityHttpException;
 
@@ -46,11 +47,34 @@ class CardController extends BaseController
                 'user' => ['username']
             ]
         ]);
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams,['goods_type_attach']);
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams,['goods_type_attach','status']);
 
         if(!empty($search['goods_type_attach'])) {
             $query = MarketCardGoodsType::find()->where(['goods_type'=>$search['goods_type_attach']])->select(['batch']);
             $dataProvider->query->andWhere(['batch'=>$query]);
+        }
+
+        if(!empty($search['status'])) {
+            $status = (int)$search['status'];
+            $where = ['and'];
+            if($status===4) {
+                $where[]['balance'] = 0;
+            }
+            else if($status===3) {
+                $where[] = ['>', 'balance' ,0];
+                $where[] = ['<=', 'end_time' ,time()];
+            }
+            else if($status===2) {
+                $where[] = ['>', 'balance' ,0];
+                $where[] = ['>', 'end_time' ,time()];
+                $where[] = ['<>', 'balance' ,new Expression('amount')];
+            }
+            else if($status===1) {
+                $where[] = ['>', 'balance' ,0];
+                $where[] = ['>', 'end_time' ,time()];
+                $where[] = ['=', 'balance' ,new Expression('amount')];
+            }
+            $dataProvider->query->andWhere($where);
         }
 
         return $this->render('index', [

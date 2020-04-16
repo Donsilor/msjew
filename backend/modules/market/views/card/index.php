@@ -125,9 +125,33 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             'format' => 'raw',
                             'headerOptions' => ['class' => 'col-md-1'],
                             'value' => function ($model) {
-                                return \common\enums\StatusEnum::getValue($model->status);
+                                $val = '';
+                                $time = time();
+
+                                if($model->balance==0) {
+                                    $val = '使用完毕作废';
+                                }
+                                else if($model->end_time<=$time) {
+                                    $val = '超时作废';
+                                }
+                                else if($model->balance==$model->amount) {
+                                    $val = '未使用';
+                                }
+                                else {
+                                    $val = '使用中';
+                                }
+
+                                return $val;
                             },
-                            'filter' => false,
+                            'filter' => Html::activeDropDownList($searchModel, 'status', [
+                                '1' => '未使用',
+                                '2' => '使用中',
+                                '3' => '超时作废',
+                                '4' => '使用完毕作废',
+                            ], [
+                                'prompt' => '全部',
+                                'class' => 'form-control',
+                            ]),
                         ],
 //                        [
 //                            'class' => 'yii\grid\ActionColumn',

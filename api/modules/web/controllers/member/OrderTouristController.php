@@ -231,6 +231,7 @@ class OrderTouristController extends OnAuthController
         if (empty($goodsCartList)) {
             return ResultHelper::api(422, "goodsCartList不能为空");
         }
+		
         //验证产品数据
         $cartList = array();
         foreach ($goodsCartList as $cartGoods) {

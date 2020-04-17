@@ -135,11 +135,11 @@ class PayController extends OnAuthController
         $model = $this->getPayModelByReturnUrlQuery($query);
 
         if(empty($model)) {
-            Yii::$app->services->actionLog->create('用户支付校验','订单号:'.$orderSn."<br/>支付结果:查询支付记录失败");
+            Yii::$app->services->actionLog->create('用户支付校验','订单号:'.$orderSn."<br/>支付状态：查询支付记录失败");
             $result['verification_status'] = 'failed';
             return $result;
         }
-        $logMessage = "订单号: ".$model->order_sn.'<br/>交易号: '.$model->out_trade_no;
+        $logMessage = "订单号: ".$model->order_sn.'<br/>支付单号: '.$model->out_trade_no;
         
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -148,7 +148,7 @@ class PayController extends OnAuthController
             if ($model->pay_status == PayStatusEnum::PAID) {
                 $transaction->rollBack();
                 
-                $logMessage .= "<br/>支付结果: 已支付";
+                $logMessage .= "<br/>支付状态： 已支付";
                 Yii::$app->services->actionLog->create('用户支付校验',$logMessage); 
                 
                 $result['verification_status'] = 'completed';                
@@ -197,7 +197,7 @@ class PayController extends OnAuthController
                 $transaction->rollBack();
             }
             
-            $logMessage .= "<br/>支付结果: ".($response->getCode());
+            $logMessage .= "<br/>支付状态： ".($response->getCode());
             Yii::$app->services->actionLog->create('用户支付校验',$logMessage,$response);
         } catch (\Exception $e) {
             $transaction->rollBack();

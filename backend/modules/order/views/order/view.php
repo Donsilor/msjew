@@ -327,10 +327,13 @@ DOM;
                                 <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->order_amount, 1, 2, ',') ?></div>
                             </div>
                             <?php foreach($model->cards as $n => $card) {
+                                if($card->type!=2) {
+                                    continue;
+                                }
                             ?>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label>购物卡<?= $n+1 ?>：</label></div>
-                                <div class="col-lg-7"><?= $card->currency ?>&nbsp;<?= $card->use_amount ?>&nbsp;（<?= $card->card->sn ?>）</div>
+                                <div class="col-lg-7"><?= $card->currency ?>&nbsp;<?= $card->use_amount ?>&nbsp;（<?= $card->card->sn ?> <?= $card->status==0?'已解绑':'' ?>）</div>
                             </div>
                             <?php
                             }

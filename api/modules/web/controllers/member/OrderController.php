@@ -304,7 +304,7 @@ class OrderController extends UserAuthController
         $cards = [];
         if($order->cards) {
             foreach ($order->cards as $card) {
-                if($card->status==0) {
+                if($card->type!=2) {
                     continue;
                 }
                 $cards[] = [
@@ -374,13 +374,24 @@ class OrderController extends UserAuthController
         if($order->order_status > OrderStatusEnum::ORDER_UNPAID){
             return ResultHelper::api(422, '此订单不是待付款状态，不能取消');
         }
-        $res = Order::updateAll(['order_status'=>OrderStatusEnum::ORDER_CANCEL],['id'=>$order_id,'order_status'=>OrderStatusEnum::ORDER_UNPAID]);
-        if($res){
+        try {
+
+            $trans = \Yii::$app->db->beginTransaction();
             \Yii::$app->services->order->changeOrderStatusCancel($order_id,"用户取消订单", 'buyer',$this->member_id);
-            return 'success';
-        }else{
+            $trans->commit();
+
+        } catch (\Exception $exception) {
+
+            $trans->rollBack();
+
             return ResultHelper::api(422, '取消订单失败');
         }
+//        $res = Order::updateAll(['order_status'=>OrderStatusEnum::ORDER_CANCEL],['id'=>$order_id,'order_status'=>OrderStatusEnum::ORDER_UNPAID]);
+//        if($res){
+            return 'success';
+//        }else{
+//            return ResultHelper::api(422, '取消订单失败');
+//        }
 
     }
 

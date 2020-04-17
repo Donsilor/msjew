@@ -139,7 +139,7 @@ class PayController extends OnAuthController
             $result['verification_status'] = 'failed';
             return $result;
         }
-        $logMessage = "订单号: ".$model->order_sn.'<br/>支付编号: '.$model->out_trade_no;
+        $logMessage = "订单号：".$model->order_sn.'<br/>支付编号：'.$model->out_trade_no;
         
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -205,7 +205,7 @@ class PayController extends OnAuthController
             // 记录报错日志
             $logPath = $this->getLogPath('error');
             FileHelper::writeLog($logPath, $e->getMessage());
-            Yii::$app->services->actionLog->create('用户支付校验','Exception:'.$e->getMessage());
+            Yii::$app->services->actionLog->create('用户支付校验','Exception：'.$e->getMessage());
             //服务器错误的时候，返回订单处理中
             $result['verification_status'] = 'pending';
         }

@@ -150,10 +150,10 @@ class OrderTouristService extends OrderBaseService
         $pay = \Yii::$app->services->pay->getPayByType($payLog->pay_type);
         $payment = $pay->getPayment(['model'=>$payLog]);
         if($payment) {
-            $logMessage .= "<br/>同步状态: 初始化";
+            $logMessage .= "<br/>同步状态：初始化";
             \Yii::$app->services->actionLog->create('同步游客订单',$logMessage,$payment->toArray());
         } else {
-            $logMessage .= "<br/>同步状态: 支付对象失败";
+            $logMessage .= "<br/>同步状态：支付对象失败";
             \Yii::$app->services->actionLog->create('同步游客订单',$logMessage,$payLog->toArray());
         }
         /** @var PayerInfo $payerInfo */

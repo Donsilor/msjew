@@ -2,12 +2,8 @@
 
 namespace console\controllers;
 
-use common\helpers\ResultHelper;
 use common\models\market\MarketCard;
-use services\goods\TypeService;
-use services\market\CardService;
 use yii\console\Controller;
-use yii\db\Exception;
 use yii\helpers\BaseConsole;
 use yii\helpers\Console;
 use console\forms\CardForm;
@@ -19,6 +15,32 @@ use console\forms\CardForm;
  */
 class CardController extends Controller
 {
+
+    public function actionTest()
+    {
+        static $rand = '111110000';
+        $randL = strlen($rand);
+
+        $enStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $intStr = '0123456789';
+        $pw = '';
+
+        for($i = 0; $i < $randL; $i++) {
+
+            $randLength = strlen($rand)-1;
+            $randStr = $rand{mt_rand(0, $randLength)};
+            $rand = substr($rand, $randStr, $randLength);
+
+            if($randStr) {
+                $pw .= $intStr{mt_rand(0, 9)};
+            }
+            else {
+                $pw .= $enStr{mt_rand(0, 25)};
+            }
+        }
+
+        var_dump($pw);
+    }
 
     /**
      * 导入购物卡

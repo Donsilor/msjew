@@ -237,15 +237,37 @@ class CardService extends Service
     }
 
     //生成卡密码
-    static public function generatePw($prefix = '')
+    static public function generatePw()
     {
-        return '123456';//$prefix.str_pad(mt_rand(1, 99999999999),11,'0',STR_PAD_LEFT);
+        $rand = '111110000';
+
+        $randL = strlen($rand);
+
+        $enStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $intStr = '0123456789';
+        $pw = '';
+
+        for($i = 0; $i < $randL; $i++) {
+
+            $randLength = strlen($rand)-1;
+            $randStr = $rand{mt_rand(0, $randLength)};
+            $rand = substr($rand, $randStr, $randLength);
+
+            if($randStr) {
+                $pw .= $intStr{mt_rand(0, 9)};
+            }
+            else {
+                $pw .= $enStr{mt_rand(0, 25)};
+            }
+        }
+
+        return $pw;
     }
 
     //生成卡号
-    static public function generateSn($prefix = 'BDD')
+    static public function generateSn()
     {
-        return $prefix.date('Y').str_pad(mt_rand(1, 999999),6,'0',STR_PAD_LEFT);
+        return mt_rand(1, 9).str_pad(mt_rand(1, 9999999999),10,'0',STR_PAD_LEFT);
     }
 
     /**

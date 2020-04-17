@@ -103,6 +103,7 @@ class CardController extends BaseController
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
         $dataProvider->query->andWhere(['card_id'=>$id]);
+        $dataProvider->query->andWhere(['<>', 'type', 1]);
 
         return $this->render($this->action->id, [
             'cardModel' => $cardModel,

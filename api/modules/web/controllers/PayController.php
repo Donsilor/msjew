@@ -139,7 +139,7 @@ class PayController extends OnAuthController
             $result['verification_status'] = 'failed';
             return $result;
         }
-        $logMessage = "订单号: ".$model->order_sn.'<br/>支付单号: '.$model->out_trade_no;
+        $logMessage = "订单号: ".$model->order_sn.'<br/>支付编号: '.$model->out_trade_no;
         
         $transaction = Yii::$app->db->beginTransaction();
         try {

@@ -255,7 +255,8 @@ class OrderService extends OrderBaseService
                 }
 
                 $card['useAmount'] = $cardUseAmount;
-//                $card['balance'] = $cardInfo->balance;
+                $card['balanceCny'] = $cardInfo->balance;
+                $card['amountCny'] = $cardInfo->amount;
                 $card['goodsTypeAttach'] = $cardInfo->goods_type_attach;
                 $card['balance'] = $this->exchangeAmount($cardInfo->balance);
                 $card['amount'] = $this->exchangeAmount($cardInfo->amount);

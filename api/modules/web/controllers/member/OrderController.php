@@ -312,7 +312,7 @@ class OrderController extends UserAuthController
                     'useAmount' => $card['use_amount'],
                     'status' => $card['status'],
                 ];
-                $cardsUseAmount += $card['use_amount'];
+                $cardsUseAmount = bcadd($cardsUseAmount, $card['use_amount'], 2);
             }
         }
 
@@ -343,7 +343,7 @@ class OrderController extends UserAuthController
             'productAmount' => $order->account->goods_amount,
             'logisticsFee' => $order->account->shipping_fee,
             'orderAmount' => $order->account->order_amount,
-            'payAmount' => $order->account->order_amount - $cardsUseAmount - $order->account->discount_amount,
+            'payAmount' => bcadd($order->account->order_amount, $cardsUseAmount, 2) - $order->account->discount_amount,
             'otherFee' => $order->account->other_fee,
             'safeFee' => $order->account->safe_fee,
             'taxFee' => $order->account->tax_fee,

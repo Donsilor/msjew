@@ -39,6 +39,8 @@ class CardDetailsController extends BaseController
         ]);
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
+        $dataProvider->query->andWhere(['<>', 'type', 1]);
+
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,

@@ -91,6 +91,7 @@ class CardController extends UserAuthController
             'sn' => $model->getCard()->sn,
             'currency' => $this->getCurrency(),
             'amount' => $this->exchangeAmount($model->getCard()->amount),
+            'amount_cny' => $model->getCard()->amount,
             'goodsTypeAttach' => $model->getCard()->goods_type_attach,
             'balance' => $this->exchangeAmount($model->getCard()->balance),
             'startTime' => $model->getCard()->start_time,

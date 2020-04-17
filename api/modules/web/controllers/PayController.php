@@ -175,7 +175,7 @@ class PayController extends OnAuthController
              * @var $response AbstractResponse
              */
             $response = Yii::$app->services->pay->getPayByType($model->pay_type)->verify(['model'=>$model]);
-
+            $payCode = $response->getCode();
             //支付成功
             if($response->isPaid()) {
 
@@ -184,20 +184,20 @@ class PayController extends OnAuthController
                 $transaction->commit();
             }
             else {
-                if($response->getCode() == 'pending') {
+                if($payCode == 'pending') {
                     $result['verification_status'] = 'pending';
                 }
-                elseif(in_array($response->getCode(), ['failed', 'denied', 'nopayer'])) {
+                elseif(in_array($payCode, ['failed', 'denied', 'nopayer'])) {
                     //支付失败，失败被拒绝，无支付返回支付失败
                     $result['verification_status'] = 'failed';
                 }
                 else {
-                    $result['verification_status'] = $response->getCode();
+                    $result['verification_status'] = $payCode;
                 }
                 $transaction->rollBack();
             }
             
-            $logMessage .= "<br/>支付状态： ".($response->getCode());
+            $logMessage .= "<br/>支付状态： ".($payCode ? $payCode : 'wating');
             Yii::$app->services->actionLog->create('用户支付校验',$logMessage,$response);
         } catch (\Exception $e) {
             $transaction->rollBack();

@@ -264,7 +264,6 @@ class Url extends BaseUrl
     {
         
         $urlInfo= parse_url($url);
-        $returnUrl = $urlInfo['path'];
         $returnUrlParams = array();
         
         if(isset($urlInfo['query'])){
@@ -272,7 +271,7 @@ class Url extends BaseUrl
             foreach ($parts as $part) {
                 $pieces = explode('=', $part);
                 if(count($pieces) == 2 && !in_array($pieces[0],$dels)) {
-                    if(isset($params[$pieces[0]])){
+                    if(isset($adds[$pieces[0]])){
                         $returnUrlParams[] = $pieces[0].'='.$adds[$pieces[0]];
                     }else{
                         $returnUrlParams[] = $part;

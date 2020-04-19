@@ -281,10 +281,9 @@ class Url extends BaseUrl
             }
             
         }
+        $returnUrl = $urlInfo['scheme'].'//'.$urlInfo['host'].$urlInfo['path'];
         if (count($returnUrlParams) > 0) {
-            $returnUrl = $urlInfo['path'] . '?' . implode('&', $returnUrlParams);
-        } else {
-            $returnUrl = $urlInfo['path'];
+            $returnUrl = $returnUrl . '?' . implode('&', $returnUrlParams);
         }
         return $returnUrl;
     }  

@@ -260,28 +260,25 @@ class Url extends BaseUrl
      * @param array $params 新增参数 二位数组
      * @param array $ignores 剔除参数 一位数组
      */
-    public static function buildUrl($url, $adds = [], $dels = [])
-    {
-        
+    public static function buildUrl($url, $params = [], $ignores = [])
+    {        
         $urlInfo= parse_url($url);
-        $returnUrlParams = array();
-        
         if(isset($urlInfo['query'])){
             $parts = explode('&', $urlInfo['query']);
             foreach ($parts as $part) {
                 $pieces = explode('=', $part);
-                if(count($pieces) == 2 && !in_array($pieces[0],$dels)) {
-                    if(isset($adds[$pieces[0]])){
-                        $returnUrlParams[] = $pieces[0].'='.$adds[$pieces[0]];
-                    }else{
-                        $returnUrlParams[] = $part;
-                    }
+                if(count($pieces) == 2 && !in_array($pieces[0],$ignores) && !array_key_exists($pieces[0],$params)) {
+                    $params[$pieces[0]] = $pieces[1];
                 }
             }
             
-        }
+        } 
         $returnUrl = $urlInfo['scheme'].'//'.$urlInfo['host'].$urlInfo['path'];
-        if (count($returnUrlParams) > 0) {
+        if (count($params) > 0) {
+            $returnUrlParams = [];
+            foreach ($params as $key=>$val){
+                $returnUrlParams[] = $key.'='.$val;
+            }
             $returnUrl = $returnUrl . '?' . implode('&', $returnUrlParams);
         }
         return $returnUrl;

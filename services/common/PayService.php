@@ -17,6 +17,7 @@ use common\enums\PayStatusEnum;
 use common\models\order\OrderAccount;
 use common\helpers\AmountHelper;
 use yii\web\UnprocessableEntityHttpException;
+use common\helpers\Url;
 
 /**
  * Class PayService
@@ -166,8 +167,8 @@ class PayService extends Service
     public function paydollar(PayForm $payForm, $baseOrder)
     {
         //成功，失败返回URL
-        $cancelUrl = sprintf('%s%s%s', $payForm->returnUrl, (strpos($payForm->returnUrl,'?')?'&':'?'), 'success=false');
-        $returnUrl = sprintf('%s%s%s', $payForm->returnUrl, (strpos($payForm->returnUrl,'?')?'&':'?'), 'success=true');
+        $cancelUrl = Url::buildUrl($payForm->returnUrl,['success'=>'false']);
+        $returnUrl = Url::buildUrl($payForm->returnUrl,['success'=>'true']);
 
         // 配置
         $config = [

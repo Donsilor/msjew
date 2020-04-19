@@ -253,5 +253,40 @@ class Url extends BaseUrl
 
        return $returnUrl;
     }
+    
+    /**
+     * 重新组装url
+     * @param string $url 当前地址
+     * @param array $params 新增参数 二位数组
+     * @param array $ignores 剔除参数 一位数组
+     */
+    public static function buildUrl($url, $adds = [], $dels = [])
+    {
+        
+        $urlInfo= parse_url($url);
+        $returnUrl = $urlInfo['path'];
+        $returnUrlParams = array();
+        
+        if(isset($urlInfo['query'])){
+            $parts = explode('&', $urlInfo['query']);
+            foreach ($parts as $part) {
+                $pieces = explode('=', $part);
+                if(count($pieces) == 2 && !in_array($pieces[0],$dels)) {
+                    if(isset($params[$pieces[0]])){
+                        $returnUrlParams[] = $pieces[0].'='.$adds[$pieces[0]];
+                    }else{
+                        $returnUrlParams[] = $part;
+                    }
+                }
+            }
+            
+        }
+        if (count($returnUrlParams) > 0) {
+            $returnUrl = $urlInfo['path'] . '?' . implode('&', $returnUrlParams);
+        } else {
+            $returnUrl = $urlInfo['path'];
+        }
+        return $returnUrl;
+    }  
 
 }

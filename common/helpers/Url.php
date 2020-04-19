@@ -273,7 +273,7 @@ class Url extends BaseUrl
             }
             
         } 
-        $returnUrl = $urlInfo['scheme'].'//'.$urlInfo['host'].$urlInfo['path'];
+        $returnUrl = $urlInfo['scheme'].'://'.$urlInfo['host'].$urlInfo['path'];
         if (count($params) > 0) {
             $returnUrlParams = [];
             foreach ($params as $key=>$val){

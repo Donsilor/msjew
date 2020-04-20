@@ -187,6 +187,23 @@ class PayService extends Service
             'curr_code' => $baseOrder['currency'],//货币
             'lang' => Yii::$app->language,
         ];
+
+        //扩展支付
+        switch ($payForm->payType) {
+            case '81':
+                $order['payMethod'] = 'CHINAPAY';
+                break;
+            case '82':
+                $order['payMethod'] = 'ALIPAY';
+                break;
+            case '83':
+                $order['payMethod'] = 'WECHAT';
+                break;
+            default:
+                $order['payMethod'] = 'ALL';
+                break;
+        }
+
         // 交易类型
         $tradeType = $payForm->tradeType;
         return [

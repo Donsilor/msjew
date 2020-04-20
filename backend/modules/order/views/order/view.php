@@ -326,10 +326,13 @@ DOM;
                                         ：</label></div>
                                 <div class="col-lg-7"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->order_amount, 1, 2, ',') ?></div>
                             </div>
-                            <?php foreach($model->cards as $n => $card) {
+                            <?php
+                            $cardUseAmount = 0;
+                            foreach($model->cards as $n => $card) {
                                 if($card->type!=2) {
                                     continue;
                                 }
+                                $cardUseAmount = bcadd($cardUseAmount, $card->use_amount, 2);
                             ?>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label>购物卡<?= $n+1 ?>：</label></div>
@@ -340,7 +343,10 @@ DOM;
                             ?>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label style="font-weight:bold">应付款：</label></div>
-                                <div class="col-lg-7 text-red"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::rateAmount($model->account->pay_amount, 1, 2, ',') ?></div>
+                                <?php
+                                $receivable = bcadd($model->account->order_amount, $cardUseAmount, 2) + $model->account->discount_amount;
+                                ?>
+                                <div class="col-lg-7 text-red"><?= $model->account->currency ?>&nbsp;<?= \common\helpers\AmountHelper::formatAmount($receivable, 2, true) ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-5 text-right"><label style="font-weight:bold"><?= $model->getAttributeLabel('account.pay_amount') ?>：</label></div>

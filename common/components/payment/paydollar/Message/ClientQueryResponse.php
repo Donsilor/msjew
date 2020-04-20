@@ -33,13 +33,16 @@ class ClientQueryResponse extends AbstractResponse
                     break;
                 }
             }
+            if(empty($data)) {
+                $data = $this->data[0]??[];
+            }
         }
         else {
             $data = $this->data;
         }
 
         if(!isset($data['prc'])) {
-            return 'null';
+            return 'nopayer';
         }
 
         switch($data['prc'])

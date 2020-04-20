@@ -334,9 +334,9 @@ class PayService extends Service
                         throw new \Exception('Order 更新失败'.$log->order_sn);
                     }
                 }
-                 /*else {
+                 else {
                     throw new \Exception('Order 无需更新'.$log->order_sn);
-                }*/
+                }
                 // TODO 处理订单
                 return true;
                 break;
@@ -362,9 +362,9 @@ class PayService extends Service
                         throw new \Exception('OrderTourist 更新失败'.$log->order_sn);
                     }
                 }
-                /*else {
+                else {
                     throw new \Exception('OrderTourist 无需更新'.$log->order_sn);
-                }*/
+                }
                 return true;
                 break;
             case PayEnum::ORDER_GROUP_RECHARGE :

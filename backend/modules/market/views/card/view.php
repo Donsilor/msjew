@@ -26,13 +26,13 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         <td width="20%" align="center">卡号：</td>
                         <td><?= $cardModel->sn; ?></td>
                         <td width="20%" align="center">总金额：</td>
-                        <td><?= $cardModel->amount; ?></td>
+                        <td>CNY <?= $cardModel->amount; ?></td>
                     </tr>
                     <tr>
                         <td align="center">发卡时间：</td>
                         <td><?= \Yii::$app->formatter->asDatetime($cardModel->created_at); ?></td>
                         <td align="center">剩余金额：</td>
-                        <td><?= $cardModel->balance; ?></td>
+                        <td>CNY <?= $cardModel->balance; ?></td>
                     </tr>
                     <tr>
                         <td align="center">发卡人：</td>
@@ -133,7 +133,7 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             }
                         ],
                         [
-                            'label' => '剩余金额',
+                            'label' => '剩余金额 （CNY）',
                             'attribute' => 'balance',
                         ],
                         [

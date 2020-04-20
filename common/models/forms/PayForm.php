@@ -100,12 +100,14 @@ class PayForm extends Model
                     $this->addError($attribute, 'GlobalAlipay交易类型不符');
                 }
                 break;
-            case PayEnum::PAY_TYPE_PAYDOLLAR :{                
+            case PayEnum::PAY_TYPE_PAYDOLLAR :
+            case PayEnum::PAY_TYPE_PAYDOLLAR_1 :
+            case PayEnum::PAY_TYPE_PAYDOLLAR_2 :
+            case PayEnum::PAY_TYPE_PAYDOLLAR_3 :
                 if(in_array($this->coinType,[CurrencyEnum::CNY,CurrencyEnum::USD])) {
                     $this->addError($attribute, \Yii::t('payment', 'PAYDOLLAR_NOT_SUPPORT_RMB_AND_USD'));
                 }
                 break;
-            }
                 
         }
     }

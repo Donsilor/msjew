@@ -120,8 +120,8 @@ class PayForm extends Model
     {
         $action = PayEnum::$payTypeAction[$this->payType];
         $baseOrder = $this->getBaseOrderInfo();
-        $this->notifyUrl = Url::buildUrl($this->notifyUrl,['pay_sn'=>$baseOrder['out_trade_no']]);
-        $this->returnUrl = Url::buildUrl($this->returnUrl,['pay_sn'=>$baseOrder['out_trade_no']]);
+        $this->notifyUrl = Url::buildUrl($this->notifyUrl,['out_trade_no'=>$baseOrder['out_trade_no']]);
+        $this->returnUrl = Url::buildUrl($this->returnUrl,['out_trade_no'=>$baseOrder['out_trade_no']]);
         return Yii::$app->services->pay->$action($this, $baseOrder);
     }
 

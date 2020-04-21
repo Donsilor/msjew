@@ -74,7 +74,7 @@ class OrderController extends Controller
             'order.is_tourist' => 1,
             'order_address.mobile' => ['',null],
         ];
-        $where[] = ['>', 'order_address.created_at', time()-60*60];//60分钟内的订单
+        //$where[] = ['>', 'order_address.created_at', time()-60*60];//60分钟内的订单
         $where1 = ['>', 'order.id', 0];//id偏移量
 
         while ($list = Order::find()

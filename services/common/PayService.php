@@ -39,7 +39,7 @@ class PayService extends Service
         if($payType && method_exists(Yii::$app->pay, $payType)) {
             return call_user_func([Yii::$app->pay, $payType], $config);
         }
-        return null;
+        throw new \Exception("PayType Error");
     }
 
     /**

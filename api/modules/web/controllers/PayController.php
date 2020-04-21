@@ -139,7 +139,7 @@ class PayController extends OnAuthController
             $result['verification_status'] = 'failed';
             return $result;
         }
-        $logMessage = "订单号：".$model->order_sn.'<br/>支付编号：'.$model->out_trade_no;
+        $logMessage = "订单号：".$model->order_sn.'<br/>支付单号：'.$model->out_trade_no;
         
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -170,12 +170,9 @@ class PayController extends OnAuthController
 
             //更新订单状态
             Yii::$app->services->pay->notify($model, null);
-
-            /**
-             * @var $response AbstractResponse
-             */
+           
             $response = Yii::$app->services->pay->getPayByType($model->pay_type)->verify(['model'=>$model]);
-            $payCode = $response->getCode();
+            $payCode = $response->getCode() ?? 'error';
             //支付成功
             if($response->isPaid()) {
 

@@ -83,7 +83,7 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             'attribute' => 'card.amount',
                         ],
                         [
-                            'label' => '剩余金额',
+                            'label' => '剩余金额 （CNY）',
                             'filter' => false,
                             'attribute' => 'balance',
                         ],

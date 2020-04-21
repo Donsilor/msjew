@@ -187,6 +187,9 @@ class OrderController extends UserAuthController
         }catch(Exception $e) {
             
             $trans->rollBack();
+
+            //记录日志
+
             throw $e;
         }
     }

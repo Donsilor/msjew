@@ -284,7 +284,7 @@ class OrderService extends OrderBaseService
         
         $phone = $payer->getPhone();
         $conuntryCode = $payer->getCountryCode();
-        $mobileCodeMap = ['HK'=>'+852','C2'=>'+086'];
+        $mobileCodeMap = ['HK'=>'+852','C2'=>'+86'];
         if($phone) {
             $address = OrderAddress::findOne(['order_id'=>$order->id]);
             $address->mobile = $phone;   

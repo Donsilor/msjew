@@ -2,8 +2,11 @@
 
 namespace services\order;
 
+use common\enums\PayEnum;
+use common\models\common\PayLog;
 use common\models\order\OrderCart;
 use common\models\order\OrderInvoice;
+use PayPal\Api\Payment;
 use yii\web\UnprocessableEntityHttpException;
 use common\models\order\OrderGoods;
 use common\models\order\Order;
@@ -257,13 +260,54 @@ class OrderService extends OrderBaseService
 
     /**
      * 同步手机号
-     * @param $orderAdderss
+     * @param $order
      */
-    public function syncPayPalPhone($orderAdderss)
+    public function syncPayPalPhone($order)
     {
-        $orderAdderss->mobile = '1234567';
-        $orderAdderss->save();
-        sleep(1);
+
+        //获取支付记录
+        $where = [];
+        $where['pay_type'] = PayEnum::PAY_TYPE_PAYPAL;
+        $where['pay_status'] = PayStatusEnum::PAID;
+        $where['order_sn'] = $order->order_sn;
+
+        $payLog = PayLog::find()->where($where)->one();
+
+        if(!$payLog) {
+            throw new \Exception('非PayPal支付');
+        }
+
+        $pay = \Yii::$app->services->pay->getPayByType($payLog->pay_type);
+
+        /**
+         * @var $payment Payment
+         */
+        $payment = $pay->getPayment(['model'=>$payLog]);
+
+        $phone = $payment->getPayer()->getPayerInfo()->getPhone();
+
+        //如果有号码，
+        if($phone) {
+            $address = OrderAddress::findOne(['order_id'=>$order->id]);
+            $address->mobile = $phone;
+
+            if(!$address->save()) {
+                throw new \Exception($this->getError($address));
+            }
+//
+//            $member = Member::findOne($order->member_id);
+//
+//            if(!$member->mobile) {
+//                $member->mobile = $phone;
+//
+//                if(!$member->save()) {
+//                    throw new \Exception($this->getError($member));
+//                }
+//            }
+        }
+        else {
+            throw new \Exception('PayPal手机号为空');
+        }
     }
     
 }

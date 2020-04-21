@@ -42,45 +42,53 @@ class OrderController extends Controller
         echo 'End------'.PHP_EOL;
     }
 
-    public function actionSyncPayPalPhone()
+    public function actionSyncPayPalPhone($batch='default')
     {
         $date = date('Y-m-d H:i:s');
-        Console::output("Sync Start--[{$date}]-------------------");
-        foreach ($this->getOrderAddress() as $key => $item) {
-            $key = 'sync-pay-pal-phone-test1:'.$item->order_id;
+        Console::output("Sync Start[$batch][{$date}]-------------------");
+        foreach ($this->getOrder() as $item) {
+            $key = "sync-pay-pal-phone:{$batch}:{$item->id}";
             \Yii::$app->cache->getOrSet($key, function () use($item) {
-                try{
+                $trans = \Yii::$app->db->beginTransaction();
+                try {
                     \Yii::$app->services->order->syncPayPalPhone($item);
-
-                    Console::output('success:'.$item->order_id);
+                    $trans->commit();
+                    Console::output('success:'.$item->id);
                     $result = true;
                 } catch (\Exception $exception) {
-
-                    Console::output('fail:'.$item->order_id);
+                    $trans->rollBack();
+                    Console::output('fail:'.$item->id);
                     Console::output($exception->getMessage());
                     $result = false;
                 }
                 return $result;
-            });
+            }, 60);
         }
-        Console::output('-------------------Sync End-------------------');
+        Console::output('Sync End----------------------------------------------------');
     }
 
-    public function getOrderAddress()
+    public function getOrder()
     {
-        $where1 = ['>', 'id', 0];//id偏移量
-        $where2 = ['and'];
-//        $where2[] = [
-//            'order.is_tourist' => 1,
-//            'mobile' => ['',null],
-//        ];
-//        $where2[] = ['>', 'order_address.created_at', time()-60*45];//45分钟内的订单
+        $where = ['and'];
+        $where[] = [
+            'order.is_tourist' => 1,
+            'order_address.mobile' => ['',null],
+        ];
+        $where[] = ['>', 'order_address.created_at', time()-60*60];//60分钟内的订单
+        $where1 = ['>', 'order.id', 0];//id偏移量
 
-        while ($list = OrderAddress::find()->where(array_merge($where2, [$where1]))->joinWith('order')->limit(10)->orderBy('order_id ASC')->all()) {
+        while ($list = Order::find()
+            ->where(array_merge($where, [$where1]))
+            ->select(['order.id','order.member_id','order.order_sn'])
+            ->joinWith('address')
+            ->innerJoin('common_pay_log', $on='order.order_sn=common_pay_log.order_sn and common_pay_log.pay_status=1 and common_pay_log.pay_type=6')
+            ->limit(10)
+            ->orderBy('id ASC')
+            ->all()) {
             foreach ($list as $item) {
                 yield $item;
             }
-            $where1 = ['>', 'id', $item->order_id];
+            $where1 = ['>', 'order.id', $item->id];
         }
         return null;
     }

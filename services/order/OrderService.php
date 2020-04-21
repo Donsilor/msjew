@@ -254,6 +254,16 @@ class OrderService extends OrderBaseService
         //订单日志
         $this->addOrderLog($order_id, $remark, $log_role, $log_user,$order->order_status);
     }
-          
+
+    /**
+     * 同步手机号
+     * @param $orderAdderss
+     */
+    public function syncPayPalPhone($orderAdderss)
+    {
+        $orderAdderss->mobile = '1234567';
+        $orderAdderss->save();
+        sleep(1);
+    }
     
 }

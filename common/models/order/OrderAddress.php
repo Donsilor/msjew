@@ -84,4 +84,13 @@ class OrderAddress extends \common\models\base\BaseModel
             'updated_at' => '修改时间',
         ];
     }
+
+    /**
+     * 订单
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrder()
+    {
+        return $this->hasOne(Order::class, ['id'=>'order_id']);
+    }
 }

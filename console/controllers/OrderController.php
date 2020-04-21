@@ -42,7 +42,7 @@ class OrderController extends Controller
         echo 'End------'.PHP_EOL;
     }
 
-    public function actionSyncPayPalPhone($batch='default')
+    public function actionSyncPaypalPhone($batch='default')
     {
         $date = date('Y-m-d H:i:s');
         Console::output("Sync Start[$batch][{$date}]-------------------");

@@ -110,7 +110,6 @@ class CardService extends Service
                 }
             }
         } catch (\Exception $exception) {
-            var_dump($exception->getMessage());
             throw $exception;
         }
         return null;

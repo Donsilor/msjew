@@ -59,13 +59,18 @@ class CardController extends BaseController
             $where = ['and'];
             if($status===4) {
                 $where[]['balance'] = 0;
+                $where[] = ['not in','market_card.id', MarketCardDetails::find()->select(['card_id'])->where(['status'=>2, 'type'=>2])];
             }
             else if($status===3) {
                 $where[] = ['>', 'balance' ,0];
                 $where[] = ['<=', 'end_time' ,time()];
             }
             else if($status===2) {
-                $where[] = ['>', 'balance' ,0];
+                $where[] = [
+                    'or',
+                    ['>', 'balance' ,0],
+                    ['in','market_card.id', MarketCardDetails::find()->select(['card_id'])->where(['status'=>2, 'type'=>2])]
+                ];
                 $where[] = ['>', 'end_time' ,time()];
                 $where[] = ['<>', 'balance' ,new Expression('amount')];
             }

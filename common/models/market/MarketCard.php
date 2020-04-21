@@ -2,6 +2,8 @@
 
 namespace common\models\market;
 
+use common\enums\CardDetailStatusEnum;
+use common\enums\CardTypeEnum;
 use Yii;
 
 /**
@@ -115,5 +117,14 @@ class MarketCard extends \common\models\base\BaseModel
         return $this->hasMany(MarketCardGoodsType::class, ['batch'=>'batch']);
     }
 
+    public function getFrozenAmount($field='use_amount')
+    {
+        static $amount = [];
+        $key = $this->id . $field;
+        if(!isset($amount[$key])) {
+            $amount[$key] = abs(MarketCardDetails::find()->where(['card_id'=>$this->id, 'type'=>CardTypeEnum::CONSUME, 'status'=>CardDetailStatusEnum::FROZEN])->sum($field));
+        }
+        return $amount[$key];
+    }
 
 }

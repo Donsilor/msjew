@@ -90,6 +90,14 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             'attribute' => 'balance',
                         ],
                         [
+                            'label' => "冻结金额（CNY）",
+                            'format' => 'raw',
+                            'filter' => false,
+                            'value' => function($model) {
+                                return $model->getFrozenAmount();
+                            },
+                        ],
+                        [
                             'label' => '有效时间',
                             'format' => 'raw',
                             'value' => function($model) {
@@ -128,7 +136,8 @@ $type_id = Yii::$app->request->get('type_id', 0);
                                 $val = '';
                                 $time = time();
 
-                                if($model->balance==0) {
+                                $frozenAmount = $model->getFrozenAmount();
+                                if($model->balance==0 && $frozenAmount==0) {
                                     $val = '使用完毕作废';
                                 }
                                 else if($model->end_time<=$time) {

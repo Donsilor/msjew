@@ -79,7 +79,7 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             }
                         ],
                         [
-                            'label' => '购物卡总金额',
+                            'label' => '购物卡总金额 （CNY）',
                             'attribute' => 'card.amount',
                         ],
                         [

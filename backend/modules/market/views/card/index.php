@@ -80,12 +80,12 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             }
                         ],
                         [
-                            'label' => '总金额',
+                            'label' => '总金额 （CNY）',
                             'filter' => false,
                             'attribute' => 'amount',
                         ],
                         [
-                            'label' => '余额',
+                            'label' => '余额 （CNY）',
                             'filter' => false,
                             'attribute' => 'balance',
                         ],

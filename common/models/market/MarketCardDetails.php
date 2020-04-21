@@ -42,6 +42,7 @@ class MarketCardDetails extends \common\models\base\BaseModel
             [['card_id', 'order_id', 'user_id', 'member_id', 'type', 'status'], 'integer'],
             [['use_amount','use_amount_cny','balance'], 'number'],
             [['ip'], 'string', 'max' => 50],
+            [['created_at'], 'safe'],
             [['currency'], 'string', 'length' => [3,3]],
         ];
     }

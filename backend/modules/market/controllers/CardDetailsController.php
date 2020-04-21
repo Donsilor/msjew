@@ -35,11 +35,18 @@ class CardDetailsController extends BaseController
             'pageSize' => $this->pageSize,
             'relations' => [
                 'card' => ['sn'],
+                'order' => ['order_sn'],
             ]
         ]);
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams, ['created_at']);
 
         $dataProvider->query->andWhere(['<>', 'type', 1]);
+
+        //创建时间过滤
+        if (!empty(\Yii::$app->request->queryParams['SearchModel']['created_at'])) {
+            list($start_date, $end_date) = explode('/', \Yii::$app->request->queryParams['SearchModel']['created_at']);
+            $dataProvider->query->andFilterWhere(['between', 'market_card_details.created_at', strtotime($start_date), strtotime($end_date) + 86400]);
+        }
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,

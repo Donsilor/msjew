@@ -189,6 +189,7 @@ class OrderController extends UserAuthController
             $trans->rollBack();
 
             //记录日志
+            \Yii::$app->services->actionLog->create('用户创建订单',$e->getMessage());
 
             throw $e;
         }

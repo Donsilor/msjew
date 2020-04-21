@@ -14,6 +14,8 @@ use common\enums\PayStatusEnum;
 use common\models\member\Member;
 use common\enums\OrderStatusEnum;
 use common\enums\StatusEnum;
+use common\enums\PayEnum;
+use common\models\common\PayLog;
 
 /**
  * Class OrderService
@@ -253,6 +255,47 @@ class OrderService extends OrderBaseService
         $order->save(false);
         //订单日志
         $this->addOrderLog($order_id, $remark, $log_role, $log_user,$order->order_status);
+    }
+    
+    /**
+     * 同步订单 手机号
+     * @param int $order_id 订单ID
+     * @throws \Exception
+     */
+    public function syncPayPalPhone($order_id)
+    {
+        $order = Order::find()->where(['id'=>$order_id])->one();
+        if(!$order) {
+            throw new \Exception('订单查询失败,order_id='.$order_id);
+        }
+        
+        $payLog = PayLog::find()->where(['order_sn'=>$order->order_sn,'pay_type'=>PayEnum::PAY_TYPE_PAYPAL,'pay_status'=>PayStatusEnum::PAID])->one();
+        if(!$payLog) {
+            throw new \Exception('非PayPal支付');
+        }
+        
+        $pay = \Yii::$app->services->pay->getPayByType($payLog->pay_type);
+        
+        /**
+         * @var $payment Payment
+         */
+        $payment = $pay->getPayment(['model'=>$payLog]);
+        $payer = $payment->getPayer()->getPayerInfo();
+        
+        $phone = $payer->getPhone();
+        $conuntryCode = $payer->getCountryCode();
+        $mobileCodeMap = ['HK'=>'+852','C2'=>'+086'];
+        if($phone) {
+            $address = OrderAddress::findOne(['order_id'=>$order->id]);
+            $address->mobile = $phone;   
+            $address->mobile_code = $mobileCodeMap[$conuntryCode]??'';
+            if(!$address->save()) {
+                throw new \Exception($this->getError($address));
+            }            
+        }
+        else {
+            throw new \Exception('PayPal手机号为空');
+        }
     }
           
     

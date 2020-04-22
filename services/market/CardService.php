@@ -67,7 +67,7 @@ class CardService extends Service
         }
 
         $newCard = [];
-        $newCard['ip'] = \Yii::$app->request->userIP;
+        $newCard['ip'] = \Yii::$app->request->userIP??'127.0.0.1';
         list($newCard['ip_area_id'], $newCard['ip_location']) = \Yii::$app->ipLocation->getLocation($newCard['ip']);
 
         try {

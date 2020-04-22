@@ -116,6 +116,9 @@ class StyleController extends OnAuthController
                     if($param_value == -1){
                         $marry_style_man_attr = \Yii::$app->attr->valueList(26);
                         $param_value = array_column($marry_style_man_attr,'id');
+                    }else{
+                        //通用款在男戒、女戒里显示
+                        $param_value = [$param_value,43];
                     }
 
                 }elseif($param_name == 'theme'){

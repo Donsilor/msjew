@@ -47,7 +47,7 @@ class CardController extends BaseController
                 'user' => ['username']
             ]
         ]);
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams,['goods_type_attach','status']);
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams,['goods_type_attach','status','created_at']);
 
         if(!empty($search['goods_type_attach'])) {
             $query = MarketCardGoodsType::find()->where(['goods_type'=>$search['goods_type_attach']])->select(['batch']);
@@ -80,6 +80,12 @@ class CardController extends BaseController
                 $where[] = ['=', 'balance' ,new Expression('amount')];
             }
             $dataProvider->query->andWhere($where);
+        }
+
+        //创建时间过滤
+        if (!empty(\Yii::$app->request->queryParams['SearchModel']['created_at'])) {
+            list($start_date, $end_date) = explode('/', \Yii::$app->request->queryParams['SearchModel']['created_at']);
+            $dataProvider->query->andFilterWhere(['between', 'market_card.created_at', strtotime($start_date), strtotime($end_date) + 86400]);
         }
 
         return $this->render('index', [

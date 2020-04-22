@@ -59,6 +59,23 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         ],
                         [
                             'label' => '发卡时间',
+                            'filter' => \kartik\daterange\DateRangePicker::widget([    // 日期组件
+                                'model' => $searchModel,
+                                'attribute' => 'created_at',
+                                'value' => '',
+                                'options' => ['readonly' => true, 'class' => 'form-control',],
+                                'pluginOptions' => [
+                                    'format' => 'yyyy-mm-dd',
+                                    'locale' => [
+                                        'separator' => '/',
+                                    ],
+                                    'endDate' => date('Y-m-d', time()),
+                                    'todayHighlight' => true,
+                                    'autoclose' => true,
+                                    'todayBtn' => 'linked',
+                                    'clearBtn' => true,
+                                ],
+                            ]),
                             'value' => function($model) {
                                 return Yii::$app->formatter->asDatetime($model->created_at);
                             }

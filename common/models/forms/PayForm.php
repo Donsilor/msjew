@@ -205,7 +205,7 @@ class PayForm extends Model
 
                 // TODO 查询订单获取订单信息
                 $orderSn = $order->order_sn;
-                $totalFee = $order->account->order_amount - $order->account->discount_amount - $cardUseAmount;
+                $totalFee = bcsub($order->account->order_amount - $order->account->discount_amount, $cardUseAmount, 2);
                 $currency = $order->account->currency;
                 $exchangeRate = $order->account->exchange_rate;
                 

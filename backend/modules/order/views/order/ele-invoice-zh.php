@@ -108,23 +108,28 @@
 
         </table>
 
-        <div class="signature clf">
-            <div class="signature-name fl">
-                <div class="signature-t"><?php echo $result['sender_name']?$result['sender_name']:'BDD Co.';?></div>
-                <div class="text">出口商签字</div>
-            </div>
-            <div class="signature-date fl">
-                <div class="signature-t"><?php echo $result['invoice_date'];?></div>
-                <div class="text">日期</div>
+        <div class="total clf">
+            <div class="fr clf">
+                <div class="fr total-val"><?php echo $result['currency'] .' '.$result['order_amount']; ?> </div>
+                <div class="fr total-bg">总金额</div>
             </div>
         </div>
 
         <div class="total clf">
             <div class="fr clf">
-                <div class="fr total-val"><?php echo $result['currency'] .' '.$result['order_amount']; ?> </div>
-                <div class="fr total-bg">Total</div>
+                <div class="fr total-val"><?php echo $result['currency'] .' '.$result['gift_card_amount']; ?></div>
+                <div class="fr total-bg">购物卡</div>
             </div>
         </div>
+
+        <div class="total clf">
+            <div class="fr clf">
+                <div class="fr total-val"><?php echo $result['currency'] .' '.$result['order_paid_amount']; ?></div>
+                <div class="fr total-bg">支付金额</div>
+            </div>
+        </div>
+
+
     </div>
     <!--打印内容结束-->
 

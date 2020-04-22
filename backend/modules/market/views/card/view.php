@@ -45,7 +45,7 @@ $type_id = Yii::$app->request->get('type_id', 0);
                     $time = time();
 
                     $frozenAmount = $cardModel->getFrozenAmount();
-                    if($frozenAmount->balance==0 && $frozenAmount==0) {
+                    if($cardModel->balance==0 && $frozenAmount==0) {
                         $val = '使用完毕作废';
                     }
                     else if($cardModel->end_time<=$time) {

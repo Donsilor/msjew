@@ -46,6 +46,23 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         ],
                         [
                             'label' => '使用时间',
+                            'filter' => \kartik\daterange\DateRangePicker::widget([    // 日期组件
+                                'model' => $searchModel,
+                                'attribute' => 'created_at',
+                                'value' => '',
+                                'options' => ['readonly' => true, 'class' => 'form-control',],
+                                'pluginOptions' => [
+                                    'format' => 'yyyy-mm-dd',
+                                    'locale' => [
+                                        'separator' => '/',
+                                    ],
+                                    'endDate' => date('Y-m-d', time()),
+                                    'todayHighlight' => true,
+                                    'autoclose' => true,
+                                    'todayBtn' => 'linked',
+                                    'clearBtn' => true,
+                                ],
+                            ]),
                             'value' => function($model) {
                                 return Yii::$app->formatter->asDatetime($model->created_at);
                             }
@@ -62,6 +79,8 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         ],
                         [
                             'label' => '订单号',
+                            'attribute' => 'order.order_sn',
+                            'headerOptions' => ['class' => 'col-md-1'],
                             'value' => function($model) {
                                 if(!empty($model->order)) {
                                     return $model->order->order_sn;
@@ -89,7 +108,15 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         ],
                         [
                             'label' => '费用类型',
-                            'filter' => false,
+                            'filter' => Html::activeDropDownList($searchModel, 'type', [
+//                                '1' => '未使用',
+                                '2' => '客户购物消费',
+                                '3' => '购物取消解冻',
+//                                '4' => '使用完毕作废',
+                            ], [
+                                'prompt' => '全部',
+                                'class' => 'form-control',
+                            ]),
                             'attribute' => 'type',
                             'value' => function($model) {
                                 return \common\enums\CardTypeEnum::getValue($model->type);
@@ -97,7 +124,10 @@ $type_id = Yii::$app->request->get('type_id', 0);
                         ],
                         [
                             'label' => '费用状态',
-                            'filter' => false,
+                            'filter' => Html::activeDropDownList($searchModel, 'status', \common\enums\CardDetailStatusEnum::getMap(), [
+                                'prompt' => '全部',
+                                'class' => 'form-control',
+                            ]),
                             'attribute' => 'status',
                             'value' => function($model) {
                                 return \common\enums\CardDetailStatusEnum::getValue($model->status);

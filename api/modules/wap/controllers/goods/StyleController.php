@@ -102,18 +102,21 @@ class StyleController extends OnAuthController
                 }elseif ($param_name == 'marry_style_man'){
                     $attr_id = 55;
                     if($param_value == -1){
+                        continue;
                         $marry_style_man_attr = \Yii::$app->attr->valueList(55);
                         $param_value = array_column($marry_style_man_attr,'id');
                     }
                 }elseif ($param_name == 'marry_style_wom'){
                     $attr_id = 54;
                     if($param_value == -1){
+                        continue;
                         $marry_style_man_attr = \Yii::$app->attr->valueList(54);
                         $param_value = array_column($marry_style_man_attr,'id');
                     }
                 }elseif($param_name == 'gender'){
                     $attr_id = 26;
                     if($param_value == -1){
+                        continue;
                         $marry_style_man_attr = \Yii::$app->attr->valueList(26);
                         $param_value = array_column($marry_style_man_attr,'id');
                     }else{
@@ -124,6 +127,7 @@ class StyleController extends OnAuthController
                 }elseif($param_name == 'theme'){
                     $attr_id = 60;
                     if($param_value == -1){
+                        continue;
                         $marry_style_man_attr = \Yii::$app->attr->valueList(26);
                         $param_value = array_column($marry_style_man_attr,'id');
                     }

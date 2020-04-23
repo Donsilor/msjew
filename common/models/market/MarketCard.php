@@ -87,14 +87,14 @@ class MarketCard extends \common\models\base\BaseModel
 
     public function setPassword($password)
     {
-        $key = (\Yii::$app->params['card-key']??'card-default-key'). $this->sn;;
+        $key = (\Yii::$app->params['cardKey']??'card-default-key'). $this->sn;;
 
         $this->password = base64_encode(Yii::$app->getSecurity()->encryptByPassword($password, $key));
     }
 
     public function getPassword()
     {
-        $key = (\Yii::$app->params['card-key']??'card-default-key'). $this->sn;
+        $key = (\Yii::$app->params['cardKey']??'card-default-key'). $this->sn;
 
         return Yii::$app->getSecurity()->decryptByPassword(base64_decode($this->password), $key);
     }

@@ -23,7 +23,8 @@ class CardController extends Controller
     {
         $order = Order::findOne('523');
         $usage = EmailLog::$orderStatusMap[$order->order_status] ?? '';
-        \Yii::$app->services->mailer->queue(false)->send('zhufu.zheng@bddco.com ',$usage,['code'=>$order->id],$order->language);
+        \Yii::$app->services->mailer->queue(false)->send('zhufu.zheng@bddco.com',$usage,['code'=>$order->id],$order->language);
+        //return \Yii::$app->services->mailer->send("763429951@qq.com",'order-notify',['code'=>'5']);
     }
 
     /**

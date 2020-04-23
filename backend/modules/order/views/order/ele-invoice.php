@@ -130,7 +130,7 @@
         <div class="total clf">
             <div class="fr clf">
                 <div class="fr total-val"><?php echo $result['currency'] .' '.$result['gift_card_amount']; ?></div>
-                <div class="fr total-bg">購物卡</div>
+                <div class="fr total-bg">購物卡抵扣</div>
             </div>
         </div>
 

@@ -188,12 +188,9 @@ class PayController extends OnAuthController
 
             //更新订单状态
             Yii::$app->services->pay->notify($model, null);
-
-            /**
-             * @var $response AbstractResponse
-             */
+           
             $response = Yii::$app->services->pay->getPayByType($model->pay_type)->verify(['model'=>$model]);
-            $payCode = $response->getCode();
+            $payCode = $response->getCode() ?? 'error';
             //支付成功
             if($response->isPaid()) {
 

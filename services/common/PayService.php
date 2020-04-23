@@ -311,7 +311,7 @@ class PayService extends Service
                         OrderAccount::updateAll($accountUpdata,['order_id'=>$order->id]);
                         
                         //订单发送邮件
-                        \Yii::$app->services->order->sendOrderNotification($order->id);
+//                        \Yii::$app->services->order->sendOrderNotification($order->id);
                     }
                     else {
                         throw new \Exception('Order 更新失败'.$log->order_sn);

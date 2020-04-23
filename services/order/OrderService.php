@@ -17,8 +17,6 @@ use common\enums\PayStatusEnum;
 use common\models\member\Member;
 use common\enums\OrderStatusEnum;
 use common\enums\StatusEnum;
-use common\enums\PayEnum;
-use common\models\common\PayLog;
 
 /**
  * Class OrderService

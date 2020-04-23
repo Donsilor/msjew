@@ -257,57 +257,47 @@ class OrderService extends OrderBaseService
         //订单日志
         $this->addOrderLog($order_id, $remark, $log_role, $log_user,$order->order_status);
     }
-
+    
     /**
-     * 同步手机号
-     * @param $order
+     * 同步订单 手机号
+     * @param int $order_id 订单ID
+     * @throws \Exception
      */
-    public function syncPayPalPhone($order)
+    public function syncPayPalPhone($order_id)
     {
-
-        //获取支付记录
-        $where = [];
-        $where['pay_type'] = PayEnum::PAY_TYPE_PAYPAL;
-        $where['pay_status'] = PayStatusEnum::PAID;
-        $where['order_sn'] = $order->order_sn;
-
-        $payLog = PayLog::find()->where($where)->one();
-
+        $order = Order::find()->where(['id'=>$order_id])->one();
+        if(!$order) {
+            throw new \Exception('订单查询失败,order_id='.$order_id);
+        }
+        
+        $payLog = PayLog::find()->where(['order_sn'=>$order->order_sn,'pay_type'=>PayEnum::PAY_TYPE_PAYPAL,'pay_status'=>PayStatusEnum::PAID])->one();
         if(!$payLog) {
             throw new \Exception('非PayPal支付');
         }
-
+        
         $pay = \Yii::$app->services->pay->getPayByType($payLog->pay_type);
-
         /**
          * @var $payment Payment
          */
         $payment = $pay->getPayment(['model'=>$payLog]);
 
-        $phone = $payment->getPayer()->getPayerInfo()->getPhone();
-
-        //如果有号码，
+        $payer = $payment->getPayer()->getPayerInfo();
+        
+        $phone = $payer->getPhone();
+        $conuntryCode = $payer->getCountryCode();
+        $mobileCodeMap = ['HK'=>'+852','C2'=>'+86','MO'=>'+853','TW'=>'+886','CN'=>'+86','US'=>'+1'];
         if($phone) {
             $address = OrderAddress::findOne(['order_id'=>$order->id]);
-            $address->mobile = $phone;
-
+            $address->mobile = $phone;   
+            $address->mobile_code = $mobileCodeMap[$conuntryCode]??'';
             if(!$address->save()) {
                 throw new \Exception($this->getError($address));
             }
-//
-//            $member = Member::findOne($order->member_id);
-//
-//            if(!$member->mobile) {
-//                $member->mobile = $phone;
-//
-//                if(!$member->save()) {
-//                    throw new \Exception($this->getError($member));
-//                }
-//            }
         }
         else {
             throw new \Exception('PayPal手机号为空');
         }
     }
+
     
 }

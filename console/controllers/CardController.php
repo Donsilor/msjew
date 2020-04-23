@@ -2,7 +2,10 @@
 
 namespace console\controllers;
 
+use common\models\common\EmailLog;
 use common\models\market\MarketCard;
+use common\models\order\Order;
+use services\market\CardService;
 use yii\console\Controller;
 use yii\helpers\BaseConsole;
 use yii\helpers\Console;
@@ -18,28 +21,9 @@ class CardController extends Controller
 
     public function actionTest()
     {
-        static $rand = '111110000';
-        $randL = strlen($rand);
-
-        $enStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $intStr = '0123456789';
-        $pw = '';
-
-        for($i = 0; $i < $randL; $i++) {
-
-            $randLength = strlen($rand)-1;
-            $randStr = $rand{mt_rand(0, $randLength)};
-            $rand = substr($rand, $randStr, $randLength);
-
-            if($randStr) {
-                $pw .= $intStr{mt_rand(0, 9)};
-            }
-            else {
-                $pw .= $enStr{mt_rand(0, 25)};
-            }
-        }
-
-        var_dump($pw);
+        $order = Order::findOne('523');
+        $usage = EmailLog::$orderStatusMap[$order->order_status] ?? '';
+        \Yii::$app->services->mailer->queue(false)->send('zhufu.zheng@bddco.com ',$usage,['code'=>$order->id],$order->language);
     }
 
     /**
@@ -152,7 +136,18 @@ class CardController extends Controller
                 Console::updateProgress($n, $count);
             }
 
-            $cardInfo = sprintf('%s,%s,%s',$card['batch'], $card['sn'], $card->getPassword());
+            if(empty($card->password)) {
+                $password = CardService::generatePw();
+                $card->setPassword($password);
+                if(!$card->save()) {
+                    throw new \Exception($card->sn . ' 生成卡密失败，请重试！');
+                }
+            }
+            else {
+                $password = $card->getPassword();
+            }
+
+            $cardInfo = sprintf('%s,%s,%s',$card['batch'], $card['sn'], $password);
 
             file_put_contents($fileName, $cardInfo . "\r\n",FILE_APPEND);
         }

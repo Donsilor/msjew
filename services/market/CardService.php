@@ -375,13 +375,17 @@ class CardService extends Service
     private function generateCard($card)
     {
         try {
-            $pw = $card['password']??self::generatePw();
+            $pw = $card['password']??'';//self::generatePw();
             $card['sn'] = $card['sn']??self::generateSn();
             $card['balance'] = $card['amount'];
 
             $newCard = new MarketCard();
             $newCard->setAttributes($card);
-            $newCard->setPassword($pw);
+
+            //设置密码
+            if(!empty($card['password'])) {
+                $newCard->setPassword($card['password']);
+            }
 
             if(!$newCard->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($newCard));

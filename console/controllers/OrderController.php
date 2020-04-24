@@ -2,7 +2,6 @@
 
 namespace console\controllers;
 
-use common\models\order\OrderAddress;
 use yii\console\Controller;
 use common\enums\OrderStatusEnum;
 use common\models\order\Order;

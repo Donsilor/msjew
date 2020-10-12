@@ -11,6 +11,12 @@ $goods_title = Yii::t('goods', $typeModel['type_name'].'商品列表');
 $this->title = Yii::t('goods', $typeModel['type_name'].'管理');
 $this->params['breadcrumbs'][] = $this->title;
 $type_id = Yii::$app->request->get('type_id',0);
+$params = Yii::$app->request->queryParams;
+$params = $params ? "&".http_build_query($params) : '';
+$export_param = http_build_query($searchModel);
+
+$yesOrNo = \common\enums\StatusEnum::getYesOrNo();
+
 ?>
 
 <div class="row">
@@ -20,10 +26,20 @@ $type_id = Yii::$app->request->get('type_id',0);
                 <li class="active"><a href="<?= Url::to(['style/index?type_id='.$type_id]) ?>"> <?= Html::encode($this->title) ?></a></li>
                 <li><a href="<?= Url::to(['goods/index?type_id='.$type_id]) ?>"> <?= Html::encode($goods_title) ?></a></li>
                 <li class="pull-right">
-                	<div class="box-header box-tools">
-                    <?= Html::create(['edit-lang','type_id'=>$type_id]) ?>
+                    <div class="box-header box-tools">
+                        <?= Html::a('导出Excel','index?action=export'.$params) ?>
                     </div>
                 </li>
+                <li class="pull-right">
+                	<div class="box-header box-tools">
+                        <?php if($type_id==19) { ?>
+                            <a class="btn btn-primary btn-xs openIframe1" href="<?php echo Url::to(['select-style'])?>"><i class="icon ion-plus"></i>创建</a>
+                        <?php } else { ?>
+                            <?= Html::create(['edit-lang','type_id'=>$type_id],'创建', ['class'=>'btn btn-primary btn-xs openContab']) ?>
+                        <?php } ?>
+                    </div>
+                </li>
+
             </ul>
             <div class="box-body table-responsive">
     <?php echo Html::batchButtons(false)?>         
@@ -50,20 +66,9 @@ $type_id = Yii::$app->request->get('type_id',0);
                 'headerOptions' => ['width'=>'80'],            
             ],
             [
-                'attribute' => 'lang.language',
-                 'value' => function ($model) {
-                    return \common\enums\LanguageEnum::getValue($model->lang->language);
-                 },
-                 'filter' => Html::activeDropDownList($searchModel, 'language',\common\enums\LanguageEnum::getMap(), [
-                        'prompt' => '默认',
-                        'class' => 'form-control',
-                ]),
-                'headerOptions' => ['width'=>'110'],
-            ], 
-            [
                 'attribute' => 'style_image',
                 'value' => function ($model) {
-                    return ImageHelper::fancyBox($model->style_image);
+                    return ImageHelper::fancyBox($model->style_image, 100, 100);
                 },
                 'filter' => false,
                 'format' => 'raw',
@@ -128,14 +133,83 @@ $type_id = Yii::$app->request->get('type_id',0);
                     'prompt' => '全部',
                     'class' => 'form-control',                        
                 ]),
-            ],            
+            ],
+            [
+                'attribute' => 'hk_status',
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->hk_status, 'getYesOrNo');
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'hk_status', $yesOrNo, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'headerOptions' => ['width'=>'110'],
+            ],
+            [
+                'attribute' => 'tw_status',
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->tw_status, 'getYesOrNo');
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'tw_status', $yesOrNo, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'headerOptions' => ['width'=>'110'],
+            ],
+            [
+                'attribute' => 'cn_status',
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->cn_status, 'getYesOrNo');
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'cn_status', $yesOrNo, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'headerOptions' => ['width'=>'110'],
+            ],
+            [
+                'attribute' => 'us_status',
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->us_status, 'getYesOrNo');
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'us_status', $yesOrNo, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'headerOptions' => ['width'=>'110'],
+            ],
+            [
+                'attribute' => 'created_at',
+                'filter' => \kartik\daterange\DateRangePicker::widget([    // 日期组件
+                    'model' => $searchModel,
+                    'attribute' => 'created_at',
+                    'value' => $searchModel->created_at,
+                    'options' => ['readonly' => true,'class'=>'form-control','style'=>'background-color:#fff;'],
+                    'pluginOptions' => [
+                        'format' => 'yyyy-mm-dd',
+                        'locale' => [
+                            'separator' => '/',
+                            'cancelLabel'=> '清空',
+                        ],
+                        'endDate' => date('Y-m-d',time()),
+                        'todayHighlight' => true,
+                        'autoclose' => true,
+                        'todayBtn' => 'linked',
+                        'clearBtn' => true,
+                    ],
+                ]),
+                'value' => function ($model) {
+                    return Yii::$app->formatter->asDatetime($model->created_at);
+                },
+                'format' => 'raw',
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '   {edit} {view} {status}',
+                'template' => '{edit} {view} {status} {show_log}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
-                    return Html::edit(['edit-lang','id' => $model->id,'type_id'=>Yii::$app->request->get('type_id'),'returnUrl' => Url::getReturnUrl()]);
+                    return Html::edit(['edit-lang','id' => $model->id,'type_id'=>Yii::$app->request->get('type_id'),'returnUrl' => Url::getReturnUrl()], '编辑', ['class'=>'btn btn-primary btn-sm openContab', 'data-title'=>$model->style_sn]);
                 },
                'status' => function($url, $model, $key){
                         return Html::status($model['status']);
@@ -162,7 +236,10 @@ $type_id = Yii::$app->request->get('type_id',0);
                        return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/jewellery/bracelet/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
                    }
 
-                }
+                },
+                'show_log' => function($url, $model, $key){
+                    return Html::linkButton(['goods-log/index','id' => $model->id, 'type_id' => $model->type_id, 'returnUrl' => Url::getReturnUrl()], '日志');
+                },
                 ]
             ]
     ]
@@ -171,3 +248,103 @@ $type_id = Yii::$app->request->get('type_id',0);
         </div>
     </div>
 </div>
+
+<script>
+
+    /* 打一个新窗口 */
+    $(document).on("click", ".openIframe1", function (e) {
+
+        var title = $(this).data('title');
+        var width = $(this).data('width');
+        var height = $(this).data('height');
+        var offset = $(this).data('offset');
+        var href = $(this).attr('href');
+
+        if (title == undefined) {
+            title = '基本信息';
+        }
+
+        if (width == undefined) {
+            width = '80%';
+        }
+
+        if (height == undefined) {
+            height = '80%';
+        }
+
+        if (offset == undefined) {
+            offset = "10%";
+        }
+
+        openIframe1(title, width, height, href, offset);
+        e.preventDefault();
+        return false;
+    });
+    // 打一个新窗口
+    function openIframe1(title, width, height, content, offset) {
+        layer.open({
+            type: 2,
+            title: title,
+            shade: 0.3,
+            offset: offset,
+            shadeClose: true,
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                var body = layer.getChildFrame('body', index);
+                var stylesIdsStr = body.find("input[name='SearchModel[id]']").val();
+
+                if(stylesIdsStr.split("|").length!==2) {
+                    rfMsg("必需选择两款商品");
+                    return false;
+                }
+
+                let button = $("<a>").attr("href", '<?= URL::to(['edit-lang', 'type_id'=>19, 'attr_style_ids'=>'']) ?>' + stylesIdsStr).data('title', '创建').bind('click', function (e) {
+                    parent.openConTab($(this));
+                    return false;
+                });
+                button.click();
+
+                layer.close(index);
+                return true;
+                // $.ajax({
+                //     type: "post",
+                //     url: postUrl,
+                //     dataType: "json",
+                //     data: form.serialize(),
+                //     success: function (data) {
+                //         if (parseInt(data.code) !== 200) {
+                //             rfMsg(data.message);
+                //         } else {
+                //             console.log(data.data.style_id);
+                //             getStyle(data.data.style_id);
+                //
+                //             layer.close(index);
+                //
+                //         }
+                //     }
+                // });
+            },
+            btn2: function () {
+            },
+            area: [width, height],
+            content: content
+        });
+
+        return false;
+    }
+
+    function getStyles(style_ids) {
+        // for(var i = 0; i < style_ids.length; i++){
+        //     getStyle(style_ids[i]);
+        // }
+
+    }
+
+    (function ($) {
+
+        $("[data-krajee-daterangepicker]").on("cancel.daterangepicker", function () {
+            $(this).val("").trigger("change");
+        });
+
+    })(window.jQuery);
+</script>

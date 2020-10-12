@@ -2,9 +2,11 @@
 
 namespace common\models\order;
 
+use common\enums\OrderFromEnum;
 use common\models\common\PayLog;
 use common\models\market\MarketCardDetails;
 use common\models\member\Member;
+use common\models\pay\WireTransfer;
 use Yii;
 
 /**
@@ -24,6 +26,11 @@ use Yii;
  * @property int $evaluation_again_status 追加评价状态 0未评价，1已评价，2已过期未评价
  * @property int $order_status 订单状态
  * @property int $refund_status 退款状态:0是无退款,1是部分退款,2是全部退款
+ * @property int $cancel_status 退款状态:0是无退款,1是部分退款,2是全部退款
+ * @property int $audit_status 退款状态:0是无退款,1是部分退款,2是全部退款
+ * @property string $refund_remark 退款状态:0是无退款,1是部分退款,2是全部退款
+ * @property string $cancel_remark 退款状态:0是无退款,1是部分退款,2是全部退款
+ * @property string $audit_remark 退款状态:0是无退款,1是部分退款,2是全部退款
  * @property string $express_id 快递类型
  * @property string $express_no 快递单号
  * @property int $delivery_status 发货状态
@@ -40,9 +47,13 @@ use Yii;
  * @property int $status 状态 1已审核 0待审核 -1取消
  * @property int $created_at 订单生成时间
  * @property int $updated_at 更新时间
+ * @property int $send_paid_email_time 发送支付成功邮件次数
+ * @property int $is_test 是否测试
+ *
  */
 class Order extends \common\models\base\BaseModel
 {
+    public $discount_type;
     /**
      * {@inheritdoc}
      */
@@ -57,12 +68,13 @@ class Order extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id','ip_area_id','payment_type','payment_status', 'payment_time', 'member_id', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'order_from', 'order_type', 'is_tourist', 'is_invoice','api_pay_time', 'status', 'created_at', 'updated_at', 'follower_id','followed_status' ,'followed_time', 'express_id','delivery_time','delivery_status'], 'integer'],
-            [['language'], 'safe'],
+            [['audit_status', 'merchant_id','ip_area_id','payment_type','payment_status', 'payment_time', 'member_id', 'finished_time', 'evaluation_status', 'evaluation_again_status', 'order_status', 'refund_status', 'cancel_status', 'order_from', 'order_type', 'is_tourist', 'is_invoice','api_pay_time', 'status', 'created_at', 'updated_at', 'follower_id','followed_status' ,'followed_time', 'express_id','delivery_time','delivery_status', 'refund_status', 'send_paid_email_time', 'is_test'], 'integer'],
+            [['language', 'discount_type'], 'safe'],
             [['order_sn','pay_sn'], 'string', 'max' => 20],
             [['express_no', 'trade_no'], 'string', 'max' => 50],
             [['ip', 'ip_location'], 'safe'],
-            [['buyer_remark', 'seller_remark'], 'string', 'max' => 500],
+            [['buyer_remark', 'refund_remark', 'cancel_remark'], 'string', 'max' => 500],
+            [['seller_remark'], 'string', 'max' => 5000],
         ];
     }
 
@@ -86,6 +98,11 @@ class Order extends \common\models\base\BaseModel
             'evaluation_again_status' => '追加评价状态',
             'order_status' => '订单状态',
             'refund_status' => '退款状态',
+            'audit_status' => '审核状态',
+            'refund_remark' => '退款备注',
+            'cancel_remark' => '取消备注',
+            'audit_remark' => '审核备注',
+            'cancel_status' => '退款状态',
             'express_id' => '快递方式',
             'express_no' => '快递单号',
             'delivery_status' => '发货状态',
@@ -107,6 +124,9 @@ class Order extends \common\models\base\BaseModel
             'status' => '审核状态',
             'created_at' => '下单时间',
             'updated_at' => '更新时间',
+            'send_paid_email_time' => '发送支付成功邮件次数',
+            'is_test' => '测试',
+            'discount_type' => '优惠类型',
         ];
     }
 
@@ -117,12 +137,44 @@ class Order extends \common\models\base\BaseModel
      */
     static public function getCountByOrderStatus($orderStatus=null)
     {
-        $where = [];
+        $where = ['and'];
 
-        if(!is_null($orderStatus))
-            $where['order_status'] = $orderStatus;
+        if(!is_null($orderStatus)) {
+            if($orderStatus==11) {
+                $subQuery = WireTransfer::find()->where(['in', 'collection_status',['0','2']])->select(['order_id']);
+                $where[]['id'] = $subQuery;
+            }
+            elseif($orderStatus==1) {
+                $where[]['refund_status'] = 1;
+            }
+            else {
+                $where[]['order_status'] = $orderStatus;
+            }
+        }
 
-        return (int)self::find()->where($where)->count('id');
+        //站点地区
+        $sitesAttach = \Yii::$app->getUser()->identity->sites_attach;
+        if(is_array($sitesAttach)) {
+            $orderFroms = [];
+
+            foreach ($sitesAttach as $site) {
+                $orderFroms = array_merge($orderFroms, OrderFromEnum::platformsForGroup($site));
+            }
+
+            $where[] = ['in', 'order.order_from', $orderFroms];
+        }
+
+        return (int)self::find()->where($where)->count('`order`.id');
+    }
+
+    /**
+     * 订单应付金额
+     * @return int
+     */
+    public function getAmountPayable()
+    {
+        $cardUseAmount = \services\market\CardService::getUseAmount($this->id);
+        return bcsub(bcsub($this->account->order_amount, $cardUseAmount, 2), $this->account->discount_amount, 2);;
     }
 
     /**
@@ -205,5 +257,13 @@ class Order extends \common\models\base\BaseModel
         return $this->hasMany(MarketCardDetails::class, ['order_id'=>'id']);
     }
 
+    /**
+     * 对应快递模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWireTransfer()
+    {
+        return $this->hasOne(WireTransfer::class, ['order_id'=>'id']);
+    }
 
 }

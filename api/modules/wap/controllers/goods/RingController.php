@@ -12,6 +12,7 @@ use api\controllers\OnAuthController;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
 use common\models\goods\StyleMarkup;
+use services\market\CouponService;
 use yii\base\Exception;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
@@ -106,39 +107,30 @@ class RingController extends OnAuthController
 
 
     //訂婚戒指--活动页
-    public function actionWebSite(){
+    public function actionWebSite() {
         //对戒
-        $type_id = 2;
+        $type_id = 19;
         $limit = 4;
         $language = $this->language;
         $order = 'goods_clicks desc';
-        $fields = ['m.id', 'm.ring_images', 'm.ring_sn','lang.ring_name','m.sale_price'];
-        $query = Ring::find()->alias('m')
-            ->leftJoin(RingLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$language."'")
-            ->where(['m.status'=>StatusEnum::ENABLED]);
 
-        if(!empty($limit)){
-            $query->limit($limit);
-        }
-        if($order){
-            $query->orderBy($order);
-        }
-        $style_list = $query->asArray()->select($fields)->all();
+        $fields = ['m.id', 'm.goods_images', 'm.style_sn','lang.style_name','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
+        $style_list = \Yii::$app->services->goodsStyle->getStyleList($type_id, $limit, $order, $fields ,$language);
+
         $ring_web_site = array();
         $ring_web_site['moduleTitle'] = \Yii::t('common','精选结婚对戒');
         $ring_web_site['id'] = $type_id;
-        foreach ($style_list as $val){
+        foreach ($style_list as $val) {
             $moduleGoods = array();
             $moduleGoods['id'] = $val['id'];
             $moduleGoods['categoryId'] = $type_id;
             $moduleGoods['coinType'] = $this->getCurrencySign();
-            $moduleGoods['ringCode'] = $val['ring_sn'];
-            $moduleGoods['ringImg'] = ImageHelper::goodsThumbs($val['ring_images'],'mid');
-            $moduleGoods['name'] = $val['ring_name'];
+            $moduleGoods['ringCode'] = $val['style_sn'];
+            $moduleGoods['ringImg'] = ImageHelper::goodsThumbs($val['goods_images'],'big');
+            $moduleGoods['name'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price'],0);
             $ring_web_site['moduleGoods'][] = $moduleGoods;
         }
-
 
         $where = ['a.attr_id'=>26, 'a.attr_value_id'=>41];
         $man_web_site = $this->getAdvertStyle($where);
@@ -231,8 +223,19 @@ class RingController extends OnAuthController
                 $searchGoods['isJoin'] = null;
                 $searchGoods['salePrice'] = $style['salePrice'];
                 $searchGoods['specsModels'] = null;
+
+                $searchGoods['coupon'] = [
+                    'type_id' => $style['categoryId'],//产品线ID
+                    'style_id' => $style['id'],//款式ID
+                    'price' => $style['salePrice'],//价格
+                    'num' =>1,//数量
+                ];
+
                 $searchGoodsModels[] = $searchGoods;
             }
+
+            CouponService::getCouponByList($this->getAreaId(), $searchGoodsModels);
+
 
             $ring['simpleGoodsEntityList'] = $goodsModels;
             $ring['searchGoodsModels'] = $searchGoodsModels;
@@ -277,8 +280,19 @@ class RingController extends OnAuthController
             $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'mid');
             $moduleGoods['goodsName'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price']);
+
+            $moduleGoods['coupon'] = [
+                'type_id' => $type_id,//产品线ID
+                'style_id' => $val['id'],//款式ID
+                'price' => $moduleGoods['salePrice'],//价格
+                'num' =>1,//数量
+            ];
+
             $result['moduleGoods'][] = $moduleGoods;
         }
+
+        CouponService::getCouponByList($this->getAreaId(), $result['moduleGoods']);
+
         return $result;
     }
 

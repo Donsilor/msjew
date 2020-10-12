@@ -84,13 +84,27 @@ HTML;
                 'format' => 'raw',
                 'headerOptions' => ['width'=>'120'],
             ],
-//            [
-//                'attribute' => 'ip',
-//                'value' => 'ip',
-//                'filter' => false,
-//                'format' => 'raw',
-//                'headerOptions' => ['width'=>'120'],
-//            ],
+            [
+                'attribute' => 'platform',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'filter' => Html::activeDropDownList($searchModel, 'platform', \common\enums\OrderFromEnum::getMap(), [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'value' => function ($model) {
+                    return \common\enums\OrderFromEnum::getValue($model->platform);
+                },
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'ip',
+                'value' => 'ip',
+                'filter' => Html::activeTextInput($searchModel, 'ip', [
+                    'class' => 'form-control',
+                ]),
+                'format' => 'raw',
+                'headerOptions' => ['width'=>'120'],
+            ],
             [
                 'attribute' => 'ip_location',
                 'value' => 'ip_location',
@@ -109,14 +123,13 @@ HTML;
                         'format' => 'yyyy-mm-dd',
                         'locale' => [
                             'separator' => '/',
+                            'cancelLabel'=> '清空',
                         ],
                         'endDate' => date('Y-m-d',time()),
                         'todayHighlight' => true,
                         'autoclose' => true,
                         'todayBtn' => 'linked',
                         'clearBtn' => true,
-
-
                     ],
 
                 ]),
@@ -129,11 +142,12 @@ HTML;
                     'model' => $searchModel,
                     'attribute' => 'created_at',
                     'value' => $searchModel->created_at,
-                    'options' => ['readonly' => true,'class'=>'form-control','style'=>'background-color:#fff;width:100px;'],
+                    'options' => ['readonly' => true,'class'=>'form-control','style'=>'background-color:#fff;'],
                     'pluginOptions' => [
                         'format' => 'yyyy-mm-dd',
                         'locale' => [
                             'separator' => '/',
+                            'cancelLabel'=> '清空',
                         ],
                         'endDate' => date('Y-m-d',time()),
                         'todayHighlight' => true,
@@ -146,7 +160,7 @@ HTML;
 
                 ]),
                 'value' => function ($model) {
-                    return Yii::$app->formatter->asDate($model->created_at);
+                    return Yii::$app->formatter->asDatetime($model->created_at);
                 },
                 'format' => 'raw',
 
@@ -160,16 +174,25 @@ HTML;
             ],
 
             [
-                'attribute' => 'status',
+                'attribute' => 'followed_status',
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
-                'value' => function ($model){
-                    return \common\enums\FollowStatusEnum::getValue($model->status??0);
+                'value' => function ($model) {
+                    return \common\enums\FollowStatusEnum::getValue($model->followed_status??0);
                 },
-                'filter' => Html::activeDropDownList($searchModel, 'status',\common\enums\FollowStatusEnum::getMap(), [
+                'filter' => Html::activeDropDownList($searchModel, 'followed_status',\common\enums\FollowStatusEnum::getMap(), [
                     'prompt' => '全部',
                     'class' => 'form-control',
                 ]),
+            ],
+            [
+                'attribute' => 'follower_id',
+                'format' => 'raw',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'value' => function ($model) {
+                    $user = \common\models\backend\Member::findOne($model->follower_id);
+                    return $user?$user->username:'';
+                },
             ],
             [
                 'attribute'=>'type_id',
@@ -216,3 +239,11 @@ HTML;
         </div>
     </div>
 </div>
+
+<script>
+    (function($) {
+        $("[data-krajee-daterangepicker]").on("cancel.daterangepicker", function () {
+            $(this).val("").trigger("change");
+        });
+    })(jQuery);
+</script>

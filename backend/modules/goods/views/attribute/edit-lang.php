@@ -43,6 +43,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                             ]
                         ]); ?>
+                        <?php if(Yii::$app->user->identity->username=='admin') {?>
+                        <?= $form->field($model, 'erp_id')->textInput()?>
+                        <?php }?>
                         <?= $form->field($model, 'status')->radioList(common\enums\StatusEnum::getMap())?>
                         <?= $form->field($model, 'sort')->textInput() ?>                    
                     </div>  
@@ -95,12 +98,27 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'lang.attr_value_name',
             ], 
             [
+                'attribute'=>'lang2.attr_value_name',
+            ],
+            [
+                'attribute'=>'lang3.attr_value_name',
+            ],
+            [
                 'attribute' => 'sort',
                 'format' => 'raw',
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($model, $key, $index, $column){
                     return  Html::sort($model->sort,['data-url'=>Url::to(['attribute-value/ajax-update'])]);
                 }
+            ],
+            [
+                'attribute'=>'erp_id',
+                'format' => 'raw',
+                'value' => function ($model, $key, $index, $column){
+                    return  Html::ajaxInput('erp_id', $model->erp_id, ['data-id'=>$model->id,'data-url'=>Url::to(['attribute-value/ajax-update'])]);
+                },
+                'headerOptions' => ['class' => 'col-md-1'],
+                'visible' => Yii::$app->user->identity->username == 'admin'
             ],
             [
                 'attribute' => 'status',

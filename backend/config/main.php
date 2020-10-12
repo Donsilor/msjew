@@ -37,13 +37,17 @@ return [
         'order' => [
             'class' => 'backend\modules\order\Module',
         ],
-        /** ------促销活动 ------ **/
+        /** ------促销活动模块 ------ **/
         'market' => [
             'class' => 'backend\modules\market\Module',
         ],
         /** ------商城設置 ------ **/
         'setting' => [
             'class' => 'backend\modules\setting\Module',
+        ],
+        /** ------商城設置 ------ **/
+        'statistics' => [
+            'class' => 'backend\modules\statistics\Module',
         ],
     ],
     'components' => [

@@ -63,11 +63,12 @@ $type_id = Yii::$app->request->get('type_id', 0);
                                 'model' => $searchModel,
                                 'attribute' => 'created_at',
                                 'value' => '',
-                                'options' => ['readonly' => true, 'class' => 'form-control',],
+                                'options' => ['readonly' => true, 'class' => 'form-control','style'=>'background-color:#fff;'],
                                 'pluginOptions' => [
                                     'format' => 'yyyy-mm-dd',
                                     'locale' => [
                                         'separator' => '/',
+                                        'cancelLabel'=> '清空',
                                     ],
                                     'endDate' => date('Y-m-d', time()),
                                     'todayHighlight' => true,
@@ -119,6 +120,17 @@ $type_id = Yii::$app->request->get('type_id', 0);
                             'format' => 'raw',
                             'value' => function($model) {
                                 return Yii::$app->formatter->asDatetime($model->start_time, 'Y-M-d')."<br />".Yii::$app->formatter->asDatetime($model->end_time-1, 'Y-M-d');
+                            }
+                        ],
+                        [
+                            'label' => "最大使用时长（天）",
+                            'filter' => Html::activeDropDownList($searchModel, 'max_use_time', ['1'=>'是', '0'=>'否'], [
+                                'prompt' => '全部',
+                                'class' => 'form-control',
+                            ]),
+                            'value' => function($model) {
+                                $day = intval($model->max_use_time/86400);
+                                return $day?:'';
                             }
                         ],
                         [
@@ -199,3 +211,14 @@ $type_id = Yii::$app->request->get('type_id', 0);
         </div>
     </div>
 </div>
+
+<script>
+
+    (function ($) {
+
+        $("[data-krajee-daterangepicker]").on("cancel.daterangepicker", function () {
+            $(this).val("").trigger("change");
+        });
+
+    })(window.jQuery);
+</script>

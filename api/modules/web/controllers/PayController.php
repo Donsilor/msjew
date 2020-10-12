@@ -2,17 +2,21 @@
 
 namespace api\modules\web\controllers;
 
+use api\modules\web\forms\WireTransferForm;
 use common\enums\OrderStatusEnum;
 use common\enums\OrderTouristStatusEnum;
 use common\enums\PayStatusEnum;
 use common\enums\StatusEnum;
 use common\helpers\ArrayHelper;
 use common\helpers\FileHelper;
+use common\models\common\EmailLog;
 use common\models\common\PayLog;
+use common\models\common\SmsLog;
 use common\models\order\Order;
 use common\models\order\OrderTourist;
 use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Paydollar\Message\AuthorizeResponse;
+use services\order\OrderLogService;
 use Yii;
 use api\controllers\OnAuthController;
 use common\enums\PayEnum;
@@ -40,6 +44,104 @@ class PayController extends OnAuthController
      * @var PayForm
      */
     public $modelClass = PayForm::class;
+
+    public function actionCollectionAccountInfo()
+    {
+        $configJson = Yii::$app->debris->config('pay_collection_account_info');
+        $configs = \Qiniu\json_decode($configJson, true);
+
+        switch ($this->language) {
+            case 'en-US':
+                $bankNameKey = 'bank_name_en';
+                $bankAddressKey = 'bank_address_en';
+                break;
+            case 'zh-TW':
+                $bankNameKey = 'bank_name_tw';
+                $bankAddressKey = 'bank_address_tw';
+                break;
+            default:
+                $bankNameKey = 'bank_name_cn';
+                $bankAddressKey = 'bank_address_cn';
+        }
+
+        foreach ($configs as &$config) {
+            $config['bank_name'] = $config[$bankNameKey]?:'';
+            $config['bank_address'] = $config[$bankAddressKey]?:'';
+            unset($config['bank_name_en']);
+            unset($config['bank_name_tw']);
+            unset($config['bank_name_cn']);
+            unset($config['bank_address_en']);
+            unset($config['bank_address_tw']);
+            unset($config['bank_address_cn']);
+        }
+
+        return $configs;
+    }
+
+    public function actionWireTransfer()
+    {
+        $this->modelClass = WireTransferForm::class;
+
+        try {
+            $trans = \Yii::$app->db->beginTransaction();
+
+            $result = $this->add();
+
+            $payForm = new PayForm();
+            $payForm->orderId = $result['order_id'];
+            $payForm->coinType = $this->getCurrency();
+            $payForm->payType = PayEnum::PAY_TYPE_WIRE_TRANSFER;
+            $payForm->memberId = $this->member_id;
+
+            //验证支付订单数据
+            if (!$payForm->validate()) {
+                throw new \Exception($this->getError($payForm), 500);
+            }
+
+            $pay = $payForm->getConfig();
+
+            $result->out_trade_no = $pay['out_trade_no'];
+
+            //验证支付订单数据
+            if (!$result->save(false)) {
+                throw new UnprocessableEntityHttpException($this->getError($result));
+            }
+
+            OrderLogService::wireTransfer($result->order);
+
+            $isDev = Yii::$app->debris->config('pay_wire_transfer_dev');
+
+            $params = [
+                'order_sn' => (!empty($isDev)?'t-':'') . $result->order->order_sn,
+                'code' => $result->order->id,
+            ];
+
+            $smss = \Yii::$app->debris->config('wire_transfer_order_notice_sms');
+
+            if($smss && $smsArray = explode(',', $smss)) {
+                foreach ($smsArray as $sms) {
+                    \Yii::$app->services->sms->queue(true)->send($sms,SmsLog::USAGE_WIRE_TRANSFER_ORDER_NOTICE, $params);
+                }
+            }
+
+            $emails = \Yii::$app->debris->config('wire_transfer_order_notice_email');
+
+            if($emails && $emailArray = explode(',', $emails)) {
+                foreach ($emailArray as $email) {
+                    \Yii::$app->services->mailer->queue(true)->send($email, EmailLog::USAGE_WIRE_TRANSFER_ORDER_NOTICE, $params, $this->language);
+                }
+            }
+
+
+            $trans->commit();
+        } catch (\Exception $exception) {
+            $trans->rollBack();
+
+            throw $exception;
+        }
+
+        return $result;
+    }
 
     /**
      * 生成支付参数
@@ -94,8 +196,8 @@ class PayController extends OnAuthController
         }
 
         //alipay
-        if(!empty($query['out_trade_no'])) {
-            $where['out_trade_no'] = $query['out_trade_no'];
+        if(!empty($query['bdd_out_trade_no'])) {
+            $where['out_trade_no'] = $query['bdd_out_trade_no'];
         }
 
         //alipay
@@ -129,8 +231,6 @@ class PayController extends OnAuthController
 
         $urlInfo = parse_url($returnUrl);
         $query = parse_query($urlInfo['query']);
-        //记录验证日志
-        $orderSn = $query['order_sn']??($query['orderId']??'');
         
         //获取支付记录模型
         /**
@@ -139,8 +239,30 @@ class PayController extends OnAuthController
         $model = $this->getPayModelByReturnUrlQuery($query);
 
         if(empty($model)) {
-            Yii::$app->services->actionLog->create('用户支付校验','订单号：'.$orderSn."<br/>支付状态：查询支付记录失败");
-            $result['verification_status'] = 'failed';
+
+            $where = [];
+            $where['payment_status'] = 1;
+
+            $order = null;
+            if(isset($query['order_sn'])) {
+                $where['order_sn'] = $query['order_sn'];
+                $order = Order::findOne($where);
+            }
+            if(isset($query['orderId'])) {
+                $where['id'] = $query['orderId'];
+                $order = Order::findOne($where);
+            }
+
+            if($order) {
+                $result['verification_status'] = 'completed';
+            }
+            else {
+                //记录验证日志
+                $orderSn = $query['order_sn']??($query['orderId']??'');
+                Yii::$app->services->actionLog->create('用户支付校验','订单号：'.$orderSn."<br/>支付状态：查询支付记录失败");
+                $result['verification_status'] = 'failed';
+            }
+
             return $result;
         }
         $logMessage = "订单号：".$model->order_sn.'<br/>支付编号：'.$model->out_trade_no;
@@ -174,9 +296,7 @@ class PayController extends OnAuthController
             }          
           
             $update = [
-                'pay_fee' => $model->total_fee,
                 'pay_status' => PayStatusEnum::PAID,
-                'pay_time' => time(),
             ];
             $updated = PayLog::updateAll($update, ['pay_status'=>PayStatusEnum::UNPAID, 'id'=>$model->id]);
 
@@ -185,14 +305,24 @@ class PayController extends OnAuthController
             }
 
             $model->refresh();
-
-            //更新订单状态
-            Yii::$app->services->pay->notify($model, null);
            
             $response = Yii::$app->services->pay->getPayByType($model->pay_type)->verify(['model'=>$model]);
-            $payCode = $response->getCode() ?? 'error';
+            $payCode = method_exists($response, 'getCode') ? $response->getCode() : 'failed';
             //支付成功
             if($response->isPaid()) {
+
+                $data = $response->getData();
+
+                if(isset($data['total']) && isset($data['currency'])) {
+                    $model->total_fee = $data['total'];
+                    $model->pay_fee = $data['total'];
+                    $model->fee_type = $data['currency'];
+                    $model->pay_time = time();
+                    $model->save();
+                }
+
+                //更新订单状态
+                Yii::$app->services->pay->notify($model, null);
 
                 $result['verification_status'] = 'completed';
 

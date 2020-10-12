@@ -2,6 +2,7 @@
 
 namespace common\components;
 
+use common\enums\OrderFromEnum;
 use Yii;
 use yii\base\Model;
 use common\enums\AppEnum;
@@ -31,7 +32,7 @@ trait BaseAction
     //当前货币符号
     protected $areaId;
     //平台类型
-    protected $platform = 1;//默认1:PC  2:mobile
+    protected $platform = 11;//默认11:移动-港澳台
     
     /**
      * 初始化通用参数
@@ -61,18 +62,24 @@ trait BaseAction
             \Yii::$app->params['currencySign'] = \Yii::$app->services->currency->getSign();
         }
         $this->currencySign = \Yii::$app->params['currencySign'];
-
-        //默认地区
-        $areaId = \Yii::$app->request->headers->get("x-api-area");
-        if($areaId) {
-            \Yii::$app->params['areaId'] = $areaId;
-        }
-        $this->areaId = \Yii::$app->params['areaId'];
         
         $platform = \Yii::$app->request->headers->get("x-api-platform");
         if($platform) {
            $this->platform = $platform;
         }
+
+        $areaIdNew = OrderFromEnum::platformToAreaId($this->platform);
+        if($areaIdNew) {
+            \Yii::$app->params['areaId'] = $areaIdNew;
+        }
+
+        //默认地区
+        $areaId = \Yii::$app->request->headers->get("x-api-area");
+        if(!$areaIdNew && $areaId) {
+            \Yii::$app->params['areaId'] = $areaId;
+        }
+
+        $this->areaId = \Yii::$app->params['areaId'];
     }
     /**
      * 默认地区
@@ -209,9 +216,21 @@ trait BaseAction
     protected function activeFormValidate($model)
     {
         if (Yii::$app->request->isAjax && !Yii::$app->request->isPjax) {
-            if ($model->load(Yii::$app->request->post())) {
+
+            $models = func_get_args();
+
+            $format = null;
+            $data = [];
+            foreach ($models as $model) {
+                if ($model->load(Yii::$app->request->post())) {
+                    $format = \yii\web\Response::FORMAT_JSON;
+                    $data += \yii\widgets\ActiveForm::validate($model);
+                }
+            }
+
+            if($format) {
                 Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-                Yii::$app->response->data = \yii\widgets\ActiveForm::validate($model);
+                Yii::$app->response->data = $data;
                 Yii::$app->end();
             }
         }

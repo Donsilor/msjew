@@ -2,6 +2,7 @@
 
 namespace common\models\order;
 
+use common\models\market\MarketCoupon;
 use Yii;
 
 /**
@@ -19,9 +20,10 @@ use Yii;
  * @property int $goods_num 商品数量
  * @property string $goods_image 商品图片
  * @property string $goods_pay_price 商品实际成交价
- * @property int $promotions_id 
+ * @property int $coupon_id
  * @property string $goods_spec 商品规格
  * @property string $goods_attr 商品属性
+ * @property string $cart_goods_attr 商品属性
  * @property float $exchange_rate 交易汇率
  * @property string $currency 货币
  * @property int $created_at 创建时间
@@ -44,13 +46,14 @@ class OrderGoods extends \common\models\base\BaseModel
     public function rules()
     {
         return [
-            [['merchant_id', 'order_id','style_id', 'goods_id', 'goods_type', 'goods_num', 'promotions_id', 'created_at', 'updated_at'], 'integer'],
+            [['merchant_id', 'order_id','style_id', 'goods_id', 'goods_type', 'goods_num', 'coupon_id', 'created_at', 'updated_at'], 'integer'],
             [['order_id', 'goods_id'], 'required'],
             [['goods_price', 'goods_pay_price','exchange_rate'], 'number'],
             [['goods_attr'], 'string'],
             [['goods_sn'], 'string', 'max' => 50],
             [['goods_image'], 'string', 'max' => 100],
             [['goods_spec','goods_name'], 'string', 'max' => 300],
+            [['cart_goods_attr','goods_attr'], 'string', 'max' => 1024],
             [['currency'], 'string','max'=>5],
         ];
     }
@@ -74,11 +77,12 @@ class OrderGoods extends \common\models\base\BaseModel
             'goods_image' => '商品图片',
             'goods_pay_price' => '商品实际成交价',
             'member_id' => '买家ID',
-            'promotions_id' => '促销活动ID',
+            'coupon_id' => '促销活动ID',
             'exchange_rate' => '交易汇率',
             'currency' => '货币',
             'goods_spec' => '商品规格',
             'goods_attr' => 'Goods Attr',
+            'cart_goods_attr' => 'Goods Attr',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
         ];
@@ -95,5 +99,23 @@ class OrderGoods extends \common\models\base\BaseModel
     public function getLang()
     {
         return $this->hasOne(OrderGoodsLang::class, ['master_id'=>'id'])->alias('lang')->where(['lang.language' => Yii::$app->params['language']]);
-    }    
+    }
+
+    /**
+     * 对应快递模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCoupon()
+    {
+        return $this->hasOne(MarketCoupon::class, ['id'=>'coupon_id']);
+    }
+
+    /**
+     * 对应快递模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrder()
+    {
+        return $this->hasOne(Order::class, ['id'=>'order_id']);
+    }
 }

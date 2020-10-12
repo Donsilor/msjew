@@ -5,10 +5,12 @@ namespace api\modules\web\controllers\goods;
 use common\enums\StatusEnum;
 use api\controllers\OnAuthController;
 use common\helpers\ImageHelper;
+use common\models\goods\Goods;
 use common\models\goods\Style;
 use common\helpers\ResultHelper;
 use common\models\goods\StyleLang;
 use common\models\goods\StyleMarkup;
+use services\market\CouponService;
 use yii\db\Exception;
 use yii\db\Expression;
 use common\models\goods\AttributeIndex;
@@ -33,11 +35,12 @@ class StyleController extends OnAuthController
      */
     public function actionSearch(){
         $sort_map = [
-            "sale_price"=>'m.sale_price',//价格
+            "sale_price"=>'sale_price',//价格
             "sale_volume"=>'m.virtual_volume',//销量
         ];
         $type_id = \Yii::$app->request->post("categoryId");//产品线ID
-        if(!$type_id){
+        $style_id = \Yii::$app->request->post("styleId");//产品线ID
+        if(!$type_id && !$style_id) {
             return ResultHelper::api(422, '产品线不能为空');
         }
         $order_param = \Yii::$app->request->post("orderParam");//排序参数
@@ -52,7 +55,7 @@ class StyleController extends OnAuthController
 
 
         $area_id = $this->getAreaId(); 
-        $fields = ['m.id','lang.style_name','m.goods_images','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
+        $fields = ['m.id','m.type_id','lang.style_name','m.goods_images','IFNULL(markup.sale_price,m.sale_price) as sale_price'];
         $query = Style::find()->alias('m')->select($fields)
             ->leftJoin(StyleLang::tableName().' lang',"m.id=lang.master_id and lang.language='".$this->language."'")
             ->leftJoin(StyleMarkup::tableName().' markup', 'm.id=markup.style_id and markup.area_id='.$area_id)
@@ -63,14 +66,25 @@ class StyleController extends OnAuthController
         $params = \Yii::$app->request->post("params");  //属性帅选
 
 //        $params = json_decode($params);
-        if(!empty($params)){
-
-            $subQuery = AttributeIndex::find()->alias('a')->select(['a.style_id'])->distinct("a.style_id");
+        if(!$style_id) {
             if(is_array($type_id)) {
                 $query ->andWhere(['in','m.type_id',$type_id]);
             }else{
                 $query ->andWhere(['m.type_id'=>$type_id]);
             }
+        }
+        else {
+            if(is_array($style_id)) {
+                $query ->andWhere(['in','m.id',$style_id]);
+            } else {
+                $query ->andWhere(['m.id'=>$style_id]);
+            }
+        }
+
+        if(!empty($params)){
+
+            $ringStyleQuery = null;
+            $subQuery = AttributeIndex::find()->alias('a')->select(['a.style_id'])->distinct("a.style_id");
 
             $k = 0;
             foreach ($params as $param){
@@ -81,14 +95,27 @@ class StyleController extends OnAuthController
                 if($param_name == 'sale_price'){
                     $min_price = $param['beginValue'];
                     $max_price = $param['endValue'];
+
+                    $where = ['or'];
+                    $where[1] = ['and'];
+                    $where2 = ['and'];
                     if(is_numeric($min_price)){
                         $min_price = $this->exchangeAmount($min_price,0, 'CNY', $this->getCurrency());
-                        $query->andWhere(['>','IFNULL(markup.sale_price,m.sale_price)',$min_price]);
+                        $where[1][] = ['>','IFNULL(markup.sale_price,m.sale_price)',$min_price];
+                        $where2[] = ['>','IFNULL(goods_markup.sale_price,goods.sale_price)',$min_price];
                     }
                     if(is_numeric($max_price) && $max_price>0){
                         $max_price = $this->exchangeAmount($max_price,0, 'CNY', $this->getCurrency());
-                        $query->andWhere(['<=','IFNULL(markup.sale_price,m.sale_price)',$max_price]);
+                        $where[1][] = ['<=','IFNULL(markup.sale_price,m.sale_price)',$max_price];
+                        $where2[] = ['<=','IFNULL(goods_markup.sale_price,goods.sale_price)',$max_price];
                     }
+                    $subQuery2 = Goods::find()
+                        ->innerJoinWith('markup')
+                        ->select(['goods.style_id'])
+                        ->where($where2)
+                        ->distinct("goods.style_id");
+                    $where[2] = ['in', 'm.id', $subQuery2];
+                    $query->andWhere($where);
                     continue;
                 }
                 if(isset($param['paramId']) && is_numeric($param['paramId'])){
@@ -106,7 +133,16 @@ class StyleController extends OnAuthController
                     $config_values = array_merge(array_diff($config_values, array(-1)));
                     if(empty($config_values)) continue;
                     $config_values_str = join(',',$config_values);
-                    $subQuery->innerJoin(AttributeIndex::tableName().' '.$alias, $on." and {$alias}.attr_value_id in ({$config_values_str})");
+
+                    if($param_name == "ring_style") {
+                        $where = [];
+                        $where['attr_id'] = $attr_id;
+                        $where['attr_value_id'] = $config_values;
+                        $ringStyleQuery = AttributeIndex::find()->alias($alias)->select(['style_id'])->where($where)->distinct("style_id");
+                    }
+                    else {
+                        $subQuery->innerJoin(AttributeIndex::tableName().' '.$alias, $on." and {$alias}.attr_value_id in ({$config_values_str})");
+                    }
                 }else if($value_type == 2){
                     $begin_value = $param['beginValue'];
                     $end_value = $param['endValue'];
@@ -115,8 +151,25 @@ class StyleController extends OnAuthController
             }
 //            echo $subQuery->createCommand()->getSql();exit;
 //            return $subQuery->asArray()->all();
-            $query->andWhere(['in','m.id',$subQuery]);
 
+            if($type_id==19) {
+                $subQuery2 = Goods::find()
+                    ->alias('goods')
+                    ->rightJoin(AttributeIndex::tableName().' as ai', 'ai.attr_value_id=goods.id')
+                    ->andWhere(['in','goods.style_id', $subQuery])
+                    ->andWhere(['in','ai.attr_id',[61,62]])
+                    ->select(['ai.style_id'])
+                    ->distinct("ai.style_id");
+
+                $query->andWhere(['in','m.id',$subQuery2]);
+
+                if($ringStyleQuery) {
+                    $query->andWhere(['in','m.id',$ringStyleQuery]);
+                }
+            }
+            else {
+                $query->andWhere(['in','m.id',$subQuery]);
+            }
         }
 //        echo $query->createCommand()->getSql();exit;
         $result = $this->pagination($query,$this->page, $this->pageSize);
@@ -124,7 +177,7 @@ class StyleController extends OnAuthController
         foreach($result['data'] as & $val) {
             $arr = array();
             $arr['id'] = $val['id'];
-            $arr['categoryId'] = $type_id;
+            $arr['categoryId'] = $val['type_id'];
             $arr['coinType'] = $this->getCurrencySign();
             $arr['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'mid');
             $arr['salePrice'] = $this->exchangeAmount($val['sale_price'],0);
@@ -132,8 +185,17 @@ class StyleController extends OnAuthController
             $arr['isJoin'] = null;
             $arr['showType'] = 2;
             $arr['specsModels'] = null;
+
+            $arr['coupon'] = [
+                'type_id' => $val['type_id'],//产品线ID
+                'style_id' => $val['id'],//款式ID
+                'price' => $arr['salePrice'],//价格
+                'num' =>1,//数量
+            ];
+
             $val = $arr;
         }
+        CouponService::getCouponByList($this->getAreaId(), $result['data']);
         return $result;
 
     }
@@ -158,8 +220,19 @@ class StyleController extends OnAuthController
             $moduleGoods['goodsImages'] = ImageHelper::goodsThumbs($val['goods_images'],'big');
             $moduleGoods['goodsName'] = $val['style_name'];
             $moduleGoods['salePrice'] = $this->exchangeAmount($val['sale_price'],0);
+
+            $moduleGoods['coupon'] = [
+                'type_id' => $type_id,//产品线ID
+                'style_id' => $val['id'],//款式ID
+                'price' => $moduleGoods['salePrice'],//价格
+                'num' =>1,//数量
+            ];
+
             $webSite['moduleGoods'][] = $moduleGoods;
         }
+
+        CouponService::getCouponByList($this->getAreaId(), $webSite['moduleGoods']);
+
         $result = array();
         $result['webSite'] = $webSite;
         $result['advert'] = array(
@@ -220,9 +293,18 @@ class StyleController extends OnAuthController
                 $recommend['isJoin'] = null;
                 $recommend['specsModels'] = null;
                 $recommend['coinType'] = $this->getCurrencySign();
+
+                $recommend['coupon'] = [
+                    'type_id' => $model->type_id,//产品线ID
+                    'style_id' => $val->id,//款式ID
+                    'price' => $recommend['salePrice'],//价格
+                    'num' =>1,//数量
+                ];
+
                 $style['recommends'][] = $recommend;
             }
 
+            CouponService::getCouponByList($this->getAreaId(), $style['recommends']);
 
             $model->goods_clicks = new Expression("goods_clicks+1");
             $model->virtual_clicks = new Expression("virtual_clicks+1");

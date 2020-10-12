@@ -2,9 +2,11 @@
 
 namespace services\common;
 
+use common\enums\CurrencyEnum;
 use common\enums\OrderTouristStatusEnum;
 use common\models\order\OrderTourist;
 use services\market\CardService;
+use services\order\OrderLogService;
 use Yii;
 use common\enums\PayEnum;
 use common\components\Service;
@@ -56,10 +58,11 @@ class PayService extends Service
             'out_trade_no' => $baseOrder['out_trade_no'], // 订单号
             'total_fee' => $baseOrder['total_fee'],
             'notify_url' => $payForm->notifyUrl, // 回调地址
+            'open_id' => $payForm->openid, // 回调地址
         ];
 
         //  判断如果是js支付
-        if ($payForm->tradeType == 'js') {
+        if ($payForm->tradeType != 'js') {
             $order['open_id'] = '';
         }
 
@@ -152,6 +155,21 @@ class PayService extends Service
             'subject' => $baseOrder['body'],
             'currency' => $baseOrder['currency'],
         ];
+
+        if($order['currency'] == CurrencyEnum::TWD) {
+            $order['total_amount'] = intval($order['total_amount']);
+        }
+
+        //扩展支付
+        switch ($payForm->payType) {
+            case '61':
+                $order['payMethod'] = 'CARD';
+                break;
+            default:
+                $order['payMethod'] = 'ALL';
+                break;
+        }
+
         // 交易类型
         $tradeType = $payForm->tradeType;
         return [
@@ -199,6 +217,10 @@ class PayService extends Service
                 break;
             case '83':
                 $order['payMethod'] = 'WECHAT';//wechat
+                break;
+            case '84':
+                $order['deeplink'] = '3';//wechat
+                $order['payMethod'] = 'ALIPAYHKONL';//wechat
                 break;
             default:
                 $order['payMethod'] = 'ALL';
@@ -278,6 +300,10 @@ class PayService extends Service
      */
     public function getOutTradeNo($totalFee, string $orderSn, int $payType, $tradeType = 'JSAPI', $orderGroup = 1,$currency = null,$exchangeRate = null)
     {
+        //台币支付金额是整数
+        if($currency == CurrencyEnum::TWD) {
+            $totalFee = intval($totalFee);
+        }
 
         $payModel = new PayLog();
         $payModel->out_trade_no = StringHelper::randomNum(time());
@@ -309,7 +335,8 @@ class PayService extends Service
             case PayEnum::ORDER_GROUP :   
                 if($log->pay_status == 1 && ($order = Order::find()->where(['order_sn'=>$log->order_sn, 'order_status'=>OrderStatusEnum::ORDER_UNPAID])->one())) {
                     $time = time();
-                    $pay_amount = $log->total_fee;
+
+                    $pay_amount = \Yii::$app->services->currency->exchangeAmount($log->total_fee, 2, $order->account->currency, $log->currency);
 
                     $update = [
                         'pay_sn'=>$log->out_trade_no,
@@ -324,9 +351,16 @@ class PayService extends Service
 
                     if($result) {
                         $accountUpdata = [
-                             'pay_amount'=> $pay_amount,                            
+//                            'pay_amount'=> $pay_amount,
+                            'paid_amount'=> $log->total_fee,
+                            'paid_currency'=> $log->currency,
                         ];
                         OrderAccount::updateAll($accountUpdata,['order_id'=>$order->id]);
+
+                        //订单销量
+                        foreach ($order->goods as $goods) {
+                            \Yii::$app->services->goods->updateGoodsStorageForOrder($goods->goods_id,-$goods->goods_num, $goods->goods_type);
+                        }
                         
                         //订单发送邮件
 //                        \Yii::$app->services->order->sendOrderNotification($order->id);
@@ -336,6 +370,12 @@ class PayService extends Service
                     }
 
                     CardService::setSuccess($order->id);
+
+                    //支付日志
+                    OrderLogService::pay($order);
+
+                    //订单支付成功
+                    Yii::$app->services->job->notifyContacts->orderPaySuccess($order->order_sn);
                 }
                  else {
                     throw new \Exception('Order 无需更新'.$log->order_sn);
@@ -348,11 +388,15 @@ class PayService extends Service
 
                     //保存游客支付订单状态
                     $orderTourist->status = OrderTouristStatusEnum::ORDER_PAID;
-                    $orderTourist->pay_amount = $log->total_fee;
+//                    $orderTourist->pay_amount = \Yii::$app->services->currency->exchangeAmount($log->total_fee, 2, $orderTourist->currency, $log->currency);
+                    $orderTourist->paid_amount = $log->total_fee;
+                    $orderTourist->paid_currency = $log->currency;
 
                     $update = [
                         'status' => OrderTouristStatusEnum::ORDER_PAID,
-                        'pay_amount' => $log->total_fee
+//                        'pay_amount' => $orderTourist->pay_amount,
+                        'paid_amount' => $log->total_fee,
+                        'paid_currency' => $log->currency,
                     ];
 
                     $result = OrderTourist::updateAll($update, ['id' => $orderTourist->id, 'status'=>OrderTouristStatusEnum::ORDER_UNPAID]);
@@ -364,6 +408,9 @@ class PayService extends Service
                     else {
                         throw new \Exception('OrderTourist 更新失败'.$log->order_sn);
                     }
+
+                    //订单支付成功
+                    Yii::$app->services->job->notifyContacts->orderPaySuccess($orderTourist->order_sn);
                 }
                 else {
                     throw new \Exception('OrderTourist 无需更新'.$log->order_sn);

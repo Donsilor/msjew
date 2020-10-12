@@ -19,6 +19,8 @@ $status = $searchModel->status;
 $this->title = Yii::t('goods_diamond', '裸钻管理');
 $this->params['breadcrumbs'][] = $this->title;
 //$cert_type = \common\enums\DiamondEnum::getCertTypeList();
+
+$yesOrNo = \common\enums\StatusEnum::getYesOrNo();
 ?>
 
 <div class="row">
@@ -27,11 +29,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-header">
                 <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
                 <div class="box-tools"  style="right: 100px;">
-                    <?= Html::create(['edit-lang']) ?>
+                    <?= Html::create(['edit-lang'], '创建', ['class'=>'btn btn-primary btn-xs openContab']) ?>
+                    <?= Html::a('导出Excel','export?goods_name='.$goods_name.'&id='.$id.'&goods_sn='.$goods_sn.'&cert_id='.$cert_id.'&sale_price='.$sale_price.'&carat='.$carat.'&status='.$status) ?>
                 </div>
-                <div class="box-tools" >
-                    <a href="<?= Url::to(['export?goods_name='.$goods_name.'&id='.$id.'&goods_sn='.$goods_sn.'&cert_id='.$cert_id.'&sale_price='.$sale_price.'&carat='.$carat.'&status='.$status])?>" class="blue">导出Excel</a>
-                </div>
+
             </div>
             <div class="box-body table-responsive">
     <?php echo Html::batchButtons(false)?>         
@@ -62,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'goods_image',
                 'value' => function ($model) {
-                    return ImageHelper::fancyBox($model->goods_image);
+                    return ImageHelper::fancyBox($model->goods_image, 100, 100);
                 },
                 'filter' => false,
                 'format' => 'raw',
@@ -147,15 +148,84 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'form-control',
                 ]),
             ],
+            [
+                'attribute' => 'hk_status',
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->hk_status, 'getYesOrNo');
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'hk_status', $yesOrNo, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'headerOptions' => ['width'=>'110'],
+            ],
+            [
+                'attribute' => 'tw_status',
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->tw_status, 'getYesOrNo');
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'tw_status', $yesOrNo, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'headerOptions' => ['width'=>'110'],
+            ],
+            [
+                'attribute' => 'cn_status',
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->cn_status, 'getYesOrNo');
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'cn_status', $yesOrNo, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'headerOptions' => ['width'=>'110'],
+            ],
+            [
+                'attribute' => 'us_status',
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->us_status, 'getYesOrNo');
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'us_status', $yesOrNo, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'headerOptions' => ['width'=>'110'],
+            ],
             //'created_at',
             //'updated_at',
             [
+                'attribute' => 'created_at',
+                'filter' => \kartik\daterange\DateRangePicker::widget([    // 日期组件
+                    'model' => $searchModel,
+                    'attribute' => 'created_at',
+                    'value' => $searchModel->created_at,
+                    'options' => ['readonly' => true,'class'=>'form-control','style'=>'background-color:#fff;'],
+                    'pluginOptions' => [
+                        'format' => 'yyyy-mm-dd',
+                        'locale' => [
+                            'separator' => '/',
+                            'cancelLabel'=> '清空',
+                        ],
+                        'endDate' => date('Y-m-d',time()),
+                        'todayHighlight' => true,
+                        'autoclose' => true,
+                        'todayBtn' => 'linked',
+                        'clearBtn' => true,
+                    ],
+                ]),
+                'value' => function ($model) {
+                    return Yii::$app->formatter->asDatetime($model->created_at);
+                },
+                'format' => 'raw',
+            ],
+            [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{edit} {status} {view}',
+                'template' => '{edit} {status} {view} {show_log}',
                 'buttons' => [
                 'edit' => function($url, $model, $key){
-                        return Html::edit(['edit-lang', 'id' => $model->id, 'returnUrl' => Url::getReturnUrl()]);
+                        return Html::edit(['edit-lang', 'id' => $model->id, 'returnUrl' => Url::getReturnUrl()], '编辑', ['class'=>'btn btn-primary btn-sm openContab', 'data-title'=>$model->goods_sn]);
                 },
                'status' => function($url, $model, $key){
                         return Html::status($model['status']);
@@ -166,6 +236,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'view'=> function($url, $model, $key){
                     return Html::a('预览', \Yii::$app->params['frontBaseUrl'].'/diamond-details/'.$model->id.'?goodId='.$model->id.'&backend=1',['class'=>'btn btn-info btn-sm','target'=>'_blank']);
                 },
+                'show_log' => function($url, $model, $key){
+                    return Html::linkButton(['goods-log/index','id' => $model->id, 'type_id' => $model->type_id, 'returnUrl' => Url::getReturnUrl()], '日志');
+                },
                 ]
             ]
     ]
@@ -174,3 +247,12 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+<script>
+    (function ($) {
+
+        $("[data-krajee-daterangepicker]").on("cancel.daterangepicker", function () {
+            $(this).val("").trigger("change");
+        });
+
+    })(window.jQuery);
+</script>

@@ -37,11 +37,12 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                     'model' => $searchModel,
                                     'attribute' => 'created_at',
                                     'value' => '',
-                                    'options' => ['readonly' => true, 'class' => 'form-control',],
+                                    'options' => ['readonly' => true, 'class' => 'form-control','style'=>'background-color:#fff;'],
                                     'pluginOptions' => [
                                         'format' => 'yyyy-mm-dd',
                                         'locale' => [
                                             'separator' => '/',
+                                            'cancelLabel'=> '清空',
                                         ],
                                         'endDate' => date('Y-m-d', time()),
                                         'todayHighlight' => true,
@@ -57,12 +58,43 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                             [
                                 'attribute' => 'order_sn',
+                                'filter' => Html::activeTextInput($searchModel, 'order_sn', [
+                                    'class' => 'form-control',
+                                ]),
+                                'format' => 'raw',
+                                'value' => function($model) {
+                                    return Html::a($model->order_sn, ['view', 'id' => $model->id], ['style'=>"text-decoration:underline;color:#3c8dbc"]);
+                                }
                             ],
                             [
                                 'attribute' => 'order_amount',
                                 'value' => function ($model) {
                                     return sprintf('(%s)%s', $model->currency, $model->order_amount);
                                 }
+                            ],
+                            [
+                                'label' => '优惠后金额',
+                                'value' => function ($model) {
+                                    $order_amount = bcsub($model->order_amount, $model->discount_amount, 2);
+
+                                    if($model->currency == \common\enums\CurrencyEnum::TWD) {
+                                        $order_amount = sprintf('%.2f', intval($order_amount));
+                                    }
+
+                                    return sprintf('(%s)%s', $model->currency, $order_amount);
+                                }
+                            ],
+                            [
+                                'attribute' => 'order_from',
+                                'headerOptions' => ['class' => 'col-md-1'],
+                                'filter' => Html::activeDropDownList($searchModel, 'order_from', \common\enums\OrderFromEnum::getMap(), [
+                                    'prompt' => '全部',
+                                    'class' => 'form-control',
+                                ]),
+                                'value' => function ($model) {
+                                    return \common\enums\OrderFromEnum::getValue($model->order_from);
+                                },
+                                'format' => 'raw',
                             ],
                             [
                                 'attribute' => 'ip',
@@ -120,6 +152,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
          */
         $(".top-form input,select").change(function () {
             $(".filters input[name='" + $(this).attr('name') + "']").val($(this).val()).trigger('change');
+        });
+
+        $("[data-krajee-daterangepicker]").on("cancel.daterangepicker", function () {
+            $(this).val("").trigger("change");
         });
 
 

@@ -2,6 +2,7 @@
 
 namespace common\helpers;
 
+use Faker\Provider\Uuid;
 use Yii;
 use yii\helpers\BaseHtml;
 use common\enums\StatusEnum;
@@ -49,6 +50,27 @@ class Html extends BaseHtml
         return self::a($content, $url, $options);
     }
 
+    /**
+     * 列表input更新字段
+     *
+     * @param $value
+     * @return string
+     */
+    public static function ajaxInput($name,$value, $options = [])
+    {
+        $url = isset($options['data-url']) ?? 'ajax-update';
+        // 权限校验
+        if (!self::beforVerify($url)) {
+            return $value;
+        }
+        $options = ArrayHelper::merge([
+            'data-url' => $url,
+            'class' => 'form-control',
+            'onblur' => 'rfAjaxUpdate(this)',
+        ], $options);
+
+        return self::input('text', $name, $value, $options);
+    }
     /**
      * 删除
      *
@@ -410,5 +432,24 @@ Css
             }     
         }
         return $buttonHtml;
+    }
+
+    public static function batchEdit($url = ['batch-edit'], $content = '批量编辑', $options = [])
+    {
+        $uuid = Uuid::uuid();
+        $options1 = ArrayHelper::merge([
+            'data-but-id' => $uuid,
+            'class' => "btn btn-primary btn-sm",
+            "data-grid"=>"grid",
+            'onclick' => "batchEdit(this);return false;"
+        ], $options);
+        $options2 = ArrayHelper::merge([
+            'id' => $uuid,
+            'class' => "hide",
+            'data-toggle' => 'modal',
+            'data-target' => '#ajaxModal',
+        ], $options);
+
+        return self::a($content, $url, $options1).self::a($content, $url, $options2);
     }
 }

@@ -181,6 +181,58 @@ $this->registerJs($script);
         });
     }
 
+    function batchEdit(obj)
+    {
+        let grid = $("#"+$(obj).attr('data-grid'));
+        let url = $(obj).attr('href');
+
+        let id = $(obj).closest("tr").data("key");
+
+        let _ids = [];
+        if(id) {
+            _ids.push(id);
+        }
+        else if(grid.length>0) {
+            _ids = grid.yiiGridView("getSelectedRows");
+        }
+
+        if(_ids.length<1 || !_ids) {
+            rfInfo('未选中数据！','');
+            return false;
+        }
+
+        let ids = [];
+        grid.find("tr").each(function (i,item) {
+            let tr = $(item);
+
+            if(tr.data("key")===undefined) {
+                return true;
+            }
+
+            if(_ids.indexOf(tr.data("key"))>=0) {
+                tr.find("a").each(function(i2, item2) {
+                    if($(item2).attr("href").indexOf(url)===0) {
+                        ids.push(tr.data("key"));
+                    }
+                });
+            }
+        });
+
+        for(let i=0; i<_ids.length; i++) {
+            if(ids.indexOf(_ids[i])<0) {
+                rfInfo(_ids[i]+' 不能操作！','');
+                return false;
+            }
+        }
+
+        url = url + '?id=' +ids.join(',')
+
+        let uuid = $(obj).data("but-id");
+        $("#"+uuid).attr("href", url).click();
+
+        return false;
+    }
+
     // 启用状态 status 1:启用;0禁用;
     function rfStatus(obj) {
         let id = $(obj).attr('data-id');
@@ -232,7 +284,17 @@ $this->registerJs($script);
     	let url = $(this).attr('data-url');
     	let status = $(this).attr('data-value');
     	let text = $(this).text();
-    	let ids = $("#"+grid).yiiGridView("getSelectedRows");
+
+        let id = $(this).closest("tr").data("key");
+
+        let ids = [];
+        if(id) {
+            ids.push(id);
+        }
+        else if($("#"+grid).length>0) {
+            ids = $("#"+grid).yiiGridView("getSelectedRows");
+        }
+
     	if(!url){
    		 	url = "<?= Url::to(['ajax-batch-update'])?>";
         }
@@ -303,6 +365,44 @@ $this->registerJs($script);
                 }
             });
         }
+    }
+
+    function rfAjaxUpdate(obj) {
+        let id = $(obj).attr('data-id');
+        let url = $(obj).attr('data-url');
+        let type = $(obj).attr('data-type');
+
+        if (!id) {
+            id = $(obj).parent().parent().attr('id');
+        }
+
+        if (!id) {
+            id = $(obj).parent().parent().attr('data-key');
+        }
+        if(!url){
+            url = "<?= Url::to(['ajax-update'])?>";
+        }
+
+        var val = $(obj).val();
+        var name = $(obj).attr('name');
+        var data = {'id':id};
+        data[name] = val;
+
+        if(type == 'number' && isNaN(val)){
+            rfAffirm('只能为数字');
+            return false;
+        }
+        $.ajax({
+            type: "get",
+            url: url,
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                if (parseInt(data.code) !== 200) {
+                    rfAffirm(data.message);
+                }
+            }
+        });
     }
 
     //显示360 主图

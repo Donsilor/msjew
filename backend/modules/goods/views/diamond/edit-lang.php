@@ -27,6 +27,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
         ],
 ]); ?>
+<style type="text/css">
+    .content-header .rfHeaderFont:nth-child(2) {
+        display: none;
+    }
+</style>
 <div class="box-body nav-tabs-custom">
      <h2 class="page-header"><?php echo Yii::t('goods', '裸钻发布');?></h2>
       <?php $tab_list = [0=>'全部',1=>'基础信息',2=>'商品属性',3=>'图文信息',4=>'SEO优化',5=>'地区价格'];?>
@@ -36,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[1]??''?></li>
             </ul>
-            <div class="box-body col-lg-9" style="margin-left:9px">
+            <div class="box-body col-lg-9">
                 <div class="row">
                     <div class="col-lg-4">
                         <?= $form->field($model, 'cert_type')->dropDownList(\common\enums\DiamondEnum::getCertTypeList(),['prompt'=>Yii::t("common",'请选择')]) ?>
@@ -103,6 +108,35 @@ $this->params['breadcrumbs'][] = $this->title;
 
     		    <!-- ./nav-tabs-custom -->
             </div>
+           <div class="col-lg-3" style="padding: 20px;">
+               <div class="form-group field-diamond-goods_image">
+                   <label class="control-label" for="diamond-goods_image">主图</label>
+                   <div class="rf-row">
+                       <div class="col-sm-12">
+                           <div class="upload-list">
+                               <ul >
+                                   <li>
+                                       <div class="img-box">
+                                           <a href="<?= $model->goods_image ?>" data-fancybox="rfUploadImg">
+                                               <div class="bg-cover" style="background-image: url(<?= $model->goods_image ?>);"></div>
+                                           </a>
+                                       </div>
+                                   </li>
+                               </ul>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           <style type="text/css">
+               #tab_1 .upload-list ul li {
+                   width: 210px;
+                   height: 210px;
+               }
+               #tab_1 .upload-list ul li .img-box .bg-cover {
+                   height: 208px;
+               }
+           </style>
         <!-- ./box-body -->
       </div>            
       <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_2">
@@ -374,7 +408,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="modal-footer">
         <div class="col-sm-12 text-center">
             <button class="btn btn-primary" type="submit">保存</button>
-            <span class="btn btn-white" onclick="history.go(-1)">返回</span>
+            <span class="btn btn-white" onclick="$('.active.J_menuTab i', window.parent.document).click()">关闭</span>
         </div>
 	</div>
 </div>
@@ -433,7 +467,15 @@ $this->params['breadcrumbs'][] = $this->title;
         });
     }
 
+    $('input[type="text"],textarea').change(function () {
+        $(this).val($(this).val().trim());
+    });
 
+    $(function() {
+        <?php if($model->goods_sn) { ?>
+        $('.active.J_menuTab span', window.parent.document).text('<?= $model->goods_sn ?>');
+        <?php } ?>
+    });
 
 </script>
 

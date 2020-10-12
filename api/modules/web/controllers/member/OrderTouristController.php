@@ -4,6 +4,8 @@ namespace api\modules\web\controllers\member;
 
 use api\controllers\OnAuthController;
 use api\modules\web\forms\CartForm;
+use common\enums\CurrencyEnum;
+use common\enums\OrderTouristStatusEnum;
 use common\enums\PayEnum;
 use common\helpers\ResultHelper;
 use common\helpers\Url;
@@ -35,8 +37,10 @@ class OrderTouristController extends OnAuthController
     public function actionCreate()
     {
         $orderSn = \Yii::$app->request->post('orderSn');
+        $payType = \Yii::$app->request->post('payType', 6);
         $goodsCartList = \Yii::$app->request->post('goodsCartList');
         $invoiceInfo = \Yii::$app->request->post('invoice');
+        $buyer_remark = \Yii::$app->request->post('buyer_remark');
 
         if(empty($orderSn)) {
             if (empty($goodsCartList)) {
@@ -53,14 +57,14 @@ class OrderTouristController extends OnAuthController
                 }
                 $cart_list[] = $model->toArray();
             }
-            //$orderId = \Yii::$app->services->orderTourist->createOrder($cart_list, $invoiceInfo);
         }
-        
-        try {
+        $order_from = $this->platform;
+        try {            
             $trans = \Yii::$app->db->beginTransaction();
             if(empty($orderSn)) {
                 //创建订单
-                $orderId = \Yii::$app->services->orderTourist->createOrder($cart_list, $invoiceInfo);
+                $orderId = \Yii::$app->services->orderTourist->createOrder($cart_list, $buyer_remark, $invoiceInfo, $order_from);
+
             }
             else {
                 //按单号支付
@@ -68,6 +72,10 @@ class OrderTouristController extends OnAuthController
                 
                 if(!$order) {
                     throw new UnprocessableEntityHttpException('系统忙，请稍后再试~！');
+                }
+
+                if($order->status==OrderTouristStatusEnum::ORDER_PAID) {
+                    throw new UnprocessableEntityHttpException(\Yii::t('payment', 'ORDER_PAID'));
                 }
                 
                 $orderId = $order->id;
@@ -77,7 +85,7 @@ class OrderTouristController extends OnAuthController
             $payForm = new PayForm();
             $payForm->attributes = \Yii::$app->request->post();
             $payForm->orderId = $orderId;//订单ID
-            $payForm->payType = 6;//支付方式使用paypal
+            $payForm->payType = $payType;//支付方式使用paypal
             $payForm->memberId = 0;//支付方式使用paypal
             $payForm->notifyUrl = Url::removeMerchantIdUrl('toFront', ['notify/' . PayEnum::$payTypeAction[$payForm->payType]]);//支付通知URL,paypal不需要,加上只是为了数据的完整性
             $payForm->orderGroup = PayEnum::ORDER_TOURIST;//游客订单
@@ -190,6 +198,13 @@ class OrderTouristController extends OnAuthController
 //            'userTelCode' => $order->address->mobile_code,
 //            'zipCode' => $order->address->zip_code,
 //        );
+        $orderDetails = array();
+        foreach ($order->details as $detail) {
+            $orderDetail = [
+                'goodsId' => $detail['style_id']
+            ];
+            $orderDetails[] = $orderDetail;
+        }
 
         $order = array(
             'id' => $order->id,
@@ -202,18 +217,21 @@ class OrderTouristController extends OnAuthController
             'orderNo' => $order->order_sn,
             'orderStatus' => $order->status,
             'orderTime' => $order->created_at,
+//            'payAmount' => $order->pay_amount,
+            'payAmount' => bcsub($order->order_amount, $order->discount_amount, 2),
 //            'orderType' => $order->order_type,
             'payChannel' => 6,
 //            'productCount' => count($orderDetails),
-            'preferFee' => $order->discount_amount, //优惠金额
             'productAmount' => $order->goods_amount,
+            'preferFee' => $order->discount_amount, //优惠金额
+            'payAmount' => $order->pay_amount, //支付金额
             'logisticsFee' => $order->shipping_fee,
             'orderAmount' => $order->order_amount,
             'otherFee' => $order->other_fee,
             'safeFee' => $order->safe_fee,
             'taxFee' => $order->tax_fee,
 //            'userId' => $order->member_id,
-//            'details' => $orderDetails
+            'details' => $orderDetails
         );
 
         return $order;
@@ -228,6 +246,7 @@ class OrderTouristController extends OnAuthController
     public function actionTax()
     {
         $goodsCartList = \Yii::$app->request->post('goodsCartList');
+        $coupon_id = \Yii::$app->request->post('coupon_id');
         if (empty($goodsCartList)) {
             return ResultHelper::api(422, "goodsCartList不能为空");
         }
@@ -245,10 +264,11 @@ class OrderTouristController extends OnAuthController
         }
         
         try {
-            $taxInfo = \Yii::$app->services->orderTourist->getCartAccountTax($cartList);
-        } catch (\Exception $e) {
-            \Yii::$app->services->actionLog->create('游客订单金额汇总','Exception:'.$e->getMessage());
-            throw $e;
+            $taxInfo = \Yii::$app->services->orderTourist->getCartAccountTax($cartList, $coupon_id);
+            $taxInfo['order_amount_HKD'] = \Yii::$app->services->currency->exchangeAmount($taxInfo['order_amount'], 2, CurrencyEnum::HKD, $this->getCurrency());
+        } catch (\Exception $exception) {
+            \Yii::$app->services->actionLog->create('游客订单金额汇总','Exception:'.$exception->getMessage());
+            throw new UnprocessableEntityHttpException($exception->getMessage());
         }
 
         return $taxInfo;

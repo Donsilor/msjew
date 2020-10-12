@@ -48,6 +48,11 @@ $model->style_spec = $style_spec;
         'enableAjaxValidation' => true,
         'validationUrl' => Url::to(['ajax-edit-lang', 'id' => $model['id']]),       
 ]); ?>
+<style type="text/css">
+    .content-header .rfHeaderFont:nth-child(2) {
+        display: none;
+    }
+</style>
 <div class="box-body nav-tabs-custom">
      <h2 class="page-header">商品发布</h2>
      <?php 
@@ -62,29 +67,29 @@ $model->style_spec = $style_spec;
             <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-th"></i> <?= $tab_list[1]??'';?></li>
             </ul>
-            <div class="box-body" style="margin-left:9px">
+            <div class="box-body col-lg-8" style="">
                 <?php 
                 $type_id = Yii::$app->request->get("type_id");
                 $_type_id = Yii::$app->request->get("_type_id",$type_id);
                 $model->type_id = $model->type_id?? $_type_id;
                 ?> 
                  <div class="row">
-                 <div class="col-lg-4">         
+                 <div class="col-lg-6">
         			<?= $form->field($model, 'type_id')->dropDownList(\Yii::$app->services->goodsType->getGrpDropDown($type_id),[
         			        'prompt' => '请选择',
         			        'onchange'=>"location.href='?_type_id='+this.value+'&type_id={$type_id}'",
         			        'disabled'=>$model->isNewRecord?null:'disabled',
         			]) ?> 
     			</div>
-    			<div class="col-lg-4"><?= $form->field($model, 'style_sn')->textInput(['maxlength'=>true]) ?></div>
+    			<div class="col-lg-6"><?= $form->field($model, 'style_sn')->textInput(['maxlength'=>true]) ?></div>
                 </div>                
                 <div class="row">
-                    <div class="col-lg-4"><?= $form->field($model, 'sale_volume')->textInput(['maxlength'=>true,'disabled'=>true]) ?></div>
-                    <div class="col-lg-4"><?= $form->field($model, 'virtual_volume')->textInput(['maxlength'=>true]) ?></div>
+                    <div class="col-lg-6"><?= $form->field($model, 'sale_volume')->textInput(['maxlength'=>true,'disabled'=>true]) ?></div>
+                    <div class="col-lg-6"><?= $form->field($model, 'virtual_volume')->textInput(['maxlength'=>true]) ?></div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-4"><?= $form->field($model, 'goods_clicks')->textInput(['maxlength'=>true,'disabled'=>true]) ?></div>
-                    <div class="col-lg-4"><?= $form->field($model, 'virtual_clicks')->textInput(['maxlength'=>true]) ?></div>
+                    <div class="col-lg-6"><?= $form->field($model, 'goods_clicks')->textInput(['maxlength'=>true,'disabled'=>true]) ?></div>
+                    <div class="col-lg-6"><?= $form->field($model, 'virtual_clicks')->textInput(['maxlength'=>true]) ?></div>
                 </div>                                  
     			<div class="nav-tabs-custom ">
     		        <?php echo Html::langTab("tab1")?>    			      
@@ -103,6 +108,38 @@ $model->style_spec = $style_spec;
 
     		    <!-- ./nav-tabs-custom -->
             </div>
+           <div class="col-lg-4">
+               <div class="form-group field-diamond-goods_image">
+                   <label class="control-label" for="diamond-goods_image">主图</label>
+                   <div class="rf-row">
+                       <div class="col-sm-12">
+                           <div class="upload-list">
+                               <ul >
+                                   <li>
+                                       <div class="img-box">
+                                           <?php
+                                           $goods_image = explode(',', $model->goods_images);
+                                           ?>
+                                           <a href="<?= $goods_image[0]??'' ?>" data-fancybox="rfUploadImg">
+                                               <div class="bg-cover" style="background-image: url(<?= $goods_image[0]??'' ?>);"></div>
+                                           </a>
+                                       </div>
+                                   </li>
+                               </ul>
+                           </div>
+                       </div>
+                   </div>
+                   <style type="text/css">
+                       #tab_1 .upload-list ul li {
+                           width: 210px;
+                           height: 210px;
+                       }
+                       #tab_1 .upload-list ul li .img-box .bg-cover {
+                           height: 208px;
+                       }
+                   </style>
+               </div>
+           </div>
         <!-- ./box-body -->
       </div>            
       <div class="row nav-tabs-custom tab-pane tab0 active" id="tab_2">
@@ -136,17 +173,143 @@ $model->style_spec = $style_spec;
    							    
                             </div> 
                           <?php 
-                          $data = [];                          
-                          foreach ($attr_list as $k=>$attr){   
-                              $values = Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']);
-                              $data[] = [
-                                  'id'=>$attr['id'],
-                                  'name'=>$attr['attr_name'],
-                                  'value'=>Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']),
-                                  'current'=>$model->style_spec['a'][$attr['id']]??[]
-                              ];   
+                          $data = [];
+
+                          $INPUT_STYLE_GOODS_LIST = false;
+                          $styles = [];
+                          foreach ($attr_list as $k=>$attr){
+                              if($attr['input_type']==\common\enums\InputTypeEnum::INPUT_STYLE_GOODS_LIST) {
+                                  $INPUT_STYLE_GOODS_LIST = true;
+
+                                  $goodsIds = $model->style_spec['a'][$attr['id']]??[];
+
+                                  $goodsInfo = Goods::findOne($goodsIds[0]??null);
+
+                                  $values = [];
+                                  $styleInfo = Yii::$app->services->goods->formatStyleGoodsById($goodsInfo['style_id']??array_pop($attrStyleIds));
+
+                                  $styles[] = $styleInfo['id'];
+
+                                  $attr_require = null;
+                                  foreach($styleInfo['specs'] as $spec) {
+                                      if($spec['configId']==26) {
+                                          $attr_require = $spec['configAttrVal'];
+                                      }
+                                  }
+
+                                  $sizes = [];
+                                  if(!empty($styleInfo['sizes']) && is_array($styleInfo['sizes'])) {
+                                      foreach ($styleInfo['sizes'] as $size) {
+                                          $sizes[$size['id']] = $size['name'];
+                                      }
+                                  }
+
+                                  $materials = [];
+                                  if(!empty($styleInfo['materials']) && is_array($styleInfo['materials'])) {
+                                      foreach ($styleInfo['materials'] as $material) {
+                                          $materials[$material['id']] = $material['name'];
+                                      }
+                                  }
+
+                                  $carats = [];
+                                  if(!empty($styleInfo['carats']) && is_array($styleInfo['carats'])) {
+                                      foreach($styleInfo['carats'] as $carat) {
+                                          $carats[$carat['id']] = $carat['name'];
+                                      }
+                                  }
+
+                                  foreach ($styleInfo['details'] as $detail) {
+                                      $goodsDetailsCode = $detail['goodsDetailsCode'] . '(' . ($materials[$detail['material']]??'') . '，' . ($sizes[$detail['size']]??'') . '，' . ($carats[$detail['carat']]??'') . ')';
+                                      $values[$detail['id']] = $goodsDetailsCode;
+                                  }
+
+                                  $data[] = [
+                                      'id'=>$attr['id'],
+                                      'name'=>$attr['attr_name'] . '.' . $attr_require,
+                                      'value'=>$values,
+                                      'current'=>$model->style_spec['a'][$attr['id']]??[]
+                                  ];
+                              }
+                              else {
+                                  $values = Yii::$app->services->goodsAttribute->getValuesByAttrId($attr['id']);
+                                  $data[] = [
+                                      'id'=>$attr['id'],
+                                      'name'=>$attr['attr_name'],
+                                      'value'=>$values,
+                                      'current'=>$model->style_spec['a'][$attr['id']]??[]
+                                  ];
+                              }
                           }
-                         
+
+                          if($INPUT_STYLE_GOODS_LIST) {
+
+                          ?>
+<table class="table table-hover" style="margin-bottom: 18px;">
+    <thead>
+        <tr>
+            <th>适用人群</th>
+            <th>商品名称</th>
+            <th>款式编号</th>
+
+            <th>销售价</th>
+            <th>商品库存</th>
+
+            <th class="action-column"></th>
+        </tr>
+    </thead>
+    <tbody id="style_table">
+    </tbody>
+</table>
+<script>
+    function getStyle(style_id) {
+        $.ajax({
+            type: "post",
+            url: 'get-style',
+            dataType: "json",
+            data: {style_id: style_id},
+            success: function (data) {
+                if (parseInt(data.code) !== 200) {
+                    rfMsg(data.message);
+                } else {
+
+                    var data = data.data
+
+                    var hav = true;
+
+                    $("input[name*='RingRelation[style_id][]']").each(function () {
+                        if ($(this).val() == data.id) {
+                            hav = false;
+                        }
+                    });
+                    if (hav == false) {
+                        layer.msg("此商品已经添加");
+                        return false;
+                    }
+
+                    var tr = "<tr><input type='hidden' name='RingRelation[style_id][]' value='" + data.id + "'/>"
+                        +"<td>" + data.attr_require + "</td>"
+                        + "<td>" + data.style_name + "</td>"
+                        + "<td>" + data.style_sn + "</td>"
+                        + "<td>" + data.sale_price + "</td>"
+                        + "<td>" + data.goods_storage + "</td>"
+                        + '<td></td>'
+                        + "</tr>";
+                    $("#style_table").append(tr);
+
+                }
+            }
+        });
+    }
+
+    $(function () {
+        getStyle(<?= $styles[0] ?>);
+        getStyle(<?= $styles[1] ?>);
+    });
+</script>
+                          <?php
+
+                          }
+
                           if(!empty($data)){
                              echo common\widgets\skutable\SkuTable::widget(['form' => $form,'model' => $model,'data' =>$data,'name'=>'Style[style_spec]']);
                              ?>
@@ -579,7 +742,7 @@ $model->style_spec = $style_spec;
     <div class="modal-footer">
         <div class="col-sm-12 text-center">
             <button class="btn btn-primary" type="submit">保存</button>
-            <span class="btn btn-white" onclick="history.go(-1)">返回</span>
+            <span class="btn btn-white" onclick="$('.active.J_menuTab i', window.parent.document).click()">关闭</span>
         </div>
 	</div>
 </div>
@@ -587,6 +750,11 @@ $model->style_spec = $style_spec;
 <?php ActiveForm::end(); ?>
 <script type="text/javascript">
 $(function(){ 
+
+    <?php if($model->style_sn) { ?>
+    $('.active.J_menuTab span', window.parent.document).text('<?= $model->style_sn ?>');
+    <?php } ?>
+
 	$(document).on("click",'.control-label',function(){
          var checked = false; 
 		 if(!$(this).hasClass('checked')){
@@ -618,9 +786,13 @@ $(function(){
                	return false;
            	 }
         }
-    	$("#skuTable tr[class*='sku_table_tr']").each(function(){
+    	$("#skuTable tr[class*='sku_table_tr']").each(function(i){
         	if($(this).find(".setsku-status").val() == 1){
-        		$(this).find(".setsku-goods_sn").val(fromValue);
+        	    i++;
+        	    if(i<10) {
+        	        i = "0" + i;
+                }
+        		$(this).find(".setsku-goods_sn").val(fromValue + "-" +i);
         	}
         });
 
@@ -793,5 +965,8 @@ $(function(){
         return minPrice; 
 	} */
 
+    $('input[type="text"],textarea').change(function () {
+        $(this).val($(this).val().trim());
+    });
 });
 </script>

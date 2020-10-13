@@ -465,6 +465,14 @@ class GoodsService extends Service
             $language = \Yii::$app->params['language'];
         }
         $style_spec_array = [
+            '2' =>array(
+                'attr_name'=>'clarity',
+                'key_name'=>'clarity',
+            ),//成色
+            '7' =>array(
+                'attr_name'=>'color',
+                'key_name'=>'color',
+            ),//成色
             '10' =>array(
                  'attr_name'=>'materials',
                  'key_name'=>'material',

@@ -22,14 +22,14 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 		<div class="qmbox">
 			<div class="Mail" id="app">
 				<div class="Head">
-					<span class="logo">BDD Co.</span>
+					<span class="logo">MORESHINE Co.</span>
 					<em class="sign">质量优越莫桑石网上店 | 首饰专家</em>
 				</div>
 				<div class="Main">
 					<div class="info">
 						<dl>
 							<dt>尊敬的顾客：</dt>
-                            <dd>感谢选择BDD Co.。我们十分重视您的订单。请细心阅读下方附件中关于此订单：电子凭证的邮件，如数据有误，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+                            <dd>感谢选择MORESHINE Co.。我们十分重视您的订单。请细心阅读下方附件中关于此订单：电子凭证的邮件，如数据有误，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
 						</dl>
 						<dl>
 							<dt>订单详情</dt>
@@ -49,9 +49,9 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
                             <li><a href="https://www.bddco.com/jewellery/all" target="_blank">饰品</a></li>
 						</ul>
 						<div class="copy">
-							<p>如果您对BDDCO的产品有任何反馈或建议，或者使用时遇到了什么问题</p>
+							<p>如果您对MORESHINE CO的产品有任何反馈或建议，或者使用时遇到了什么问题</p>
 							<p>欢迎随时与我们联系：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
-							<em>Copyright ©2012 - <?= date("Y")?> BDD Co., Ltd.</em>
+							<em>Copyright ©2012 - <?= date("Y")?> MORESHINE Co., Ltd.</em>
 						</div>
 					</div>
 				</div>

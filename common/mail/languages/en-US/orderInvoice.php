@@ -22,14 +22,14 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 		<div class="qmbox">
 			<div class="Mail" id="app">
 				<div class="Head">
-					<span class="logo">BDD Co.</span>
+					<span class="logo">MORESHINE Co.</span>
 					<em class="sign">Superior quality diamond online shop | Jewelry expert</em>
 				</div>
 				<div class="Main">
 					<div class="info">
 						<dl>
 							<dt>Dear customers：</dt>
-                            <dd>Thank you for choosing BDD Co. We attach great importance to your order. Please read the attached email about this order: e-Voucher carefully. If the data is wrong, please contact us immediately by email <a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+                            <dd>Thank you for choosing MORESHINE Co. We attach great importance to your order. Please read the attached email about this order: e-Voucher carefully. If the data is wrong, please contact us immediately by email <a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
 						</dl>
 						<dl>
 							<dt>Order details</dt>
@@ -51,7 +51,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 						<div class="copy">
 							<p>If you have any feedback or suggestions on bddco's products, or if you have any problems using it</p>
 							<p>Feel free to contact us：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
-							<em>Copyright ©2012 - <?= date("Y")?> BDD Co., Ltd.</em>
+							<em>Copyright ©2012 - <?= date("Y")?> MORESHINE Co., Ltd.</em>
 						</div>
 					</div>
 				</div>

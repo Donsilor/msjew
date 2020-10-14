@@ -43,7 +43,7 @@
             <div class="list fl clf">
                 <div class="list-tit fl">銷售商:</div>
                 <div class="list-details fl">
-                    <div class="child-name">BDD Co.Ltd</div>
+                    <div class="child-name">MORESHINE Co.Ltd</div>
                     <div class="child-addr"><?php echo $result['sender_address']?:'中環亞畢諾道3號環球貿易中心23樓04室'; ?></div>
                 </div>
             </div>
@@ -125,7 +125,7 @@
         <div style="height: 200px;">
             <div style="width: 280px;height: 200px;position: relative" class="fl">
                 <div class="total clf" style="text-align: left;word-break:break-all;margin: 0;position: absolute;bottom:0px;">
-                    <br/><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;如果您有任何問題, 請發送郵件至我們的客服郵箱: service@bddco.com ; 我們將竭誠為您服務! 感謝選擇BDD Co.
+                    <br/><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;如果您有任何問題, 請發送郵件至我們的客服郵箱: service@bddco.com ; 我們將竭誠為您服務! 感謝選擇MORESHINE Co.
                 </div>
             </div>
             <div style="width: 350px;height: 200px;" class="fr">

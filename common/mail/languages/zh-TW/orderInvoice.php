@@ -22,14 +22,14 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 		<div class="qmbox">
 			<div class="Mail" id="app">
 				<div class="Head">
-					<span class="logo">BDD Co.</span>
+					<span class="logo">MORESHINE Co.</span>
 					<em class="sign">品質優越鑽石網上店 | 首飾專家</em>
 				</div>
 				<div class="Main">
 					<div class="info">
 						<dl>
 							<dt>尊敬的顧客：</dt>
-                            <dd>感謝選擇BDD Co.。我們十分重視您的訂單。請細心閱讀下方附件中關於此訂單：電子憑證的郵件，如資料有誤，請立即聯絡我們發電郵至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+                            <dd>感謝選擇MORESHINE Co.。我們十分重視您的訂單。請細心閱讀下方附件中關於此訂單：電子憑證的郵件，如資料有誤，請立即聯絡我們發電郵至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
 						</dl>
 						<dl>
 							<dt>訂單詳情</dt>
@@ -49,9 +49,9 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
                             <li><a href="https://www.msjew.com/jewellery/all" target="_blank">飾品</a></li>
 						</ul>
 						<div class="copy">
-							<p>如果您對BDDCO的產品有任何反饋或建議，或者使用時遇到了什麼問题</p>
+							<p>如果您對MORESHINE CO的產品有任何反饋或建議，或者使用時遇到了什麼問题</p>
 							<p>歡迎隨時與我們聯繫：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
-							<em>Copyright ©2012 - <?= date("Y")?> BDD Co., Ltd.</em>
+							<em>Copyright ©2012 - <?= date("Y")?> MORESHINE Co., Ltd.</em>
 						</div>
 					</div>
 				</div>

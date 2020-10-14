@@ -3,8 +3,8 @@
 return [        
         
     'adminEmail' => 'admin@example.com',
-    'adminAcronym' => 'BDD',
-    'adminTitle' => 'BDD后台管理',
+    'adminAcronym' => 'MORESHINE',
+    'adminTitle' => 'MORESHINE后台管理',
     'adminDefaultHomePage' => ['main/system'], // 默认主页
 
     /** ------ 总管理员配置 ------ **/

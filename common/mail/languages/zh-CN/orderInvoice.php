@@ -23,7 +23,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 			<div class="Mail" id="app">
 				<div class="Head">
 					<span class="logo">BDD Co.</span>
-					<em class="sign">质量优越钻石网上店 | 首饰专家</em>
+					<em class="sign">质量优越莫桑石网上店 | 首饰专家</em>
 				</div>
 				<div class="Main">
 					<div class="info">

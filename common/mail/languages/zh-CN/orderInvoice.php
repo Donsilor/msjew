@@ -44,9 +44,9 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 				<div class="Foot">
 					<div class="intro">
 						<ul class="type">
-                            <li><a href="https://www.bddco.com/engagement-rings/" target="_blank">结婚戒指</a></li>
-							<li><a href="https://www.bddco.com/wedding-rings/" target="_blank">订婚戒指</li>
-                            <li><a href="https://www.bddco.com/jewellery/all" target="_blank">饰品</a></li>
+                            <li><a href="https://www.msjew.com/engagement-rings/" target="_blank">结婚戒指</a></li>
+							<li><a href="https://www.msjew.com/wedding-rings/" target="_blank">订婚戒指</li>
+                            <li><a href="https://www.msjew.com/jewellery/all" target="_blank">饰品</a></li>
 						</ul>
 						<div class="copy">
 							<p>如果您对MORESHINE CO的产品有任何反馈或建议，或者使用时遇到了什么问题</p>

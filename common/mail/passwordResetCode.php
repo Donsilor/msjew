@@ -5,6 +5,6 @@
 ?>
 <div class="password-reset">
     <p>MORESHINE CO会员</p>
-    <p>您在bddco.com 重置密码的验证码为：<?php echo $code??''?></p>
+    <p>您在msjew.com 重置密码的验证码为：<?php echo $code??''?></p>
     <p>15分钟内有效</p>
 </div>

@@ -3,7 +3,7 @@ return [
     'adminEmail' => 'admin@bddco.com',
     'supportEmail' => 'support@bddco.com',
     'user.passwordResetTokenExpire' => 3600,
-    'frontBaseUrl' =>'https://www.bddco.com',//前端地址
+    'frontBaseUrl' =>'https://www.msjew.com',//前端地址
     'languages'=>[
         'zh-CN'=>'简体中文',
         'zh-TW'=>'繁体中文',

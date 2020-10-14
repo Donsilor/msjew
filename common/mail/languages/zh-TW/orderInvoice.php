@@ -44,9 +44,9 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 				<div class="Foot">
 					<div class="intro">
 						<ul class="type">
-                            <li><a href="https://www.bddco.com/engagement-rings/" target="_blank">結婚戒指</a></li>
-							<li><a href="https://www.bddco.com/wedding-rings/" target="_blank">訂婚戒指</li>
-                            <li><a href="https://www.bddco.com/jewellery/all" target="_blank">飾品</a></li>
+                            <li><a href="https://www.msjew.com/engagement-rings/" target="_blank">結婚戒指</a></li>
+							<li><a href="https://www.msjew.com/wedding-rings/" target="_blank">訂婚戒指</li>
+                            <li><a href="https://www.msjew.com/jewellery/all" target="_blank">飾品</a></li>
 						</ul>
 						<div class="copy">
 							<p>如果您對BDDCO的產品有任何反饋或建議，或者使用時遇到了什麼問题</p>

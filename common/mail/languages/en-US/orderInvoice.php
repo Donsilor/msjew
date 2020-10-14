@@ -44,9 +44,9 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 				<div class="Foot">
 					<div class="intro">
 						<ul class="type">
-                            <li><a href="https://www.bddco.com/engagement-rings/" target="_blank">Wedding Ring</a></li>
-							<li><a href="https://www.bddco.com/wedding-rings/" target="_blank">Engagement Ring</li>
-                            <li><a href="https://www.bddco.com/jewellery/all" target="_blank">Jewelry</a></li>
+                            <li><a href="https://www.msjew.com/engagement-rings/" target="_blank">Wedding Ring</a></li>
+							<li><a href="https://www.msjew.com/wedding-rings/" target="_blank">Engagement Ring</li>
+                            <li><a href="https://www.msjew.com/jewellery/all" target="_blank">Jewelry</a></li>
 						</ul>
 						<div class="copy">
 							<p>If you have any feedback or suggestions on bddco's products, or if you have any problems using it</p>

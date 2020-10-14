@@ -4,7 +4,7 @@ return [
     'smsNotice'=>[
             'open'=>true,
             'userName'=>'管理员',
-            'siteName'=>'BDD测试任务',
+            'siteName'=>'MORESHINE测试任务',
             'mobiles'=>['15989407534'],
             'routes'=>[                    
                     'order/order-timeout-cancel',

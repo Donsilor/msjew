@@ -94,7 +94,7 @@ class OrderBaseService extends Service
                     'order_sn' =>$order->order_sn,
                     'express_name' => \Yii::$app->services->express->getExressName($order->express_id),
                     'express_no' =>$order->express_no,
-                    'company_name'=>'BDD Co.',
+                    'company_name'=>'MORESHINE Co.',
                     'company_email' => 'admin@bddco.com'
                 ];
                 if($order->refund_status) {

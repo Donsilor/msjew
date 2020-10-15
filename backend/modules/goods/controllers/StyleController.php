@@ -69,56 +69,56 @@ class StyleController extends BaseController
         $dataProvider->query->joinWith(['lang']);
         $dataProvider->query->andFilterWhere(['like', 'lang.style_name',$searchModel->style_name]);
 
-        $goodsSql = <<<DOM
-(SELECT 
-    goods.style_id,
-    (case COUNT(markup1.goods_id) when '0' then '0' else '1' end) as cn_status,
-    (case COUNT(markup2.goods_id) when '0' then '0' else '1' end) as hk_status,
-    (case COUNT(markup4.goods_id) when '0' then '0' else '1' end) as tw_status,
-    (case COUNT(markup99.goods_id) when '0' then '0' else '1' end) as us_status
-FROM
-    goods
-        LEFT JOIN
-	 goods_style_markup markup ON goods.style_id=markup.style_id AND markup.status=1
-        LEFT JOIN
-    goods_markup markup1 ON markup1.area_id = 1
-        AND markup1.status = 1
-        AND markup.area_id=markup1.area_id
-        AND goods.id = markup1.goods_id
-        LEFT JOIN
-    goods_markup markup2 ON markup2.area_id = 2
-        AND markup2.status = 1
-        AND markup.area_id=markup2.area_id
-        AND goods.id = markup2.goods_id
-        LEFT JOIN
-    goods_markup markup4 ON markup4.area_id = 4
-        AND markup4.status = 1
-        AND markup.area_id=markup4.area_id
-        AND goods.id = markup4.goods_id
-        LEFT JOIN
-    goods_markup markup99 ON markup99.area_id = 99
-        AND markup99.status = 1
-        AND markup.area_id=markup99.area_id
-        AND goods.id = markup99.goods_id
-GROUP BY goods.style_id) as goods
-DOM;
-        $dataProvider->query->leftJoin($goodsSql, 'goods.style_id=goods_style.id');
+//        $goodsSql = <<<DOM
+//(SELECT
+//    goods.style_id,
+//    (case COUNT(markup1.goods_id) when '0' then '0' else '1' end) as cn_status,
+//    (case COUNT(markup2.goods_id) when '0' then '0' else '1' end) as hk_status,
+//    (case COUNT(markup4.goods_id) when '0' then '0' else '1' end) as tw_status,
+//    (case COUNT(markup99.goods_id) when '0' then '0' else '1' end) as us_status
+//FROM
+//    goods
+//        LEFT JOIN
+//	 goods_style_markup markup ON goods.style_id=markup.style_id AND markup.status=1
+//        LEFT JOIN
+//    goods_markup markup1 ON markup1.area_id = 1
+//        AND markup1.status = 1
+//        AND markup.area_id=markup1.area_id
+//        AND goods.id = markup1.goods_id
+//        LEFT JOIN
+//    goods_markup markup2 ON markup2.area_id = 2
+//        AND markup2.status = 1
+//        AND markup.area_id=markup2.area_id
+//        AND goods.id = markup2.goods_id
+//        LEFT JOIN
+//    goods_markup markup4 ON markup4.area_id = 4
+//        AND markup4.status = 1
+//        AND markup.area_id=markup4.area_id
+//        AND goods.id = markup4.goods_id
+//        LEFT JOIN
+//    goods_markup markup99 ON markup99.area_id = 99
+//        AND markup99.status = 1
+//        AND markup.area_id=markup99.area_id
+//        AND goods.id = markup99.goods_id
+//GROUP BY goods.style_id) as goods
+//DOM;
+//        $dataProvider->query->leftJoin($goodsSql, 'goods.style_id=goods_style.id');
 
-        if(isset(Yii::$app->request->queryParams['SearchModel']['cn_status']) && Yii::$app->request->queryParams['SearchModel']['cn_status'] !== "") {
-            $dataProvider->query->andWhere(['=', 'goods.cn_status', Yii::$app->request->queryParams['SearchModel']['cn_status']]);
-        }
-
-        if(isset(Yii::$app->request->queryParams['SearchModel']['hk_status']) && Yii::$app->request->queryParams['SearchModel']['hk_status'] !== "") {
-            $dataProvider->query->andWhere(['=', 'goods.hk_status', Yii::$app->request->queryParams['SearchModel']['hk_status']]);
-        }
-
-        if(isset(Yii::$app->request->queryParams['SearchModel']['tw_status']) && Yii::$app->request->queryParams['SearchModel']['tw_status'] !== "") {
-            $dataProvider->query->andWhere(['=', 'goods.tw_status', Yii::$app->request->queryParams['SearchModel']['tw_status']]);
-        }
-
-        if(isset(Yii::$app->request->queryParams['SearchModel']['us_status']) && Yii::$app->request->queryParams['SearchModel']['us_status'] !== "") {
-            $dataProvider->query->andWhere(['=', 'goods.us_status', Yii::$app->request->queryParams['SearchModel']['us_status']]);
-        }
+//        if(isset(Yii::$app->request->queryParams['SearchModel']['cn_status']) && Yii::$app->request->queryParams['SearchModel']['cn_status'] !== "") {
+//            $dataProvider->query->andWhere(['=', 'goods.cn_status', Yii::$app->request->queryParams['SearchModel']['cn_status']]);
+//        }
+//
+//        if(isset(Yii::$app->request->queryParams['SearchModel']['hk_status']) && Yii::$app->request->queryParams['SearchModel']['hk_status'] !== "") {
+//            $dataProvider->query->andWhere(['=', 'goods.hk_status', Yii::$app->request->queryParams['SearchModel']['hk_status']]);
+//        }
+//
+//        if(isset(Yii::$app->request->queryParams['SearchModel']['tw_status']) && Yii::$app->request->queryParams['SearchModel']['tw_status'] !== "") {
+//            $dataProvider->query->andWhere(['=', 'goods.tw_status', Yii::$app->request->queryParams['SearchModel']['tw_status']]);
+//        }
+//
+//        if(isset(Yii::$app->request->queryParams['SearchModel']['us_status']) && Yii::$app->request->queryParams['SearchModel']['us_status'] !== "") {
+//            $dataProvider->query->andWhere(['=', 'goods.us_status', Yii::$app->request->queryParams['SearchModel']['us_status']]);
+//        }
 
         //创建时间过滤
         if (!empty(Yii::$app->request->queryParams['SearchModel']['created_at'])) {
@@ -126,7 +126,7 @@ DOM;
             $dataProvider->query->andFilterWhere(['between', 'goods_style.created_at', strtotime($start_date), strtotime($end_date) + 86400]);
         }
 
-        $dataProvider->query->select(['goods_style.*', 'goods.hk_status', 'goods.tw_status', 'goods.cn_status', 'goods.us_status']);
+        $dataProvider->query->select(['goods_style.*']);//, 'goods.hk_status', 'goods.tw_status', 'goods.cn_status', 'goods.us_status']);
 
         //导出
         if(Yii::$app->request->get('action') === 'export'){

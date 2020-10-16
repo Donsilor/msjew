@@ -1042,10 +1042,16 @@ class OrderController extends BaseController
     }
 
     private function fun($specs, $attrs=[]) {
-        $cs = $sc = $xk = $zs = $zsdx = $zssc = '';
+        $jd = $ys = $cs = $sc = $xk = $zs = $zsdx = $zssc = '';
         foreach ($specs as $spec) {
 
             switch ($spec['attr_id']) {
+                case 2: //成色
+                    $jd = $spec['attr_value'];
+                    break;
+                case 7: //手寸
+                    $ys = $spec['attr_value'];
+                    break;
                 case 10: //成色
                     $cs = $spec['attr_value'];
                     break;
@@ -1083,6 +1089,8 @@ class OrderController extends BaseController
         }
 
         return [
+            'jd' => $jd,
+            'ys' => $ys,
             'cs' => $cs,
             'sc' => $sc,
             'xk' => $xk,
@@ -1381,6 +1389,12 @@ DOM;
             }],
             ['主石色彩', 'id', 'function', function ($row) use($specList) {
                 return $specList[$row->id]['zssc'];
+            }],
+            ['净度', 'id', 'function', function ($row) use($specList) {
+                return $specList[$row->id]['jd'];
+            }],
+            ['颜色', 'id', 'function', function ($row) use($specList) {
+                return $specList[$row->id]['ys'];
             }],
             ['商品原价', 'id', 'function', function ($row) {
                 return $row->order->account->currency . ' ' . $row->goods_price;

@@ -1,9 +1,4 @@
 <?php
-if(isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST']=='msjew.com'){
-    header('HTTP/1.1 301 Moved Permanently');
-    header('Location:https://www.msjew.com');
-    exit;
-}
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 

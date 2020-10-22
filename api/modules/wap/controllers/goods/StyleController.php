@@ -120,22 +120,16 @@ class StyleController extends OnAuthController
                     $attr_id = 55;
                     if($param_value == -1){
                         continue;
-                        $marry_style_man_attr = \Yii::$app->attr->valueList(55);
-                        $param_value = array_column($marry_style_man_attr,'id');
                     }
                 }elseif ($param_name == 'marry_style_wom'){
                     $attr_id = 54;
                     if($param_value == -1){
                         continue;
-                        $marry_style_man_attr = \Yii::$app->attr->valueList(54);
-                        $param_value = array_column($marry_style_man_attr,'id');
                     }
                 }elseif($param_name == 'gender'){
                     $attr_id = 26;
                     if($param_value == -1){
                         continue;
-                        $marry_style_man_attr = \Yii::$app->attr->valueList(26);
-                        $param_value = array_column($marry_style_man_attr,'id');
                     }else{
                         //通用款在男戒、女戒里显示
                         $param_value = [$param_value,43];
@@ -145,8 +139,6 @@ class StyleController extends OnAuthController
                     $attr_id = 60;
                     if($param_value == -1){
                         continue;
-                        $marry_style_man_attr = \Yii::$app->attr->valueList(26);
-                        $param_value = array_column($marry_style_man_attr,'id');
                     }
 
                 }
@@ -155,6 +147,15 @@ class StyleController extends OnAuthController
                     if($param_value == -1){
                         continue;
                     }
+                }
+                elseif (is_numeric($param_name)) {
+                    $attr_id = $param_name;
+
+                    if($param_value == -1){
+                        continue;
+                    }
+
+                    $param_value = explode(',', $param_value);
                 }
                 else{
                     continue;

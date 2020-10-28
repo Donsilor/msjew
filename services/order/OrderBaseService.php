@@ -151,7 +151,7 @@ class OrderBaseService extends Service
      * @param unknown $order_id
      * @param string $prefix
      */
-    public function createOrderSn($prefix = 'BDD')
+    public function createOrderSn($prefix = 'MS')
     {
         return $prefix.date('Ymd').mt_rand(3,9).str_pad(mt_rand(1, 99999),6,'1',STR_PAD_LEFT);
     }

@@ -49,7 +49,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
                             <li><a href="https://www.msjew.com/jewellery/all" target="_blank">Jewelry</a></li>
 						</ul>
 						<div class="copy">
-							<p>If you have any feedback or suggestions on bddco's products, or if you have any problems using it</p>
+							<p>If you have any feedback or suggestions on MORESHINE co's products, or if you have any problems using it</p>
 							<p>Feel free to contact us：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
 							<em>Copyright ©2012 - <?= date("Y")?> MORESHINE Co., Ltd.</em>
 						</div>

@@ -22,14 +22,14 @@ $order = Order::find()->where(['id'=>$order_id])->one();
 <div class="qmbox">
     <div class="Mail" id="app">
         <div class="Head">
-            <span class="logo">BDD Co.</span>
+            <span class="logo">MORESHINE Co.</span>
             <em class="sign">Superior quality diamond online shop | Jewelry expert</em>
         </div>
         <div class="Main">
             <div class="info">
                 <dl>
                     <dt>Dear customers：</dt>
-                    <dd>Thanks for shopping at BDD Co., the item has been dispatched. More delivery information can be  tracked on your login account on BDD Co. Please send emails to <a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a> if there is any question regarding to your order.</dd>
+                    <dd>Thanks for shopping at MORESHINE Co., the item has been dispatched. More delivery information can be  tracked on your login account on MORESHINE Co. Please send emails to <a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a> if there is any question regarding to your order.</dd>
                 </dl>
                 <dl>
                     <dt>Dispatched</dt>
@@ -56,9 +56,9 @@ $order = Order::find()->where(['id'=>$order_id])->one();
                     <li>Jewelry</li>
                 </ul>
                 <div class="copy">
-                    <p>If you have any feedback or suggestions on bddco's products, or if you have any problems using it</p>
+                    <p>If you have any feedback or suggestions on MORESHINE co's products, or if you have any problems using it</p>
                     <p>Feel free to contact us：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
-                    <em>Copyright ©<?= date("Y")?> BDD Co., Ltd.</em>
+                    <em>Copyright ©<?= date("Y")?> MORESHINE Co., Ltd.</em>
                 </div>
             </div>
         </div>

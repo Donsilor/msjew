@@ -119,8 +119,13 @@ class StyleController extends Controller
                     }
                 }
 
-                if(count($areaName)==count($areaEnum)) {
+                if($status) {
                     $style->status = $status;
+                }
+                else {
+                    if(count($areaName)==count($areaEnum)) {
+                        $style->status = $status;
+                    }
                 }
 
                 $style->style_salepolicy = $styleSalepolicy;

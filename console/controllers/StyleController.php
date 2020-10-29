@@ -143,7 +143,7 @@ class StyleController extends Controller
             $trans->commit();
         } catch (\Exception $exception) {
             $trans->rollBack();
-
+            print_r($style->style_sn??[]);
             throw $exception;
         }
 

@@ -134,50 +134,50 @@ $yesOrNo = \common\enums\StatusEnum::getYesOrNo();
                     'class' => 'form-control',                        
                 ]),
             ],
-//            [
-//                'attribute' => 'hk_status',
-//                'value' => function ($model) {
-//                    return \common\enums\StatusEnum::getValue($model->hk_status, 'getYesOrNo');
-//                },
-//                'filter' => Html::activeDropDownList($searchModel, 'hk_status', $yesOrNo, [
-//                    'prompt' => '全部',
-//                    'class' => 'form-control',
-//                ]),
-//                'headerOptions' => ['width'=>'110'],
-//            ],
-//            [
-//                'attribute' => 'tw_status',
-//                'value' => function ($model) {
-//                    return \common\enums\StatusEnum::getValue($model->tw_status, 'getYesOrNo');
-//                },
-//                'filter' => Html::activeDropDownList($searchModel, 'tw_status', $yesOrNo, [
-//                    'prompt' => '全部',
-//                    'class' => 'form-control',
-//                ]),
-//                'headerOptions' => ['width'=>'110'],
-//            ],
-//            [
-//                'attribute' => 'cn_status',
-//                'value' => function ($model) {
-//                    return \common\enums\StatusEnum::getValue($model->cn_status, 'getYesOrNo');
-//                },
-//                'filter' => Html::activeDropDownList($searchModel, 'cn_status', $yesOrNo, [
-//                    'prompt' => '全部',
-//                    'class' => 'form-control',
-//                ]),
-//                'headerOptions' => ['width'=>'110'],
-//            ],
-//            [
-//                'attribute' => 'us_status',
-//                'value' => function ($model) {
-//                    return \common\enums\StatusEnum::getValue($model->us_status, 'getYesOrNo');
-//                },
-//                'filter' => Html::activeDropDownList($searchModel, 'us_status', $yesOrNo, [
-//                    'prompt' => '全部',
-//                    'class' => 'form-control',
-//                ]),
-//                'headerOptions' => ['width'=>'110'],
-//            ],
+            [
+                'attribute' => 'hk_status',
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->hk_status, 'getYesOrNo');
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'hk_status', $yesOrNo, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'headerOptions' => ['width'=>'110'],
+            ],
+            [
+                'attribute' => 'tw_status',
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->tw_status, 'getYesOrNo');
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'tw_status', $yesOrNo, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'headerOptions' => ['width'=>'110'],
+            ],
+            [
+                'attribute' => 'cn_status',
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->cn_status, 'getYesOrNo');
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'cn_status', $yesOrNo, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'headerOptions' => ['width'=>'110'],
+            ],
+            [
+                'attribute' => 'us_status',
+                'value' => function ($model) {
+                    return \common\enums\StatusEnum::getValue($model->us_status, 'getYesOrNo');
+                },
+                'filter' => Html::activeDropDownList($searchModel, 'us_status', $yesOrNo, [
+                    'prompt' => '全部',
+                    'class' => 'form-control',
+                ]),
+                'headerOptions' => ['width'=>'110'],
+            ],
             [
                 'attribute' => 'created_at',
                 'filter' => \kartik\daterange\DateRangePicker::widget([    // 日期组件

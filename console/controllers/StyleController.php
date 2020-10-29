@@ -103,10 +103,19 @@ class StyleController extends Controller
                 $old_style_info = $style->toArray();
 
                 $styleSalepolicy = json_decode($style->style_salepolicy, true);
+                $goodsSalepolicy = json_decode($style->goods_salepolicy, true);
 
                 foreach ($styleSalepolicy as $key => $salepolicy) {
                     if (in_array($salepolicy['area_id'], $areaName)) {
                         $styleSalepolicy[$key]['status'] = $status;
+                    }
+                }
+
+                foreach ($goodsSalepolicy as $key => $salepolicys) {
+                    foreach ($salepolicys as $key2 => $salepolicy) {
+                        if (in_array($salepolicy['area_id'], $areaName)) {
+                            $goodsSalepolicy[$key][$key2]['status'] = $status;
+                        }
                     }
                 }
 
@@ -115,6 +124,7 @@ class StyleController extends Controller
                 }
 
                 $style->style_salepolicy = $styleSalepolicy;
+                $style->goods_salepolicy = $goodsSalepolicy;
 
                 $style->save();
 

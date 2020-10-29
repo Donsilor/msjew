@@ -126,7 +126,7 @@ DOM;
             $dataProvider->query->andFilterWhere(['between', 'goods_style.created_at', strtotime($start_date), strtotime($end_date) + 86400]);
         }
 
-        $dataProvider->query->select(['goods_style.*']);//, 'goods.hk_status', 'goods.tw_status', 'goods.cn_status', 'goods.us_status']);
+        $dataProvider->query->select(['goods_style.*', 'goods.hk_status', 'goods.tw_status', 'goods.cn_status', 'goods.us_status']);
 
         //导出
         if(Yii::$app->request->get('action') === 'export'){

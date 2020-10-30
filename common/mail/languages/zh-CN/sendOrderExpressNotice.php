@@ -22,14 +22,14 @@ $order = Order::find()->where(['id'=>$order_id])->one();
 <div class="qmbox">
     <div class="Mail" id="app">
         <div class="Head">
-            <span class="logo">BDD Co.</span>
+            <span class="logo">MORESHINE Co.</span>
             <em class="sign">质量优越莫桑石网上店 | 首饰专家</em>
         </div>
         <div class="Main">
             <div class="info">
                 <dl>
                     <dt>尊敬的顾客：</dt>
-                    <dd>您购买的商品已经发货，感谢选择BDD Co.。想了解更详细的物流信息，请在BDD官网登录您的账户查看。若您有任何疑问，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+                    <dd>您购买的商品已经发货，感谢选择MORESHINE Co.。想了解更详细的物流信息，请在MORESHINE官网登录您的账户查看。若您有任何疑问，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
                 </dl>
                 <dl>
                     <dt>订单详情：    【已发货】</dt>
@@ -56,9 +56,9 @@ $order = Order::find()->where(['id'=>$order_id])->one();
                     <li>饰品</li>
                 </ul>
                 <div class="copy">
-                    <p>如果您对BDDCO的产品有任何反馈或建议，或者使用时遇到了什么问题</p>
+                    <p>如果您对MORESHINE CO的产品有任何反馈或建议，或者使用时遇到了什么问题</p>
                     <p>欢迎随时与我们联系：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
-                    <em>Copyright ©<?= date("Y")?> BDD Co., Ltd.</em>
+                    <em>Copyright ©<?= date("Y")?> MORESHINE Co., Ltd.</em>
                 </div>
             </div>
         </div>

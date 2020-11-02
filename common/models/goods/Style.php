@@ -15,6 +15,7 @@ use common\helpers\ArrayHelper;
  * @property int $type_id 产品线
  * @property int $merchant_id 商户ID
  * @property string $style_image 商品主图
+ * @property string $ar_image 商品主图
  * @property string $style_3ds 360主图
  * @property string $goods_images 商品图库
  * @property string $style_attr 款式属性
@@ -81,7 +82,7 @@ class Style extends BaseModel
                 ['sale_price','compare','compareValue' => 1000000000, 'operator' => '<'],
                 ['cost_price','compare','compareValue' => 1000000000, 'operator' => '<'],
                 [['style_sn'], 'string', 'max' => 50],
-                [['style_image','style_3ds'], 'string', 'max' => 100],
+                [['style_image','ar_image','style_3ds'], 'string', 'max' => 100],
                 [['verify_remark'], 'string', 'max' => 255],
                 [['attr_require','attr_custom'],'parseStyleAttr'],    
                 [['style_spec'],'parseStyleSpec'],
@@ -203,6 +204,7 @@ class Style extends BaseModel
             'type_id' => Yii::t('goods', '产品线'),
             'merchant_id' => Yii::t('goods', '商户ID'),
             'style_image' => Yii::t('goods', '商品图片'),
+            'ar_image' => Yii::t('goods', '商品AR图片'),
             'style_3ds' => Yii::t('goods', '360主图'),
             'goods_images' => Yii::t('goods', '商品图片'),
             'style_attr' => Yii::t('goods', '款式属性'),            

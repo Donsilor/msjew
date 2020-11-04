@@ -260,6 +260,18 @@ class PayService extends Service
         return Yii::$app->pay->union($config)->$tradeType($order);
     }
 
+    public function stripe(PayForm $payForm, $baseOrder)
+    {
+        $config = [];
+        $order = [
+            'amount' => $baseOrder['total_fee'],
+            'currency' => $baseOrder['currency'],
+//            'source' => $token,
+        ];
+        $tradeType = '';
+        return Yii::$app->pay->stripe($config)->$tradeType($order);
+    }
+
     /**
      * @param PayForm $payForm
      * @return array

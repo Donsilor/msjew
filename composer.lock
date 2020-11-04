@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f410d83706011eccc41125bba49bba1f",
+    "content-hash": "8d38281094e648ede52f6131fc764d16",
     "packages": [
         {
             "name": "2amigos/qrcode-library",
@@ -5896,6 +5896,69 @@
             "time": "2017-05-11T14:25:49+00:00"
         },
         {
+            "name": "stripe/stripe-php",
+            "version": "v7.61.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stripe/stripe-php.git",
+                "reference": "51c6cd18cb51740101c940a3fefc876ef7cd8cae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/51c6cd18cb51740101c940a3fefc876ef7cd8cae",
+                "reference": "51c6cd18cb51740101c940a3fefc876ef7cd8cae",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "2.16.1",
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpunit/phpunit": "^5.7",
+                "squizlabs/php_codesniffer": "^3.3",
+                "symfony/process": "~3.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Stripe\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stripe and contributors",
+                    "homepage": "https://github.com/stripe/stripe-php/contributors"
+                }
+            ],
+            "description": "Stripe PHP Library",
+            "homepage": "https://stripe.com/",
+            "keywords": [
+                "api",
+                "payment processing",
+                "stripe"
+            ],
+            "time": "2020-10-20T20:01:45+00:00"
+        },
+        {
             "name": "swiftmailer/swiftmailer",
             "version": "v6.2.3",
             "source": {
@@ -7047,12 +7110,12 @@
             "version": "v5.8.35",
             "source": {
                 "type": "git",
-                "url": "https://github.com/tightenco/collect.git",
+                "url": "https://github.com/tighten/collect.git",
                 "reference": "c93a7039e6207ad533a09109838fe80933fcc72c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tightenco/collect/zipball/c93a7039e6207ad533a09109838fe80933fcc72c",
+                "url": "https://api.github.com/repos/tighten/collect/zipball/c93a7039e6207ad533a09109838fe80933fcc72c",
                 "reference": "c93a7039e6207ad533a09109838fe80933fcc72c",
                 "shasum": "",
                 "mirrors": [
@@ -8150,7 +8213,6 @@
                 "functional testing",
                 "unit testing"
             ],
-            "abandoned": true,
             "time": "2019-04-24T11:36:34+00:00"
         },
         {
@@ -8410,12 +8472,12 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/daycats/yii2-ip2location.git",
+                "url": "https://github.com/myweishanli/yii2-ip2location.git",
                 "reference": "c5a5d58944d9672adfc3caab2a91b99b6e2ddbfc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/daycats/yii2-ip2location/zipball/c5a5d58944d9672adfc3caab2a91b99b6e2ddbfc",
+                "url": "https://api.github.com/repos/myweishanli/yii2-ip2location/zipball/c5a5d58944d9672adfc3caab2a91b99b6e2ddbfc",
                 "reference": "c5a5d58944d9672adfc3caab2a91b99b6e2ddbfc",
                 "shasum": "",
                 "mirrors": [

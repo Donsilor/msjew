@@ -23,9 +23,44 @@ class CardController extends Controller
 
     public function actionTest()
     {
-        $goods = \Yii::$app->services->goods->getGoodsInfo(2372, 2);
-        $goods_attr = \GuzzleHttp\json_decode($goods['goods_attr'], true);
-        var_dump($goods_attr);
+        print_r(123);
+        $config = [
+//            'apiKey' => 'sk_test_51HiuCwKWxBKAL69UqEtFrbs2MiyWpTjR36H7vMa4RQp8CgKqiwsS4ZH5QQ6pHixJyPlTwvwj5xZ6GbY4VlgCV0sw00Ta3f8gFG',
+            'apiKey' => 'sk_test_51Hh91GEg2ty3UyHNkc6aYtw29SoM4qSqlttaOQpwj5oMD9RJUKyZAYSWBxau3LZwbLULayfTsad1lGLcrhulVClK009rLNjmU7',
+//            'mode' => 'payment',
+        ];
+//        $formData = array('number' => '4242424242424242','expiryMonth' => '6', 'expiryYear' => '2030', 'cvv' => '123');
+        $order = [
+            'amount' => 1,
+            'currency' => 'USD',
+            'transactionId' => date('YmdHis'),
+            'returnUrl' => 'https://www.baidu.com/',
+            'cancelUrl' => 'https://www.baidu.com/',
+            "description" => "Created by stripe.com/docs demo",
+            'items' => [
+                [
+                    'name' => 2000,
+                    'price' => 2,
+                    'quantity' => 2,
+                    'description' => 'Stubborn Attachments',
+                ]
+            ],
+//            'line_items' => [[
+//                'price_data' => [
+//                    'currency' => 'usd',
+//                    'unit_amount' => 2000,
+//                    'product_data' => [
+//                        'name' => 'Stubborn Attachments',
+//                        'images' => ["https://i.imgur.com/EHyR2nP.png"],
+//                    ],
+//                ],
+//                'quantity' => 1,
+//            ]],
+        ];
+        $tradeType = 'pc';
+
+
+        return \Yii::$app->pay->stripe($config)->$tradeType($order);
     }
 
     /**

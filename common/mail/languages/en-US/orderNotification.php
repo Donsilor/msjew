@@ -34,11 +34,11 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 							        $order->order_status == OrderStatusEnum::ORDER_UNPAID ||
                                     $order->order_status == OrderStatusEnum::ORDER_CANCEL && $order->refund_status
                             ) {?>
-							<dd>Thank you for choosing MORESHINE Co. We attach great importance to your order. Please read all the email about the order carefully. If the data is wrong, please contact us immediately by email <a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>Thank you for choosing MORESHINE Co. We attach great importance to your order. Please read all the email about the order carefully. If the data is wrong, please contact us immediately by email <a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 							<?php } elseif($order->order_status == OrderStatusEnum::ORDER_PAID){?>
-							<dd>Your order has been paid successfully! Thank you for choosing MORESHINE Co. We attach great importance to your order, we have arranged for you as soon as possible, and we will send it to you at the first time when the product test is correct. If you have any questions, please contact us immediately by email to <a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>Your order has been paid successfully! Thank you for choosing MORESHINE Co. We attach great importance to your order, we have arranged for you as soon as possible, and we will send it to you at the first time when the product test is correct. If you have any questions, please contact us immediately by email to <a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 							<?php } elseif($order->order_status == OrderStatusEnum::ORDER_SEND){?>
-							<dd>Your order has been delivered successfully! Thank you for choosing MORESHINE Co. If you have any questions, please contact us immediately by email <a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>Your order has been delivered successfully! Thank you for choosing MORESHINE Co. If you have any questions, please contact us immediately by email <a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 							<?php }?>							
 						</dl>
 						<dl>
@@ -256,7 +256,7 @@ At this stage, your order will be kept temporarily for up to 48 business hours. 
 						</ul>
 						<div class="copy">
 							<p>If you have any feedback or suggestions on moreshienco's products, or if you have any problems using it</p>
-							<p>Feel free to contact us：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
+							<p>Feel free to contact us：<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a></p>
 							<em>Copyright ©<?= date("Y")?> MORESHINE Co., Ltd.</em>
 						</div>
 					</div>

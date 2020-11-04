@@ -29,11 +29,11 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 						<dl>
 							<dt>尊敬的顧客：</dt>
 							<?php if($order->order_status == OrderStatusEnum::ORDER_UNPAID) {?>
-							<dd>感謝選擇BDD Co.。我們十分重視您的訂單。請細心閱讀所有有關訂單的郵件，如資料有誤，請立即聯絡我們發電郵至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>感謝選擇BDD Co.。我們十分重視您的訂單。請細心閱讀所有有關訂單的郵件，如資料有誤，請立即聯絡我們發電郵至<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 							<?php } elseif($order->order_status == OrderStatusEnum::ORDER_PAID){?>
-							<dd>您的訂單已經支付成功！感謝選擇BDD Co.。我們十分重視您的訂單，已經盡快為您安排，產品檢測無誤第壹時間給您派送，如有任何疑問，請立即聯絡我們發電郵至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>您的訂單已經支付成功！感謝選擇BDD Co.。我們十分重視您的訂單，已經盡快為您安排，產品檢測無誤第壹時間給您派送，如有任何疑問，請立即聯絡我們發電郵至<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 							<?php } elseif($order->order_status == OrderStatusEnum::ORDER_SEND){?>
-							<dd>您的訂單已經發貨成功！感謝選擇BDD Co.。如有任何疑問，請立即聯絡我們發電郵至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>您的訂單已經發貨成功！感謝選擇BDD Co.。如有任何疑問，請立即聯絡我們發電郵至<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 							<?php }?>							
 						</dl>
 						<dl>
@@ -124,7 +124,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 						</ul>
 						<div class="copy">
 							<p>如果您對BDDCO的產品有任何反饋或建議，或者使用時遇到了什麼問题</p>
-							<p>歡迎隨時與我們聯繫：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
+							<p>歡迎隨時與我們聯繫：<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a></p>
 							<em>Copyright ©2012 - <?= date("Y")?> BDD Co., Ltd.</em>
 						</div>
 					</div>

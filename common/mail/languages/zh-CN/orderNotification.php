@@ -33,11 +33,11 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
                                     $order->order_status == OrderStatusEnum::ORDER_UNPAID ||
                                     $order->order_status == OrderStatusEnum::ORDER_CANCEL && $order->refund_status
                             ) {?>
-							<dd>感谢选择MORESHINE Co.。我们十分重视您的订单。请细心阅读所有有关订单的邮件，如数据有误，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>感谢选择MORESHINE Co.。我们十分重视您的订单。请细心阅读所有有关订单的邮件，如数据有误，请立即联络我们发电邮至<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 							<?php } elseif($order->order_status == OrderStatusEnum::ORDER_PAID){?>
-							<dd>您的订单已经支付成功！感谢选择MORESHINE Co.。我们十分重视您的订单，已经尽快为您安排，产品检测无误第壹时间给您派送，如有任何疑问，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>您的订单已经支付成功！感谢选择MORESHINE Co.。我们十分重视您的订单，已经尽快为您安排，产品检测无误第壹时间给您派送，如有任何疑问，请立即联络我们发电邮至<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 							<?php } elseif($order->order_status == OrderStatusEnum::ORDER_SEND){?>
-							<dd>您的订单已经发货成功！感谢选择MORESHINE Co.。如有任何疑问，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>您的订单已经发货成功！感谢选择MORESHINE Co.。如有任何疑问，请立即联络我们发电邮至<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 							<?php }?>
 						</dl>
 						<dl>
@@ -255,7 +255,7 @@ DOM;
 						</ul>
 						<div class="copy">
 							<p>如果您对MORESHINE CO的产品有任何反馈或建议，或者使用时遇到了什么问题</p>
-							<p>欢迎随时与我们联系：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
+							<p>欢迎随时与我们联系：<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a></p>
 							<em>Copyright ©<?= date("Y")?> MORESHINE Co., Ltd.</em>
 						</div>
 					</div>

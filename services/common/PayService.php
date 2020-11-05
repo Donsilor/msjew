@@ -262,14 +262,31 @@ class PayService extends Service
 
     public function stripe(PayForm $payForm, $baseOrder)
     {
-        $config = [];
-        $order = [
-            'amount' => $baseOrder['total_fee'],
-            'currency' => $baseOrder['currency'],
-//            'source' => $token,
+        // 配置
+        $config = [
         ];
-        $tradeType = '';
-        return Yii::$app->pay->stripe($config)->$tradeType($order);
+
+        $order = [
+            'currency' => $baseOrder['currency'],
+            'transactionId' => $baseOrder['out_trade_no'],
+            'returnUrl' => $payForm->returnUrl,
+            'cancelUrl' => $payForm->returnUrl,
+            "description" => $baseOrder['body'],
+            'items' => [
+                [
+                    'name' => $baseOrder['body'],
+                    'price' => $baseOrder['total_fee'],
+                    'quantity' => 1,
+                    'description' => $baseOrder['body'],
+                ]
+            ],
+        ];
+
+        // 交易类型
+        $tradeType = $payForm->tradeType;
+        return [
+            'config' => Yii::$app->pay->stripe($config)->$tradeType($order)
+        ];
     }
 
     /**

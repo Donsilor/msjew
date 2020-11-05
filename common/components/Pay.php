@@ -151,9 +151,8 @@ class Pay extends Component
 
     public function stripe(array $config = [])
     {
-        print_r('aed');
         return new StripePay(ArrayHelper::merge([
-            'apiKEy' => ''
+            'apiKey' => 'sk_test_51Hh91GEg2ty3UyHNkc6aYtw29SoM4qSqlttaOQpwj5oMD9RJUKyZAYSWBxau3LZwbLULayfTsad1lGLcrhulVClK009rLNjmU7',
         ], $config));
     }
 

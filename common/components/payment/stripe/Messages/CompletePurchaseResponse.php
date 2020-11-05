@@ -98,6 +98,6 @@ class CompletePurchaseResponse extends AbstractResponse
 
     public function isPaid()
     {
-        return true;
+        return $this->isSuccessful();
     }
 }

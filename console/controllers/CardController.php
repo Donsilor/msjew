@@ -23,7 +23,6 @@ class CardController extends Controller
 
     public function actionTest()
     {
-        print_r(123);
         $config = [
             'apiKey' => 'sk_test_51Hh91GEg2ty3UyHNkc6aYtw29SoM4qSqlttaOQpwj5oMD9RJUKyZAYSWBxau3LZwbLULayfTsad1lGLcrhulVClK009rLNjmU7',
         ];
@@ -44,6 +43,22 @@ class CardController extends Controller
         ];
 
         $tradeType = 'pc';
+
+
+        return \Yii::$app->pay->stripe($config)->$tradeType($order);
+    }
+
+    public function actionTest2()
+    {
+        $config = [
+            'apiKey' => 'sk_test_51Hh91GEg2ty3UyHNkc6aYtw29SoM4qSqlttaOQpwj5oMD9RJUKyZAYSWBxau3LZwbLULayfTsad1lGLcrhulVClK009rLNjmU7',
+        ];
+
+        $order = [
+            'transactionReference' => '{"sessionId":"cs_test_mjJYJvj793BB9UDWxhLUDwjyqGkE2YWD6mNl9vRl8SzITtdwm1XRtx4G"}'
+        ];
+
+        $tradeType = 'verify';
 
 
         return \Yii::$app->pay->stripe($config)->$tradeType($order);

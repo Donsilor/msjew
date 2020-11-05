@@ -95,4 +95,9 @@ class CompletePurchaseResponse extends AbstractResponse
     {
         return $this->request->getTransactionId();
     }
+
+    public function isPaid()
+    {
+        return true;
+    }
 }

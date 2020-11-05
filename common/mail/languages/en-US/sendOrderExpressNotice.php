@@ -29,7 +29,7 @@ $order = Order::find()->where(['id'=>$order_id])->one();
             <div class="info">
                 <dl>
                     <dt>Dear customers：</dt>
-                    <dd>Thanks for shopping at MORESHINE Co., the item has been dispatched. More delivery information can be  tracked on your login account on MORESHINE Co. Please send emails to <a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a> if there is any question regarding to your order.</dd>
+                    <dd>Thanks for shopping at MORESHINE Co., the item has been dispatched. More delivery information can be  tracked on your login account on MORESHINE Co. Please send emails to <a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a> if there is any question regarding to your order.</dd>
                 </dl>
                 <dl>
                     <dt>Dispatched</dt>
@@ -57,7 +57,7 @@ $order = Order::find()->where(['id'=>$order_id])->one();
                 </ul>
                 <div class="copy">
                     <p>If you have any feedback or suggestions on MORESHINE co's products, or if you have any problems using it</p>
-                    <p>Feel free to contact us：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
+                    <p>Feel free to contact us：<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a></p>
                     <em>Copyright ©<?= date("Y")?> MORESHINE Co., Ltd.</em>
                 </div>
             </div>

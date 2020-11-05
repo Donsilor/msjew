@@ -29,7 +29,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 					<div class="info">
 						<dl>
 							<dt>尊敬的顾客：</dt>
-                            <dd>感谢选择MORESHINE Co.。我们十分重视您的订单。请细心阅读下方附件中关于此订单：电子凭证的邮件，如数据有误，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+                            <dd>感谢选择MORESHINE Co.。我们十分重视您的订单。请细心阅读下方附件中关于此订单：电子凭证的邮件，如数据有误，请立即联络我们发电邮至<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 						</dl>
 						<dl>
 							<dt>订单详情</dt>
@@ -50,7 +50,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 						</ul>
 						<div class="copy">
 							<p>如果您对MORESHINE CO的产品有任何反馈或建议，或者使用时遇到了什么问题</p>
-							<p>欢迎随时与我们联系：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
+							<p>欢迎随时与我们联系：<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a></p>
 							<em>Copyright ©2012 - <?= date("Y")?> MORESHINE Co., Ltd.</em>
 						</div>
 					</div>

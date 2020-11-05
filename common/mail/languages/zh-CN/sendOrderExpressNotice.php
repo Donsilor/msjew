@@ -29,7 +29,7 @@ $order = Order::find()->where(['id'=>$order_id])->one();
             <div class="info">
                 <dl>
                     <dt>尊敬的顾客：</dt>
-                    <dd>您购买的商品已经发货，感谢选择MORESHINE Co.。想了解更详细的物流信息，请在MORESHINE官网登录您的账户查看。若您有任何疑问，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+                    <dd>您购买的商品已经发货，感谢选择MORESHINE Co.。想了解更详细的物流信息，请在MORESHINE官网登录您的账户查看。若您有任何疑问，请立即联络我们发电邮至<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
                 </dl>
                 <dl>
                     <dt>订单详情：    【已发货】</dt>
@@ -57,7 +57,7 @@ $order = Order::find()->where(['id'=>$order_id])->one();
                 </ul>
                 <div class="copy">
                     <p>如果您对MORESHINE CO的产品有任何反馈或建议，或者使用时遇到了什么问题</p>
-                    <p>欢迎随时与我们联系：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
+                    <p>欢迎随时与我们联系：<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a></p>
                     <em>Copyright ©<?= date("Y")?> MORESHINE Co., Ltd.</em>
                 </div>
             </div>

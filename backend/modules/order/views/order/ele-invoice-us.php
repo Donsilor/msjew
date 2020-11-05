@@ -130,7 +130,7 @@
             <div style="width: 280px;height: 200px;position: relative" class="fl">
                 <div class="total clf" style="text-align: left;word-break:break-all;margin: 0;position: absolute;bottom:0px;">
                     <br/><br/><br/>If you have any questions, please contact our Customer Service Associate by<br/>
-                    sending e-mail to service@bddco.com<br/>
+                    sending e-mail to service@msjew.com<br/>
                     Thank you for choosing MORESHINE Co.
                 </div>
             </div>

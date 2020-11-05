@@ -506,7 +506,7 @@ class GoodsService extends Service
         $style_model =  $query->one();
         $format_style_attrs = $this->formatStyleAttrs($style_model);
 //        return $format_style_attrs;
-        $model = $query ->select(['m.id','m.style_sn','m.status','markup.status as markup_status','m.goods_images','m.type_id','m.style_3ds','m.style_image','IFNULL(markup.sale_price,m.sale_price) as sale_price','lang.goods_body','lang.style_name','lang.meta_title','lang.meta_word','lang.meta_desc'])
+        $model = $query ->select(['m.id','m.style_sn','m.status','markup.status as markup_status','m.goods_images','m.type_id','m.style_3ds','m.style_image','m.ar_image','IFNULL(markup.sale_price,m.sale_price) as sale_price','lang.goods_body','lang.style_name','lang.meta_title','lang.meta_word','lang.meta_desc'])
             ->asArray()->one();
 
         //规格属性
@@ -515,6 +515,7 @@ class GoodsService extends Service
         $style['goodsName'] = $model['style_name'];
         $style['goodsCode'] = $model['style_sn'];
         $style['goodsImages'] = $model['goods_images'];
+        $style['arImage'] = $model['ar_image'];
         $style['salePrice'] = $this->exchangeAmount($model['sale_price'],0);
         $style['coinType'] = $this->getCurrencySign();
         $style['goods3ds'] = $model['style_3ds'];

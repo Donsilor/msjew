@@ -314,9 +314,8 @@ class PayController extends OnAuthController
                 $data = $response->getData();
 
                 if(isset($data['total']) && isset($data['currency'])) {
-                    $model->total_fee = $data['total'];
-                    $model->pay_fee = $data['total'];
-                    $model->fee_type = $data['currency'];
+                    $model->pay_fee = $model->pay_type==PayEnum::PAY_TYPE_STRIPE ? $data['amount']/100 : $data['total'];
+                    $model->fee_type = strtoupper($data['currency']);
                     $model->pay_time = time();
                     $model->save();
                 }

@@ -312,6 +312,111 @@ class NotifyController extends Controller
 
         return exit(Json::encode($result));
     }
+
+    public function actionStripe()
+    {
+        $result = [
+            'verification_status' => 'FAILURE'
+        ];
+
+        $data = Yii::$app->request->post();
+        if(empty($data)) {
+            return $result;
+        }
+
+        //只处理支付成功事件
+        if(!empty($data['type']) && in_array($data['type'], ['checkout.session.completed'])) {
+
+            $paymentId = $data['object']['id'];
+
+            $transaction = Yii::$app->db->beginTransaction();
+
+            /**
+             * @var $model PayLog
+             */
+            $model = PayLog::find()->where(['transaction_id'=>$paymentId])->one();
+
+            if(!$model) {
+                PaypalLog::writeLog($paymentId . "找不到订单日志",'notify-' . date('Y-m-d').'.log');
+                return exit(Json::encode($result));
+            }
+
+            $logPrix = "[".$model->order_sn."]";
+            //判断订单支付状态
+            if ($model->pay_status == PayStatusEnum::PAID) {
+                PaypalLog::writeLog($logPrix.'该笔订单已支付','notify-'.date('Y-m-d').'.log');
+                return exit(Json::encode($result));
+            }
+
+            try {
+
+                //更新支付记录
+                $update = [
+                    'pay_status' => PayStatusEnum::PAID,
+                ];
+                $updated = PayLog::updateAll($update, ['id' => $model->id, 'pay_status' => PayStatusEnum::UNPAID]);
+                if (!$updated) {
+                    PaypalLog::writeLog($logPrix . '更新支付状态失败', 'notify-' . date('Y-m-d') . '.log');
+                    throw new \Exception('该笔订单已支付~！' . $model->order_sn);
+                }
+
+                $model->refresh();
+
+                $response = Yii::$app->pay->Paypal()->notify(['model' => $model]);
+
+                if ($response->isPaid()) {
+
+                    $data = $response->getData();
+                    $paymentIntent = $data['paymentIntent'];
+
+                    if(isset($data['amount']) && isset($data['currency'])) {
+                        $amount = $data['amount']/100;
+                        $model->total_fee = $amount;
+                        $model->pay_fee = $amount;
+                        $model->fee_type = strtoupper($paymentIntent['currency']);
+                        $model->pay_time = time();
+                        $model->save();
+                    }
+
+                    //更新订单记录
+                    Yii::$app->services->pay->notify($model, $this->payment);
+
+                    $transaction->commit();
+
+                    \Yii::$app->services->order->sendOrderNotification($model->order_sn);
+
+                    $result['verification_status'] = 'SUCCESS';
+                    //日志记录
+                    $messsage = $logPrix.' isPaid:SUCCESS'.PHP_EOL;
+                    $messsage .= 'response->getMessage:'.$response->getCode().'|'.$response->getMessage().PHP_EOL;
+                    $messsage .= 'response->getData:'.var_export($response->getData(),true).PHP_EOL;
+
+                    PaypalLog::writeLog($messsage,'notify-'.date('Y-m-d').'.log');
+                }
+                else {
+                    $messsage = $logPrix.' isPaid:Failed'.PHP_EOL;
+                    $messsage .= 'response->getMessage:'.$response->getCode().'|'.$response->getMessage().PHP_EOL;
+                    $messsage .= 'response->getData:'.var_export($response->getData(),true).PHP_EOL;
+                    PaypalLog::writeLog($messsage,'notify-'.date('Y-m-d').'.log');
+                    throw new \Exception('该笔订单验证异常~！'.$model->order_sn);
+                }
+
+            } catch (\Exception $e) {
+
+                $transaction->rollBack();
+                Yii::$app->services->actionLog->create('Stripe 钩子校验','Exception:'.$e->getMessage());
+
+                $messsage = $logPrix.'Notify Exception:'.PHP_EOL;
+                $messsage .= 'Exception->message:'.$e->getCode().'|'.$e->getMessage().PHP_EOL;
+                $messsage .= 'Exception->line:'.$e->getLine().'|'.$e->getFile().PHP_EOL;
+                PaypalLog::writeLog($messsage,'notify-'.date('Y-m-d').'.log');
+            }
+
+        }
+
+        return exit(Json::encode($result));
+    }
+
     /**
      * 公用支付回调 - 微信
      *

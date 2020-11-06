@@ -362,7 +362,7 @@ class NotifyController extends Controller
 
                 $model->refresh();
 
-                $response = Yii::$app->pay->Paypal()->notify(['model' => $model]);
+                $response = Yii::$app->pay->stripe()->notify(['model' => $model]);
 
                 if ($response->isPaid()) {
 
@@ -371,7 +371,6 @@ class NotifyController extends Controller
 
                     if(isset($data['amount']) && isset($data['currency'])) {
                         $amount = $data['amount']/100;
-                        $model->total_fee = $amount;
                         $model->pay_fee = $amount;
                         $model->fee_type = strtoupper($paymentIntent['currency']);
                         $model->pay_time = time();

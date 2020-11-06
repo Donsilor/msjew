@@ -63,6 +63,11 @@ class StripePay
         return $sessionId;
     }
 
+    public function wap($order, $debug = false)
+    {
+        return $this->pc($order, $debug);
+    }
+
     /**
      * 异步/同步通知
      */

@@ -53,6 +53,7 @@ class CompletePurchaseResponse extends AbstractResponse
                 case self::STATUS_SUCCESS:
                     $this->successful = true;
                     $this->message = $paymentIntent->status;
+                    $this->code = 'completed';
                     break;
                 case self::STATUS_CANCELED:
                     $this->successful = false;

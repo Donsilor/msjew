@@ -327,7 +327,7 @@ class NotifyController extends Controller
         //只处理支付成功事件
         if(!empty($data['type']) && in_array($data['type'], ['checkout.session.completed'])) {
 
-            $paymentId = $data['object']['id'];
+            $paymentId = $data['data']['object']['id'];
 
             $transaction = Yii::$app->db->beginTransaction();
 

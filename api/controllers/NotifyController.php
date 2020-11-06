@@ -2,6 +2,7 @@
 
 namespace api\controllers;
 
+use common\enums\PayEnum;
 use common\enums\PayStatusEnum;
 use common\helpers\ResultHelper;
 use common\models\common\PayLog;
@@ -367,12 +368,19 @@ class NotifyController extends Controller
                 if ($response->isPaid()) {
 
                     $data = $response->getData();
-                    $paymentIntent = $data['paymentIntent'];
 
-                    if(isset($data['amount']) && isset($data['currency'])) {
-                        $amount = $data['amount']/100;
-                        $model->pay_fee = $amount;
-                        $model->fee_type = strtoupper($paymentIntent['currency']);
+                    //这段代码要移到stripe驱动里面。
+                    if($model->pay_type==PayEnum::PAY_TYPE_STRIPE) {
+                        $data = $data['paymentIntent'];
+                        $data = [
+                            'currency' => strtoupper($data['currency']),
+                            'total' => $data['amount']/100
+                        ];
+                    }
+
+                    if(isset($data['total']) && isset($data['currency'])) {
+                        $model->pay_fee = $data['total'];
+                        $model->fee_type = $data['currency'];
                         $model->pay_time = time();
                         $model->save();
                     }

@@ -58,11 +58,13 @@ class CompletePurchaseResponse extends AbstractResponse
                 case self::STATUS_CANCELED:
                     $this->successful = false;
                     $this->message = 'Canceled by customer';
+                    $this->code = 'failed';
                     break;
                 default:
                     // We don't know what happened, so act accordingly. Would be nice to make this better over time.
                     $this->successful = false;
                     $this->message = 'Unknown error';
+                    $this->code = 'pending';
                     break;
 
             }

@@ -262,6 +262,9 @@ class PayService extends Service
 
     public function stripe(PayForm $payForm, $baseOrder)
     {
+        $cancelUrl = Url::buildUrl($payForm->returnUrl,['success'=>'false']);
+        $returnUrl = Url::buildUrl($payForm->returnUrl,['success'=>'true']);
+
         // 配置
         $config = [
         ];
@@ -269,8 +272,8 @@ class PayService extends Service
         $order = [
             'currency' => $baseOrder['currency'],
             'transactionId' => $baseOrder['out_trade_no'],
-            'returnUrl' => $payForm->returnUrl,
-            'cancelUrl' => $payForm->returnUrl,
+            'returnUrl' => $returnUrl,
+            'cancelUrl' => $cancelUrl,
             "description" => $baseOrder['body'],
             'items' => [
                 [

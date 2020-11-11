@@ -62,8 +62,7 @@
         "kartik-v/yii2-checkbox-x": "@dev",
         "kartik-v/yii2-mpdf": "^1.0",
         "finecho/logistics": "^3.0",
-        "league/omnipay": "3.0.2",
-        "omnipay/stripe": "3.0.2"
+        "stripe/stripe-php": "^7.61"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

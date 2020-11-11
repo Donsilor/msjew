@@ -23,9 +23,45 @@ class CardController extends Controller
 
     public function actionTest()
     {
-        $goods = \Yii::$app->services->goods->getGoodsInfo(2372, 2);
-        $goods_attr = \GuzzleHttp\json_decode($goods['goods_attr'], true);
-        var_dump($goods_attr);
+        $config = [
+            'apiKey' => 'sk_test_51Hh91GEg2ty3UyHNkc6aYtw29SoM4qSqlttaOQpwj5oMD9RJUKyZAYSWBxau3LZwbLULayfTsad1lGLcrhulVClK009rLNjmU7',
+        ];
+        $order = [
+            'currency' => 'USD',
+            'transactionId' => date('YmdHis'),
+            'returnUrl' => 'https://www.baidu.com/',
+            'cancelUrl' => 'https://www.baidu.com/',
+            "description" => "Created by stripe.com/docs demo",
+            'items' => [
+                [
+                    'name' => 2000,
+                    'price' => 2,
+                    'quantity' => 2,
+                    'description' => 'Stubborn Attachments',
+                ]
+            ],
+        ];
+
+        $tradeType = 'pc';
+
+
+        return \Yii::$app->pay->stripe($config)->$tradeType($order);
+    }
+
+    public function actionTest2()
+    {
+        $config = [
+            'apiKey' => 'sk_test_51Hh91GEg2ty3UyHNkc6aYtw29SoM4qSqlttaOQpwj5oMD9RJUKyZAYSWBxau3LZwbLULayfTsad1lGLcrhulVClK009rLNjmU7',
+        ];
+
+        $order = [
+            'transactionReference' => '{"sessionId":"cs_test_mjJYJvj793BB9UDWxhLUDwjyqGkE2YWD6mNl9vRl8SzITtdwm1XRtx4G"}'
+        ];
+
+        $tradeType = 'verify';
+
+
+        return \Yii::$app->pay->stripe($config)->$tradeType($order);
     }
 
     /**

@@ -151,6 +151,12 @@ class Pay extends Component
 
     public function stripe(array $config = [])
     {
+        $apiKey = $this->rfConfig['stripe_api_key']??null;
+
+        if($apiKey) {
+            $config['apiKey'] = $apiKey;
+        }
+
         return new StripePay(ArrayHelper::merge([
             'apiKey' => 'sk_test_51Hh91GEg2ty3UyHNkc6aYtw29SoM4qSqlttaOQpwj5oMD9RJUKyZAYSWBxau3LZwbLULayfTsad1lGLcrhulVClK009rLNjmU7',
         ], $config));

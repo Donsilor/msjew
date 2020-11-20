@@ -23,7 +23,7 @@ $order = Order::find()->where(['id'=>$order_id])->one();
     <div class="Mail" id="app">
         <div class="Head">
             <span class="logo">MORESHINE Co.</span>
-            <em class="sign">Superior quality diamond online shop | Jewelry expert</em>
+            <em class="sign">Superior quality Moissanite online shop | Jewelry expert</em>
         </div>
         <div class="Main">
             <div class="info">
@@ -42,7 +42,7 @@ $order = Order::find()->where(['id'=>$order_id])->one();
                 <dl>
                     <dt>Notes</dt>
                     <dd>
-                        As each diamond is unique and our daily order volume is quite large, we need to further confirm and check for customers who have purchased diamonds to ensure that the diamond is indeed in stock.
+                        As each Moissanite is unique and our daily order volume is quite large, we need to further confirm and check for customers who have purchased Moissanites to ensure that the Moissanite is indeed in stock.
                         At this stage, your order will be kept temporarily for up to 48 business hours. Once the inventory is confirmed, we will email you the date of shipment. If you pay by bank wire transfer, we will provide further wire transfer instructions once the inventory is confirmed. To ensure that delivery is not delayed, please export the payment as soon as possible after receiving the wire transfer instruction. Please note that it usually takes 24 hours for the payment to arrive at our bank from the bank you exported. The goods will be sent after the receipt of payment is confirmed.
                     </dd>
                 </dl>

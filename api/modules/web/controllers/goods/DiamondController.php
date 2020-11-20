@@ -323,7 +323,7 @@ class DiamondController extends OnAuthController
         $result['advert'] = array(
             'dsDesc' => '钻石——banner全屏',
             'dsImg' => '/adt/image1566005633802.png',
-            'dsName' => '鑽石——banner全屏',
+            'dsName' => '莫桑石——banner全屏',
             'dsShowType' => 1,
             'tdOpenType' => 1,
             'tdStatus' => 1,

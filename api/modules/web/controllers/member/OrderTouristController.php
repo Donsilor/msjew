@@ -117,6 +117,7 @@ class OrderTouristController extends OnAuthController
         catch (UnprocessableEntityHttpException $e) {
             $trans->rollBack();
             \Yii::$app->services->actionLog->create('游客创建订单',$e->getMessage());
+            throw $e;
         }
         catch (\Exception $e) {
             $trans->rollBack();

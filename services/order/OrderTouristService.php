@@ -2,7 +2,6 @@
 
 namespace services\order;
 
-use backend\modules\order\forms\OrderAddressForm;
 use common\components\Service;
 use common\enums\CouponStatusEnum;
 use common\enums\OrderStatusEnum;
@@ -17,6 +16,7 @@ use common\models\order\OrderCart;
 use common\models\order\OrderGoods;
 use common\models\order\OrderInvoice;
 use common\models\order\OrderTourist;
+use common\models\order\OrderTouristAddress;
 use common\models\order\OrderTouristDetails;
 use common\models\order\OrderTouristInvoice;
 use PayPal\Api\PayerInfo;
@@ -122,7 +122,7 @@ class OrderTouristService extends OrderBaseService
         }
 
         if(!empty($addressInfo)) {
-            $address = new OrderAddressForm();
+            $address = new OrderTouristAddress();
             $address->attributes = $addressInfo;
             $invoice->order_tourist_id = $order->id;
             if (false === $address->save()) {

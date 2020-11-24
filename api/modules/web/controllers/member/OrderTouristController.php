@@ -42,7 +42,7 @@ class OrderTouristController extends OnAuthController
         $goodsCartList = \Yii::$app->request->post('goodsCartList');
         $invoiceInfo = \Yii::$app->request->post('invoice');
         $buyer_remark = \Yii::$app->request->post('buyer_remark');
-        $address = \Yii::$app->request->post('address', null);
+        $addressInfo = \Yii::$app->request->post('address', null);
 
         if(empty($orderSn)) {
             if (empty($goodsCartList)) {
@@ -61,17 +61,6 @@ class OrderTouristController extends OnAuthController
             }
         }
         $order_from = $this->platform;
-
-        $addressInfo = [];
-        if(!empty($addressInfo)) {
-            $addressForm = new OrderAddressForm();
-            $addressForm->attributes = $address;
-            if (!$addressForm->validate()) {
-                // 返回数据验证失败
-                throw new UnprocessableEntityHttpException($this->getError($addressForm));
-            }
-            $addressInfo = $addressForm->toArray();
-        }
 
         try {            
             $trans = \Yii::$app->db->beginTransaction();

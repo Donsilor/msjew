@@ -2,6 +2,7 @@
 
 namespace services\order;
 
+use backend\modules\order\forms\OrderAddressForm;
 use common\components\Service;
 use common\enums\CouponStatusEnum;
 use common\enums\OrderStatusEnum;
@@ -114,9 +115,19 @@ class OrderTouristService extends OrderBaseService
         if(!empty($invoice_info)) {
             $invoice = new OrderTouristInvoice();
             $invoice->attributes = $invoice_info;
-            $invoice->order_tourist_id = $order->id;;
+            $invoice->order_tourist_id = $order->id;
             if(false === $invoice->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($invoice));
+            }
+        }
+
+        if(!empty($addressInfo)) {
+            $address = new OrderAddressForm();
+            $address->attributes = $addressInfo;
+            $invoice->order_tourist_id = $order->id;
+            if (false === $address->save()) {
+                // 返回数据验证失败
+                throw new UnprocessableEntityHttpException($this->getError($address));
             }
         }
 

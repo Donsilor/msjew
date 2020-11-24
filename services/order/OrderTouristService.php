@@ -32,13 +32,15 @@ class OrderTouristService extends OrderBaseService
 {
 
     /**
-     * @param array $cartList
-     * @param array $invoice_info
+     * @param $cartList
+     * @param $buyer_remark
+     * @param $invoice_info
+     * @param $order_from
+     * @param $addressInfo
      * @return int
      * @throws UnprocessableEntityHttpException
      */
-
-    public function createOrder($cartList, $buyer_remark, $invoice_info, $order_from)
+    public function createOrder($cartList, $buyer_remark, $invoice_info, $order_from, $addressInfo)
     {
         $orderAccountTax = $this->getCartAccountTax($cartList);
 

@@ -113,12 +113,18 @@ class OrderTouristController extends OnAuthController
 
             $trans->commit();
 
-            return $config;
-        } catch (\Exception $e) {
+        }
+        catch (UnprocessableEntityHttpException $e) {
             $trans->rollBack();
             \Yii::$app->services->actionLog->create('游客创建订单',$e->getMessage());
-            throw $e;
         }
+        catch (\Exception $e) {
+            $trans->rollBack();
+            \Yii::$app->services->actionLog->create('游客创建订单',$e->getMessage());
+            throw new UnprocessableEntityHttpException('系统繁忙，请稍后再试！');
+        }
+
+        return $config;
     }
 
     /**

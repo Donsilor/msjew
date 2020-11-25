@@ -38,7 +38,7 @@ class OrderTouristAddress extends \common\models\base\BaseModel
      */
     public static function tableName()
     {
-        return '{{%order_address}}';
+        return '{{%order_tourist_address}}';
     }
 
     /**
@@ -48,7 +48,7 @@ class OrderTouristAddress extends \common\models\base\BaseModel
     {
         return [
             [['order_tourist_id'], 'required'],
-            [['order_id', 'merchant_id', 'member_id', 'country_id', 'province_id', 'city_id',  'created_at', 'updated_at'], 'integer'],
+            [['order_tourist_id', 'merchant_id', 'country_id', 'province_id', 'city_id',  'created_at', 'updated_at'], 'integer'],
             [['realname'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 150],
             [['firstname', 'lastname'], 'string', 'max' => 100],
@@ -58,7 +58,6 @@ class OrderTouristAddress extends \common\models\base\BaseModel
             [['mobile'], 'string', 'max' => 20],
             [['zip_code'], 'string', 'max' => 20],
             [['mobile_code'], 'string', 'max' => 10],
-            [['order_id'], 'unique'],
             ['mobile', 'match', 'pattern' => RegularHelper::mobile(), 'message' => '请输入正确的手机号'],
             ['email', 'match', 'pattern' => RegularHelper::email(), 'message' => '请输入正确的邮箱'],
             ['email', 'required', 'on' => self::SEND_PAID_EMAIL],
@@ -74,7 +73,6 @@ class OrderTouristAddress extends \common\models\base\BaseModel
         return [
             'order_tourist_id' => '游客订单ID',
             'merchant_id' => 'Merchant ID',
-            'member_id' => '用户id',
             'country_id' => '国家区域',
             'province_id' => '省份',
             'city_id' => '城市市',

@@ -17,6 +17,7 @@ use Yii;
  * @property int $city_id 市id
  * @property string $firstname 名字
  * @property string $lastname 姓氏
+ * @property string $realname 姓名
  * @property string $country_name
  * @property string $province_name
  * @property string $city_name

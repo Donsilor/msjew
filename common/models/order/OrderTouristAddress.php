@@ -9,7 +9,7 @@ use Yii;
 /**
  * This is the model class for table "{{%order_address}}".
  *
- * @property int $order_id 订单ID
+ * @property int $order_tourist_id 订单ID
  * @property int $merchant_id
  * @property int $member_id 用户id
  * @property int $country_id 国家ID

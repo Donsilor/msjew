@@ -125,7 +125,7 @@ class OrderTouristService extends OrderBaseService
         if(!empty($addressInfo)) {
             $address = new OrderTouristAddress();
             $address->attributes = $addressInfo;
-            $invoice->order_tourist_id = $order->id;
+            $address->order_tourist_id = $order->id;
             if (false === $address->save()) {
                 // 返回数据验证失败
                 throw new UnprocessableEntityHttpException($this->getError($address));

@@ -23,7 +23,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 			<div class="Mail" id="app">
 				<div class="Head">
 					<span class="logo">MORESHINE Co.</span>
-					<em class="sign">品質優越鑽石網上店 | 首飾專家</em>
+					<em class="sign">品質優越莫桑石網上店 | 首飾專家</em>
 				</div>
 				<div class="Main">
 					<div class="info">

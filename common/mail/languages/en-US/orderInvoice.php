@@ -23,7 +23,7 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 			<div class="Mail" id="app">
 				<div class="Head">
 					<span class="logo">MORESHINE Co.</span>
-					<em class="sign">Superior quality diamond online shop | Jewelry expert</em>
+					<em class="sign">Superior quality Moissanite online shop | Jewelry expert</em>
 				</div>
 				<div class="Main">
 					<div class="info">

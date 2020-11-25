@@ -19,7 +19,7 @@ class GoodsController extends Controller
      */
     public function actionSyncDiamondToGoods()
     {
-        echo 'Start sync diamond to goods ------'.PHP_EOL;
+        echo 'Start sync Moissanite to goods ------'.PHP_EOL;
         $total = 0;
         for($page = 1 ; $page <= 100; $page ++) {
             $time = time();

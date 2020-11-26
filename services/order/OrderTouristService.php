@@ -39,7 +39,7 @@ class OrderTouristService extends OrderBaseService
      * @param $invoice_info
      * @param $order_from
      * @param $addressInfo
-     * @return int
+     * @return OrderTourist
      * @throws UnprocessableEntityHttpException
      */
     public function createOrder($cartList, $buyer_remark, $invoice_info, $order_from, $addressInfo)
@@ -135,7 +135,7 @@ class OrderTouristService extends OrderBaseService
         //游客创建订单
         \Yii::$app->services->job->notifyContacts->touristCreateOrder($order->order_sn);
 
-        return $order->id;
+        return $order;
     }
 
     /**

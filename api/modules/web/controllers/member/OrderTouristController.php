@@ -66,7 +66,7 @@ class OrderTouristController extends OnAuthController
             $trans = \Yii::$app->db->beginTransaction();
             if(empty($orderSn)) {
                 //创建订单
-                $orderId = \Yii::$app->services->orderTourist->createOrder($cart_list, $buyer_remark, $invoiceInfo, $order_from, $addressInfo);
+                $order = \Yii::$app->services->orderTourist->createOrder($cart_list, $buyer_remark, $invoiceInfo, $order_from, $addressInfo);
 
             }
             else {
@@ -80,14 +80,12 @@ class OrderTouristController extends OnAuthController
                 if($order->status==OrderTouristStatusEnum::ORDER_PAID) {
                     throw new UnprocessableEntityHttpException(\Yii::t('payment', 'ORDER_PAID'));
                 }
-                
-                $orderId = $order->id;
             }
 
             //调用支付接口
             $payForm = new PayForm();
             $payForm->attributes = \Yii::$app->request->post();
-            $payForm->orderId = $orderId;//订单ID
+            $payForm->orderId = $order->id;//订单ID
             $payForm->payType = $payType;//支付方式使用paypal
             $payForm->memberId = 0;//支付方式使用paypal
             $payForm->notifyUrl = Url::removeMerchantIdUrl('toFront', ['notify/' . PayEnum::$payTypeAction[$payForm->payType]]);//支付通知URL,paypal不需要,加上只是为了数据的完整性
@@ -104,7 +102,7 @@ class OrderTouristController extends OnAuthController
                     'config' => $config
                 ];
             }
-            $config['orderId'] = $orderId;
+            $config['order_sn'] = $order->order_sn;
 
             $trans->commit();
 

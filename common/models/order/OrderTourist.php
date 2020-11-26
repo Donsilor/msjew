@@ -10,6 +10,7 @@ use yii\db\ActiveRecord;
  * This is the model class for table "{{%order_tourist}}".
  *
  * @property int $id 主键
+ * @property int $order_sn 商户ID
  * @property int $merchant_id 商户ID
  * @property int $store_id 店铺id
  * @property int $tourist_key 游客的KEY

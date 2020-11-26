@@ -198,7 +198,7 @@ class OrderTouristService extends OrderBaseService
         else {
             $orderTouristAddress = $orderTourist->address;
 
-            $username = '游客-aaaa';
+            $username = '游客-'.strtoupper(substr(md5($orderTouristAddress->mobile?:$orderTouristAddress->email),0,13));
         }
 
         //用户信息处理

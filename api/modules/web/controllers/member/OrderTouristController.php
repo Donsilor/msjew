@@ -235,7 +235,7 @@ class OrderTouristController extends OnAuthController
 //            'payAmount' => $order->pay_amount,
             'payAmount' => bcsub($order->order_amount, $order->discount_amount, 2),
 //            'orderType' => $order->order_type,
-            'payChannel' => 6,
+//            'payChannel' => 6,
 //            'productCount' => count($orderDetails),
             'productAmount' => $order->goods_amount,
             'preferFee' => $order->discount_amount, //优惠金额

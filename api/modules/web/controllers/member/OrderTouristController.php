@@ -97,10 +97,14 @@ class OrderTouristController extends OnAuthController
             if (!$payForm->validate()) {
                 throw new UnprocessableEntityHttpException($this->getError($payForm));
             }
+
             $config = $payForm->getConfig();
-            if(is_array($config)) {
-                $config['orderId'] = $orderId;
+            if(!is_array($config)) {
+                $config = [
+                    'config' => $config
+                ];
             }
+            $config['orderId'] = $orderId;
 
             $trans->commit();
 

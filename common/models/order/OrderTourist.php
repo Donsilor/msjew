@@ -130,4 +130,13 @@ class OrderTourist extends \common\models\base\BaseModel
         return $this->hasOne(OrderTouristInvoice::class, ['order_tourist_id'=>'id']);
     }
 
+    /**
+     * 对应订单付款信息模型
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAddress()
+    {
+        return $this->hasOne(OrderTouristAddress::class, ['order_tourist_id'=>'id']);
+    }
+
 }

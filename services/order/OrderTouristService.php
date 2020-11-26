@@ -279,7 +279,7 @@ class OrderTouristService extends OrderBaseService
 
        //订单地址信息
         $orderAddress = new OrderAddress();
-        $orderAddress->setAttributes($orderTouristAddress->getAttributes);
+        $orderAddress->setAttributes($orderTouristAddress->getAttributes());
 
         $orderAddress->order_id = $order->id;
         $orderAddress->merchant_id = $orderTourist->merchant_id;

@@ -216,7 +216,7 @@ class OrderTouristService extends OrderBaseService
                 'first_ip' => $orderTourist->ip,
                 'first_ip_location' => $orderTourist->ip_location,
                 'is_tourist' => 1,//标识为游客账号
-                'mobile' => $orderTouristAddress->mobile,
+//                'mobile' => $orderTouristAddress->mobile,
             ];
             if(false === $member->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($member));

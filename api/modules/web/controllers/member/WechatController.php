@@ -13,6 +13,8 @@ class WechatController extends UserAuthController
 
     public $modelClass = '';
 
+    protected $authOptional = ['user-info'];
+
     public function actionUserInfo()
     {
         try {

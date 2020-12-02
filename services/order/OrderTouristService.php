@@ -148,7 +148,7 @@ class OrderTouristService extends OrderBaseService
     {
         $logMessage = "订单号：".$payLog->order_sn."<br/>支付编号：".$payLog->out_trade_no;
 
-        if($payLog->pay_type == PayEnum::PAY_TYPE_PAYPAL) {
+        if($payLog->pay_type == PayEnum::PAY_TYPE_PAYPAL && empty($orderTourist->address)) {
             //获取支付信息
             $pay = \Yii::$app->services->pay->getPayByType($payLog->pay_type);
             $payment = $pay->getPayment(['model'=>$payLog]);

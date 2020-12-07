@@ -201,8 +201,12 @@ class OrderTouristService extends OrderBaseService
             $username = '游客-'.strtoupper(substr(md5($orderTouristAddress->mobile?:$orderTouristAddress->email),0,13));
         }
 
+        !empty($orderTouristAddress->email) && ($member = Member::findOne(['email' => $orderTouristAddress->email])) ||
+        !empty($orderTouristAddress->mobile) && ($member = Member::findOne(['mobile' => $orderTouristAddress->mobile])) ||
+        ($member = Member::findByUsername($username));
+
         //用户信息处理
-        if(!($member = Member::findByUsername($username))) {
+        if(!$member) {
             //创建用户信息
             $member = new Member();
             $member->attributes = [
@@ -216,7 +220,7 @@ class OrderTouristService extends OrderBaseService
                 'first_ip' => $orderTourist->ip,
                 'first_ip_location' => $orderTourist->ip_location,
                 'is_tourist' => 1,//标识为游客账号
-//                'mobile' => $orderTouristAddress->mobile,
+                'mobile' => $orderTouristAddress->mobile,
             ];
             if(false === $member->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($member));

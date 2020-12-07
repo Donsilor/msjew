@@ -201,8 +201,8 @@ class OrderTouristService extends OrderBaseService
             $username = '游客-'.strtoupper(substr(md5($orderTouristAddress->mobile?:$orderTouristAddress->email),0,13));
         }
 
-        !empty($orderTouristAddress->email) && ($member = Member::findOne(['email' => $orderTouristAddress->email])) ||
-        !empty($orderTouristAddress->mobile) && ($member = Member::findOne(['mobile' => $orderTouristAddress->mobile])) ||
+        !empty($orderTouristAddress->email) && ($member = Member::findOne(['email' => $orderTouristAddress->email, 'is_tourist' => 0])) ||
+        !empty($orderTouristAddress->mobile) && ($member = Member::findOne(['mobile' => $orderTouristAddress->mobile, 'is_tourist' => 0])) ||
         ($member = Member::findByUsername($username));
 
         //用户信息处理

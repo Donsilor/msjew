@@ -252,7 +252,7 @@ class SiteController extends OnAuthController
             }
 
             $where = [];
-            $where['mobile'] = $model->mobile;
+            $where['email'] = $model->email;
             $where['is_tourist'] = 1;
             if(!($member = Member::findOne($where))) {
                 $member = new Member();

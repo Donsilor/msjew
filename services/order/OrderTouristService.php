@@ -227,6 +227,14 @@ class OrderTouristService extends OrderBaseService
                 'is_tourist' => 1,//标识为游客账号
                 'mobile' => $orderTouristAddress->mobile,
             ];
+
+            if(in_array($orderTourist->order_from, [OrderFromEnum::WEB_CN, OrderFromEnum::MOBILE_CN])) {
+                $member->email = '';
+            }
+            else {
+                $member->mobile = '';
+            }
+
             if(false === $member->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($member));
             }

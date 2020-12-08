@@ -220,7 +220,6 @@ class OrderTouristService extends OrderBaseService
                 'password_hash' => 'password_hash',
                 'firstname' => $orderTouristAddress->firstname,
                 'lastname' => $orderTouristAddress->lastname,
-                'realname' => $orderTouristAddress->realname,
                 'email' => $orderTouristAddress->email,
                 'last_ip' => $orderTourist->ip,
                 'first_ip' => $orderTourist->ip,

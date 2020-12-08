@@ -203,12 +203,12 @@ class OrderTouristService extends OrderBaseService
         }
 
         if(in_array($orderTourist->order_from, [OrderFromEnum::WEB_CN, OrderFromEnum::MOBILE_CN])) {
-            !empty($orderTouristAddress->mobile) && ($member = Member::findOne(['mobile' => $orderTouristAddress->mobile, 'is_tourist' => 0])) ||
+            !empty($orderTouristAddress->mobile) && ($member = Member::findOne(['mobile' => $orderTouristAddress->mobile])) ||
 //            !empty($orderTouristAddress->email) && ($member = Member::findOne(['email' => $orderTouristAddress->email, 'is_tourist' => 0])) ||
             ($member = Member::findByUsername($username));
         }
         else {
-            !empty($orderTouristAddress->email) && ($member = Member::findOne(['email' => $orderTouristAddress->email, 'is_tourist' => 0])) ||
+            !empty($orderTouristAddress->email) && ($member = Member::findOne(['email' => $orderTouristAddress->email])) ||
 //            !empty($orderTouristAddress->mobile) && ($member = Member::findOne(['mobile' => $orderTouristAddress->mobile, 'is_tourist' => 0])) ||
             ($member = Member::findByUsername($username));
         }

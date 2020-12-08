@@ -4,6 +4,7 @@ namespace services\order;
 
 use common\components\Service;
 use common\enums\CouponStatusEnum;
+use common\enums\OrderFromEnum;
 use common\enums\OrderStatusEnum;
 use common\enums\OrderTouristStatusEnum;
 use common\enums\PayEnum;
@@ -201,9 +202,16 @@ class OrderTouristService extends OrderBaseService
             $username = '游客-'.strtoupper(substr(md5($orderTouristAddress->mobile?:$orderTouristAddress->email),0,13));
         }
 
-        !empty($orderTouristAddress->email) && ($member = Member::findOne(['email' => $orderTouristAddress->email, 'is_tourist' => 0])) ||
-        !empty($orderTouristAddress->mobile) && ($member = Member::findOne(['mobile' => $orderTouristAddress->mobile, 'is_tourist' => 0])) ||
-        ($member = Member::findByUsername($username));
+        if(in_array($orderTourist->order_from, [OrderFromEnum::WEB_CN, OrderFromEnum::MOBILE_CN])) {
+            !empty($orderTouristAddress->mobile) && ($member = Member::findOne(['mobile' => $orderTouristAddress->mobile, 'is_tourist' => 0])) ||
+            !empty($orderTouristAddress->email) && ($member = Member::findOne(['email' => $orderTouristAddress->email, 'is_tourist' => 0])) ||
+            ($member = Member::findByUsername($username));
+        }
+        else {
+            !empty($orderTouristAddress->email) && ($member = Member::findOne(['email' => $orderTouristAddress->email, 'is_tourist' => 0])) ||
+            !empty($orderTouristAddress->mobile) && ($member = Member::findOne(['mobile' => $orderTouristAddress->mobile, 'is_tourist' => 0])) ||
+            ($member = Member::findByUsername($username));
+        }
 
         //用户信息处理
         if(!$member) {

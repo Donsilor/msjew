@@ -60,7 +60,7 @@ class StyleController extends BaseController
         ]);
         $typeModel = Yii::$app->services->goodsType->getAllTypesById($type_id,null);
         $dataProvider = $searchModel
-            ->search(Yii::$app->request->queryParams,['style_name','language','created_at', 'hk_status', 'tw_status', 'cn_status', 'us_status']);
+            ->search(Yii::$app->request->queryParams,['style_sn', 'style_name','language','created_at', 'hk_status', 'tw_status', 'cn_status', 'us_status']);
         //切换默认语言
         $this->setLocalLanguage($searchModel->language);
         if($typeModel){
@@ -126,6 +126,13 @@ DOM;
             $dataProvider->query->andFilterWhere(['between', 'goods_style.created_at', strtotime($start_date), strtotime($end_date) + 86400]);
         }
 
+        if (!empty(Yii::$app->request->queryParams['SearchModel']['style_sn'])) {
+            $styleSn = Yii::$app->request->queryParams['SearchModel']['style_sn'];
+            $styleSn = preg_replace(["/\r\n/", "/\r/", "/\n/", "/\s/"], ',', $styleSn);
+            $styleSn = array_filter(explode(',', $styleSn));
+            $dataProvider->query->andWhere(['in', 'goods_style.style_sn', $styleSn]);
+        }
+
         $dataProvider->query->select(['goods_style.*', 'goods.hk_status', 'goods.tw_status', 'goods.cn_status', 'goods.us_status']);
 
         //导出
@@ -161,6 +168,10 @@ DOM;
         
         $status = $model ? $model->status:0;
         $old_style_info = $model->toArray();
+        $old_style_info['langs'] = [];
+        foreach ($model->langs as $lang) {
+            $old_style_info['langs'][$lang->id] = $lang->toArray();
+        }
         if ($model->load(Yii::$app->request->post())) {
             
             try{

@@ -266,4 +266,13 @@ class Order extends \common\models\base\BaseModel
         return $this->hasOne(WireTransfer::class, ['order_id'=>'id']);
     }
 
+    /**
+     * 对应游客订单
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrderTourist()
+    {
+        return $this->hasOne(OrderTourist::class, ['order_sn'=>'order_sn']);
+    }
+
 }

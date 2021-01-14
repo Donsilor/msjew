@@ -22,14 +22,14 @@ $order = Order::find()->where(['id'=>$order_id])->one();
 <div class="qmbox">
     <div class="Mail" id="app">
         <div class="Head">
-            <span class="logo">BDD Co.</span>
-            <em class="sign">Superior quality diamond online shop | Jewelry expert</em>
+            <span class="logo">MORESHINE Co.</span>
+            <em class="sign">Superior quality Moissanite online shop | Jewelry expert</em>
         </div>
         <div class="Main">
             <div class="info">
                 <dl>
                     <dt>Dear customers：</dt>
-                    <dd>Thanks for shopping at BDD Co., the item has been dispatched. More delivery information can be  tracked on your login account on BDD Co. Please send emails to <a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a> if there is any question regarding to your order.</dd>
+                    <dd>Thanks for shopping at MORESHINE Co., the item has been dispatched. More delivery information can be  tracked on your login account on MORESHINE Co. Please send emails to <a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a> if there is any question regarding to your order.</dd>
                 </dl>
                 <dl>
                     <dt>Dispatched</dt>
@@ -42,7 +42,7 @@ $order = Order::find()->where(['id'=>$order_id])->one();
                 <dl>
                     <dt>Notes</dt>
                     <dd>
-                        As each diamond is unique and our daily order volume is quite large, we need to further confirm and check for customers who have purchased diamonds to ensure that the diamond is indeed in stock.
+                        As each Moissanite is unique and our daily order volume is quite large, we need to further confirm and check for customers who have purchased Moissanites to ensure that the Moissanite is indeed in stock.
                         At this stage, your order will be kept temporarily for up to 48 business hours. Once the inventory is confirmed, we will email you the date of shipment. If you pay by bank wire transfer, we will provide further wire transfer instructions once the inventory is confirmed. To ensure that delivery is not delayed, please export the payment as soon as possible after receiving the wire transfer instruction. Please note that it usually takes 24 hours for the payment to arrive at our bank from the bank you exported. The goods will be sent after the receipt of payment is confirmed.
                     </dd>
                 </dl>
@@ -56,9 +56,9 @@ $order = Order::find()->where(['id'=>$order_id])->one();
                     <li>Jewelry</li>
                 </ul>
                 <div class="copy">
-                    <p>If you have any feedback or suggestions on bddco's products, or if you have any problems using it</p>
-                    <p>Feel free to contact us：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
-                    <em>Copyright ©<?= date("Y")?> BDD Co., Ltd.</em>
+                    <p>If you have any feedback or suggestions on MORESHINE co's products, or if you have any problems using it</p>
+                    <p>Feel free to contact us：<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a></p>
+                    <em>Copyright ©<?= date("Y")?> MORESHINE Co., Ltd.</em>
                 </div>
             </div>
         </div>

@@ -22,8 +22,8 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 		<div class="qmbox">
 			<div class="Mail" id="app">
 				<div class="Head">
-					<span class="logo">BDD Co.</span>
-					<em class="sign">质量优越钻石网上店 | 首饰专家</em>
+					<span class="logo">MORESHINE Co.</span>
+					<em class="sign">质量优越莫桑石网上店 | 首饰专家</em>
 				</div>
 				<div class="Main">
 					<div class="info">
@@ -33,11 +33,11 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
                                     $order->order_status == OrderStatusEnum::ORDER_UNPAID ||
                                     $order->order_status == OrderStatusEnum::ORDER_CANCEL && $order->refund_status
                             ) {?>
-							<dd>感谢选择BDD Co.。我们十分重视您的订单。请细心阅读所有有关订单的邮件，如数据有误，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>感谢选择MORESHINE Co.。我们十分重视您的订单。请细心阅读所有有关订单的邮件，如数据有误，请立即联络我们发电邮至<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 							<?php } elseif($order->order_status == OrderStatusEnum::ORDER_PAID){?>
-							<dd>您的订单已经支付成功！感谢选择BDD Co.。我们十分重视您的订单，已经尽快为您安排，产品检测无误第壹时间给您派送，如有任何疑问，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>您的订单已经支付成功！感谢选择MORESHINE Co.。我们十分重视您的订单，已经尽快为您安排，产品检测无误第壹时间给您派送，如有任何疑问，请立即联络我们发电邮至<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 							<?php } elseif($order->order_status == OrderStatusEnum::ORDER_SEND){?>
-							<dd>您的订单已经发货成功！感谢选择BDD Co.。如有任何疑问，请立即联络我们发电邮至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
+							<dd>您的订单已经发货成功！感谢选择MORESHINE Co.。如有任何疑问，请立即联络我们发电邮至<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
 							<?php }?>
 						</dl>
 						<dl>
@@ -240,7 +240,7 @@ DOM;
 						<dl>
 							<dt>须知事项</dt>
 							<dd>
-								由于每一枚钻石都独一无二和我们每日的订单量相当庞大，对于选购了钻石的客户，我们需要进一步确认检查以确保该枚钻石确有存货。
+								由于每一枚莫桑石都独一无二和我们每日的订单量相当庞大，对于选购了莫桑石的客户，我们需要进一步确认检查以确保该枚莫桑石确有存货。
 								目前阶段，您的订单将会暂获保留最长达48个营业小时。存货情况一旦获得确认，我们将会发送电邮通知您装运的日期。如果您是透过银行电汇付款，存货情况一旦获得确认，我们将提供进一步的电汇指示。为确保运送不被延迟，请在收到电汇指示后尽快把款项导出。请注意，款项从您导出的银行到达我们的银行一般需时24个小时。货品将在确认收到款项后发出。
 							</dd>
 						</dl>
@@ -254,9 +254,9 @@ DOM;
 							<li>饰品</li>
 						</ul>
 						<div class="copy">
-							<p>如果您对BDDCO的产品有任何反馈或建议，或者使用时遇到了什么问题</p>
-							<p>欢迎随时与我们联系：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
-							<em>Copyright ©<?= date("Y")?> BDD Co., Ltd.</em>
+							<p>如果您对MORESHINE CO的产品有任何反馈或建议，或者使用时遇到了什么问题</p>
+							<p>欢迎随时与我们联系：<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a></p>
+							<em>Copyright ©<?= date("Y")?> MORESHINE Co., Ltd.</em>
 						</div>
 					</div>
 				</div>

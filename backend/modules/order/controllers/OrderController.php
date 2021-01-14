@@ -104,8 +104,17 @@ class OrderController extends BaseController
 
         //订单状态
         if ($orderStatus !== -1) {
+
+            if($orderStatus==30) {
+                $dataProvider->query->andWhere(['<>', 'no_delivery', 1]);
+            }
+
             if($orderStatus==11) {
                 $dataProvider->query->andWhere('common_pay_wire_transfer.id is not null');
+            }
+            elseif($orderStatus==12) {
+                $dataProvider->query->andWhere(['=', 'no_delivery', 1]);
+                $dataProvider->query->andWhere(['=', 'order_status', 30]);
             }
             elseif($orderStatus==1) {
                 $orderStatus2 = $orderStatus;
@@ -436,12 +445,27 @@ class OrderController extends BaseController
      */
     public function actionEditDelivery()
     {
+        $post = Yii::$app->request->post();
         $id = Yii::$app->request->get('id');
 
         $model = DeliveryForm::find()->where(['id'=>$id])->one();
+
+        if(!empty($post['DeliveryForm']['no_delivery'])) {
+            $model->setScenario(DeliveryForm::ONDELIVERY);
+        }
+
         // ajax 校验
         $this->activeFormValidate($model);
         if ($model->load(Yii::$app->request->post())) {
+
+            if($model->no_delivery) {
+
+                $model->refresh();
+                $model->no_delivery = 1;
+                $result = $model->save();
+
+                return $result ? $this->redirect(Yii::$app->request->referrer) : $this->message($this->getError($model), $this->redirect(Yii::$app->request->referrer), 'error');
+            }
 
             if($model->delivery_status != DeliveryStatusEnum::SEND) {
                 $model->delivery_status = DeliveryStatusEnum::SEND;
@@ -463,6 +487,8 @@ class OrderController extends BaseController
 
             return $result ? $this->redirect($returnUrl) : $this->message($this->getError($model), $this->redirect($returnUrl), 'error');
         }
+
+//        $model->setScenario(DeliveryForm::ONDELIVERY);
 
         return $this->renderAjax($this->action->id, [
             'model' => $model,
@@ -925,7 +951,7 @@ class OrderController extends BaseController
 
             }],
             ['订单状态', 'order_status', 'function',function($row){
-                return \common\enums\OrderStatusEnum::getValue($row->order_status);
+                return $row->refund_status == OrderStatusEnum::ORDER_REFUND_YES ?'已关闭':\common\enums\OrderStatusEnum::getValue($row->order_status);
             }],
             ['订单来源', 'order_from', 'function',function($model){
                 if($model->order_from){
@@ -1042,16 +1068,10 @@ class OrderController extends BaseController
     }
 
     private function fun($specs, $attrs=[]) {
-        $jd = $ys = $cs = $sc = $xk = $zs = $zsdx = $zssc = '';
+        $cs = $sc = $xk = $zs = $zsdx = $zssc = '';
         foreach ($specs as $spec) {
 
             switch ($spec['attr_id']) {
-                case 2: //成色
-                    $jd = $spec['attr_value'];
-                    break;
-                case 7: //手寸
-                    $ys = $spec['attr_value'];
-                    break;
                 case 10: //成色
                     $cs = $spec['attr_value'];
                     break;
@@ -1089,8 +1109,6 @@ class OrderController extends BaseController
         }
 
         return [
-            'jd' => $jd,
-            'ys' => $ys,
             'cs' => $cs,
             'sc' => $sc,
             'xk' => $xk,
@@ -1390,11 +1408,8 @@ DOM;
             ['主石色彩', 'id', 'function', function ($row) use($specList) {
                 return $specList[$row->id]['zssc'];
             }],
-            ['净度', 'id', 'function', function ($row) use($specList) {
-                return $specList[$row->id]['jd'];
-            }],
-            ['颜色', 'id', 'function', function ($row) use($specList) {
-                return $specList[$row->id]['ys'];
+            ['刻字内容', 'id', 'function', function ($row) use($specList) {
+                return $row->lettering;
             }],
             ['商品原价', 'id', 'function', function ($row) {
                 return $row->order->account->currency . ' ' . $row->goods_price;

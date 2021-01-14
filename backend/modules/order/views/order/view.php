@@ -151,8 +151,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?= $model->buyer_remark ?>
                             </div>
                             <div class="col-lg-4">
-                                <label class="text-right col-lg-4">下单类型 ：</label>
-                                <?= $model->orderTourist ? '游客' : '登录' ?>
                             </div>
                             <div class="col-lg-4">
                                 <label class="text-right col-lg-4">是否使用购物卡：</label>
@@ -435,6 +433,9 @@ DOM;
                                                         $goods_spec .= $vo['attr_name'].":".implode(',', $vo['value'])."&nbsp;";
                                                     }
                                                 }
+
+                                                if(!empty($model->lettering))
+                                                    $goods_spec .= sprintf('<br />刻字内容：%s', $model->lettering);
 
                                                 $value .= sprintf($html,
                                                     $model->goods_name,

@@ -7,8 +7,8 @@ use yii\widgets\ActiveForm;
 /* @var $model common\models\goods\DiamondSource */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = Yii::t('goods_diamond_source', 'Moissanite Source');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('goods_diamond_source', 'Moissanite Sources'), 'url' => ['index']];
+$this->title = Yii::t('goods_diamond_source', 'Diamond Source');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('goods_diamond_source', 'Diamond Sources'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

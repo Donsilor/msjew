@@ -26,7 +26,7 @@ return [
     'smsNotice'=>[
             'open'=>true,
             'userName'=>'管理员',
-            'siteName'=>'MORESHINE测试API',
+            'siteName'=>'BDD测试API',
             'mobiles'=>['15989407534'],
             'routes'=>[
                     'member/order/create',

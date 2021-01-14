@@ -103,7 +103,6 @@ class StyleController extends Controller
                 $old_style_info = $style->toArray();
 
                 $styleSalepolicy = json_decode($style->style_salepolicy, true);
-                $goodsSalepolicy = json_decode($style->goods_salepolicy, true);
 
                 foreach ($styleSalepolicy as $key => $salepolicy) {
                     if (in_array($salepolicy['area_id'], $areaName)) {
@@ -111,25 +110,7 @@ class StyleController extends Controller
                     }
                 }
 
-                foreach ($goodsSalepolicy as $key => $salepolicys) {
-                    foreach ($salepolicys as $key2 => $salepolicy) {
-                        if (in_array($salepolicy['area_id'], $areaName)) {
-                            $goodsSalepolicy[$key][$key2]['status'] = $status;
-                        }
-                    }
-                }
-
-                if($status) {
-                    $style->status = $status;
-                }
-                else {
-                    if(count($areaName)==count($areaEnum)) {
-                        $style->status = $status;
-                    }
-                }
-
                 $style->style_salepolicy = $styleSalepolicy;
-                $style->goods_salepolicy = $goodsSalepolicy;
 
                 $style->save();
 
@@ -143,7 +124,7 @@ class StyleController extends Controller
             $trans->commit();
         } catch (\Exception $exception) {
             $trans->rollBack();
-            print_r($style->style_sn??[]);
+
             throw $exception;
         }
 

@@ -94,7 +94,7 @@ class OrderBaseService extends Service
                     'order_sn' =>$order->order_sn,
                     'express_name' => \Yii::$app->services->express->getExressName($order->express_id),
                     'express_no' =>$order->express_no,
-                    'company_name'=>'MORESHINE Co.',
+                    'company_name'=>'BDD Co.',
                     'company_email' => 'admin@bddco.com'
                 ];
                 if($order->refund_status) {
@@ -151,7 +151,7 @@ class OrderBaseService extends Service
      * @param unknown $order_id
      * @param string $prefix
      */
-    public function createOrderSn($prefix = 'MS')
+    public function createOrderSn($prefix = 'BDD')
     {
         return $prefix.date('Ymd').mt_rand(3,9).str_pad(mt_rand(1, 99999),6,'1',STR_PAD_LEFT);
     }
@@ -207,6 +207,7 @@ class OrderBaseService extends Service
 
             $orderGoods['goods_attr'] = $goods['goods_attr'];//商品规格   这个参数需处理
             $orderGoods['goods_spec'] = $goods['goods_spec'];//商品规格
+            $orderGoods['lettering'] = $item['lettering'];//商品规格
 
             if(!empty($item['group_type']) && (int)$item['group_type']===1) {
                 $goods['type_id'] = 0;

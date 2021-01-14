@@ -68,6 +68,7 @@ class CartController extends UserAuthController
             $cart['groupId'] = $model->group_id;
             $cart['goodsAttr'] = $model->goods_attr?@\GuzzleHttp\json_decode($model->goods_attr, true):[];
             $cart['goodsAttr'] = \Yii::$app->services->goodsAttribute->getCartGoodsAttr($cart['goodsAttr']);
+            $cart['lettering'] = $model->lettering;
 
             $cart['coupon'] = [
                 'type_id' => $model->goods_type,//产品线ID
@@ -98,7 +99,7 @@ class CartController extends UserAuthController
                 foreach ($goods['lang']['goods_attr'] as $vo){
                     $baseConfig[] = [
                             'configId' =>$vo['id'],
-                        'configAttrId' =>$vo['value_id']??0,
+                            'configAttrId' =>0,
                             'configVal' =>$vo['attr_name'],
                             'configAttrIVal' =>implode('/',$vo['value']),
                     ];                    
@@ -111,7 +112,7 @@ class CartController extends UserAuthController
                     
                     $detailConfig[] = [
                             'configId' =>$vo['attr_id'],
-                        'configAttrId' =>$vo['value_id']??0,
+                            'configAttrId' =>0,
                             'configVal' =>$vo['attr_name'],
                             'configAttrIVal' =>$vo['attr_value'],
                     ];
@@ -174,16 +175,8 @@ class CartController extends UserAuthController
                 if(!$goods || $goods['status'] != 1) {
                     throw new UnprocessableEntityHttpException("商品不是售卖状态");
                 }
-
-                if (!empty($model->id)) {
-                    $cart = OrderCart::findOne($model->id);
-
-                    if (!$cart || $cart->member_id != $this->member_id || $cart->status != 1) {
-                        throw new UnprocessableEntityHttpException("error: null");
-                    }
-                } else {
-                    $cart = new OrderCart();
-                }
+    
+                $cart = new OrderCart();
                 $cart->attributes = $model->toArray();
                 $cart->merchant_id = $this->merchant_id;
                 $cart->member_id = $this->member_id;
@@ -325,6 +318,7 @@ class CartController extends UserAuthController
             $cart['goodsType'] = $model->goods_type;
             $cart['groupId'] = $model->group_id;
             $cart['goodsAttr'] = \Yii::$app->services->goodsAttribute->getCartGoodsAttr($model->goods_attr);
+            $cart['lettering'] = $model->lettering;
 
             $cart['coupon'] = [
                 'type_id' => $model->goods_type,//产品线ID
@@ -355,7 +349,7 @@ class CartController extends UserAuthController
                 foreach ($goods['lang']['goods_attr'] as $vo){
                     $baseConfig[] = [
                         'configId' =>$vo['id'],
-                        'configAttrId' =>$vo['value_id']??0,
+                        'configAttrId' =>0,
                         'configVal' =>$vo['attr_name'],
                         'configAttrIVal' =>implode('/',$vo['value']),
                     ];
@@ -367,7 +361,7 @@ class CartController extends UserAuthController
                 foreach ($goods['lang']['goods_spec'] as $vo){
                     $detailConfig[] = [
                         'configId' =>$vo['attr_id'],
-                        'configAttrId' =>$vo['value_id']??0,
+                        'configAttrId' =>$vo['value_id'],
                         'configVal' =>$vo['attr_name'],
                         'configAttrIVal' =>$vo['attr_value'],
                     ];

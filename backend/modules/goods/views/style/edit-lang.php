@@ -396,26 +396,6 @@ $model->style_spec = $style_spec;
                         ]
                   ]); ?>
                 </div>
-                <?php if(in_array($model->type_id, [2, 12])) { ?>
-                    <div class="row col-lg-9">
-                        <?= $form->field($model, 'ar_image')->widget(common\widgets\webuploader\Files::class, [
-                            'config' => [
-                                'pick' => [
-                                    'multiple' => false,
-                                ],
-                                /* 'formData' => [
-                                        'drive' => 'oss',// 默认本地 支持 qiniu/oss 上传
-                                        'thumb' => [
-                                                [
-                                                        'width' => 800,
-                                                        'height' => 800,
-                                                ]
-                                        ]
-                                ], */
-                            ]
-                        ]); ?>
-                    </div>
-                <?php }?>
                 <div class="row">
                     <div class="col-lg-6">
                         <?= $form->field($model, 'style_3ds')->textInput(['maxlength' => true, 'id'=>'ds3']) ?>

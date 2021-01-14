@@ -11,7 +11,6 @@ use yii\base\Model;
  */
 class CartForm extends Model
 {
-    public $id;
     public $add_type;
     public $goods_id;//商品ID
     public $goods_type;//商品类型(产品线ID)
@@ -23,25 +22,23 @@ class CartForm extends Model
     public $createTime;
     public $lettering;
 
-
+    
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id'], 'integer'],
             [['goods_id','goods_type','goods_num','createTime'], 'required'],
             [['goods_id','goods_type','goods_num','group_type','group_id','coupon_id','createTime'], 'number'],
             ['goods_attr', 'validateGoodsAttr'],
             ['lettering', 'string'],
         ];
     }
-
+    
     public function attributeLabels()
     {
         return [
-            'id' => 'id',
             'goods_id' => 'goods_id',
             'goods_type' => 'goods_type',
             'goods_num' => 'goods_num',

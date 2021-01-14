@@ -180,18 +180,12 @@ class SiteController extends OnAuthController
             if (!$model->validate()) {
                 throw new UnprocessableEntityHttpException($this->getError($model));
             }
-
-            $where = [];
-            $where['mobile'] = $model->mobile;
-            $where['is_tourist'] = 1;
-            if(!($member = Member::findOne($where))) {
-                $member = new Member();
-            }
-
+    
+            $member = new Member();
             $member->attributes = ArrayHelper::toArray($model);
             $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
             $member->username = $model->mobile;
-            $member->is_tourist = 0;
+            $member->realname = $model->lastname.''.$model->firstname;
             $this->buildFirstIpLocation($member);
             
             if (!$member->save()) {
@@ -250,18 +244,11 @@ class SiteController extends OnAuthController
             if (!$model->validate()) {
                 throw new UnprocessableEntityHttpException($this->getError($model));
             }
-
-            $where = [];
-            $where['email'] = $model->email;
-            $where['is_tourist'] = 1;
-            if(!($member = Member::findOne($where))) {
-                $member = new Member();
-            }
-
+    
+            $member = new Member();
             $member->attributes = ArrayHelper::toArray($model);
             $member->password_hash = Yii::$app->security->generatePasswordHash($model->password);
             $member->username = $model->email;
-            $member->is_tourist = 0;
             $this->buildFirstIpLocation($member);
             if (!$member->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($member));

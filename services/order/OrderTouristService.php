@@ -4,10 +4,8 @@ namespace services\order;
 
 use common\components\Service;
 use common\enums\CouponStatusEnum;
-use common\enums\OrderFromEnum;
 use common\enums\OrderStatusEnum;
 use common\enums\OrderTouristStatusEnum;
-use common\enums\PayEnum;
 use common\enums\PayStatusEnum;
 use common\models\market\MarketCouponDetails;
 use common\models\member\Member;
@@ -18,7 +16,6 @@ use common\models\order\OrderCart;
 use common\models\order\OrderGoods;
 use common\models\order\OrderInvoice;
 use common\models\order\OrderTourist;
-use common\models\order\OrderTouristAddress;
 use common\models\order\OrderTouristDetails;
 use common\models\order\OrderTouristInvoice;
 use PayPal\Api\PayerInfo;
@@ -35,15 +32,13 @@ class OrderTouristService extends OrderBaseService
 {
 
     /**
-     * @param $cartList
-     * @param $buyer_remark
-     * @param $invoice_info
-     * @param $order_from
-     * @param $addressInfo
-     * @return OrderTourist
+     * @param array $cartList
+     * @param array $invoice_info
+     * @return int
      * @throws UnprocessableEntityHttpException
      */
-    public function createOrder($cartList, $buyer_remark, $invoice_info, $order_from, $addressInfo)
+
+    public function createOrder($cartList, $buyer_remark, $invoice_info, $order_from)
     {
         $orderAccountTax = $this->getCartAccountTax($cartList);
 
@@ -117,26 +112,16 @@ class OrderTouristService extends OrderBaseService
         if(!empty($invoice_info)) {
             $invoice = new OrderTouristInvoice();
             $invoice->attributes = $invoice_info;
-            $invoice->order_tourist_id = $order->id;
+            $invoice->order_tourist_id = $order->id;;
             if(false === $invoice->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($invoice));
-            }
-        }
-
-        if(!empty($addressInfo)) {
-            $addressInfo['order_tourist_id'] = $order->id;
-            $address = new OrderTouristAddress($addressInfo);
-
-            if (false === $address->save()) {
-                // 返回数据验证失败
-                throw new UnprocessableEntityHttpException($this->getError($address));
             }
         }
 
         //游客创建订单
         \Yii::$app->services->job->notifyContacts->touristCreateOrder($order->order_sn);
 
-        return $order;
+        return $order->id;
     }
 
     /**
@@ -145,96 +130,46 @@ class OrderTouristService extends OrderBaseService
      * @param $payLog
      * @throws UnprocessableEntityHttpException|void
      */
-    public function sync($orderTourist, $payLog)
-    {
+    public function sync($orderTourist, $payLog) {
+        
         $logMessage = "订单号：".$payLog->order_sn."<br/>支付编号：".$payLog->out_trade_no;
-
-        if($payLog->pay_type == PayEnum::PAY_TYPE_PAYPAL && empty($orderTourist->address)) {
-            //获取支付信息
-            $pay = \Yii::$app->services->pay->getPayByType($payLog->pay_type);
-            $payment = $pay->getPayment(['model'=>$payLog]);
-
-            if($payment) {
-                $logMessage .= "<br/>同步状态：初始化";
-                \Yii::$app->services->actionLog->create('同步游客订单',$logMessage,$payment->toArray());
-            } else {
-                $logMessage .= "<br/>同步状态：支付对象失败";
-                \Yii::$app->services->actionLog->create('同步游客订单',$logMessage,$payLog->toArray());
-            }
-
-            /** @var PayerInfo $payerInfo */
-            $payerInfo = $payment->getPayer()->getPayerInfo();
-
-            /** @var ShippingAddress $shippingAddressInfo */
-            $shippingAddressInfo = $payerInfo->getShippingAddress();
-
-            //订单地址信息
-            $orderTouristAddress = new OrderTouristAddress();
-            $orderTouristAddress->attributes = [
-                'order_tourist_id' => $orderTourist->id,
-                'merchant_id' => $orderTourist->merchant_id,
-//                'member_id' => $member->id,
-//            'country_id' => '',
-//            'province_id' => '',
-//            'city_id' => '',
-                'firstname' => $payerInfo->getFirstName(),
-                'lastname' => $payerInfo->getLastName(),
-                'realname' => $shippingAddressInfo->getRecipientName(),
-                'country_name' => $shippingAddressInfo->getCountryCode(),
-                'province_name' => $shippingAddressInfo->getState(),
-                'city_name' => $shippingAddressInfo->getCity(),
-                'address_details' => $shippingAddressInfo->getLine1() . ' ' . $shippingAddressInfo->getLine2(),
-                'zip_code' => $shippingAddressInfo->getPostalCode(),
-                'mobile' => $payerInfo->getPhone(),
-//            'mobile_code' => '',
-                'email' => $payerInfo->getEmail(),
-            ];
-
-            if(false === $orderTouristAddress->save()) {
-                throw new UnprocessableEntityHttpException($this->getError($orderTouristAddress));
-            }
-
-            $username = '游客-'.$payerInfo->getPayerId();
+        
+        //IP区域ID与地址
+        list($ip_area_id, $ip_location) = \Yii::$app->ipLocation->getLocation($orderTourist->ip);
+        //获取支付信息
+        $pay = \Yii::$app->services->pay->getPayByType($payLog->pay_type);
+        $payment = $pay->getPayment(['model'=>$payLog]);
+        if($payment) {
+            $logMessage .= "<br/>同步状态：初始化";
+            \Yii::$app->services->actionLog->create('同步游客订单',$logMessage,$payment->toArray());
+        } else {
+            $logMessage .= "<br/>同步状态：支付对象失败";
+            \Yii::$app->services->actionLog->create('同步游客订单',$logMessage,$payLog->toArray());
         }
-        else {
-            $orderTouristAddress = $orderTourist->address;
+        /** @var PayerInfo $payerInfo */
+        $payerInfo = $payment->getPayer()->getPayerInfo();
 
-            $username = '游客-'.strtoupper(substr(md5($orderTouristAddress->mobile?:$orderTouristAddress->email),0,13));
-        }
-
-        if(in_array($orderTourist->order_from, [OrderFromEnum::WEB_CN, OrderFromEnum::MOBILE_CN])) {
-            !empty($orderTouristAddress->mobile) && ($member = Member::findOne(['username' => $orderTouristAddress->mobile])) ||
-            ($member = Member::findByUsername($username));
-        }
-        else {
-            !empty($orderTouristAddress->email) && ($member = Member::findOne(['username' => $orderTouristAddress->email])) ||
-            ($member = Member::findByUsername($username));
-        }
+        /** @var ShippingAddress $shippingAddressInfo */
+        $shippingAddressInfo = $payerInfo->getShippingAddress();
 
         //用户信息处理
-        if(!$member) {
+        $username = '游客-'.$payerInfo->getPayerId();
+        if(!($member = Member::findByUsername($username))) {
             //创建用户信息
             $member = new Member();
             $member->attributes = [
-                'username' => $username,
+                'username' => '游客-'.$payerInfo->getPayerId(),
                 'password_hash' => 'password_hash',
-                'firstname' => $orderTouristAddress->firstname,
-                'lastname' => $orderTouristAddress->lastname,
-                'email' => $orderTouristAddress->email,
+                'firstname' => $payerInfo->getFirstName(),
+                'lastname' => $payerInfo->getLastName(),
+                'realname' => $shippingAddressInfo->getRecipientName(),
+                'email' => $payerInfo->getEmail(),
                 'last_ip' => $orderTourist->ip,
                 'first_ip' => $orderTourist->ip,
-                'first_ip_location' => $orderTourist->ip_location,
+                'first_ip_location' => $ip_location,
                 'is_tourist' => 1,//标识为游客账号
-                'mobile' => $orderTouristAddress->mobile,
+//            'mobile' => $payerInfo->getPhone()
             ];
-
-            if(in_array($orderTourist->order_from, [OrderFromEnum::WEB_CN, OrderFromEnum::MOBILE_CN])) {
-                $member->email = '';
-            }
-            else {
-                $member->mobile = '';
-            }
-
             if(false === $member->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($member));
             }
@@ -273,14 +208,13 @@ class OrderTouristService extends OrderBaseService
 //            'followed_time' => '',
 //            'followed_status' => '',
             'ip' => $orderTourist->ip,
-            'ip_location' => $orderTourist->ip_location,
-            'ip_area_id' => $orderTourist->ip_area_id,
+            'ip_location' => $ip_location,
+            'ip_area_id' => $ip_area_id,
 //            'status' => '',
         ];
         if(false === $order->save()) {
             throw new UnprocessableEntityHttpException($this->getError($order));
         }
-
         //插入order_sync
         $sql = "insert into order_sync(order_id) values({$order->id})";
         \Yii::$app->db->createCommand($sql)->execute();
@@ -296,12 +230,25 @@ class OrderTouristService extends OrderBaseService
 
        //订单地址信息
         $orderAddress = new OrderAddress();
-        $orderAddress->setAttributes($orderTouristAddress->getAttributes());
-
-        $orderAddress->order_id = $order->id;
-        $orderAddress->merchant_id = $orderTourist->merchant_id;
-        $orderAddress->member_id = $member->id;
-
+        $orderAddress->attributes = [
+            'order_id' => $order->id,
+            'merchant_id' => $orderTourist->merchant_id,
+            'member_id' => $member->id,
+//            'country_id' => '',
+//            'province_id' => '',
+//            'city_id' => '',
+            'firstname' => $payerInfo->getFirstName(),
+            'lastname' => $payerInfo->getLastName(),
+            'realname' => $shippingAddressInfo->getRecipientName(),
+            'country_name' => $shippingAddressInfo->getCountryCode(),
+            'province_name' => $shippingAddressInfo->getState(),
+            'city_name' => $shippingAddressInfo->getCity(),
+            'address_details' => $shippingAddressInfo->getLine1() . ' ' . $shippingAddressInfo->getLine2(),
+            'zip_code' => $shippingAddressInfo->getPostalCode(),
+            'mobile' => $payerInfo->getPhone(),
+//            'mobile_code' => '',
+            'email' => $payerInfo->getEmail(),
+        ];
         if(false === $orderAddress->save()) {
             throw new UnprocessableEntityHttpException($this->getError($orderAddress));
         }
@@ -353,6 +300,7 @@ class OrderTouristService extends OrderBaseService
                 'cart_goods_attr' => $detail->cart_goods_attr,
                 'currency' => $orderTourist->currency,
                 'exchange_rate' => $orderTourist->exchange_rate,
+                'lettering' => $orderTourist->lettering,
             ];
             if(false === $orderTouristDetails->save()) {
                 throw new UnprocessableEntityHttpException($this->getError($orderTouristDetails));

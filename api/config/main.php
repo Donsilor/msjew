@@ -15,11 +15,11 @@ return [
         'v1' => [ // 版本1
             'class' => 'api\modules\v1\Module',
         ],
-        'web' => [ // MORESHINE PC端
+        'web' => [ // BDD PC端
             'class' => 'api\modules\web\Module',
         ],
 
-        'wap' => [ // MORESHINE手机端
+        'wap' => [ // BDD手机端
             'class' => 'api\modules\wap\Module',
         ],
     ],

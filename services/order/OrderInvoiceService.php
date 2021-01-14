@@ -38,15 +38,15 @@ class OrderInvoiceService extends OrderBaseService
 {
 
 //大陆：网址：https://wap.bddco.cn/
-//https://www.bddco.cn/  [0755 25169121 / e-service@bddco.com
+//https://www.bddco.cn/  [0755 25169121 / e-service@msjew.com
 //
 //
 //香港：https://wap.bddco.com/
-//https://www.bddco.com/     [+852 21653905 / service@bddco.com
+//https://www.bddco.com/     [+852 21653905 / service@msjew.com
 //
 //
 //美国：https://us.bddco.com/
-//https://wap-us.bddco.com/   [+852 21653905 / service@bddco.com
+//https://wap-us.bddco.com/   [+852 21653905 / service@msjew.com
 
     private $sendAddress = [
         OrderFromEnum::GROUP_HK => [
@@ -112,44 +112,44 @@ class OrderInvoiceService extends OrderBaseService
 
     private $siteInfo = [
         OrderFromEnum::WEB_HK => [
-            'webSite' => 'https://www.bddco.com/',
-            'tel' => '2165 3908',
-            'email' => 'service@bddco.com',
+            'webSite' => 'https://www.msjew.com/',
+            'tel' => '0755-25160872-8005',
+            'email' => 'service@msjew.com',
         ],
         OrderFromEnum::MOBILE_HK => [
-            'webSite' => 'https://www.bddco.com/',
-            'tel' => '2165 3908',
-            'email' => 'service@bddco.com',
+            'webSite' => 'https://www.msjew.com/',
+            'tel' => '0755-25160872-8005',
+            'email' => 'service@msjew.com',
         ],
         OrderFromEnum::WEB_CN => [
-            'webSite' => 'https://www.bddco.com/',
-            'tel' => '2165 3908',
-            'email' => 'service@bddco.com',
+            'webSite' => 'https://www.msjew.com/',
+            'tel' => '0755-25160872-8005',
+            'email' => 'service@msjew.com',
         ],
         OrderFromEnum::MOBILE_CN => [
-            'webSite' => 'https://www.bddco.com/',
-            'tel' => '2165 3908',
-            'email' => 'service@bddco.com',
+            'webSite' => 'https://www.msjew.com/',
+            'tel' => '0755-25160872-8005',
+            'email' => 'service@msjew.com',
         ],
         OrderFromEnum::WEB_US => [
-            'webSite' => 'https://www.bddco.com/',
-            'tel' => '2165 3908',
-            'email' => 'service@bddco.com',
+            'webSite' => 'https://www.msjew.com/',
+            'tel' => '0755-25160872-8005',
+            'email' => 'service@msjew.com',
         ],
         OrderFromEnum::MOBILE_US => [
-            'webSite' => 'https://www.bddco.com/',
-            'tel' => '2165 3908',
-            'email' => 'service@bddco.com',
+            'webSite' => 'https://www.msjew.com/',
+            'tel' => '0755-25160872-8005',
+            'email' => 'service@msjew.com',
         ],
         OrderFromEnum::WEB_TW => [
-            'webSite' => 'https://www.bddco.com/',
-            'tel' => '2165 3908',
-            'email' => 'service@bddco.com',
+            'webSite' => 'https://www.msjew.com/',
+            'tel' => '0755-25160872-8005',
+            'email' => 'service@msjew.com',
         ],
         OrderFromEnum::MOBILE_TW => [
-            'webSite' => 'https://www.bddco.com/',
-            'tel' => '2165 3908',
-            'email' => 'service@bddco.com',
+            'webSite' => 'https://www.msjew.com/',
+            'tel' => '0755-25160872-8005',
+            'email' => 'service@msjew.com',
         ],
     ];
 

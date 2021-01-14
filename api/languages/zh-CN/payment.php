@@ -1,6 +1,6 @@
 <?php
 return [
-    'PAYPAL_NOT_SUPPORT_RMB'=>'尊敬的BDD Co.用户您好：由于paypal不支持人民币结算，请切换其他货币完成本次订单支付。如继续使用人民币结算，请选择中国银联、支付宝、微信支付完成本次订单支付。感谢您的支持！',
+    'PAYPAL_NOT_SUPPORT_RMB'=>'尊敬的MORESHINE Co.用户您好：由于paypal不支持人民币结算，请切换其他货币完成本次订单支付。如继续使用人民币结算，请选择中国银联、支付宝、微信支付完成本次订单支付。感谢您的支持！',
     'PAYMENT_NOT_SUPPORT_RMB'=>'人民币暂不支持,请更换其他货币！',
     'PAYDOLLAR_NOT_SUPPORT_RMB_AND_USD'=>'由于%s不支持“美元”进行结算，请切换其他货币完成本次订单支付，谢谢!',
     'ORDER_PAID' => '此订单已经支付成功，请勿重复支付！',

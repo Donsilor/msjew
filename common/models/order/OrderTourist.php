@@ -10,7 +10,6 @@ use yii\db\ActiveRecord;
  * This is the model class for table "{{%order_tourist}}".
  *
  * @property int $id 主键
- * @property int $order_sn 商户ID
  * @property int $merchant_id 商户ID
  * @property int $store_id 店铺id
  * @property int $tourist_key 游客的KEY
@@ -129,15 +128,6 @@ class OrderTourist extends \common\models\base\BaseModel
     public function getInvoice()
     {
         return $this->hasOne(OrderTouristInvoice::class, ['order_tourist_id'=>'id']);
-    }
-
-    /**
-     * 对应订单付款信息模型
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAddress()
-    {
-        return $this->hasOne(OrderTouristAddress::class, ['order_tourist_id'=>'id']);
     }
 
 }

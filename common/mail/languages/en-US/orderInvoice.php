@@ -22,14 +22,14 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 		<div class="qmbox">
 			<div class="Mail" id="app">
 				<div class="Head">
-					<span class="logo">MORESHINE Co.</span>
-					<em class="sign">Superior quality Moissanite online shop | Jewelry expert</em>
+					<span class="logo">BDD Co.</span>
+					<em class="sign">Superior quality diamond online shop | Jewelry expert</em>
 				</div>
 				<div class="Main">
 					<div class="info">
 						<dl>
 							<dt>Dear customers：</dt>
-                            <dd>Thank you for choosing MORESHINE Co. We attach great importance to your order. Please read the attached email about this order: e-Voucher carefully. If the data is wrong, please contact us immediately by email <a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
+                            <dd>Thank you for choosing BDD Co. We attach great importance to your order. Please read the attached email about this order: e-Voucher carefully. If the data is wrong, please contact us immediately by email <a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
 						</dl>
 						<dl>
 							<dt>Order details</dt>
@@ -44,14 +44,14 @@ body{font-family:"microsoft yahei";}.qmbox *{margin:0;padding:0;box-sizing:borde
 				<div class="Foot">
 					<div class="intro">
 						<ul class="type">
-                            <li><a href="https://www.msjew.com/engagement-rings/" target="_blank">Wedding Ring</a></li>
-							<li><a href="https://www.msjew.com/wedding-rings/" target="_blank">Engagement Ring</li>
-                            <li><a href="https://www.msjew.com/jewellery/all" target="_blank">Jewelry</a></li>
+                            <li><a href="https://www.bddco.com/engagement-rings/" target="_blank">Wedding Ring</a></li>
+							<li><a href="https://www.bddco.com/wedding-rings/" target="_blank">Engagement Ring</li>
+                            <li><a href="https://www.bddco.com/jewellery/all" target="_blank">Jewelry</a></li>
 						</ul>
 						<div class="copy">
-							<p>If you have any feedback or suggestions on MORESHINE co's products, or if you have any problems using it</p>
-							<p>Feel free to contact us：<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a></p>
-							<em>Copyright ©2012 - <?= date("Y")?> MORESHINE Co., Ltd.</em>
+							<p>If you have any feedback or suggestions on bddco's products, or if you have any problems using it</p>
+							<p>Feel free to contact us：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
+							<em>Copyright ©2012 - <?= date("Y")?> BDD Co., Ltd.</em>
 						</div>
 					</div>
 				</div>

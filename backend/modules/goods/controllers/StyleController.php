@@ -70,7 +70,7 @@ class StyleController extends BaseController
         $dataProvider->query->andFilterWhere(['like', 'lang.style_name',$searchModel->style_name]);
 
         $goodsSql = <<<DOM
-(SELECT 
+(SELECT
     goods.style_id,
     (case COUNT(markup1.goods_id) when '0' then '0' else '1' end) as cn_status,
     (case COUNT(markup2.goods_id) when '0' then '0' else '1' end) as hk_status,

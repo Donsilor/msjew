@@ -60,6 +60,9 @@ class GoodsController extends BaseController
             $area_id = Yii::$app->request->queryParams['SearchModel']['markup.area_id'];
             $this->setLocalAreaId($area_id);
         }
+        else {
+            $this->setLocalAreaId(1);
+        }
 
         if($typeModel){
             $dataProvider->query->andFilterWhere(['in', 'goods.type_id',$typeModel['ids']]);

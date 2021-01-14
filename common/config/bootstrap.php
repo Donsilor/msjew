@@ -26,4 +26,3 @@ Yii::setAlias('@merchantUrl', '');
 Yii::setAlias('@Omnipay/Paypal', dirname(__DIR__) . '/components/payment/paypal');
 Yii::setAlias('@Omnipay/Paydollar', dirname(__DIR__) . '/components/payment/paydollar');
 Yii::setAlias('@expresses/k5', dirname(__DIR__) . '/components/expresses/k5');
-Yii::setAlias('@DigiTickets/Stripe', dirname(__DIR__) . '/components/payment/stripe');

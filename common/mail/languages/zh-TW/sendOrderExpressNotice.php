@@ -22,14 +22,14 @@ $order = Order::find()->where(['id'=>$order_id])->one();
 <div class="qmbox">
     <div class="Mail" id="app">
         <div class="Head">
-            <span class="logo">MORESHINE Co.</span>
-            <em class="sign">品質優越莫桑石網上店 | 首飾專家</em>
+            <span class="logo">BDD Co.</span>
+            <em class="sign">品質優越鑽石網上店 | 首飾專家</em>
         </div>
         <div class="Main">
             <div class="info">
                 <dl>
                     <dt>尊敬的顧客：</dt>
-                    <dd>您购买的商品已经发货，感謝選擇MORESHINE Co.。想了解更详细的物流信息，请在MORESHINE官网登录您的账户查看。若您有任何疑问，請立即聯絡我們發電郵至<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a>。</dd>
+                    <dd>您购买的商品已经发货，感謝選擇BDD Co.。想了解更详细的物流信息，请在BDD官网登录您的账户查看。若您有任何疑问，請立即聯絡我們發電郵至<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a>。</dd>
                 </dl>
                 <dl>
                     <dt>訂單詳情：    【已發貨】</dt>
@@ -42,7 +42,7 @@ $order = Order::find()->where(['id'=>$order_id])->one();
                 <dl>
                     <dt>须知事项</dt>
                     <dd>
-                        由於每一枚莫桑石都獨一無二和我們每日的訂單量相當龐大，對於選購了莫桑石的客戶，我們需要進一步確認檢查以確保該枚莫桑石确有存貨。目前階段，您的訂單將會暫獲保留最長達48個營業小時。存貨情況一旦獲得確認，我們將會發送電郵通知您裝運的日期。
+                        由於每一枚鑽石都獨一無二和我們每日的訂單量相當龐大，對於選購了鑽石的客戶，我們需要進一步確認檢查以確保該枚鑽石确有存貨。目前階段，您的訂單將會暫獲保留最長達48個營業小時。存貨情況一旦獲得確認，我們將會發送電郵通知您裝運的日期。
                         如果您是透過銀行電匯付款，存貨情況一旦獲得確認，我們將提供進一步的電匯指示。為確保運送不被延遲，請在收到電匯指示後盡快把款項匯出。請注意，款項從您匯出的銀行到達我們的銀行一般需時24個小時。貨品將在確認收到款項後發出。
                     </dd>
                 </dl>
@@ -56,9 +56,9 @@ $order = Order::find()->where(['id'=>$order_id])->one();
                     <li>飾品</li>
                 </ul>
                 <div class="copy">
-                    <p>如果您對MORESHINE CO的產品有任何反饋或建議，或者使用時遇到了什麼問题</p>
-                    <p>歡迎隨時與我們聯繫：<a href="mailto:service@msjew.com" rel="noopener" target="_blank">service@msjew.com</a></p>
-                    <em>Copyright ©<?= date("Y")?> MORESHINE Co., Ltd.</em>
+                    <p>如果您對BDDCO的產品有任何反饋或建議，或者使用時遇到了什麼問题</p>
+                    <p>歡迎隨時與我們聯繫：<a href="mailto:service@bddco.com" rel="noopener" target="_blank">service@bddco.com</a></p>
+                    <em>Copyright ©<?= date("Y")?> BDD Co., Ltd.</em>
                 </div>
             </div>
         </div>

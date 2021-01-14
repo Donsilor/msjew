@@ -103,7 +103,7 @@ class MemberController extends BaseController
 
 
     /**
-     * BDD官网
+     * MORESHINE官网
      *
      * @return string
      * @throws \yii\web\NotFoundHttpException

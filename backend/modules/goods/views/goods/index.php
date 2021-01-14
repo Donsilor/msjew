@@ -73,28 +73,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'headerOptions' => ['width'=>'100'],
             ],
-            [
-                'attribute'=>'销售地区',
-                'filter' => Html::activeDropDownList($searchModel, 'markup.area_id',\common\enums\AreaEnum::getMap(), [
-                    'prompt' => '全部',
-                    'class' => 'form-control',
-                ]),
-                'value' => function ($model) {
-                return \common\enums\AreaEnum::getValue($model->markup['area_id']);
-                },
-                'headerOptions' => ['width'=>'100'],
-            ],
-            [
-                'attribute'=>'地区销售价',
-                'filter' => Html::activeTextInput($searchModel, 'markup.sale_price', [
-                    'class' => 'form-control',
-                ]),
-                'value' => function ($model) {
-                    return $model->markup->sale_price;
-                    //return $model->markup['sale_price'] .'/'.$model->sale_price;
-                },
-                'headerOptions' => ['width'=>'100'],
-            ],
+//            [
+//                'attribute'=>'销售地区',
+//                'filter' => Html::activeDropDownList($searchModel, 'markup.area_id',\common\enums\AreaEnum::getMap(), [
+//                    'prompt' => '全部',
+//                    'class' => 'form-control',
+//                ]),
+//                'value' => function ($model) {
+//                return \common\enums\AreaEnum::getValue($model->markup['area_id']);
+//                },
+//                'headerOptions' => ['width'=>'100'],
+//            ],
+//            [
+//                'attribute'=>'地区销售价',
+//                'filter' => Html::activeTextInput($searchModel, 'markup.sale_price', [
+//                    'class' => 'form-control',
+//                ]),
+//                'value' => function ($model) {
+//                    return $model->markup->sale_price;
+//                    //return $model->markup['sale_price'] .'/'.$model->sale_price;
+//                },
+//                'headerOptions' => ['width'=>'100'],
+//            ],
 
             [
                 'attribute'=>'基础价格',
@@ -105,35 +105,35 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'headerOptions' => ['width'=>'100'],
             ],
-            [
-                'attribute'=>'markup.styleMarkup.markup_rate',
-                'filter' => false,
-                'value' => function ($model) {
-                    return $model->markup->styleMarkup['markup_rate'];
-                },
-                'headerOptions' => ['width'=>'100'],
-            ],
+//            [
+//                'attribute'=>'markup.styleMarkup.markup_rate',
+//                'filter' => false,
+//                'value' => function ($model) {
+//                    return $model->markup->styleMarkup['markup_rate'];
+//                },
+//                'headerOptions' => ['width'=>'100'],
+//            ],
 
-            [
-                'attribute'=>'markup.styleMarkup.markup_value',
-                'filter' => false,
-                'value' => function ($model) {
-                    return $model->markup->styleMarkup['markup_value'];
-                },
-                'headerOptions' => ['width'=>'100'],
-            ],
-
-            [
-                'attribute'=>'地区状态',
-                'filter' => Html::activeDropDownList($searchModel, 'markup.status',\common\enums\StatusEnum::getMap(), [
-                    'prompt' => '全部',
-                    'class' => 'form-control',
-                ]),
-                'value' => function ($model) {
-                    return \common\enums\StatusEnum::getValue($model->markup['status']);
-                },
-                'headerOptions' => ['width'=>'100'],
-            ],
+//            [
+//                'attribute'=>'markup.styleMarkup.markup_value',
+//                'filter' => false,
+//                'value' => function ($model) {
+//                    return $model->markup->styleMarkup['markup_value'];
+//                },
+//                'headerOptions' => ['width'=>'100'],
+//            ],
+//
+//            [
+//                'attribute'=>'地区状态',
+//                'filter' => Html::activeDropDownList($searchModel, 'markup.status',\common\enums\StatusEnum::getMap(), [
+//                    'prompt' => '全部',
+//                    'class' => 'form-control',
+//                ]),
+//                'value' => function ($model) {
+//                    return \common\enums\StatusEnum::getValue($model->markup['status']);
+//                },
+//                'headerOptions' => ['width'=>'100'],
+//            ],
 
             [
                 'attribute' => 'status',

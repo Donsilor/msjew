@@ -1396,6 +1396,9 @@ DOM;
             ['颜色', 'id', 'function', function ($row) use($specList) {
                 return $specList[$row->id]['ys'];
             }],
+            ['刻字内容', 'id', 'function', function ($row) use($specList) {
+                return $row->lettering;
+            }],
             ['商品原价', 'id', 'function', function ($row) {
                 return $row->order->account->currency . ' ' . $row->goods_price;
             }],
